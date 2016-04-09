@@ -1,0 +1,22 @@
+{
+  "name": "letsmeet",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Akira Laine",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "express": "^4.13.4",
+    "express-react-views": "^0.10.0",
+    "express-session": "^1.13.0",
+    "mongoose": "^4.4.12",
+    "passport": "^0.3.2",
+    "passport-github2": "^0.1.10",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1"
+  }
+}
