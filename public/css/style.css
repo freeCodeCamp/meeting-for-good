@@ -3,6 +3,12 @@
     padding: 0;
 }
 
+/*
+**  MAIN COMPONENT 
+*/
+
 body {
-    background-color: ghostwhite;
+  background: linear-gradient(to bottom, #7629A5, #41126C);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
