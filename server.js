@@ -14,6 +14,8 @@ app.set("views", __dirname + "/app/views");
 app.set("view engine", "jsx");
 app.engine('jsx', require('express-react-views').createEngine());
 
+app.use("/public", express.static( __dirname + "/public"))
+
 app.use(session({
 	secret: 'asecretthatsnotreallysecret',
 	resave: false,
