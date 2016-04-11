@@ -7,18 +7,6 @@
   padding: 0;
 }
 
-.flex {
-  display: flex !important;
-}
-
-.flex-column {
-  flex-direction: column !important;
-}
-
-.inline-icon {
-  margin-right: 20px;
-}
-
 /*
 **  MAIN COMPONENT
 */
@@ -33,14 +21,23 @@ main {
   width: 95%;
   margin: auto;
   padding: 20px 0 0 0;
-  flex-wrap: wrap;
+}
+
+nav img {
+    width: 40px;
+    border-radius: 100%;
+    vertical-align: middle;
+}
+
+h4, h5 {
+    margin-left: 10px
 }
 
 /*
 ** DASHBOARD
 */
 
-.card {
+/*.card {
   width: 30%;
   margin: 1.5%;
   float:left;
@@ -48,23 +45,25 @@ main {
 
 .card:nth-child(3n+1) {
     clear: left;
-}
-
-.cardText > div {
-  align-items: center;
-  font-size: 1.2em;
-}
+}*/
 
 .participantList {
   align-items: flex-start !important;
 }
 
 .participant {
-  margin-bottom: 10px;
+  margin: 10px 10px;
   align-items: center;
 }
 
-@media (max-width: 520px) {
+.participant img{
+    width: 40px;
+    border-radius: 100%;
+    vertical-align: middle;
+    margin-right: 10px
+}
+
+/*@media (max-width: 520px) {
   .card {
     width: 100%;
     margin: 0 0 1.5% 0;
@@ -76,4 +75,4 @@ main {
     width: 47%;
     margin: 1.5%;
   }
-}
+}*/
