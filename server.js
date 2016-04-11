@@ -1,32 +1,30 @@
-var express = require("express");
+var express = require('express');
 var app = express();
-var routes = require("./app/routes/routes")
-var mongoose = require("mongoose");
-var passport = require("passport")
-var session = require("express-session")
+var passport = require('passport');
 
-require("dotenv").load();
-require("./app/config/passport")(passport);
+require('dotenv').load();
+require('./app/config/passport')(passport);
 
-mongoose.connect(process.env.MONGO_URI)
+require('mongoose').connect(process.env.MONGO_URI);
+require('./app/config/seed.js');
 
-app.set("views", __dirname + "/app/views");
-app.set("view engine", "jsx");
+app.set('views', __dirname + '/app/views');
+app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
 
-app.use("/public", express.static( __dirname + "/public"))
+app.use('/public', express.static( __dirname + '/public'));
 
-app.use(session({
-	secret: 'asecretthatsnotreallysecret',
-	resave: false,
-	saveUninitialized: true
-}))
+app.use(require('express-session')({
+  secret: 'asecretthatsnotreallysecret',
+  resave: false,
+  saveUninitialized: true,
+}));
 
 app.use(passport.initialize());
-app.use(passport.session())
+app.use(passport.session());
 
-routes(app, passport);
+require('./app/routes/routes')(app, passport);
 
-app.listen("3000", function(){
-    console.log("server listening on port 3000...")
-})
+app.listen('3000', function(){
+  console.log('server listening on port 3000...');
+});

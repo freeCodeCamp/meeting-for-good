@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var Meeting = new Schema({
   name: String,
-  preferredTime: Date,
-  preferredData: Date,
+  preferredTime: String,
+  preferredDate: Date,
   participants: Array,
 });
 

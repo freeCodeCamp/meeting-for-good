@@ -14,6 +14,7 @@
     "express-react-views": "^0.10.0",
     "express-session": "^1.13.0",
     "material-ui": "^0.15.0-alpha.2",
+    "moment": "^2.12.0",
     "mongoose": "^4.4.12",
     "passport": "^0.3.2",
     "passport-github2": "^0.1.10",
