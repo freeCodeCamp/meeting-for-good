@@ -10,10 +10,10 @@ export default class Login extends React.Component {
                         <div className="card-content">
                             <h4 className="center">Login</h4>
                             <div className="input-field">
-                                <input placeholder="Username" id="first_name" type="text" className="validate" />
+                                <input placeholder="Username" id="username" type="text" className="validate" />
                             </div>
                             <div className="input-field">
-                                <input placeholder="Password" id="last_name" type="text" className="validate" />
+                                <input placeholder="Password" id="password" type="password" className="validate" />
                             </div>
                             <div className="center">
                                 <p><a className="waves-effect waves-light btn purple">Login</a></p>
