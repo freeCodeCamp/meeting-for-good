@@ -33,20 +33,6 @@ h4, h5 {
     margin-left: 10px
 }
 
-/*
-** DASHBOARD
-*/
-
-/*.card {
-  width: 30%;
-  margin: 1.5%;
-  float:left;
-}
-
-.card:nth-child(3n+1) {
-    clear: left;
-}*/
-
 .med-card {
     width: 400px;
     margin: 0 auto;
@@ -71,17 +57,3 @@ h4, h5 {
     vertical-align: middle;
     margin-right: 10px
 }
-
-/*@media (max-width: 520px) {
-  .card {
-    width: 100%;
-    margin: 0 0 1.5% 0;
-  }
-}
-
-@media (min-width:520px) and (max-width: 800px) {
-  .card {
-    width: 47%;
-    margin: 1.5%;
-  }
-}*/
