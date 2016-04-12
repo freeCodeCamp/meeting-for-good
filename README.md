@@ -18,5 +18,9 @@ githubSecret=YOUR_GITHUB_SECRET
 githubCallbackURL=http://localhost:3000/auth/github/callback
 ```
 
-Now just open up a terminal to the app's directory and run the following command: `mongod`.
-Then in another window, run `node server` and LetsMeet should be running on port `3000`.
+Now just open up a terminal to the app's directory and run the following commands: 
+`npm install` to install the project dependencies.  
+`mongod` to start MongoDB.
+
+Finally, from a separate terminal session:
+`node server` to run LetsMeet on port `3000`.
