@@ -18,7 +18,7 @@ class Login extends React.Component {
           <div className="center">
             <p><a className="waves-effect waves-light btn purple">Login</a></p>
             <p>-or-</p>
-            <p styleName="github-login">
+            <p>
               <a className="waves-effect waves-light btn grey darken-2">Login with GitHub</a>
             </p>
             <p>
