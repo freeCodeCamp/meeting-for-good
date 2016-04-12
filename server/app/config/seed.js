@@ -1,10 +1,9 @@
-var Meeting = require('../models/meeting.js');
-var moment = require('moment');
+import Meeting from '../models/meeting.js';
 
-Meeting.find({}).remove(function() {
+Meeting.find({}).remove(() => {
   Meeting.create([{
     name: 'Event 1',
-    preferredDate: moment('27 March 2015').toDate(),
+    preferredDate: Date('27 March 2015'),
     preferredTime: '9:00 AM to 10:00 AM',
     participants: [
       {
@@ -22,7 +21,7 @@ Meeting.find({}).remove(function() {
     ],
   }, {
     name: 'Event 1',
-    preferredDate: moment('27 March 2015').toDate(),
+    preferredDate: Date('27 March 2015'),
     preferredTime: '9:00 AM to 10:00 AM',
     participants: [
       {
@@ -40,7 +39,7 @@ Meeting.find({}).remove(function() {
     ],
   }, {
     name: 'Event 1',
-    preferredDate: moment('27 March 2015').toDate(),
+    preferredDate: Date('27 March 2015'),
     preferredTime: '9:00 AM to 10:00 AM',
     participants: [
       {
@@ -58,7 +57,7 @@ Meeting.find({}).remove(function() {
     ],
   }, {
     name: 'Event 2',
-    preferredDate: moment('31 March 2015').toDate(),
+    preferredDate: Date('31 March 2015'),
     preferredTime: '9:00 AM to 10:00 AM',
     participants: [
       {
@@ -76,7 +75,7 @@ Meeting.find({}).remove(function() {
     ],
   }, {
     name: 'Event 4',
-    preferredDate: moment('27 March 2015').toDate(),
+    preferredDate: Date('27 March 2015'),
     preferredTime: '9:00 AM to 10:00 AM',
     participants: [
       {
@@ -92,7 +91,7 @@ Meeting.find({}).remove(function() {
         avatar: 'https://avatars0.githubusercontent.com/u/9578097?v=3&s=460',
       },
     ],
-  }], function() {
+  }], () => {
     console.log('finished populating users');
   });
 });
