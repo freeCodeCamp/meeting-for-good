@@ -19,7 +19,7 @@ class Login extends React.Component {
             <p><a className="waves-effect waves-light btn purple">Login</a></p>
             <p>-or-</p>
             <p>
-              <a className="waves-effect waves-light btn grey darken-2">Login with GitHub</a>
+              <a href="/auth/github" className="waves-effect waves-light btn grey darken-2">Login with GitHub</a>
             </p>
             <p>
               <a className="waves-effect waves-light btn blue darken-4">Login with Facebook</a>

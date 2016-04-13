@@ -2,9 +2,9 @@ require('dotenv').load();
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 import express from 'express';
-import routes from './app/routes/';
+import routes from './app/routes/routes';
 import mongoose from 'mongoose';
-// import passport from 'passport';
+import passport from 'passport';
 import session from 'express-session';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -17,7 +17,7 @@ const app = express();
 app.use(webpackDevMiddleware(compiler));
 app.use(webpackHotMiddleware(compiler));
 
-// require('./app/config/passport')(passport);
+require('./app/config/passport')(passport);
 
 mongoose.connect(process.env.MONGO_URI);
 
@@ -34,8 +34,8 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 routes(app);
 
