@@ -5,17 +5,7 @@ import CSSModules from 'react-css-modules';
 
 import styles from '../styles/dashboard';
 
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-
-  const error = new Error(response.statusText);
-  error.response = response;
-  throw error;
-}
-
-const parseJSON = response => response.json();
+import { checkStatus, parseJSON } from '../util/fetch.util';
 
 class Dashboard extends React.Component {
   constructor() {
