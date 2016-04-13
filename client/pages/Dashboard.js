@@ -15,7 +15,7 @@ class Dashboard extends React.Component {
     };
   }
 
-  componentDidMount() {  
+  componentDidMount() {
     fetch('/api/meetings')
       .then(checkStatus)
       .then(parseJSON)
