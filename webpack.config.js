@@ -1,9 +1,9 @@
-var precss = require('precss');
-var autoprefixer = require('autoprefixer');
-var cssnano = require('cssnano');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const precss            = require('precss');
+const autoprefixer      = require('autoprefixer');
+const cssnano           = require('cssnano');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack           = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: [
@@ -15,9 +15,6 @@ module.exports = {
     filename: 'bundle.js',
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-    }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html!./client/index.html',
