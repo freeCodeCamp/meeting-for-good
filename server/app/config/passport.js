@@ -33,6 +33,7 @@ module.exports = passport => {
 
         newUser.github.id = profile.id;
         newUser.github.username = profile.username;
+        newUser.github.avatar = profile._json.avatar_url;
 
         newUser.save(err => {
           if (err) {
