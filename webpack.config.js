@@ -14,7 +14,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html!./client/index.html',
-      filename: '../index.html',
+      filename: require('path').resolve('./build') + '/index.html',
       inject: 'body',
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
