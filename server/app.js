@@ -6,23 +6,21 @@ import routes from './app/routes/routes';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import session from 'express-session';
-import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import webpackConfig from '../webpack.config';
 
 const app = express();
 mongoose.connect(process.env.MONGO_URI);
 
+if (process.env.seedDB === 'true') require(`${__dirname}/app/config/seed.js`);
+
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
-  // - Seed DB every time server is starter
   // - Run the webpack middleware for react hot reloading
   // - Use MemoryStore for the session
-  require(`${__dirname}/app/config/seed.js`);
+  const webpack = require('webpack');
+  const webpackConfig = require('../webpack.config');
   const compiler = webpack(webpackConfig);
-  app.use(webpackDevMiddleware(compiler));
-  app.use(webpackHotMiddleware(compiler));
+  app.use(require('webpack-dev-middleware')(compiler));
+  app.use(require('webpack-hot-middleware')(compiler));
   app.use(session({
     secret: 'secretClementine',
     resave: false,
