@@ -1,5 +1,5 @@
-require('dotenv').load();
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+if (process.env.NODE_ENV === 'development') require('dotenv').load();
 
 import express from 'express';
 import routes from './app/routes/routes';
