@@ -47,33 +47,30 @@ module.exports = passport => {
     });
   }));
 
-  passport.use(new LocalStrategy({
-      passReqToCallback : true
-    },
-      (req, username, password, done) => {
-        User.findOne({ username: username }, function (err, user) {
-              if (err)
-                  return done(err);
-              if (!user)
-                  return done(null, false);
-              if (!user.validPassword(password))
-                  return done(null, false);
-              if(user)
-                return done(null,user)
+  passport.use(new LocalStrategy((username, password, done) => {
+    process.nextTick(() => {
+      User.findOne({'local.username': username}, (err, user) => {
+           if (err) {
+             return done(err);
+           }
 
-              const newUser = new User();
+           if (user && user.local.password === password) {
+             return done(null, user);
+           }
 
-              newUser.local.username = user.username;
-              newUser.local.password = profile.password;
+           const newUser = new User();
 
-              newUser.save(err => {
-                if (err) {
-                  throw err;
-                }
-      
-                return done(null, newUser);
-              });
-        });
-      }
-    ));
+           newUser.local.username = username;
+           newUser.local.password = password;
+
+           newUser.save(err => {
+             if (err) {
+               throw err;
+             }
+
+             return done(null, newUser);
+           });
+         });
+      });
+    }));
 };

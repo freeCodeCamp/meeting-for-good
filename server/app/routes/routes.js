@@ -47,14 +47,14 @@ export default (app) => {
   app.route('/auth/github/callback')
     .get(passport.authenticate('github', {
       successRedirect: '/dashboard',
-      failureRedirect: '/login',
+      failureRedirect: '/login'
     }));
 
   app.route('/auth/local')
-    .post(passport.authenticate('local', { failureRedirect: '/login' }),
-    (req, res) => {
-      res.redirect('/');
-    });
+    .post(passport.authenticate('local', {
+      successRedirect: '/dashboard',
+      failureRedirect: '/login',
+  }));
 
   app.route('/logout')
     .get((req, res) => {

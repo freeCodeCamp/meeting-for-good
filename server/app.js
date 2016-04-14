@@ -6,6 +6,7 @@ import routes from './app/routes/routes';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import session from 'express-session';
+import bodyParser from 'body-parser';
 
 const app = express();
 mongoose.connect(process.env.MONGO_URI);
@@ -37,6 +38,9 @@ if (process.env.NODE_ENV === 'development') {
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
   }));
 }
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 require('./app/config/passport')(passport);
 
