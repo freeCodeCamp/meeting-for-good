@@ -1,4 +1,5 @@
 const path = process.cwd();
+console.log(path);
 import Meeting from '../models/meeting';
 import passport from 'passport';
 
@@ -56,5 +57,5 @@ export default (app) => {
     });
 
   app.route('*')
-    .get((req, res) => res.sendFile(`${path}/build/client/index.html`));
+    .get((req, res) => res.sendFile(`${path}/build/index.html`));
 };
