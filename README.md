@@ -15,9 +15,10 @@ A meeting coordination app for your team.
 - Create a `.env` file in the root directory of the app with the following contents:
 ```
 MONGO_URI=mongodb://localhost:27017/letsmeet
-githubID=YOUR_GITHUB_CLIENTID
-githubSecret=YOUR_GITHUB_SECRET
-githubCallbackURL=http://localhost:3000/auth/github/callback
+GITHUB_KEY=[YOUR_GITHUB_KEY]
+GITHUB_SECRET=[YOUR_GITHUB_SECRET]
+APP_URL= http://localhost:8080/
+seedDB=true
 ```
 - Open a new terminal session and run `mongod`
 - Run `npm run serve` from the app's root directory. This will start the app at port 8080 (unless overridden)
