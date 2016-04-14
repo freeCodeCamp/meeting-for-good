@@ -1,4 +1,4 @@
-require('dotenv').load().config({ silent: true });
+require('dotenv').load();
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 import express from 'express';
