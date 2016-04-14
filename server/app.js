@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   // Production Env Production Specific stuff
   // - Use MongoStore instead of MemoryStore for the session
-  mongoose.connect(process.env.MONGO_URI || process.env.MONGOLAB_URI);
+  mongoose.connect(process.env.MONGO_URI || process.env.MONGODB_URI);
 
   const MongoStore = require('connect-mongo')(session);
   app.use(session({
