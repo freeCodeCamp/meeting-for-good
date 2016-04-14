@@ -1,6 +1,3 @@
-const precss            = require('precss');
-const autoprefixer      = require('autoprefixer');
-const cssnano           = require('cssnano');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack           = require('webpack');
 
@@ -39,7 +36,6 @@ module.exports = {
         loaders: [
           'style?sourceMap',
           'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-          'postcss',
         ],
       },
       {
@@ -47,9 +43,6 @@ module.exports = {
         loader: 'file-loader',
       },
     ],
-  },
-  postcss: function postcss() {
-    return [cssnano, precss, autoprefixer];
   },
   devtool: 'source-map',
   resolve: {
