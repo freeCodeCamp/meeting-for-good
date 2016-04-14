@@ -5,24 +5,30 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack           = require('webpack');
 
 module.exports = {
-  entry: [
-    'webpack-hot-middleware/client',
-    './client/client.js',
-  ],
+  entry: {
+    app: './client/client.js',
+    vendor: [
+      'moment',
+      'lodash',
+      'react',
+      'react-dom',
+      'react-router',
+      'react-css-modules',
+      'isomorphic-fetch',
+    ],
+  },
   output: {
     path: require('path').resolve('./build/client'),
-    filename: 'bundle.js',
+    filename: 'app.[chunkhash].js',
   },
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash].js'),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html!./client/index.html',
       filename: '../index.html',
       inject: 'body',
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
   ],
   module: {
     loaders: [
@@ -39,7 +45,7 @@ module.exports = {
         loaders: [
           'style?sourceMap',
           'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-          'postcss',
+          'postcss-loader',
         ],
       },
       {
@@ -51,7 +57,6 @@ module.exports = {
   postcss: function postcss() {
     return [cssnano, precss, autoprefixer];
   },
-  devtool: 'source-map',
   resolve: {
     extensions: ['', '.js', '.css'],
   },
