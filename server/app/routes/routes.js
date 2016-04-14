@@ -1,21 +1,20 @@
 const path = process.cwd();
 import Meeting from '../models/meeting';
-import passport from "passport"
+import passport from 'passport';
 
 export default (app) => {
-
-  const isLoggedIn = (req,res,next) => {
-    if(req.isAuthenticated()){
-        next()
+  const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      next();
     } else {
-        res.redirect("/")
+      res.redirect('/');
     }
-  }
+  };
 
-  app.route("/dashboard")
-    .get(isLoggedIn, (req,res,next) => {
-        next();
-    })
+  app.route('/dashboard')
+    .get(isLoggedIn, (req, res, next) => {
+      next();
+    });
 
 
   /*
@@ -50,11 +49,11 @@ export default (app) => {
       failureRedirect: '/login',
     }));
 
-  app.route("/logout")
-    .get((req,res) => {
-        req.logout();
-        res.redirect("/")
-    })
+  app.route('/logout')
+    .get((req, res) => {
+      req.logout();
+      res.redirect('/');
+    });
 
   app.route('*')
     .get((req, res) => res.sendFile(`${path}/client/index.html`));

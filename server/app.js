@@ -11,31 +11,44 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../webpack.config';
 
-const compiler = webpack(webpackConfig);
 const app = express();
-
-app.use(webpackDevMiddleware(compiler));
-app.use(webpackHotMiddleware(compiler));
-
-require('./app/config/passport')(passport);
-
 mongoose.connect(process.env.MONGO_URI);
 
 if (process.env.NODE_ENV === 'development') {
+  // Development Env specific stuff
+  // - Seed DB every time server is starter
+  // - Run the webpack middleware for react hot reloading
+  // - Use MemoryStore for the session
+
   require(`${__dirname}/app/config/seed.js`);
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler));
+  app.use(webpackHotMiddleware(compiler));
+  app.use(session({
+    secret: 'secretClementine',
+    resave: false,
+    saveUninitialized: true,
+  }));
+} else {
+  // Production Env Production Specific stuff
+  // - Use MongoStore instead of MemoryStore for the session
+
+  const MongoStore = require('connect-mongo')(session);
+  app.use(session({
+    secret: 'secretClementine',
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  }));
 }
 
-app.use('/controllers', express.static(`${__dirname}/app/controllers`));
-app.use('/', express.static(`${__dirname}/client`));
-
-app.use(session({
-  secret: 'secretClementine',
-  resave: false,
-  saveUninitialized: true,
-}));
+require('./app/config/passport')(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/controllers', express.static(`${__dirname}/app/controllers`));
+app.use('/', express.static(`${__dirname}/client`));
 
 routes(app);
 
