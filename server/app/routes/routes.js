@@ -56,5 +56,8 @@ export default (app) => {
     });
 
   app.route('*')
-    .get((req, res) => res.sendFile(`${path}/client/index.html`));
+    .get((req, res) => {
+      console.log(req);
+      res.sendFile(`${path}/client/index.html`);
+    });
 };
