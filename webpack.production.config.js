@@ -2,24 +2,30 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack           = require('webpack');
 
 module.exports = {
-  entry: [
-    'webpack-hot-middleware/client',
-    './client/client.js',
-  ],
+  entry: {
+    app: './client/client.js',
+    vendor: [
+      'moment',
+      'lodash',
+      'react',
+      'react-dom',
+      'react-router',
+      'react-css-modules',
+      'isomorphic-fetch',
+    ],
+  },
   output: {
     path: require('path').resolve('./build/client'),
-    filename: 'bundle.js',
+    filename: 'app.[chunkhash].js',
   },
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash].js'),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html!./client/index.html',
       filename: '../index.html',
       inject: 'body',
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
   ],
   module: {
     loaders: [
@@ -44,7 +50,6 @@ module.exports = {
       },
     ],
   },
-  devtool: 'source-map',
   resolve: {
     extensions: ['', '.js', '.css'],
   },

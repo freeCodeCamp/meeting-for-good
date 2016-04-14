@@ -6,36 +6,45 @@ import routes from './app/routes/routes';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import session from 'express-session';
-import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import webpackConfig from '../webpack.config';
 
-const compiler = webpack(webpackConfig);
 const app = express();
+mongoose.connect(process.env.MONGO_URI);
 
-app.use(webpackDevMiddleware(compiler));
-app.use(webpackHotMiddleware(compiler));
+if (process.env.seedDB === 'true') require(`${__dirname}/app/config/seed.js`);
+
+if (process.env.NODE_ENV === 'development') {
+  // Development Env specific stuff
+  // - Run the webpack middleware for react hot reloading
+  // - Use MemoryStore for the session
+  const webpack = require('webpack');
+  const webpackConfig = require('../webpack.config');
+  const compiler = webpack(webpackConfig);
+  app.use(require('webpack-dev-middleware')(compiler));
+  app.use(require('webpack-hot-middleware')(compiler));
+  app.use(session({
+    secret: 'secretClementine',
+    resave: false,
+    saveUninitialized: true,
+  }));
+} else {
+  // Production Env Production Specific stuff
+  // - Use MongoStore instead of MemoryStore for the session
+  const MongoStore = require('connect-mongo')(session);
+  app.use(session({
+    secret: 'secretClementine',
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  }));
+}
 
 require('./app/config/passport')(passport);
 
-mongoose.connect(process.env.MONGO_URI);
-
-if (process.env.NODE_ENV === 'development') {
-  require(`${__dirname}/app/config/seed.js`);
-}
-
-app.use('/controllers', express.static(`${__dirname}/app/controllers`));
-app.use('/', express.static(`${__dirname}/client`));
-
-app.use(session({
-  secret: 'secretClementine',
-  resave: false,
-  saveUninitialized: true,
-}));
-
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/controllers', express.static(`${__dirname}/app/controllers`));
+app.use('/', express.static(`${__dirname}/`));
 
 routes(app);
 
