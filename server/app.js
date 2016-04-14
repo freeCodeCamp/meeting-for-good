@@ -12,14 +12,13 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../webpack.config';
 
 const app = express();
+mongoose.connect(process.env.MONGO_URI);
 
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Seed DB every time server is starter
   // - Run the webpack middleware for react hot reloading
   // - Use MemoryStore for the session
-  mongoose.connect(process.env.MONGO_URI);
-
   require(`${__dirname}/app/config/seed.js`);
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler));
@@ -32,8 +31,6 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   // Production Env Production Specific stuff
   // - Use MongoStore instead of MemoryStore for the session
-  mongoose.connect(process.env.MONGO_URI || process.env.MONGODB_URI);
-
   const MongoStore = require('connect-mongo')(session);
   app.use(session({
     secret: 'secretClementine',
