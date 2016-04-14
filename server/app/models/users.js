@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const User = new Schema({
+  local: {
+    username: String,
+    password: String
+  },
   github: {
     id: String,
     username: String,

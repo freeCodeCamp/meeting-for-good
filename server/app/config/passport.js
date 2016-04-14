@@ -1,4 +1,5 @@
 const GitHubStrategy = require('passport-github').Strategy;
+const LocalStrategy = require("passport-local").Strategy;
 import User from '../models/users';
 import configAuth from './auth';
 
@@ -45,4 +46,34 @@ module.exports = passport => {
       });
     });
   }));
+
+  passport.use(new LocalStrategy({
+      passReqToCallback : true
+    },
+      (req, username, password, done) => {
+        User.findOne({ username: username }, function (err, user) {
+              if (err)
+                  return done(err);
+              if (!user)
+                  return done(null, false);
+              if (!user.validPassword(password))
+                  return done(null, false);
+              if(user)
+                return done(null,user)
+
+              const newUser = new User();
+
+              newUser.local.username = user.username;
+              newUser.local.password = profile.password;
+
+              newUser.save(err => {
+                if (err) {
+                  throw err;
+                }
+      
+                return done(null, newUser);
+              });
+        });
+      }
+    ));
 };

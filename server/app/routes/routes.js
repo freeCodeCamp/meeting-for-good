@@ -50,6 +50,12 @@ export default (app) => {
       failureRedirect: '/login',
     }));
 
+  app.route('/auth/local')
+    .post(passport.authenticate('local', { failureRedirect: '/login' }),
+    (req, res) => {
+      res.redirect('/');
+    });
+
   app.route('/logout')
     .get((req, res) => {
       req.logout();
