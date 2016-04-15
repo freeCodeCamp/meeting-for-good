@@ -22,6 +22,11 @@ class Dashboard extends React.Component {
       .then(meetings => {
         this.setState({ meetings });
       });
+
+      $.get("/api/auth/current", (user) => {
+          if(user === "")
+              window.location.href = "/"
+      })
   }
 
   render() {
