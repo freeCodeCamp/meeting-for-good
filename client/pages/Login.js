@@ -9,14 +9,14 @@ class Login extends React.Component {
       <div className="card" styleName="card">
         <div className="card-content">
           <h4 className="center">Login</h4>
-          <form action="/auth/local" method="post">
+          <form action="/auth/local/login" method="post">
               <div className="input-field">
                 <input placeholder="Username" name="username" type="text" className="validate" />
               </div>
               <div className="input-field">
                 <input placeholder="Password" name="password" type="password" className="validate" />
               </div>
-              <p><input type="submit" className="waves-effect waves-light btn purple" value="Login" /></p>
+              <p className="center"><input type="submit" className="waves-effect waves-light btn purple" value="Login" /></p>
           </form>
           <div className="center">
             <p>-or-</p>

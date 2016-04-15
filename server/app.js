@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(session({
     secret: 'secretClementine',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: true
   }));
 } else {
   // Production Env Production Specific stuff

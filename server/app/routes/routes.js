@@ -50,10 +50,17 @@ export default (app) => {
       failureRedirect: '/login'
     }));
 
-  app.route('/auth/local')
-    .post(passport.authenticate('local', {
+  app.route('/auth/local/login')
+    .post(passport.authenticate('login', {
       successRedirect: '/dashboard',
-      failureRedirect: '/login',
+      failureRedirect: '/login'
+  }));
+
+  app.route('/auth/local/signup')
+    .post(passport.authenticate('signup', {
+      successRedirect: '/dashboard',
+      failureRedirect: '/signup',
+      failureFlash : true
   }));
 
   app.route('/logout')
