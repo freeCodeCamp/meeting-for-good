@@ -50,6 +50,7 @@
     "mongoose": "^4.1.0",
     "passport": "^0.3.0",
     "passport-github": "^1.0.0",
+    "passport-local": "^1.0.0",
     "react": "^0.14.8",
     "react-css-modules": "^3.7.6",
     "react-dom": "^0.14.8",
