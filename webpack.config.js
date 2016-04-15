@@ -1,9 +1,9 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack           = require('webpack');
 
 module.exports = {
   entry: [
-    'webpack-hot-middleware/client',
+    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
     './client/client.js',
   ],
   output: {
@@ -11,12 +11,12 @@ module.exports = {
     filename: 'bundle.js',
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Lets Meet',
-      template: 'html!./client/index.html',
-      filename: require('path').resolve('./build') + '/index.html',
-      inject: 'body',
-    }),
+    new CopyWebpackPlugin([
+      {
+        from: './client/index.dev.html',
+        to: '../index.html',
+      },
+    ]),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),

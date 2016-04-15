@@ -14,14 +14,25 @@ class Login extends React.Component {
                 <input placeholder="Username" name="username" type="text" className="validate" />
               </div>
               <div className="input-field">
-                <input placeholder="Password" name="password" type="password" className="validate" />
+                <input
+                  placeholder="Password"
+                  name="password"
+                  type="password"
+                  className="validate"
+                />
               </div>
-              <p className="center"><a className="waves-effect waves-light btn purple"><input type="submit" value="Login"/></a></p>
+              <p className="center">
+                <a className="waves-effect waves-light btn purple">
+                  <input type="submit" value="Login" />
+                </a>
+              </p>
           </form>
           <div className="center">
             <p>-or-</p>
             <p>
-            <a href="/api/auth/github" className="waves-effect waves-light btn grey darken-2">Login with GitHub</a>
+            <a href="/api/auth/github" className="waves-effect waves-light btn grey darken-2">
+              Login with GitHub
+            </a>
             </p>
             <p>
               <a className="waves-effect waves-light btn blue darken-4">Login with Facebook</a>

@@ -15,17 +15,34 @@ if (process.env.seedDB === 'true') require(`${__dirname}/app/config/seed.js`);
 
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
-  // - Run the webpack middleware for react hot reloading
+  // - Start dev server
   // - Use MemoryStore for the session
-  const webpack = require('webpack');
-  const webpackConfig = require('../webpack.config');
-  const compiler = webpack(webpackConfig);
-  app.use(require('webpack-dev-middleware')(compiler));
-  app.use(require('webpack-hot-middleware')(compiler));
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const webpack              = require('webpack');
+  const config               = require('../webpack.config');
+  const compiler             = webpack(config);
+
+  app.use(webpackDevMiddleware(compiler, {
+    hot: true,
+    filename: 'bundle.js',
+    publicPath: '/client/',
+    stats: {
+      colors: true,
+    },
+    historyApiFallback: true,
+  }));
+
+  app.use(webpackHotMiddleware(compiler, {
+    log: console.log,
+    path: '/__webpack_hmr',
+    heartbeat: 10 * 1000,
+  }));
+
   app.use(session({
     secret: 'secretClementine',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
   }));
 } else {
   // Production Env Production Specific stuff

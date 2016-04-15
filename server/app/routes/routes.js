@@ -1,5 +1,4 @@
 const path = process.cwd();
-console.log(path);
 import Meeting from '../models/meeting';
 import passport from 'passport';
 
@@ -33,21 +32,21 @@ export default (app) => {
   app.route('/api/auth/github/callback')
     .get(passport.authenticate('github', {
       successRedirect: '/dashboard',
-      failureRedirect: '/login'
+      failureRedirect: '/login',
     }));
 
   app.route('/api/auth/local/login')
     .post(passport.authenticate('login', {
       successRedirect: '/dashboard',
-      failureRedirect: '/login'
-  }));
+      failureRedirect: '/login',
+    }));
 
   app.route('/api/auth/local/signup')
     .post(passport.authenticate('signup', {
       successRedirect: '/dashboard',
       failureRedirect: '/signup',
-      failureFlash : true
-  }));
+      failureFlash: true,
+    }));
 
   app.route('/api/auth/logout')
     .get((req, res) => {
