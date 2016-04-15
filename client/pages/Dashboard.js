@@ -17,16 +17,15 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     fetch('/api/meetings')
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(meetings => {
-        this.setState({ meetings });
-      });
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(meetings => {
+      this.setState({ meetings });
+    });
 
-      $.get("/api/auth/current", (user) => {
-          if(user === "")
-              window.location.href = "/"
-      })
+    $.get('/api/auth/current', user => {
+      if (user === '') window.location.href = '/';
+    });
   }
 
   render() {

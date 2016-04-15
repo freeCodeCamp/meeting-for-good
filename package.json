@@ -56,10 +56,12 @@
     "react-router": "^2.1.1",
     "react-transform-hmr": "^1.0.4",
     "style-loader": "^0.13.1",
-    "webpack": "^1.12.14",
-    "webpack-dev-middleware": "^1.6.1",
-    "webpack-dev-server": "^1.14.1",
-    "webpack-hot-middleware": "^2.10.0"
+    "webpack": "^1.12.14"
   },
-  "homepage": "https://github.com/akiralaine/letsmeet#readme"
+  "homepage": "https://github.com/akiralaine/letsmeet#readme",
+  "devDependencies": {
+    "copy-webpack-plugin": "^2.0.1",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.10.0"
+  }
 }
