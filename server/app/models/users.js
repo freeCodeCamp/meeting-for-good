@@ -10,6 +10,11 @@ const User = new Schema({
     id: String,
     username: String,
     avatar: String
+  },
+  facebook: {
+    id: String,
+    username: String,
+    avatar: String
   }
 });
 

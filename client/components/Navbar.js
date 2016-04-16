@@ -11,9 +11,10 @@ class Navbar extends React.Component {
     };
   }
   componentDidMount() {
-    $.get('/api/getuser', user => {
-      if (user.github !== undefined) {
-        this.setState({ userAvatar: user.github.avatar });
+    $.get('/api/auth/current', user => {
+      if (user !== undefined) {
+        let userAvatar = user.github ? user.github.avatar : user.facebook.avatar;
+        this.setState({ userAvatar });
       }
     });
   }

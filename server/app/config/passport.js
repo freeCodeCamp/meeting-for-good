@@ -1,4 +1,5 @@
 const GitHubStrategy = require('passport-github').Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 const LocalStrategy = require("passport-local").Strategy;
 const bCrypt = require("bcrypt-nodejs");
 import User from '../models/users';
@@ -44,6 +45,45 @@ module.exports = passport => {
         newUser.github.id = profile.id;
         newUser.github.username = profile.username;
         newUser.github.avatar = profile._json.avatar_url;
+
+        newUser.save(err => {
+          if (err) {
+            throw err;
+          }
+
+          return done(null, newUser);
+        });
+      });
+    });
+  }));
+
+  passport.use(new FacebookStrategy({
+    clientID: configAuth.facebookAuth.clientID,
+    clientSecret: configAuth.facebookAuth.clientSecret,
+    callbackURL: configAuth.facebookAuth.callbackURL,
+    profileFields: ['id', 'displayName', 'photos', 'email']
+  },
+  (token, refreshToken, profile, done) => {
+    process.nextTick(() => {
+      User.findOne({ 'facebook.id': profile.id }, (err, user) => {
+        if (err) {
+          return done(err);
+        }
+
+        if (user) {
+          return done(null, user);
+        }
+
+        console.log(profile)
+
+        // done(null,profile)
+
+        const newUser = new User();
+        let profilePic = ""
+
+        newUser.facebook.id = profile.id;
+        newUser.facebook.username = profile.displayName;
+        newUser.facebook.avatar = profile.photos[0].value;
 
         newUser.save(err => {
           if (err) {

@@ -35,6 +35,16 @@ export default (app) => {
       failureRedirect: '/login',
     }));
 
+  app.route('/api/auth/facebook')
+    .get(passport.authenticate('facebook'));
+
+  app.route('/api/auth/facebook/callback')
+    .get(passport.authenticate('facebook', {
+      successRedirect: '/dashboard',
+      failureRedirect: '/login',
+    }));
+
+
   app.route('/api/auth/local/login')
     .post(passport.authenticate('login', {
       successRedirect: '/dashboard',
