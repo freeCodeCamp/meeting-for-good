@@ -3,6 +3,8 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 
+require('es6-promise').polyfill();
+
 // Import App
 import App from './components/App';
 import Dashboard from './pages/Dashboard';

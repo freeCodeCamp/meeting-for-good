@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 
 const Meeting = new Schema({
   name: String,
-  preferredTime: String,
-  preferredDate: Date,
+  dates: Array,
   participants: Array,
 });
 

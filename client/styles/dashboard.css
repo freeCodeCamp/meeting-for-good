@@ -3,40 +3,10 @@
   flex-wrap: wrap;
 }
 
-.meeting {
-  margin: 1% 1%;
-  width: 23%;
-}
-
-@media (min-width:850px) and (max-width:1200px) {
-  .meeting {
-    margin: 1% 1.5%;
-    width: 30%;
-  }
-}
-
-@media (min-width:550px) and (max-width:850px) {
-  .meeting {
-    margin: 1% 1%;
-    width: 48%;
-  }
-}
-
-@media (max-width:550px) {
-  .meeting {
-    margin: 1% 1%;
-    width: 98%;
-  }
-}
-
 .new-meeting {
-  composes: meeting;
+  composes: meeting from './meetingcard.css';
   background-color: rgba(0, 0, 0, 0);
   box-shadow: none;
-}
-
-.reveal-card-title {
-  margin-bottom: 15px;
 }
 
 .new-meeting-icon {
@@ -46,24 +16,4 @@
   transform: translate(-50%,-50%);
   color: #fff;
   cursor: pointer;
-}
-
-.detail {
-  margin-top: 15px !important;
-}
-
-.material-icons {
-  vertical-align: middle;
-  margin: 0 15px 0 10px;
-}
-
-.participant {
-  margin: 10px 10px;
-  align-items: center;
-}
-
-.participant-img {
-  width: 40px;
-  vertical-align: middle;
-  margin-right: 15px
 }

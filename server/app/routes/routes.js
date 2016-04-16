@@ -1,5 +1,6 @@
 const path = process.cwd();
 import Meeting from '../models/meeting';
+import User from '../models/users';
 import passport from 'passport';
 
 export default (app) => {
@@ -13,13 +14,7 @@ export default (app) => {
   .##.....##.##........####..######.
   */
 
-  app.route('/api/meetings')
-    .get((req, res) => {
-      Meeting.find((err, meetings) => {
-        if (err) res.status(500).send(err);
-        return res.status(200).json(meetings);
-      });
-    });
+  /* auth stuff */
 
   app.route('/api/auth/current')
     .get((req, res) => {
@@ -62,6 +57,34 @@ export default (app) => {
     .get((req, res) => {
       req.logout();
       res.redirect('/');
+    });
+
+  /* meeetings API*/
+
+  app.route('/api/meetings')
+    .get((req, res) => {
+      Meeting.find((err, meetings) => {
+        if (err) res.status(500).send(err);
+        return res.status(200).json(meetings);
+      });
+    });
+
+  app.route('/api/meetings')
+    .post((req, res) => {
+      Meeting.create(req.body, (err, meeting) => {
+        if (err) return res.status(500).send(err);
+        return res.status(201).json(meeting);
+      });
+    });
+
+  /* users API */
+
+  app.route('/api/users')
+    .get((req, res) => {
+      User.find((err, users) => {
+        if (err) res.status(500).send(err);
+        return res.status(200).json(users);
+      });
     });
 
   app.route('*')
