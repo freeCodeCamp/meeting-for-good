@@ -9,9 +9,12 @@
     "no-console": 0,
     "strict": [0, "global"],
     "react/prefer-stateless-function": 0,
-    no-multi-spaces: ["error", { exceptions: { "VariableDeclarator": true } }]
+    "no-multi-spaces": ["error", { "exceptions": { "VariableDeclarator": true } }]
   },
   "plugins": [
     "react"
-  ]
+  ],
+  "globals": {
+    "$": true
+  }
 }
