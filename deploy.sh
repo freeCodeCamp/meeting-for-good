@@ -7,7 +7,6 @@ git checkout -b deploy
 git merge development --no-edit # Merge in the master branch without prompting
 npm run build # Generate the bundled Javascript and CSS
 rm -r client
-rm -r node_modules
 rm -r server
 cp package.json build
 find . -maxdepth 1 -type f -exec rm {} \;
