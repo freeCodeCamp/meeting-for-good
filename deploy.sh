@@ -10,8 +10,10 @@ rm -r client
 rm -r node_modules
 rm -r server
 cp package.json build
-rm *
+find /direcname -maxdepth 1 -type f -exec rm {} \;
 cp build/* .
+rm -r build
+ls
 git add -A
 git commit -m "Deploy"
 git push heroku deploy:master # Deploy to Heroku
