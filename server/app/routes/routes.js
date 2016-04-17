@@ -87,6 +87,11 @@ export default (app) => {
       });
     });
 
-  app.route('*')
-    .get((req, res) => res.sendFile(`${path}/build/index.html`));
+  if (process.env.NODE_ENV === 'development') {
+    app.route('*')
+      .get((req, res) => res.sendFile(`${path}/build/index.html`));
+  } else {
+    app.route('*')
+      .get((req, res) => res.sendFile(`${path}/index.html`));
+  }
 };
