@@ -11,7 +11,7 @@ rm -r node_modules
 rm -r server
 cp package.json build
 find . -maxdepth 1 -type f -exec rm {} \;
-cp build/* .
+cp -r build/* .
 rm -r build
 ls
 git add -A
