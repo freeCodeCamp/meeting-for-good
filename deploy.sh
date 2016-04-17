@@ -10,7 +10,7 @@ rm -r client
 rm -r node_modules
 rm -r server
 cp package.json build
-find /direcname -maxdepth 1 -type f -exec rm {} \;
+find . -maxdepth 1 -type f -exec rm {} \;
 cp build/* .
 rm -r build
 ls
