@@ -17,6 +17,12 @@ class MeetingCard extends React.Component {
       return date;
     });
 
+    if (props.meeting.dates.length === 0) {
+      delete props.meeting.dates;
+    } else if (props.meeting.weekDays === undefined) {
+      delete props.meeting.weekDays;
+    }
+
     this.state = {
       ranges: props.meeting.dates,
     };
@@ -29,18 +35,40 @@ class MeetingCard extends React.Component {
         this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
     };
 
+    const { meeting } = this.props;
+
     return (
       <div className="card meeting" styleName="meeting">
         <div className="card-content">
-          <span className="card-title">{this.props.meeting.name}</span>
-          <DayPicker
-            fromMonth={new Date()}
-            modifiers = { modifiers }
-          />
+          <span className="card-title">{meeting.name}</span>
+          <div className="row">
+            <div className="col s12">
+              {meeting.dates ?
+                <DayPicker
+                  fromMonth={new Date()}
+                  modifiers = { modifiers }
+                /> :
+                Object.keys(meeting.weekDays).map((day, index) => {
+                  let className = 'btn-flat';
+                  if (!meeting.weekDays[day]) {
+                    className += ' disabled';
+                  }
+
+                  return (
+                    <a
+                      key={index}
+                      className={className}
+                      onClick={this.handleWeekdaySelect}
+                    >{day}</a>
+                  );
+                })
+              }
+            </div>
+          </div>
           <br />
           <div>
             <h6><strong>Participants</strong></h6>
-            {this.props.meeting.participants.map((participant, index) => (
+            {meeting.participants.map((participant, index) => (
               <div className="participant" styleName="participant" key={index}>
                 <img className="circle" styleName="participant-img" src={participant.avatar} />
                 {participant.name}

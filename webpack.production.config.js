@@ -12,6 +12,9 @@ module.exports = {
       'react-router',
       'react-css-modules',
       'isomorphic-fetch',
+      'es6-promise',
+      'react-day-picker',
+      'autobind-decorator',
     ],
   },
   output: {
