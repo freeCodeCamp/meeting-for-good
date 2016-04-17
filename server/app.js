@@ -64,7 +64,6 @@ require('./app/config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/controllers', express.static(`${__dirname}/app/controllers`));
 app.use('/', express.static(`${__dirname}/`));
 
 routes(app);
