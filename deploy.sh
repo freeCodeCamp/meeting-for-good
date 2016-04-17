@@ -15,7 +15,7 @@ cp -r build/* .
 rm -r build
 git add -A
 git commit -m "Deploy"
-git push heroku deploy:master # Deploy to Heroku
+git push -f heroku deploy:master # Deploy to Heroku
 git checkout development # Checkout master again
 git branch -D deploy
 git stash pop # And restore the changes
