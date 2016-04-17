@@ -3,6 +3,17 @@ import Meeting from '../models/meeting';
 import User from '../models/users';
 import passport from 'passport';
 
+const generateID = () => {
+    var ID = "";
+    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for(var i = 0; i < 6; i++){
+        ID += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return ID;
+}
+
 export default (app) => {
   /*
   ....###....########..####..######.
@@ -71,6 +82,8 @@ export default (app) => {
 
   app.route('/api/meetings')
     .post((req, res) => {
+      req.body.uid = generateID();
+      console.log(req.body);
       Meeting.create(req.body, (err, meeting) => {
         if (err) return res.status(500).send(err);
         return res.status(201).json(meeting);

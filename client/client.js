@@ -12,11 +12,12 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 
 render((
-  <Router history={browserHistory}>
+    <Router history={browserHistory}>
     <Route path="/" component={App}>
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/m/:uid" component={MeetingDetails} />
     </Route>
   </Router>
 ), document.getElementById('app'));
