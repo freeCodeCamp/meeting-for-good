@@ -10,7 +10,7 @@
     "build": "npm run clean && npm run build:server && npm run build:client",
     "start:dev": "node ./build/app.js",
     "start": "node ./app.js",
-    "serve": "npm run clean && npm run build:server && npm start && rm -rf build",
+    "serve": "npm run clean && npm run build:server && npm run start:dev && rm -rf build",
     "deploy": "./deploy.sh"
   },
   "repository": {
