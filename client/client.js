@@ -1,7 +1,7 @@
 // Vendor Dependencies
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, browserHistory } from 'react-router';
+import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 
 require('es6-promise').polyfill();
 
@@ -10,14 +10,15 @@ import App from './components/App';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import MeetingDetails from './pages/MeetingDetails';
 
 render((
-    <Router history={browserHistory}>
+  <Router history={browserHistory}>
     <Route path="/" component={App}>
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
-      <Route path="/m/:uid" component={MeetingDetails} />
+      <Route path="/event/:uid" component={MeetingDetails} />
     </Route>
   </Router>
 ), document.getElementById('app'));
