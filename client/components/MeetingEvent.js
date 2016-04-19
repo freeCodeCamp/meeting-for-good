@@ -3,7 +3,7 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
 
-import styles from '../styles/meetingcard.css';
+import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
 
 class MeetingEvent extends React.Component {

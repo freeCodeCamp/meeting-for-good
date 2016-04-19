@@ -4,14 +4,14 @@ import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 
 import 'react-day-picker/lib/style.css';
-import styles from '../styles/new-meeting.css';
+import styles from '../styles/new-event.css';
 
-class NewMeeting extends React.Component {
+class NewEvent extends React.Component {
   constructor() {
     super();
     this.state = {
       ranges: [{ from: null, to: null }],
-      meetingName: null,
+      eventName: null,
       weekDays: {
         mon: false,
         tue: false,
@@ -19,7 +19,7 @@ class NewMeeting extends React.Component {
         thu: false,
         fri: false,
         sat: false,
-        sun: false
+        sun: false,
       },
       dateOrDay: false,
       submitClass: 'waves-effect waves-light btn purple disabled',
@@ -51,11 +51,11 @@ class NewMeeting extends React.Component {
   }
 
   @autobind
-  createMeeting(ev) {
+  createEvent(ev) {
     if (ev.target.className.indexOf('disabled') > -1) {
-      Materialize.toast('Please enter a meeting name!', 4000);
+      Materialize.toast('Please enter an event name!', 4000);
     } else {
-      const { meetingName: name, ranges: dates, dateOrDay, weekDays } = this.state;
+      const { eventName: name, ranges: dates, dateOrDay, weekDays } = this.state;
       let sentData;
 
       if (dateOrDay) {
@@ -66,7 +66,7 @@ class NewMeeting extends React.Component {
 
       $.ajax({
         type: 'POST',
-        url: '/api/meetings',
+        url: '/api/events',
         data: sentData,
         contentType: 'application/json',
         dataType: 'json',
@@ -77,8 +77,8 @@ class NewMeeting extends React.Component {
   }
 
   @autobind
-  handleMeetingNameChange(ev) {
-    this.setState({ meetingName: ev.target.value });
+  handleEventNameChange(ev) {
+    this.setState({ eventName: ev.target.value });
     let { submitClass } = this.state;
     if (ev.target.value.length > 0) {
       this.setState({
@@ -108,7 +108,7 @@ class NewMeeting extends React.Component {
   }
 
   @autobind
-  handleDateOrDay(ev) {
+  handleDateOrDay() {
     this.setState({ dateOrDay: !this.state.dateOrDay });
   }
 
@@ -124,20 +124,20 @@ class NewMeeting extends React.Component {
     const { from, to } = this.state.ranges[0];
 
     return (
-      <div className="card" styleName="new-meeting-card">
+      <div className="card" styleName="new-event-card">
         <div className="card-content">
-          <span className="card-title">New Meeting</span>
+          <span className="card-title">New Event</span>
           <form>
             <div className="row">
               <div className="input-field col s12">
                 <input
-                  id="meeting_name"
+                  id="event_name"
                   type="text"
-                  value={ this.state.meetingName }
-                  onChange={ this.handleMeetingNameChange }
+                  value={ this.state.eventName }
+                  onChange={ this.handleEventNameChange }
                   className="validate"
                 />
-                <label htmlFor="meeting_name">Meeting Name</label>
+                <label htmlFor="event_name">Event Name</label>
               </div>
             </div>
             <div className="switch center-align">
@@ -155,7 +155,11 @@ class NewMeeting extends React.Component {
             { !this.state.dateOrDay ?
               <div>
                 { from && to &&
-                  <a className='btn-flat center' href="#" onClick={ this.handleResetClick }>Reset</a>
+                  <a
+                    className="btn-flat center" href="#" onClick={ this.handleResetClick }
+                  >
+                    Reset
+                  </a>
                 }
                 <DayPicker
                   fromMonth={ new Date() }
@@ -171,7 +175,7 @@ class NewMeeting extends React.Component {
                   weekDays.map((day, index) => (
                     <a
                       key={ index }
-                      className='btn-flat disabled'
+                      className="btn-flat disabled"
                       onClick={ this.handleWeekdaySelect }
                     >{ day }</a>
                   ))
@@ -180,8 +184,8 @@ class NewMeeting extends React.Component {
               : null
             }
             <p className="center">
-              <a className={this.state.submitClass} onClick={this.createMeeting}>
-                Create Meeting
+              <a className={this.state.submitClass} onClick={this.createEvent}>
+                Create Event
               </a>
             </p>
           </form>
@@ -191,4 +195,4 @@ class NewMeeting extends React.Component {
   }
 }
 
-export default cssModules(NewMeeting, styles);
+export default cssModules(NewEvent, styles);

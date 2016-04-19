@@ -10,8 +10,8 @@ import App from './components/App';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import MeetingDetails from './pages/MeetingDetails';
-import NewMeeting from './components/NewMeeting';
+import EventDetails from './pages/EventDetails';
+import NewEvent from './components/NewEvent';
 
 render((
   <Router history={browserHistory}>
@@ -20,8 +20,8 @@ render((
       <Route path="login" component={Login} />
       <Route path="signup" component={Signup} />
       <Route path="event">
-        <Route path="new" component={NewMeeting} />
-        <Route path=":eventID" component={MeetingDetails} />
+        <Route path="new" component={NewEvent} />
+        <Route path=":eventID" component={EventDetails} />
       </Route>
     </Route>
   </Router>
