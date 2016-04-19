@@ -49,8 +49,6 @@ class Dashboard extends React.Component {
         {this.state.meetings.map(meeting => (
           <MeetingCard key={meeting._id} meeting={meeting} />
         ))}
-        { /* New Meeting Modal */ }
-        <NewMeeting />
       </div>
     );
   }
