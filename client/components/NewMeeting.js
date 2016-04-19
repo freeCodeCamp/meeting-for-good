@@ -1,9 +1,12 @@
 import React from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
 import autobind from 'autobind-decorator';
+import cssModules from 'react-css-modules';
 
-export default class NewMeeting extends React.Component {
+import 'react-day-picker/lib/style.css';
+import styles from '../styles/new-meeting.css';
+
+class NewMeeting extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -19,6 +22,7 @@ export default class NewMeeting extends React.Component {
         sun: false
       },
       dateOrDay: false,
+      submitClass: 'waves-effect waves-light btn purple disabled',
     };
   }
 
@@ -47,29 +51,46 @@ export default class NewMeeting extends React.Component {
   }
 
   @autobind
-  createMeeting() {
-    const { meetingName: name, ranges: dates, dateOrDay, weekDays } = this.state;
-    let sentData;
-
-    if (dateOrDay) {
-      sentData = JSON.stringify({ name, weekDays });
+  createMeeting(ev) {
+    if (ev.target.className.indexOf('disabled') > -1) {
+      Materialize.toast('Please enter a meeting name!', 4000);
     } else {
-      sentData = JSON.stringify({ name, dates });
-    }
+      const { meetingName: name, ranges: dates, dateOrDay, weekDays } = this.state;
+      let sentData;
 
-    $.ajax({
+      if (dateOrDay) {
+        sentData = JSON.stringify({ name, weekDays });
+      } else {
+        sentData = JSON.stringify({ name, dates });
+      }
+
+      $.ajax({
         type: 'POST',
         url: '/api/meetings',
         data: sentData,
         contentType: 'application/json',
         dataType: 'json',
-        success: data => console.log(data),
+        success: () => window.location.replace('/dashboard'),
+        error: () => Materialize.toast('An error occured. Please try again later.', 4000),
       });
+    }
   }
 
   @autobind
   handleMeetingNameChange(ev) {
     this.setState({ meetingName: ev.target.value });
+    let { submitClass } = this.state;
+    if (ev.target.value.length > 0) {
+      this.setState({
+        submitClass: submitClass.replace(' disabled', ''),
+      });
+    } else {
+      if (submitClass.indexOf('disabled') === -1) {
+        this.setState({
+          submitClass: submitClass += ' disabled',
+        });
+      }
+    }
   }
 
   @autobind
@@ -103,80 +124,71 @@ export default class NewMeeting extends React.Component {
     const { from, to } = this.state.ranges[0];
 
     return (
-       <div id="new-meeting-modal" className="modal modal-fixed-footer">
-        <div className="modal-content">
-          <div className="row">
-            <form className="col s12">
-              <h5>New meeting</h5>
-              <div className="row">
-                <div className="input-field col s12">
-                  <input
-                    id="meeting_name"
-                    type="text"
-                    value={this.state.meetingName}
-                    onChange={this.handleMeetingNameChange}
-                    className="validate"
-                  />
-                  <label htmlFor="meeting_name">Meeting Name</label>
-                </div>
+      <div className="card" styleName="new-meeting-card">
+        <div className="card-content">
+          <span className="card-title">New Meeting</span>
+          <form>
+            <div className="row">
+              <div className="input-field col s12">
+                <input
+                  id="meeting_name"
+                  type="text"
+                  value={ this.state.meetingName }
+                  onChange={ this.handleMeetingNameChange }
+                  className="validate"
+                />
+                <label htmlFor="meeting_name">Meeting Name</label>
               </div>
-              <div className="switch center-align">
-                <label>
-                  Specific Dates
-                  <input
-                    type="checkbox"
-                    onClick={this.handleDateOrDay}
-                    checked={this.state.dateOrDay}
-                  />
-                  <span className="lever" />
-                  Weekdays
-                </label>
+            </div>
+            <div className="switch center-align">
+              <label>
+                Specific Dates
+                <input
+                  type="checkbox"
+                  onClick={ this.handleDateOrDay }
+                  checked={ this.state.dateOrDay }
+                />
+                <span className="lever" />
+                Weekdays
+              </label>
+            </div>
+            { !this.state.dateOrDay ?
+              <div>
+                { from && to &&
+                  <a className='btn-flat center' href="#" onClick={ this.handleResetClick }>Reset</a>
+                }
+                <DayPicker
+                  fromMonth={ new Date() }
+                  modifiers = { modifiers }
+                  onDayClick={ this.handleDayClick }
+                />
               </div>
-              { !this.state.dateOrDay ?
-                <div className="row">
-                  <div className="input-field col s12">
-                    { from && to &&
-                      <a className='btn-flat center-align' href="#" onClick={ this.handleResetClick }>Reset</a>
-                    }
-                    <DayPicker
-                      fromMonth={new Date()}
-                      modifiers = { modifiers }
-                      onDayClick={ this.handleDayClick }
-                    />
-                  </div>
-                </div>
-                : null
-              }
-              { this.state.dateOrDay ?
-                <div className="row">
-                  <br />
-                  <div className="col s12">
-                    {
-                      weekDays.map((day, index) => (
-                        <a
-                          key={index}
-                          className='btn-flat disabled'
-                          onClick={this.handleWeekdaySelect}
-                        >{day}</a>
-                      ))
-                    }
-                  </div>
-                </div>
-                : null
-              }
-            </form>
-          </div>
-        </div>
-        <div className="modal-footer">
-          {this.state.meetingName &&
-            <a
-              href="/dashboard"
-              className="modal-action modal-close waves-effect waves-green btn-flat"
-              onClick={this.createMeeting}
-            >Submit</a>
-          }
+              : null
+            }
+            { this.state.dateOrDay ?
+              <div styleName="weekdayList">
+                {
+                  weekDays.map((day, index) => (
+                    <a
+                      key={ index }
+                      className='btn-flat disabled'
+                      onClick={ this.handleWeekdaySelect }
+                    >{ day }</a>
+                  ))
+                }
+              </div>
+              : null
+            }
+            <p className="center">
+              <a className={this.state.submitClass} onClick={this.createMeeting}>
+                Create Meeting
+              </a>
+            </p>
+          </form>
         </div>
       </div>
     );
   }
 }
+
+export default cssModules(NewMeeting, styles);

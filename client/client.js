@@ -11,14 +11,18 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import MeetingDetails from './pages/MeetingDetails';
+import NewMeeting from './components/NewMeeting';
 
 render((
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/login" component={Login} />
-      <Route path="/signup" component={Signup} />
-      <Route path="/event/:uid" component={MeetingDetails} />
+      <Route path="dashboard" component={Dashboard} />
+      <Route path="login" component={Login} />
+      <Route path="signup" component={Signup} />
+      <Route path="event">
+        <Route path="new" component={NewMeeting} />
+        <Route path=":eventID" component={MeetingDetails} />
+      </Route>
     </Route>
   </Router>
 ), document.getElementById('app'));

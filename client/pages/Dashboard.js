@@ -40,16 +40,10 @@ class Dashboard extends React.Component {
     return (
       <div styleName="wrapper">
         { /* New Meeting Icon */ }
-        <div className="card hoverable" styleName="new-meeting">
-          <div className="card-content">
-              <i
-                className="material-icons activator large modal-trigger"
-                styleName="new-meeting-icon"
-                href="#new-meeting-modal"
-              >
-                note_add
-              </i>
-          </div>
+        <div className="fixed-action-btn" styleName="new-meeting-icon">
+          <a className="btn-floating btn-large red" href="/event/new">
+            <i className="large material-icons">add</i>
+          </a>
         </div>
         { /* Card Template */ }
         {this.state.meetings.map(meeting => (
