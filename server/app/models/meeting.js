@@ -6,6 +6,7 @@ const Meeting = new Schema({
   dates: Array,
   weekDays: Object,
   participants: Array,
+  uid: String
 });
 
 export default mongoose.model('Meeting', Meeting);

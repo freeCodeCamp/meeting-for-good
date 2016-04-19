@@ -3,6 +3,12 @@
   width: 23%;
 }
 
+.meeting-event {
+    margin: 1% 1%;
+    width: 23%;
+    margin: 0 auto;
+}
+
 @media (min-width:850px) and (max-width:1200px) {
   .meeting {
     margin: 1% 1.5%;
