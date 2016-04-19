@@ -1,9 +1,8 @@
 import React from 'react';
-import CSSModules from 'react-css-modules';
 
 import Navbar from './Navbar';
 
-import styles from '../styles/main';
+import '../styles/main';
 
 const App = (props) => (
   <div>
@@ -18,4 +17,4 @@ App.propTypes = {
   children: React.PropTypes.element,
 };
 
-export default CSSModules(App, styles);
+export default App;

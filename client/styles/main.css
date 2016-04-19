@@ -7,10 +7,14 @@ body {
   background: linear-gradient(to bottom, #7629A5, #41126C);
   background-repeat: no-repeat;
   background-attachment: fixed;
+  height: 100vh;
 }
 
-.main {
+main {
   width: 95%;
   margin: auto;
   padding: 20px 0 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -1,0 +1,22 @@
+.new-meeting-card {
+  width: 500px;
+}
+
+@media (min-width:550px) and (max-width:850px) {
+  .new-meeting-card {
+    width: 80%;
+  }
+}
+
+@media (max-width:550px) {
+  .new-meeting-card {
+    width: 98%;
+  }
+}
+
+.weekdayList {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
