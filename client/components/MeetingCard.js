@@ -77,7 +77,7 @@ class MeetingCard extends React.Component {
           </div>
         </div>
         <div className="card-action">
-          <a href="#">View Details</a>
+          <a href={`/event/${meeting.uid}`}>View Details</a>
         </div>
       </div>
     );

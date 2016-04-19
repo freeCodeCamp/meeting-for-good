@@ -21,6 +21,7 @@ Meeting.find({}).remove(() => {
         avatar: 'https://avatars0.githubusercontent.com/u/9578097?v=3&s=460',
       },
     ],
+    uid: "8fH7qU"
   }, {
     name: 'Event 2',
     dates: [{
@@ -41,6 +42,7 @@ Meeting.find({}).remove(() => {
         avatar: 'https://avatars0.githubusercontent.com/u/9578097?v=3&s=460',
       },
     ],
+    uid: "23gHUU"
   }, {
     name: 'Event 3',
     dates: [{
@@ -61,6 +63,7 @@ Meeting.find({}).remove(() => {
         avatar: 'https://avatars0.githubusercontent.com/u/9578097?v=3&s=460',
       },
     ],
+    uid: "pli45W"
   }, {
     name: 'Event 4',
     dates: [{
@@ -81,6 +84,7 @@ Meeting.find({}).remove(() => {
         avatar: 'https://avatars0.githubusercontent.com/u/9578097?v=3&s=460',
       },
     ],
+    uid: "W236vV"
   }, {
     name: 'Event 5',
     dates: [{
@@ -101,6 +105,7 @@ Meeting.find({}).remove(() => {
         avatar: 'https://avatars0.githubusercontent.com/u/9578097?v=3&s=460',
       },
     ],
+    uid: "DF0vs7"
   }], () => {
     console.log('Finished populating meetings.');
   });
