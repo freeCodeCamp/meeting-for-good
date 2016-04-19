@@ -4,8 +4,7 @@ import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 
 /* external components */
-import NewMeeting from '../components/NewMeeting';
-import MeetingCard from '../components/MeetingCard';
+import EventCard from '../components/EventCard';
 
 /* styles */
 import styles from '../styles/dashboard';
@@ -17,7 +16,7 @@ class Dashboard extends React.Component {
   constructor() {
     super();
     this.state = {
-      meetings: [],
+      events: [],
     };
   }
 
@@ -26,10 +25,10 @@ class Dashboard extends React.Component {
       $('.modal-trigger').leanModal();
     });
 
-    fetch('/api/meetings')
+    fetch('/api/events')
       .then(checkStatus)
       .then(parseJSON)
-      .then(meetings => this.setState({ meetings }));
+      .then(events => this.setState({ events }));
 
     $.get('/api/auth/current', user => {
       if (user === '') window.location.href = '/';
@@ -39,15 +38,15 @@ class Dashboard extends React.Component {
   render() {
     return (
       <div styleName="wrapper">
-        { /* New Meeting Icon */ }
-        <div className="fixed-action-btn" styleName="new-meeting-icon">
+        { /* New Event Icon */ }
+        <div className="fixed-action-btn" styleName="new-event-icon">
           <a className="btn-floating btn-large red" href="/event/new">
             <i className="large material-icons">add</i>
           </a>
         </div>
         { /* Card Template */ }
-        {this.state.meetings.map(meeting => (
-          <MeetingCard key={meeting._id} meeting={meeting} />
+        {this.state.events.map(event => (
+          <EventCard key={event._id} event={event} />
         ))}
       </div>
     );

@@ -1,15 +1,15 @@
-.new-meeting-card {
+.new-event-card {
   width: 500px;
 }
 
 @media (min-width:550px) and (max-width:850px) {
-  .new-meeting-card {
+  .new-event-card {
     width: 80%;
   }
 }
 
 @media (max-width:550px) {
-  .new-meeting-card {
+  .new-event-card {
     width: 98%;
   }
 }

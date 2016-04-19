@@ -1,7 +1,7 @@
 {
   "name": "letsmeet",
   "version": "0.0.1",
-  "description": "Schedule meetings with ease!",
+  "description": "Schedule events with ease!",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf build && mkdir build",

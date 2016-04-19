@@ -1,18 +1,18 @@
 const path = process.cwd();
-import Meeting from '../models/meeting';
+import Event from '../models/event';
 import User from '../models/users';
 import passport from 'passport';
 
 const generateID = () => {
-    var ID = "";
-    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let ID = '';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i = 0; i < 6; i++){
-        ID += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+  for (let i = 0; i < 6; i++) {
+    ID += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
 
-    return ID;
-}
+  return ID;
+};
 
 export default (app) => {
   /*
@@ -72,21 +72,20 @@ export default (app) => {
 
   /* meeetings API*/
 
-  app.route('/api/meetings')
+  app.route('/api/events')
     .get((req, res) => {
-      Meeting.find((err, meetings) => {
+      Event.find((err, events) => {
         if (err) res.status(500).send(err);
-        return res.status(200).json(meetings);
+        return res.status(200).json(events);
       });
     });
 
-  app.route('/api/meetings')
+  app.route('/api/events')
     .post((req, res) => {
       req.body.uid = generateID();
-      console.log(req.body);
-      Meeting.create(req.body, (err, meeting) => {
+      Event.create(req.body, (err, event) => {
         if (err) return res.status(500).send(err);
-        return res.status(201).json(meeting);
+        return res.status(201).json(event);
       });
     });
 

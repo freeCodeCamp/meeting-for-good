@@ -1,7 +1,7 @@
-import Meeting from '../models/meeting.js';
+import Event from '../models/event.js';
 
-Meeting.find({}).remove(() => {
-  Meeting.create([{
+Event.find({}).remove(() => {
+  Event.create([{
     name: 'Event 1',
     dates: [{
       from: new Date('19 April 2016'),
@@ -102,6 +102,6 @@ Meeting.find({}).remove(() => {
       },
     ],
   }], () => {
-    console.log('Finished populating meetings.');
+    console.log('Finished populating events.');
   });
 });
