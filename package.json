@@ -10,7 +10,7 @@
     "build": "npm run clean && npm run build:server && npm run build:client",
     "start:dev": "node ./build/app.js",
     "start": "node ./app.js",
-    "serve": "npm run clean && npm run build:server && npm run start:dev && rm -rf build",
+    "serve": "npm run clean && npm run build:server && npm run start:dev",
     "deploy": "./deploy.sh"
   },
   "repository": {
@@ -23,6 +23,23 @@
     "url": "https://github.com/akiralaine/letsmeet/issues"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.0",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^1.1.0",
+    "cookie-parser": "^1.4.1",
+    "dotenv": "^1.2.0",
+    "es6-promise": "^3.1.2",
+    "express": "^4.12.4",
+    "express-session": "^1.13.0",
+    "mongoose": "^4.1.0",
+    "passport": "^0.3.0",
+    "passport-facebook": "^2.1.0",
+    "passport-github": "^1.0.0",
+    "passport-local": "^1.0.0"
+  },
+  "homepage": "https://github.com/akiralaine/letsmeet#readme",
+  "devDependencies": {
     "autobind-decorator": "^1.3.3",
     "babel-cli": "^6.7.5",
     "babel-core": "^6.7.4",
@@ -31,16 +48,8 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-react": "^6.5.0",
-    "bcrypt-nodejs": "0.0.3",
-    "body-parser": "^1.15.0",
-    "connect-flash": "^0.1.1",
-    "connect-mongo": "^1.1.0",
-    "cookie-parser": "^1.4.1",
+    "copy-webpack-plugin": "^2.0.1",
     "css-loader": "^0.23.1",
-    "dotenv": "^1.2.0",
-    "es6-promise": "^3.1.2",
-    "express": "^4.12.4",
-    "express-session": "^1.13.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.3",
@@ -48,11 +57,6 @@
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.10.0",
     "moment": "^2.12.0",
-    "mongoose": "^4.1.0",
-    "passport": "^0.3.0",
-    "passport-facebook": "^2.1.0",
-    "passport-github": "^1.0.0",
-    "passport-local": "^1.0.0",
     "react": "^0.14.8",
     "react-css-modules": "^3.7.6",
     "react-day-picker": "^1.3.2",
@@ -60,11 +64,7 @@
     "react-router": "^2.1.1",
     "react-transform-hmr": "^1.0.4",
     "style-loader": "^0.13.1",
-    "webpack": "^1.12.14"
-  },
-  "homepage": "https://github.com/akiralaine/letsmeet#readme",
-  "devDependencies": {
-    "copy-webpack-plugin": "^2.0.1",
+    "webpack": "^1.12.14",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.10.0"
   }
