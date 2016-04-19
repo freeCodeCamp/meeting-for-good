@@ -9,7 +9,6 @@ npm run build # Generate the bundled Javascript and CSS
 rm -r client
 rm -r server
 cp package.json build
-cp -r node_modules build
 find . -maxdepth 1 -type f -exec rm {} \;
 cp -r build/* .
 rm -r build
