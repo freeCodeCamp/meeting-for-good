@@ -20,6 +20,7 @@ module.exports = {
   output: {
     path: require('path').resolve('./build/client'),
     filename: 'app.[chunkhash].js',
+    publicPath: '/client/',
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash].js'),
