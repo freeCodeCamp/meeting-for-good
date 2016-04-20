@@ -7,6 +7,7 @@ const Event = new Schema({
   weekDays: Object,
   participants: Array,
   uid: String,
+  selectedTimeRange: Array,
 });
 
 export default mongoose.model('Event', Event);
