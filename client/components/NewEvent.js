@@ -2,7 +2,9 @@ import React from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
+import noUiSlider from 'materialize-css/extras/noUiSlider/noUiSlider.min';
 
+import 'materialize-css/extras/noUiSlider/noUiSlider.css';
 import 'react-day-picker/lib/style.css';
 import styles from '../styles/new-event.css';
 
@@ -22,8 +24,30 @@ class NewEvent extends React.Component {
         sun: false,
       },
       dateOrDay: false,
+      selectedTimeRange: [0, 23],
       submitClass: 'waves-effect waves-light btn purple disabled',
     };
+  }
+
+  componentDidMount() {
+    const slider = document.getElementById('timeSlider');
+    noUiSlider.create(slider, {
+      start: [0, 23],
+      connect: true,
+      step: 1,
+      range: {
+        min: 0,
+        max: 23,
+      }, format: wNumb({
+        decimals: 0,
+      }),
+    });
+
+    slider.noUiSlider.on('update', (value, handle) => {
+      const { selectedTimeRange } = this.state;
+      selectedTimeRange[handle] = value[handle];
+      this.setState({ selectedTimeRange });
+    });
   }
 
   @autobind
@@ -55,13 +79,13 @@ class NewEvent extends React.Component {
     if (ev.target.className.indexOf('disabled') > -1) {
       Materialize.toast('Please enter an event name!', 4000);
     } else {
-      const { eventName: name, ranges: dates, dateOrDay, weekDays } = this.state;
+      const { eventName: name, ranges: dates, dateOrDay, weekDays, selectedTimeRange } = this.state;
       let sentData;
 
       if (dateOrDay) {
-        sentData = JSON.stringify({ name, weekDays });
+        sentData = JSON.stringify({ name, weekDays, selectedTimeRange });
       } else {
-        sentData = JSON.stringify({ name, dates });
+        sentData = JSON.stringify({ name, dates, selectedTimeRange });
       }
 
       $.ajax({
@@ -183,6 +207,12 @@ class NewEvent extends React.Component {
               </div>
               : null
             }
+            <div id="timeSlider" />
+            <br />
+            <p className="center">
+              From {this.state.selectedTimeRange[0]}:00 to {this.state.selectedTimeRange[1]}:00
+            </p>
+            <br />
             <p className="center">
               <a className={this.state.submitClass} onClick={this.createEvent}>
                 Create Event

@@ -9,6 +9,7 @@ module.exports = {
   output: {
     path: require('path').resolve('./build/client'),
     filename: 'bundle.js',
+    publicPath: '/client/',
   },
   plugins: [
     new CopyWebpackPlugin([
