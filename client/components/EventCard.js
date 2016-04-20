@@ -3,13 +3,13 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
 
-import styles from '../styles/meetingcard.css';
+import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
 
-class MeetingCard extends React.Component {
+class EventCard extends React.Component {
   constructor(props) {
     super(props);
-    props.meeting.dates = props.meeting.dates.map(date => {
+    props.event.dates = props.event.dates.map(date => {
       if (date.from !== null && date.to !== null) {
         date.from = moment(date.from).toDate();
         date.to = moment(date.to).toDate();
@@ -17,14 +17,14 @@ class MeetingCard extends React.Component {
       return date;
     });
 
-    if (props.meeting.dates.length === 0) {
-      delete props.meeting.dates;
-    } else if (props.meeting.weekDays === undefined) {
-      delete props.meeting.weekDays;
+    if (props.event.dates.length === 0) {
+      delete props.event.dates;
+    } else if (props.event.weekDays === undefined) {
+      delete props.event.weekDays;
     }
 
     this.state = {
-      ranges: props.meeting.dates,
+      ranges: props.event.dates,
     };
   }
 
@@ -35,22 +35,22 @@ class MeetingCard extends React.Component {
         this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
     };
 
-    const { meeting } = this.props;
+    const { event } = this.props;
 
     return (
-      <div className="card meeting" styleName="meeting">
+      <div className="card" styleName="event">
         <div className="card-content">
-          <span className="card-title">{meeting.name}</span>
+          <span className="card-title">{event.name}</span>
           <div className="row">
             <div className="col s12">
-              {meeting.dates ?
+              {event.dates ?
                 <DayPicker
                   fromMonth={new Date()}
                   modifiers = { modifiers }
                 /> :
-                Object.keys(meeting.weekDays).map((day, index) => {
+                Object.keys(event.weekDays).map((day, index) => {
                   let className = 'btn-flat';
-                  if (!meeting.weekDays[day]) {
+                  if (!event.weekDays[day]) {
                     className += ' disabled';
                   }
 
@@ -68,7 +68,7 @@ class MeetingCard extends React.Component {
           <br />
           <div>
             <h6><strong>Participants</strong></h6>
-            {meeting.participants.map((participant, index) => (
+            {event.participants.map((participant, index) => (
               <div className="participant" styleName="participant" key={index}>
                 <img className="circle" styleName="participant-img" src={participant.avatar} />
                 {participant.name}
@@ -84,8 +84,8 @@ class MeetingCard extends React.Component {
   }
 }
 
-MeetingCard.propTypes = {
-  meeting: React.PropTypes.object,
+EventCard.propTypes = {
+  event: React.PropTypes.object,
 };
 
-export default cssModules(MeetingCard, styles);
+export default cssModules(EventCard, styles);

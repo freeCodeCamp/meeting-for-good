@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const Meeting = new Schema({
+const Event = new Schema({
   name: String,
   dates: Array,
   weekDays: Object,
   participants: Array,
-  uid: String
+  uid: String,
 });
 
-export default mongoose.model('Meeting', Meeting);
+export default mongoose.model('Event', Event);

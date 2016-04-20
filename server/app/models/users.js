@@ -4,18 +4,18 @@ const Schema = mongoose.Schema;
 const User = new Schema({
   local: {
     username: String,
-    password: String
+    password: String,
   },
   github: {
     id: String,
     username: String,
-    avatar: String
+    avatar: String,
   },
   facebook: {
     id: String,
     username: String,
-    avatar: String
-  }
+    avatar: String,
+  },
 });
 
 export default mongoose.model('User', User);
