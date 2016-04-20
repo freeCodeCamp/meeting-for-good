@@ -21,7 +21,7 @@ render((
       <Route path="signup" component={Signup} />
       <Route path="event">
         <Route path="new" component={NewEvent} />
-        <Route path=":eventID" component={EventDetails} />
+        <Route path=":uid" component={EventDetails} />
       </Route>
     </Route>
   </Router>
