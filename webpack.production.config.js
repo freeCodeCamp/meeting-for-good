@@ -15,6 +15,7 @@ module.exports = {
       'es6-promise',
       'react-day-picker',
       'autobind-decorator',
+      'materialize-css',
     ],
   },
   output: {

@@ -56,6 +56,7 @@
     "html-webpack-plugin": "^2.15.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.10.0",
+    "materialize-css": "^0.97.6",
     "moment": "^2.12.0",
     "react": "^0.14.8",
     "react-css-modules": "^3.7.6",
