@@ -47,6 +47,18 @@ class MeetingEvent extends React.Component {
     	},
     	displayLegend: false
     });
+    $("rect").on("mousedown mouseover", function (e) {
+        if (e.buttons == 1 || e.buttons == 3) {
+            $(this).css("fill", "purple");
+            $(this).parent().find("text").css("fill", "white")
+            $(".graph-label, .subdomain-text").css({
+                "-webkit-user-select": "none",
+                "-moz-user-select": "none",
+                "-ms-user-select": "none",
+                "user-select": "none"
+            })
+        }
+    })
   }
 
   render() {
