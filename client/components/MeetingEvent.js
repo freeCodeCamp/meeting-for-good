@@ -28,11 +28,34 @@ class MeetingEvent extends React.Component {
     };
   }
 
+  findDaysBetweenDates(date1, date2){
+    const ONE_DAY = 1000 * 60 * 60 * 24
+
+    const date1_ms = date1.getTime()
+    const date2_ms = date2.getTime()
+
+    const difference_ms = Math.abs(date1_ms - date2_ms)
+
+    return Math.round(difference_ms/ONE_DAY) + 1;
+  }
+
   componentDidMount(){
+    const self = this;
+    const ranges = this.state.ranges
+    let dateRange = {};
+    if(ranges.length > 1){
+        dateRange.from = ranges[0].from;
+        dateRange.to = ranges[ranges.length-1].to;
+    } else {
+        dateRange.from = ranges[0].from;
+        dateRange.to = ranges[0].to;
+    }
     const cal = new CalHeatMap();
 	cal.init({
         domain: "day",
         subdomain: "hour",
+        start: dateRange.from,
+        range: self.findDaysBetweenDates(dateRange.from, dateRange.to),
         rowLimit: 1,
 	    domainGutter: 0,
         verticalOrientation: true,
@@ -47,16 +70,31 @@ class MeetingEvent extends React.Component {
     	},
     	displayLegend: false
     });
+    for(let i in ranges){
+        for(let j in ranges[i]){
+            console.log(ranges[i][j])
+            $(".graph-label").each((index,el) => {
+                if(String(ranges[i][j]).indexOf("0" + el.textContent.split(" ")[0]) > -1){
+                    console.log(el.textContent)
+                }
+            })
+        }
+    }
+    $(".graph-label, .subdomain-text").css({
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "-ms-user-select": "none",
+        "user-select": "none"
+    })
     $("rect").on("mousedown mouseover", function (e) {
         if (e.buttons == 1 || e.buttons == 3) {
-            $(this).css("fill", "purple");
-            $(this).parent().find("text").css("fill", "white")
-            $(".graph-label, .subdomain-text").css({
-                "-webkit-user-select": "none",
-                "-moz-user-select": "none",
-                "-ms-user-select": "none",
-                "user-select": "none"
-            })
+            if($(this).css("fill") !== "rgb(128, 0, 128)"){
+                $(this).css("fill", "purple");
+                $(this).parent().find("text").css("fill", "white")
+            } else {
+                $(this).css("fill", "#ededed");
+                $(this).parent().find("text").css("fill", "#999")
+            }
         }
     })
   }
