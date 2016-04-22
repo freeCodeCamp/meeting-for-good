@@ -1,8 +1,10 @@
-import React from 'react';
-import DayPicker, { DateUtils } from 'react-day-picker';
+import _ from 'lodash';
 import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
+import DayPicker, { DateUtils } from 'react-day-picker';
+import moment from 'moment';
 import noUiSlider from 'materialize-css/extras/noUiSlider/noUiSlider.min';
+import React from 'react';
 
 import 'materialize-css/extras/noUiSlider/noUiSlider.css';
 import 'react-day-picker/lib/style.css';
@@ -52,15 +54,37 @@ class NewEvent extends React.Component {
 
   @autobind
   handleDayClick(e, day) {
-    const { ranges } = this.state;
-    if (!ranges[ranges.length - 1].from ||
-        !ranges[ranges.length - 1].to ||
-        DateUtils.isDayInRange(day, ranges[ranges.length - 1])) {
-      ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
-      this.setState({ ranges });
+    const ranges = Object.keys(this.state.ranges).map(i => this.state.ranges[i]);
+    // Check if day already exists in a range. If yes, remove it from all the
+    // ranges that it exists in.
+    for (const range of ranges) {
+      if (DateUtils.isDayInRange(day, range)) {
+        const { from, to } = range;
+        ranges.push({
+          from, to: moment(day).subtract(1, 'd')._d,
+        });
+        ranges.push({
+          from: moment(day).add(1, 'd')._d,
+          to,
+        });
+        _.remove(ranges, r => r === range);
+      }
+    }
+
+    // If the previous operation did not change the ranges array (i.e. the
+    // clicked day wasn't already in a range), then either create a new range or
+    // add it to the existing range.
+    if (_.isEqual(ranges, this.state.ranges)) {
+      if (!ranges[ranges.length - 1].from ||
+          !ranges[ranges.length - 1].to) {
+        ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
+        this.setState({ ranges });
+      } else {
+        ranges.push({ from: null, to: null });
+        ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
+        this.setState({ ranges });
+      }
     } else {
-      ranges.push({ from: null, to: null });
-      ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
       this.setState({ ranges });
     }
   }
@@ -179,11 +203,13 @@ class NewEvent extends React.Component {
             { !this.state.dateOrDay ?
               <div>
                 { from && to &&
-                  <a
-                    className="btn-flat center" href="#" onClick={ this.handleResetClick }
-                  >
-                    Reset
-                  </a>
+                  <p className="center">
+                    <a
+                      className="btn-flat"
+                      href="#"
+                      onClick={ this.handleResetClick }
+                    >Reset</a>
+                  </p>
                 }
                 <DayPicker
                   fromMonth={ new Date() }
