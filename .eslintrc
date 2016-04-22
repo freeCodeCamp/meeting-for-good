@@ -15,6 +15,9 @@
     "react"
   ],
   "globals": {
-    "$": true
-  }
+    "$": true,
+    "Materialize": true,
+    "wNumb": true
+  },
+  "parser": "babel-eslint"
 }
