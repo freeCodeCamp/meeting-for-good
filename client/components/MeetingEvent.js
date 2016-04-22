@@ -28,6 +28,27 @@ class MeetingEvent extends React.Component {
     };
   }
 
+  componentDidMount(){
+    const cal = new CalHeatMap();
+	cal.init({
+        domain: "day",
+        subdomain: "hour",
+        rowLimit: 1,
+	    domainGutter: 0,
+        verticalOrientation: true,
+        cellSize: 20,
+    	subDomainTextFormat: "%H",
+        label: {
+    		position: "left",
+    		offset: {
+    			x: 20,
+    			y: 15
+    		}
+    	},
+    	displayLegend: false
+    });
+  }
+
   render() {
     const modifiers = {
       selected: day =>
@@ -41,6 +62,7 @@ class MeetingEvent extends React.Component {
       <div className="card meeting" styleName="event-details">
         <div className="card-content">
           <span className="card-title">{event.name}</span>
+          <div id="cal-heatmap"></div>
           <div className="row">
             <div className="col s12">
               {event.dates ?

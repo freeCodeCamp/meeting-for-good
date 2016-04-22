@@ -32,6 +32,7 @@
     "es6-promise": "^3.1.2",
     "express": "^4.12.4",
     "express-session": "^1.13.0",
+    "materialize-css": "^0.97.6",
     "mongoose": "^4.1.0",
     "passport": "^0.3.0",
     "passport-facebook": "^2.1.0",
