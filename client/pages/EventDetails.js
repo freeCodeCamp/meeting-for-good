@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 import CSSModules from 'react-css-modules';
 import styles from '../styles/main';
-import MeetingEvent from "../components/MeetingEvent";
+import MeetingEvent from '../components/MeetingEvent';
 import fetch from 'isomorphic-fetch';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 

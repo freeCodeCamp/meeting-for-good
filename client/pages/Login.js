@@ -35,7 +35,10 @@ class Login extends React.Component {
             </a>
             </p>
             <p>
-              <a href="/api/auth/facebook" className="waves-effect waves-light btn blue darken-4">Login with Facebook</a>
+              <a
+                href="/api/auth/facebook"
+                className="waves-effect waves-light btn blue darken-4"
+              >Login with Facebook</a>
             </p>
           </div>
         </div>
