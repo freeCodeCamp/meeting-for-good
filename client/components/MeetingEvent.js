@@ -3,10 +3,11 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
 import 'd3';
-import CalHeatMap from 'cal-heatmap';
+import CalHeatMap from 'cal-heatmap/cal-heatmap.min.js';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
+import 'cal-heatmap/cal-heatmap.css';
 
 class MeetingEvent extends React.Component {
   constructor(props) {
@@ -80,7 +81,7 @@ class MeetingEvent extends React.Component {
       'user-select': 'none',
     });
 
-    $('rect').on('mousedown mouseover', e => {
+    $('rect').on('mousedown mouseover', function mousedownHandler(e) {
       if (e.buttons === 1 || e.buttons === 3) {
         if ($(this).css('fill') !== 'rgb(128, 0, 128)') {
           $(this).css('fill', 'purple');
