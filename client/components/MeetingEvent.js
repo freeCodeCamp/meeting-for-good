@@ -34,44 +34,55 @@ class MeetingEvent extends React.Component {
   componentDidMount() {
     const self = this;
     const ranges = this.state.ranges;
-    const dateRange = {};
+    let startDate;
+    let cal = new CalHeatMap();
     if (ranges.length > 1) {
-      dateRange.from = ranges[0].from;
-      dateRange.to = ranges[ranges.length - 1].to;
-    } else {
-      dateRange.from = ranges[0].from;
-      dateRange.to = ranges[0].to;
-    }
-    const cal = new CalHeatMap();
-    cal.init({
-      domain: 'day',
-      subdomain: 'hour',
-      start: dateRange.from,
-      range: self.findDaysBetweenDates(dateRange.from, dateRange.to),
-      rowLimit: 1,
-      domainGutter: 0,
-      verticalOrientation: true,
-      cellSize: 20,
-      subDomainTextFormat: '%H',
-      label: {
-        position: 'left',
-        offset: {
-          x: 20,
-          y: 15,
-        },
-      },
-      displayLegend: false,
-    });
-
-    for (const i of Object.keys(ranges)) {
-      for (const j of Object.keys(ranges[i])) {
-        console.log(ranges[i][j]);
-        $('.graph-label').each((index, el) => {
-          if (String(ranges[i][j]).indexOf(`0${el.textContent.split(' ')[0]}`) > -1) {
-            console.log(el.textContent);
-          }
+      for(let r = 0; r < ranges.length; r++){
+        startDate = ranges[r].from;
+        console.log(startDate);
+        console.log(ranges[r].from, ranges[r].to)
+        cal.init({
+          domain: 'day',
+          subdomain: 'hour',
+          start: startDate,
+          range: self.findDaysBetweenDates(ranges[r].from, ranges[r].to),
+          rowLimit: 1,
+          domainGutter: 0,
+          verticalOrientation: true,
+          cellSize: 20,
+          subDomainTextFormat: '%H',
+          label: {
+            position: 'left',
+            offset: {
+              x: 20,
+              y: 15,
+            },
+          },
+          displayLegend: false,
         });
       }
+      $("svg.cal-heatmap-container").not(":last").remove()
+    } else {
+      startDate = ranges[0].from
+      cal.init({
+        domain: 'day',
+        subdomain: 'hour',
+        start: startRange,
+        range: self.findDaysBetweenDates(ranges[0].from, ranges[0].to),
+        rowLimit: 1,
+        domainGutter: 0,
+        verticalOrientation: true,
+        cellSize: 20,
+        subDomainTextFormat: '%H',
+        label: {
+          position: 'left',
+          offset: {
+            x: 20,
+            y: 15,
+          },
+        },
+        displayLegend: false,
+      });
     }
 
     $('.graph-label, .subdomain-text').css({
