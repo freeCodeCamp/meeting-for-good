@@ -11,7 +11,7 @@
     "start": "node ./build/app.js",
     "serve": "npm run clean && npm run build:server && npm run start",
     "postinstall": "npm run build",
-    "deploy": "./deploy.sh"
+    "deploy": "git push heroku development:master"
   },
   "repository": {
     "type": "git",
