@@ -3,10 +3,10 @@ import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import moment from 'moment';
-import noUiSlider from 'materialize-css/extras/noUiSlider/noUiSlider.min';
+import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 import React from 'react';
 
-import 'materialize-css/extras/noUiSlider/noUiSlider.css';
+import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
 import styles from '../styles/new-event.css';
 
