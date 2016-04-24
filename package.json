@@ -8,9 +8,9 @@
     "build:server": "babel -d ./build ./server -s",
     "build:client": "webpack -p --config ./webpack.production.config.js",
     "build": "npm run clean && npm run build:server && npm run build:client",
-    "start:dev": "node ./build/app.js",
-    "start": "node ./app.js",
-    "serve": "npm run clean && npm run build:server && npm run start:dev",
+    "start": "node ./build/app.js",
+    "serve": "npm run clean && npm run build:server && npm run start",
+    "postinstall": "npm run build",
     "deploy": "./deploy.sh"
   },
   "repository": {
