@@ -62,12 +62,17 @@ class MeetingEvent extends React.Component {
         });
       }
       $("svg.cal-heatmap-container").not(":last").remove()
+      $(".graph-domain").each((i,el) => {
+        $(el).attr("y", i*22);
+      })
+      const heatmapHeight = Number($(".graph-domain").last().attr("y")) + 22;
+      $("#cal-heatmap").css("height", heatmapHeight + "px")
     } else {
       startDate = ranges[0].from
       cal.init({
         domain: 'day',
         subdomain: 'hour',
-        start: startRange,
+        start: startDate,
         range: self.findDaysBetweenDates(ranges[0].from, ranges[0].to),
         rowLimit: 1,
         domainGutter: 0,
