@@ -91,7 +91,7 @@ class MeetingEvent extends React.Component {
       });
     }
 
-    if(this.state.timeRange.length !== []){
+    if(this.state.timeRange.length !== 0){
       const timeRangeFrom = Number(this.state.timeRange[0]);
       const timeRangeTo = Number(this.state.timeRange[1]);
       $(".subdomain-text").each((index,el) => {
@@ -107,9 +107,9 @@ class MeetingEvent extends React.Component {
           }
         }
       });
+      $("g").not(".time-range").remove();
     }
 
-    $("g").not(".time-range").remove();
 
     $('.graph-label, .subdomain-text').css({
       '-webkit-user-select': 'none',
