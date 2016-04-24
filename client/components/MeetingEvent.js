@@ -28,6 +28,7 @@ class MeetingEvent extends React.Component {
 
     this.state = {
       ranges: props.event.dates,
+      timeRange: props.event.selectedTimeRange
     };
   }
 
@@ -89,6 +90,26 @@ class MeetingEvent extends React.Component {
         displayLegend: false,
       });
     }
+
+    if(this.state.timeRange.length !== []){
+      const timeRangeFrom = Number(this.state.timeRange[0]);
+      const timeRangeTo = Number(this.state.timeRange[1]);
+      $(".subdomain-text").each((index,el) => {
+        for(let i = timeRangeFrom; i <= timeRangeTo; i++){
+          if(i < 10){
+            if($(el).text() === ("0"+i)){
+              $(el).parent().addClass("time-range");
+            }
+          } else {
+            if($(el).text() === String(i)){
+              $(el).parent().addClass("time-range");
+            }
+          }
+        }
+      });
+    }
+
+    $("g").not(".time-range").remove();
 
     $('.graph-label, .subdomain-text').css({
       '-webkit-user-select': 'none',
