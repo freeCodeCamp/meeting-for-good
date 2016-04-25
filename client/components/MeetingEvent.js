@@ -89,6 +89,7 @@ class MeetingEvent extends React.Component {
         },
         displayLegend: false,
       });
+      $(".cal-heatmap-container").css("height", Number($(".graph-domain").last().attr("y")) + 25 + "px")
     }
 
     if(this.state.timeRange.length !== 0){
@@ -115,7 +116,6 @@ class MeetingEvent extends React.Component {
         })
       })
     }
-
 
     $('.graph-label, .subdomain-text').css({
       '-webkit-user-select': 'none',
