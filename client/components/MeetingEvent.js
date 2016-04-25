@@ -66,7 +66,7 @@ class MeetingEvent extends React.Component {
       $(".graph-domain").each((i,el) => {
         $(el).attr("y", i*22);
       })
-      const heatmapHeight = Number($(".graph-domain").last().attr("y")) + 22;
+      const heatmapHeight = Number($(".graph-domain").last().attr("y")) + 25;
       $("#cal-heatmap").css("height", heatmapHeight + "px")
     } else {
       startDate = ranges[0].from
@@ -108,6 +108,12 @@ class MeetingEvent extends React.Component {
         }
       });
       $("g").not(".time-range").remove();
+      $(".graph-subdomain-group").each((index,element) => {
+        $(element).find("g").each((i,el) => {
+          $(el).children("rect").attr("x",i*22);
+          $(el).children("text").attr("x", Number($(el).children("rect").attr("x")) + 10)
+        })
+      })
     }
 
 
