@@ -9,6 +9,22 @@ import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
 import 'cal-heatmap/cal-heatmap.css';
 
+class AddAvailibility extends React.Component {
+  render(){
+    return (
+      <div id="modal1" className="modal">
+        <div className="modal-content">
+          <h4>Enter your availability</h4>
+          <div id="cal-heatmap"></div>
+        </div>
+        <div className="modal-footer">
+          <a className="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+      </div>
+    )
+  }
+}
+
 class MeetingEvent extends React.Component {
   constructor(props) {
     super(props);
@@ -32,7 +48,8 @@ class MeetingEvent extends React.Component {
     };
   }
 
-  componentDidMount() {
+  showCalHeatmap() {
+    $("#cal-heatmap").removeClass("hide");
     const self = this;
     const ranges = this.state.ranges;
     let startDate;
@@ -158,7 +175,6 @@ class MeetingEvent extends React.Component {
       <div className="card meeting" styleName="event-details">
         <div className="card-content">
           <span className="card-title">{event.name}</span>
-          <div id="cal-heatmap"></div>
           <div className="row">
             <div className="col s12">
               {event.dates ?
@@ -182,6 +198,10 @@ class MeetingEvent extends React.Component {
                 })
               }
             </div>
+          </div>
+          <div id="heatmap" className="center">
+            <div id="cal-heatmap" className="hide"></div>
+            <a className="waves-effect waves-light btn" onClick={this.showCalHeatmap.bind(this)}>Enter my availability</a>
           </div>
           <br />
           <div>
