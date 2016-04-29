@@ -78,15 +78,20 @@ export default (app) => {
         if (err) res.status(500).send(err);
         return res.status(200).json(events);
       });
-    });
-
-  app.route('/api/events')
+    })
     .post((req, res) => {
-      req.body.uid = generateID();
-      Event.create(req.body, (err, event) => {
-        if (err) return res.status(500).send(err);
-        return res.status(201).json(event);
-      });
+      Event.findOne({"uid": req.body.id}, (err,docs) => {
+        if(err) return res.status(500).send(err)
+        if(docs){
+          console.log("Already exists")
+          return;
+        }
+        req.body.uid = generateID();
+        Event.create(req.body, (err, event) => {
+          if (err) return res.status(500).send(err);
+          return res.status(201).json(event);
+        });
+      })
     });
 
   /* users API */

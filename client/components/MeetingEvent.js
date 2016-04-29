@@ -43,6 +43,7 @@ class MeetingEvent extends React.Component {
     }
 
     this.state = {
+      event: props.event,
       ranges: props.event.dates,
       timeRange: props.event.selectedTimeRange
     };
@@ -175,7 +176,8 @@ class MeetingEvent extends React.Component {
         })
       }
     })
-    console.log(available)
+    console.log(available, this.state.event.uid);
+    $.post("/api/events", {data: available, id: this.state.event.uid})
   }
 
   findDaysBetweenDates(date1, date2) {
