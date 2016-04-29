@@ -50,6 +50,7 @@ class MeetingEvent extends React.Component {
 
   showCalHeatmap() {
     $("#cal-heatmap").removeClass("hide");
+    $("a").toggleClass("hide");
     const self = this;
     const ranges = this.state.ranges;
     let startDate;
@@ -154,6 +155,29 @@ class MeetingEvent extends React.Component {
     });
   }
 
+  submitAvailability(){
+    let available = []
+    $(".graph-label").each((index,element) => {
+      available.push({
+        date: $(element).text(),
+        hours: []
+      })
+    })
+    $("rect").each((i,el) => {
+      if($(el).css("fill") === 'rgb(128, 0, 128)'){
+        let date = $(el).parents(".graph-subdomain-group").siblings(".graph-label").text();
+        let hour = $(el).siblings("text").text();
+        available.map(obj => {
+          if(obj.date === date && obj.hours.indexOf(hour) === -1){
+            obj.hours.push(hour);
+          }
+          return obj;
+        })
+      }
+    })
+    console.log(available)
+  }
+
   findDaysBetweenDates(date1, date2) {
     const ONE_DAY = 1000 * 60 * 60 * 24;
     const date1Ms = date1.getTime();
@@ -202,6 +226,7 @@ class MeetingEvent extends React.Component {
           <div id="heatmap" className="center">
             <div id="cal-heatmap" className="hide"></div>
             <a className="waves-effect waves-light btn" onClick={this.showCalHeatmap.bind(this)}>Enter my availability</a>
+            <a className="waves-effect waves-light btn hide" onClick={this.submitAvailability.bind(this)}>Submit</a>
           </div>
           <br />
           <div>
