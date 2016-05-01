@@ -97,6 +97,12 @@ export default (app) => {
                 }
                 return user;
               })
+            } else {
+              participants = {
+                avatar: req.body.user.facebook.avatar,
+                name: req.body.user.facebook.username,
+                availibility: req.body.data
+              }
             }
           }
           console.log(participants)
