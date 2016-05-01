@@ -5,6 +5,7 @@ const User = new Schema({
   local: {
     username: String,
     password: String,
+    avatar: String
   },
   github: {
     id: String,

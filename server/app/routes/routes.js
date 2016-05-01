@@ -85,8 +85,59 @@ export default (app) => {
         if(err) return res.status(500).send(err)
         if(doc){
           let participants;
-          // if(req.body.user.local){}
-          // if(req.body.user.github){}
+          let newParticipant;
+          if(req.body.user.local){
+            if(doc.participants.length !== 0){
+              participants = doc.participants;
+              participants.map(user => {
+                console.log(user.name, req.body.user.local.username, user.name === req.body.user.local.username)
+                if(user.name === req.body.user.local.username){
+                  user.availibility = req.body.data;
+                }
+                if(user.name !== req.body.user.local.username){
+                  newParticipant = {
+                    avatar: req.body.user.local.avatar,
+                    name: req.body.user.local.username,
+                    availibility: req.body.data
+                  }
+                }
+                return user;
+              })
+              participants.push(newParticipant);
+            } else {
+              participants = {
+                avatar: req.body.user.local.avatar,
+                name: req.body.user.local.username,
+                availibility: req.body.data
+              }
+            }
+          }
+          if(req.body.user.github){
+            if(doc.participants.length !== 0){
+              participants = doc.participants;
+              participants.map(user => {
+                console.log(user.name, req.body.user.github.username, user.name === req.body.user.github.username)
+                if(user.name === req.body.user.github.username){
+                  user.availibility = req.body.data;
+                }
+                if(user.name !== req.body.user.github.username){
+                  newParticipant = {
+                    avatar: req.body.user.github.avatar,
+                    name: req.body.user.github.username,
+                    availibility: req.body.data
+                  }
+                }
+                return user;
+              })
+              participants.push(newParticipant)
+            } else {
+              participants = {
+                avatar: req.body.user.github.avatar,
+                name: req.body.user.github.username,
+                availibility: req.body.data
+              }
+            }
+          }
           if(req.body.user.facebook){
             if(doc.participants.length !== 0){
               participants = doc.participants;
@@ -95,8 +146,16 @@ export default (app) => {
                 if(user.name === req.body.user.facebook.username){
                   user.availibility = req.body.data;
                 }
+                if(user.name !== req.body.user.facebook.username){
+                  newParticipant = {
+                    avatar: req.body.user.facebook.avatar,
+                    name: req.body.user.facebook.username,
+                    availibility: req.body.data
+                  }
+                }
                 return user;
               })
+              participants.push(newParticipant)
             } else {
               participants = {
                 avatar: req.body.user.facebook.avatar,

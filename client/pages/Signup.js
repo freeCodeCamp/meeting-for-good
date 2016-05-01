@@ -17,7 +17,9 @@ class Signup extends React.Component {
               <input placeholder="Password" name="password" type="password" className="validate" />
             </div>
             <p className="center">
-              <a type="submit" className="waves-effect waves-light btn purple">Sign Up</a>
+              <a className="waves-effect waves-light btn purple">
+                <input type="submit" value="Sign Up" />
+              </a>
             </p>
           </form>
         </div>

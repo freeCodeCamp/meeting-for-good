@@ -126,6 +126,7 @@ module.exports = passport => {
 
           newUser.local.username = username;
           newUser.local.password = createHash(password);
+          newUser.local.avatar = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
 
           newUser.save((err) => {
             if (err){
