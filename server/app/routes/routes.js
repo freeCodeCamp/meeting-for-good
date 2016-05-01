@@ -80,10 +80,33 @@ export default (app) => {
       });
     })
     .post((req, res) => {
-      Event.findOne({"uid": req.body.id}, (err,docs) => {
+      console.log(req.body)
+      Event.findOne({"uid": req.body.id}, (err,doc) => {
         if(err) return res.status(500).send(err)
-        if(docs){
-          console.log("Already exists")
+        if(doc){
+          let participants;
+          // if(req.body.user.local){}
+          // if(req.body.user.github){}
+          if(req.body.user.facebook){
+            if(doc.participants.length !== 0){
+              participants = doc.participants;
+              participants.map(user => {
+                console.log(user.name, req.body.user.facebook.username, user.name === req.body.user.facebook.username)
+                if(user.name === req.body.user.facebook.username){
+                  user.availibility = req.body.data;
+                }
+                return user;
+              })
+            }
+          }
+          console.log(participants)
+          doc.participants = participants;
+          doc.markModified("participants");
+          doc.save((err,doc) => {
+            if(err) console.log(err);
+
+            console.log(doc);
+          });
           return;
         }
         req.body.uid = generateID();

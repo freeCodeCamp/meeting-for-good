@@ -9,22 +9,6 @@ import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
 import 'cal-heatmap/cal-heatmap.css';
 
-class AddAvailibility extends React.Component {
-  render(){
-    return (
-      <div id="modal1" className="modal">
-        <div className="modal-content">
-          <h4>Enter your availability</h4>
-          <div id="cal-heatmap"></div>
-        </div>
-        <div className="modal-footer">
-          <a className="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-        </div>
-      </div>
-    )
-  }
-}
-
 class MeetingEvent extends React.Component {
   constructor(props) {
     super(props);
@@ -47,6 +31,12 @@ class MeetingEvent extends React.Component {
       ranges: props.event.dates,
       timeRange: props.event.selectedTimeRange
     };
+  }
+
+  componentDidMount(){
+    $.get("/api/auth/current", user => {
+      this.setState({user})
+    })
   }
 
   showCalHeatmap() {
@@ -176,8 +166,18 @@ class MeetingEvent extends React.Component {
         })
       }
     })
-    console.log(available, this.state.event.uid);
-    $.post("/api/events", {data: available, id: this.state.event.uid})
+    console.log(available, this.state.event.uid, this.state.user);
+    if(this.state.user !== undefined){
+      $.ajax({
+        type: 'POST',
+        url: '/api/events',
+        data: JSON.stringify({user: this.state.user, data: available, id: this.state.event.uid}),
+        contentType: 'application/json',
+        dataType: 'json',
+        success: () => {},
+        error: () => Materialize.toast('An error occured. Please try again later.', 4000),
+      });
+    }
   }
 
   findDaysBetweenDates(date1, date2) {
