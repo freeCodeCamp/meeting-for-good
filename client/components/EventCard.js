@@ -28,6 +28,14 @@ class EventCard extends React.Component {
     };
   }
 
+  componentDidMount(){
+    $(".participant-list").each((i,el) => {
+      if($(el).children().length === 1){
+        $(el).append("<em>No one has been added yet.</em>")
+      }
+    })
+  }
+
   render() {
     const modifiers = {
       selected: day =>
@@ -66,7 +74,7 @@ class EventCard extends React.Component {
             </div>
           </div>
           <br />
-          <div>
+          <div className="participant-list">
             <h6><strong>Participants</strong></h6>
             {event.participants.map((participant, index) => (
               <div className="participant" styleName="participant" key={index}>
