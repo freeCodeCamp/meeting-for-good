@@ -4,6 +4,11 @@ import CSSModules from 'react-css-modules';
 import styles from '../styles/auth';
 
 class Login extends React.Component {
+  componentDidMount(){
+    $.get('/api/auth/current', user => {
+      if (user !== undefined) window.location.href = '/dashboard';
+    });
+  }
   render() {
     return (
       <div className="card" styleName="card">
