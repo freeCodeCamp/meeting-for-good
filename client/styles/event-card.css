@@ -1,6 +1,13 @@
 .event {
   margin: 1% 1%;
   width: 23%;
+  height: 645px;
+}
+
+.card-action {
+  position: absolute !important;
+  bottom: 0;
+  width: 100%;
 }
 
 .event-details {

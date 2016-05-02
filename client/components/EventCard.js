@@ -84,7 +84,7 @@ class EventCard extends React.Component {
             ))}
           </div>
         </div>
-        <div className="card-action">
+        <div className="card-action" styleName="card-action">
           <a href={`/event/${event.uid}`}>View Details</a>
         </div>
       </div>
