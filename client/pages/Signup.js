@@ -6,7 +6,7 @@ import styles from '../styles/auth';
 class Signup extends React.Component {
   componentDidMount(){
     $.get('/api/auth/current', user => {
-      if (user !== undefined) window.location.href = '/dashboard';
+      if (user !== "") window.location.href = '/dashboard';
     });
   }
   render() {
