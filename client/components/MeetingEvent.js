@@ -41,7 +41,7 @@ class MeetingEvent extends React.Component {
 
   showCalHeatmap() {
     $("#cal-heatmap").removeClass("hide");
-    $("a").toggleClass("hide");
+    $("#heatmap a").toggleClass("hide");
     const self = this;
     const ranges = this.state.ranges;
     let startDate;
