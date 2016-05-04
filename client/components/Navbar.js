@@ -26,10 +26,11 @@ class Navbar extends React.Component {
   render() {
     let links;
     if(this.state.user){
-      links = ['<a id="user" href="/api/auth/logout">Logout</a>', '<a id="user" href="/dashboard">Dashboard</a>'];
+      links = ['<a href="/api/auth/logout">Logout</a>', '<a href="/dashboard">Dashboard</a>'];
     } else {
       links = []
     }
+    $("#nav-mobile li a").not(":last").remove();
     return (
       <nav className="grey darken-3">
         <div className="container">
@@ -37,12 +38,11 @@ class Navbar extends React.Component {
           <ul id="nav-mobile" className="right hide-on-med-and-down">
             <li>
               {links.forEach(el => {
-                $("#nav-mobile li a").not("#user").remove()
                 $("#nav-mobile li").prepend(el);
               })}
               <a href="/login">Login</a>
               <a href="/signup">Signup</a>
-              <a href="#" id="user">
+              <a href="#">
                 <img
                   styleName="nav-img"
                   src={this.state.userAvatar}
