@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
   flex-wrap: wrap;
+  min-width: 95%;
 }
 
 .new-event-icon {
