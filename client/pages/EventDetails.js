@@ -1,7 +1,7 @@
 import React from 'react';
 import CSSModules from 'react-css-modules';
 import styles from '../styles/main';
-import MeetingEvent from '../components/MeetingEvent';
+import EventCardMore from '../components/EventCardMore';
 import fetch from 'isomorphic-fetch';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 
@@ -29,7 +29,7 @@ class EventDetails extends React.Component {
       <div>
         {
           this.state.events.map(event => (
-            <MeetingEvent key={event._id} event={event} />
+            <EventCardMore key={event._id} event={event} />
           ))
         }
       </div>

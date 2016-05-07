@@ -151,7 +151,7 @@ class NewEvent extends React.Component {
 
     const { weekDays } = this.state;
     const weekDay = ev.target.text.toLowerCase();
-    weekDays[weekDay] = !weekDay[weekDay];
+    weekDays[weekDay] = !weekDays[weekDay];
     this.setState({ weekDays });
   }
 
@@ -227,6 +227,7 @@ class NewEvent extends React.Component {
                       key={ index }
                       className="btn-flat disabled"
                       onClick={ this.handleWeekdaySelect }
+                      style={{cursor: "pointer"}}
                     >{ day }</a>
                   ))
                 }
