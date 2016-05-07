@@ -86,13 +86,14 @@ export default (app) => {
         if(doc){
           let participants;
           let newParticipant;
+          let userExists = false;
           if(req.body.user.local){
             if(doc.participants.length !== 0){
               participants = doc.participants;
               participants.map(user => {
-                console.log(user.name, req.body.user.local.username, user.name === req.body.user.local.username)
                 if(user.name === req.body.user.local.username){
                   user.availibility = req.body.data;
+                  userExists = true;
                 }
                 if(user.name !== req.body.user.local.username){
                   newParticipant = {
@@ -103,7 +104,7 @@ export default (app) => {
                 }
                 return user;
               })
-              participants.push(newParticipant);
+              if(newParticipant !== null && !userExists) participants.push(newParticipant)
             } else {
               participants = {
                 avatar: req.body.user.local.avatar,
@@ -116,9 +117,9 @@ export default (app) => {
             if(doc.participants.length !== 0){
               participants = doc.participants;
               participants.map(user => {
-                console.log(user.name, req.body.user.github.username, user.name === req.body.user.github.username)
                 if(user.name === req.body.user.github.username){
                   user.availibility = req.body.data;
+                  userExists = true;
                 }
                 if(user.name !== req.body.user.github.username){
                   newParticipant = {
@@ -129,7 +130,7 @@ export default (app) => {
                 }
                 return user;
               })
-              participants.push(newParticipant)
+              if(newParticipant !== null && !userExists) participants.push(newParticipant)
             } else {
               participants = {
                 avatar: req.body.user.github.avatar,
@@ -142,9 +143,9 @@ export default (app) => {
             if(doc.participants.length !== 0){
               participants = doc.participants;
               participants.map(user => {
-                console.log(user.name, req.body.user.facebook.username, user.name === req.body.user.facebook.username)
                 if(user.name === req.body.user.facebook.username){
                   user.availibility = req.body.data;
+                  userExists = true;
                 }
                 if(user.name !== req.body.user.facebook.username){
                   newParticipant = {
@@ -155,7 +156,7 @@ export default (app) => {
                 }
                 return user;
               })
-              participants.push(newParticipant)
+              if(newParticipant !== null && !userExists) participants.push(newParticipant)
             } else {
               participants = {
                 avatar: req.body.user.facebook.avatar,
@@ -164,7 +165,6 @@ export default (app) => {
               }
             }
           }
-          console.log(participants)
           doc.participants = participants;
           doc.markModified("participants");
           doc.save((err,doc) => {
