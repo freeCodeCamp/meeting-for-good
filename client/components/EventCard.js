@@ -24,6 +24,7 @@ class EventCard extends React.Component {
     }
 
     this.state = {
+      participants: props.event.participants,
       ranges: props.event.dates,
     };
   }
@@ -34,6 +35,46 @@ class EventCard extends React.Component {
         $(el).append("<em>No one has been added yet.</em>")
       }
     })
+
+    const participants = this.state.participants;
+    let meetArray = [];
+    let bestTimes = {};
+
+    for(let i = 0; i < participants.length; i++){
+      if(participants[i].availibility){
+        meetArray.push(participants[i].availibility);
+      }
+    }
+
+    for(let b in meetArray[0]){
+        bestTimes[meetArray[0][b].date] = [];
+    }
+
+    for(let j = 0; j < meetArray.length; j++){
+      for(let k = 0; k < meetArray[j].length; k++){
+        if(meetArray[j+1] !== undefined){
+          if(meetArray[j][k].date === meetArray[j+1][k].date){
+            for(let l = 0; l < meetArray[j+1][k].hours.length; l++){
+              meetArray[j][k].hours.push(meetArray[j+1][k].hours[l]);
+            }
+          }
+        }
+      }
+    }
+    meetArray = meetArray.shift();
+    console.log(meetArray)
+    for(let i = 0; i < meetArray.length; i++){
+      let temp = meetArray[i].hours.sort();
+      for(let z = 0; z < temp.length; z++){
+        if(temp[z] === temp[z+1]){
+          bestTimes[meetArray[i].date].push(temp[z]);
+        }
+      }
+    }
+
+    console.log("Best time to meet on " + Object.keys(bestTimes)[0] + " is: " + bestTimes[Object.keys(bestTimes)[0]])
+    console.log("Best time to meet on " + Object.keys(bestTimes)[1] + " is: " + bestTimes[Object.keys(bestTimes)[1]])
+    console.log("Best time to meet on " + Object.keys(bestTimes)[2] + " is: " + bestTimes[Object.keys(bestTimes)[2]])
   }
 
   render() {

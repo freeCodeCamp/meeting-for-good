@@ -145,33 +145,31 @@ class MeetingEvent extends React.Component {
       })
       const heatmapHeight = Number($(".graph-domain").last().attr("y")) + 25;
       $("#cal-heatmap").css("height", heatmapHeight + "px")
-      setTimeout(() => {
-        $(".graph-label").each((i, el) => {
-          switch($(el).text()){
-            case "1":
-              $(el).text("Monday")
-              break;
-            case "2":
-              $(el).text("Tuesday")
-              break;
-            case "3":
-              $(el).text("Wednesday")
-              break;
-            case "4":
-              $(el).text("Thursday")
-              break;
-            case "5":
-              $(el).text("Friday")
-              break;
-            case "6":
-              $(el).text("Saturday")
-              break;
-            case "0":
-              $(el).text("Sunday")
-              break;
-          }
-        })
-      }, 500);
+      $(".graph-label").each((i, el) => {
+        switch($(el).text()){
+          case "1":
+            $(el).text("Monday")
+            break;
+          case "2":
+            $(el).text("Tuesday")
+            break;
+          case "3":
+            $(el).text("Wednesday")
+            break;
+          case "4":
+            $(el).text("Thursday")
+            break;
+          case "5":
+            $(el).text("Friday")
+            break;
+          case "6":
+            $(el).text("Saturday")
+            break;
+          case "0":
+            $(el).text("Sunday")
+            break;
+        }
+      })
     }
 
     if(this.state.timeRange.length !== 0){
