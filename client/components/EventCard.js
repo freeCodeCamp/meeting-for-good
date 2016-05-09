@@ -36,20 +36,24 @@ class EventCard extends React.Component {
       }
     })
 
+    //Best date/time algorithm
     const participants = this.state.participants;
     let meetArray = [];
     let bestTimes = {};
 
+    //Loop over participants list, if participant has entered availability - add it to the meetArray
     for(let i = 0; i < participants.length; i++){
       if(participants[i].availibility){
         meetArray.push(participants[i].availibility);
       }
     }
 
+    //Set up bestTimes object to have each date as an array
     for(let b in meetArray[0]){
         bestTimes[meetArray[0][b].date] = [];
     }
 
+    //Go over availabilities and add every available time to corresponding date array
     for(let j = 0; j < meetArray.length; j++){
       for(let k = 0; k < meetArray[j].length; k++){
         if(meetArray[j+1] !== undefined){
@@ -61,7 +65,10 @@ class EventCard extends React.Component {
         }
       }
     }
-    meetArray = meetArray.shift();
+
+    meetArray = meetArray.shift(); //Only first object is needed.
+
+    //Check if multiple hours are present within a date array, if so, add it to best times.
     console.log(meetArray)
     for(let i = 0; i < meetArray.length; i++){
       let temp = meetArray[i].hours.sort();
@@ -72,9 +79,13 @@ class EventCard extends React.Component {
       }
     }
 
-    console.log("Best time to meet on " + Object.keys(bestTimes)[0] + " is: " + bestTimes[Object.keys(bestTimes)[0]])
-    console.log("Best time to meet on " + Object.keys(bestTimes)[1] + " is: " + bestTimes[Object.keys(bestTimes)[1]])
-    console.log("Best time to meet on " + Object.keys(bestTimes)[2] + " is: " + bestTimes[Object.keys(bestTimes)[2]])
+    //Console.log the best times for each date
+    Object.keys(bestTimes).map(date => {
+      console.log(bestTimes[date])
+      if(bestTimes[date].length > 0){
+        console.log("Best time to meet on " + date + " is: " + bestTimes[date])
+      }
+    })
   }
 
   render() {
