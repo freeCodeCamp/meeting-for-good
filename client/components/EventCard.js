@@ -40,6 +40,7 @@ class EventCard extends React.Component {
     const participants = this.state.participants;
     let meetArray = [];
     let bestTimes = {};
+    let buildToString = {};
 
     //Loop over participants list, if participant has entered availability - add it to the meetArray
     for(let i = 0; i < participants.length; i++){
@@ -51,6 +52,7 @@ class EventCard extends React.Component {
     //Set up bestTimes object to have each date as an array
     for(let b in meetArray[0]){
         bestTimes[meetArray[0][b].date] = [];
+        buildToString[meetArray[0][b].date] = [];
     }
 
     //Go over availabilities and add every available time to corresponding date array
@@ -70,20 +72,33 @@ class EventCard extends React.Component {
 
     //Check if multiple hours are present within a date array, if so, add it to best times.
     console.log(meetArray)
-    for(let i = 0; i < meetArray.length; i++){
-      let temp = meetArray[i].hours.sort();
-      for(let z = 0; z < temp.length; z++){
-        if(temp[z] === temp[z+1]){
-          bestTimes[meetArray[i].date].push(temp[z]);
+    if(meetArray !== undefined){
+      for(let i = 0; i < meetArray.length; i++){
+        let temp = meetArray[i].hours.sort();
+        for(let z = 0; z < temp.length; z++){
+          if(temp[z] === temp[z+1]){
+            bestTimes[meetArray[i].date].push(temp[z]);
+          }
         }
       }
     }
-
     //Console.log the best times for each date
     Object.keys(bestTimes).map(date => {
-      console.log(bestTimes[date])
       if(bestTimes[date].length > 0){
-        console.log("Best time to meet on " + date + " is: " + bestTimes[date])
+        for(let i = 0; i < bestTimes[date].length; i++){
+          if(Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i+1])){
+            console.log("YOOOOO " + bestTimes[date][i])
+            buildToString[date].push((Number(bestTimes[date][i]) - 1) + " to " + bestTimes[date][i])
+          }
+        }
+      }
+    })
+    console.log(buildToString)
+    Object.keys(buildToString).map(date => {
+      if(buildToString[date].length > 0){
+        for(let i = 0; i < buildToString[date].length; i++){
+          console.log("The best time to meet on " + date + " is " + buildToString[date][i])
+        }
       }
     })
   }
