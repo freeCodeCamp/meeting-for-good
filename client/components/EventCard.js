@@ -71,7 +71,6 @@ class EventCard extends React.Component {
     meetArray = meetArray.shift(); //Only first object is needed.
 
     //Check if multiple hours are present within a date array, if so, add it to best times.
-    console.log(meetArray)
     if(meetArray !== undefined){
       for(let i = 0; i < meetArray.length; i++){
         let temp = meetArray[i].hours.sort();
@@ -82,25 +81,23 @@ class EventCard extends React.Component {
         }
       }
     }
-    //Console.log the best times for each date
     Object.keys(bestTimes).map(date => {
       if(bestTimes[date].length > 0){
         for(let i = 0; i < bestTimes[date].length; i++){
           if(Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i+1])){
             console.log("YOOOOO " + bestTimes[date][i])
-            buildToString[date].push((Number(bestTimes[date][i]) - 1) + " to " + bestTimes[date][i])
+            buildToString[date].push((Number(bestTimes[date][i]) - 1) + " to " + Number(bestTimes[date][i]));
           }
         }
       }
     })
-    console.log(buildToString)
-    Object.keys(buildToString).map(date => {
-      if(buildToString[date].length > 0){
-        for(let i = 0; i < buildToString[date].length; i++){
-          console.log("The best time to meet on " + date + " is " + buildToString[date][i])
-        }
+    for(let i in buildToString){
+      if(buildToString[i].length === 0){
+        delete buildToString[i];
       }
-    })
+    }
+    console.log(buildToString)
+    this.setState({bestTimes: buildToString})
   }
 
   render() {
@@ -111,6 +108,8 @@ class EventCard extends React.Component {
     };
 
     const { event } = this.props;
+    const { bestTimes } = this.state;
+    const isBestTime = bestTimes !== undefined ? Object.keys(bestTimes).length > 0 ? true : false : false;
 
     return (
       <div className="card" styleName="event">
@@ -118,7 +117,16 @@ class EventCard extends React.Component {
           <span className="card-title">{event.name}</span>
           <div className="row">
             <div className="col s12">
-              {event.dates ?
+              {isBestTime ?
+                Object.keys(bestTimes).map(date => {
+                  console.log(bestTimes[date])
+                  return (
+                    <div>
+                      <p>{date}</p>
+                      <p>{bestTimes[date].join(", ")}</p>
+                    </div>
+                  )
+                }) : event.dates ?
                 <DayPicker
                   fromMonth={new Date()}
                   modifiers = { modifiers }
