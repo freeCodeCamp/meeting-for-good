@@ -37,8 +37,8 @@
 }
 
 .material-icons {
-  vertical-align: middle;
-  margin: 0 15px 0 10px;
+  vertical-align: bottom !important;
+  margin-left: 5px !important;
 }
 
 .participant {

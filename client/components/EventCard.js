@@ -98,6 +98,12 @@ class EventCard extends React.Component {
     }
     console.log(buildToString)
     this.setState({bestTimes: buildToString})
+
+    setTimeout(() => {
+      $(".alt").each((i,el) => {
+        $(el).parents(".card").find("#best").remove();
+      })
+    }, 100)
   }
 
   render() {
@@ -110,35 +116,39 @@ class EventCard extends React.Component {
     const { event } = this.props;
     const { bestTimes } = this.state;
     const isBestTime = bestTimes !== undefined ? Object.keys(bestTimes).length > 0 ? true : false : false;
+    console.log(isBestTime)
 
     return (
       <div className="card" styleName="event">
         <div className="card-content">
           <span className="card-title">{event.name}</span>
+          <h6 id="best"><strong>Best dates & times</strong></h6>
           <div className="row">
             <div className="col s12">
-              {isBestTime ?
+                {isBestTime ?
                 Object.keys(bestTimes).map(date => {
                   console.log(bestTimes[date])
                   return (
                     <div>
-                      <p>{date}</p>
-                      <p>{bestTimes[date].join(", ")}</p>
+                      <p><i className="material-icons" styleName="material-icons">date_range</i>{date}</p>
+                      <p><i className="material-icons" styleName="material-icons">alarm</i>{bestTimes[date].join(", ")}</p>
                     </div>
                   )
                 }) : event.dates ?
                 <DayPicker
+                  className="alt"
                   fromMonth={new Date()}
                   modifiers = { modifiers }
                 /> :
                 Object.keys(event.weekDays).map((day, index) => {
-                  let className = 'btn-flat';
+                  let className = 'btn-flat alt';
                   if (!event.weekDays[day]) {
                     className += ' disabled';
                   }
 
                   return (
                     <a
+                      id="alt"
                       key={index}
                       className={className}
                       onClick={this.handleWeekdaySelect}
