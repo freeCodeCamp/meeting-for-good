@@ -149,6 +149,7 @@ class EventCard extends React.Component {
                 }) : event.dates ?
                 <DayPicker
                   className="alt"
+                  styleName="day-picker"
                   fromMonth={new Date()}
                   modifiers = { modifiers }
                 /> :
