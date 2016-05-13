@@ -86,7 +86,7 @@ class EventCard extends React.Component {
         for(let i = 0; i < bestTimes[date].length; i++){
           if(Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i+1])){
             console.log("YOOOOO " + bestTimes[date][i])
-            buildToString[date].push((Number(bestTimes[date][i]) - 1) + " to " + Number(bestTimes[date][i]));
+            buildToString[date].push(this.convertTime((Number(bestTimes[date][i]) - 1)) + " to " + this.convertTime(Number(bestTimes[date][i])));
           }
         }
       }
@@ -104,6 +104,17 @@ class EventCard extends React.Component {
         $(el).parents(".card").find("#best").remove();
       })
     }, 100)
+  }
+
+  convertTime(num){
+    let result;
+    if(num < 10){
+      result = "0" + num + ":00";
+    } else {
+      result = num + ":00";
+    }
+
+    return result;
   }
 
   render() {
