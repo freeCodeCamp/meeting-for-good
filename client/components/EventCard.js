@@ -55,10 +55,11 @@ class EventCard extends React.Component {
         buildToString[meetArray[0][b].date] = [];
     }
 
+
     //Go over availabilities and add every available time to corresponding date array
     for(let j = 0; j < meetArray.length; j++){
       for(let k = 0; k < meetArray[j].length; k++){
-        if(meetArray[j+1] !== undefined){
+        if(meetArray[j+1] !== undefined && meetArray[j+1][k]){
           if(meetArray[j][k].date === meetArray[j+1][k].date){
             for(let l = 0; l < meetArray[j+1][k].hours.length; l++){
               meetArray[j][k].hours.push(meetArray[j+1][k].hours[l]);
@@ -81,12 +82,14 @@ class EventCard extends React.Component {
         }
       }
     }
+    console.log(bestTimes)
     Object.keys(bestTimes).map(date => {
       if(bestTimes[date].length > 0){
         for(let i = 0; i < bestTimes[date].length; i++){
           if(Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i+1])){
-            console.log("YOOOOO " + bestTimes[date][i])
-            buildToString[date].push(this.convertTime((Number(bestTimes[date][i]) - 1)) + " to " + this.convertTime(Number(bestTimes[date][i])));
+            bestTimes[date][i-1] ?
+              buildToString[date].push(this.convertTime((Number(bestTimes[date][i]) - 1)) + " to " + this.convertTime(Number(bestTimes[date][i]))) :
+              buildToString[date].push(this.convertTime(Number(bestTimes[date][i])));
           }
         }
       }
@@ -96,7 +99,6 @@ class EventCard extends React.Component {
         delete buildToString[i];
       }
     }
-    console.log(buildToString)
     this.setState({bestTimes: buildToString})
 
     setTimeout(() => {
@@ -127,7 +129,6 @@ class EventCard extends React.Component {
     const { event } = this.props;
     const { bestTimes } = this.state;
     const isBestTime = bestTimes !== undefined ? Object.keys(bestTimes).length > 0 ? true : false : false;
-    console.log(isBestTime)
 
     return (
       <div className="card" styleName="event">
@@ -138,11 +139,11 @@ class EventCard extends React.Component {
             <div className="col s12">
                 {isBestTime ?
                 Object.keys(bestTimes).map(date => {
-                  console.log(bestTimes[date])
                   return (
                     <div>
                       <p><i className="material-icons" styleName="material-icons">date_range</i>{date}</p>
                       <p><i className="material-icons" styleName="material-icons">alarm</i>{bestTimes[date].join(", ")}</p>
+                      <hr />
                     </div>
                   )
                 }) : event.dates ?

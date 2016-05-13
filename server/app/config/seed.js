@@ -83,14 +83,70 @@ Event.find({}).remove(() => {
       {
         name: 'Aniruddh Agarwal',
         avatar: 'https://avatars1.githubusercontent.com/u/5279150?v=3&s=460',
+        "availibility" : [
+          {
+            "date" : "21 Apr",
+            "hours" : [
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+              "20",
+              "21"
+            ]
+          },
+          {
+            "date" : "29 Apr",
+            "hours" : [
+              "09",
+            ]
+          }
+        ]
       },
       {
         name: 'Akira Laine',
         avatar: 'https://avatars0.githubusercontent.com/u/11958359?v=3&s=460',
+        "availibility" : [
+          {
+            "date" : "21 Apr",
+            "hours" : [
+              "02",
+              "12",
+              "13",
+              "14",
+              "20",
+              "21",
+              "24"
+            ]
+          },
+          {
+            "date" : "29 Apr",
+            "hours" : [
+              "02",
+              "03",
+              "04",
+              "08",
+              "09",
+            ]
+          }
+        ]
       },
       {
         name: 'Michael Johnson',
         avatar: 'https://avatars0.githubusercontent.com/u/9578097?v=3&s=460',
+        "availibility" : [
+          {
+            "date" : "24 Apr",
+            "hours" : [
+              "09",
+              "10",
+              "11"
+            ]
+          }
+        ]
       },
     ],
     uid: "23gHUU"
