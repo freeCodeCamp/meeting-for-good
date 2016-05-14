@@ -74,7 +74,9 @@ export default (app) => {
 
   app.route('/api/events')
     .get((req, res) => {
-      Event.find((err, events) => {
+      const username = (req.user.facebook.username || req.user.github.username || req.user.local.username)
+      console.log(username);
+      Event.find({"participants.name": username}, (err, events) => {
         if (err) res.status(500).send(err);
         return res.status(200).json(events);
       });

@@ -25,10 +25,14 @@ class Dashboard extends React.Component {
       $('.modal-trigger').leanModal();
     });
 
-    fetch('/api/events')
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(events => this.setState({ events }));
+    // fetch('/api/events')
+    //   .then(checkStatus)
+    //   .then(parseJSON)
+    //   .then(events => this.setState({ events }));
+
+    $.get("/api/events", events => {
+      this.setState({events});
+    })
 
     $.get('/api/auth/current', user => {
       if (user === '') window.location.href = '/';

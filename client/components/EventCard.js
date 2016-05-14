@@ -82,7 +82,7 @@ class EventCard extends React.Component {
         }
       }
     }
-    console.log(bestTimes)
+
     Object.keys(bestTimes).map(date => {
       if(bestTimes[date].length > 0){
         for(let i = 0; i < bestTimes[date].length; i++){
@@ -94,11 +94,13 @@ class EventCard extends React.Component {
         }
       }
     })
+
     for(let i in buildToString){
       if(buildToString[i].length === 0){
         delete buildToString[i];
       }
     }
+
     this.setState({bestTimes: buildToString})
 
     setTimeout(() => {
