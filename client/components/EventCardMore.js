@@ -235,16 +235,18 @@ class MeetingEvent extends React.Component {
         }
       });
       $("g").not(".time-range").remove();
-      $(".graph-domain").first().find(".subdomain-text").each((index,el) => {
-        if(Number($(el).text()) <= timeRangeTo - 24){
-          $(el).parent().remove();
-        }
-      })
-      $(".graph-domain").last().find(".subdomain-text").each((index,el) => {
-        if(Number($(el).text()) > timeRangeTo - 24){
-          $(el).parent().remove();
-        }
-      })
+      if(timeRangeTo > 23){
+        $(".graph-domain").first().find(".subdomain-text").each((index,el) => {
+          if(Number($(el).text()) <= timeRangeTo - 24){
+            $(el).parent().remove();
+          }
+        })
+        $(".graph-domain").last().find(".subdomain-text").each((index,el) => {
+          if(Number($(el).text()) > timeRangeTo - 24){
+            $(el).parent().remove();
+          }
+        })
+      }
       $(".graph-subdomain-group").each((index,element) => {
         $(element).find("g").each((i,el) => {
           $(el).children("rect").attr("x",i*22);

@@ -113,6 +113,11 @@ class NewEvent extends React.Component {
           time = Number(time) - Number(fromUTC);
           return time;
         })
+        dates.forEach(function(obj){
+          Object.keys(obj).map(date => {
+            obj[date] = moment(obj[date]).format("YYYY-MM-DD")
+          })
+        })
         sentData = JSON.stringify({ name, dates, selectedTimeRange });
       }
 
@@ -122,7 +127,7 @@ class NewEvent extends React.Component {
         data: sentData,
         contentType: 'application/json',
         dataType: 'json',
-        success: () => window.location.replace('/dashboard'),
+        success: () => {},//window.location.replace('/dashboard'),
         error: () => Materialize.toast('An error occured. Please try again later.', 4000),
       });
     }
