@@ -15,7 +15,7 @@ class Navbar extends React.Component {
   componentDidMount() {
     $.get('/api/auth/current', user => {
       if (user !== "") {
-        let userAvatar;
+        let userAvatar= this.state.userAvatar;
         if(user.github) userAvatar = user.github.avatar;
         else if(user.facebook) userAvatar = user.facebook.avatar;
         this.setState({ userAvatar, user: true });
