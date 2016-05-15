@@ -23,6 +23,7 @@ class EventDetails extends React.Component {
     //     });
     //   });
 
+    //Change this to use UID (create new route on server)
     $.get("/api/events", events => {
       events.forEach(event => {
         if (event.uid === this.props.params.uid) {

@@ -33,7 +33,10 @@ class MeetingEvent extends React.Component {
       return time;
     })
 
+    console.log(timeRange)
+
     if(timeRange[0] < 0 && timeRange[1] < 0){
+      console.log("<0");
       timeRange[0] = 24 + timeRange[0];
       timeRange[1] = 24 + timeRange[1];
       props.event.dates.forEach(obj => {
@@ -45,6 +48,7 @@ class MeetingEvent extends React.Component {
     }
 
     if(timeRange[0] > 23 && timeRange[1] > 23){
+      console.log(">23");
       timeRange[0] = timeRange[0] - 24;
       timeRange[1] = timeRange[1] - 24;
       props.event.dates.forEach(obj => {
@@ -52,6 +56,12 @@ class MeetingEvent extends React.Component {
           obj[date] = new Date(moment(new Date(obj[date])).add(1,'days'));
           return date;
         })
+      })
+    }
+
+    if(timeRange[0] < 23 && timeRange[1] > 23){
+      props.event.dates.forEach(obj => {
+        obj["to"] = new Date(moment(new Date(obj["to"])).add(1,'days'));
       })
     }
 
@@ -209,18 +219,32 @@ class MeetingEvent extends React.Component {
       const timeRangeTo = Number(this.state.timeRange[1]);
       $(".subdomain-text").each((index,el) => {
         for(let i = timeRangeFrom; i <= timeRangeTo; i++){
-          if(i < 10){
-            if($(el).text() === ("0"+i)){
+          let j = i;
+          if(j > 23){
+            j = j - 24;
+          }
+          if(j < 10){
+            if($(el).text() === ("0"+j)){
               $(el).parent().addClass("time-range");
             }
           } else {
-            if($(el).text() === String(i)){
+            if($(el).text() === String(j)){
               $(el).parent().addClass("time-range");
             }
           }
         }
       });
       $("g").not(".time-range").remove();
+      $(".graph-domain").first().find(".subdomain-text").each((index,el) => {
+        if(Number($(el).text()) <= timeRangeTo - 24){
+          $(el).parent().remove();
+        }
+      })
+      $(".graph-domain").last().find(".subdomain-text").each((index,el) => {
+        if(Number($(el).text()) > timeRangeTo - 24){
+          $(el).parent().remove();
+        }
+      })
       $(".graph-subdomain-group").each((index,element) => {
         $(element).find("g").each((i,el) => {
           $(el).children("rect").attr("x",i*22);
