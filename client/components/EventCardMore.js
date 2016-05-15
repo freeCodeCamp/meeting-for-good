@@ -26,11 +26,43 @@ class MeetingEvent extends React.Component {
       delete props.event.weekDays;
     }
 
+    let fromUTC = moment(new Date()).format("Z").split(":")[0];
+    //Convert times back to client time
+    let timeRange = props.event.selectedTimeRange.map(time => {
+      time = Number(time) + Number(fromUTC);
+      return time;
+    })
+
+    if(timeRange[0] < 0 && timeRange[1] < 0){
+      timeRange[0] = 24 + timeRange[0];
+      timeRange[1] = 24 + timeRange[1];
+      props.event.dates.forEach(obj => {
+        Object.keys(obj).map(date => {
+          obj[date] = new Date(moment(new Date(obj[date])).subtract(1,'days'));
+          return date;
+        })
+      })
+    }
+
+    if(timeRange[0] > 23 && timeRange[1] > 23){
+      timeRange[0] = timeRange[0] - 24;
+      timeRange[1] = timeRange[1] - 24;
+      props.event.dates.forEach(obj => {
+        Object.keys(obj).map(date => {
+          obj[date] = new Date(moment(new Date(obj[date])).add(1,'days'));
+          return date;
+        })
+      })
+    }
+
+    console.log(props.event.dates);
+    console.log(timeRange)
+
     this.state = {
       event: props.event,
       ranges: props.event.dates,
       days: props.event.weekDays,
-      timeRange: props.event.selectedTimeRange
+      timeRange
     };
   }
 

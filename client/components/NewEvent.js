@@ -103,12 +103,16 @@ class NewEvent extends React.Component {
     if (ev.target.className.indexOf('disabled') > -1) {
       Materialize.toast('Please enter an event name!', 4000);
     } else {
-      const { eventName: name, ranges: dates, dateOrDay, weekDays, selectedTimeRange } = this.state;
+      let { eventName: name, ranges: dates, dateOrDay, weekDays, selectedTimeRange } = this.state;
       let sentData;
-
+      let fromUTC = moment(new Date()).format("Z").split(":")[0];
       if (dateOrDay) {
         sentData = JSON.stringify({ name, weekDays, selectedTimeRange });
       } else {
+        selectedTimeRange = selectedTimeRange.map(time => {
+          time = Number(time) - Number(fromUTC);
+          return time;
+        })
         sentData = JSON.stringify({ name, dates, selectedTimeRange });
       }
 

@@ -176,7 +176,11 @@ export default (app) => {
           });
           return;
         }
+        const name = (req.user.facebook.username || req.user.github.username || req.user.local.username)
+        const avatar = (req.user.facebook.avatar || req.user.github.avatar || req.user.local.avatar)
         req.body.uid = generateID();
+        req.body.participants = [{name, avatar}];
+        console.log(req.body)
         Event.create(req.body, (err, event) => {
           if (err) return res.status(500).send(err);
           return res.status(201).json(event);

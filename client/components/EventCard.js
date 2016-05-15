@@ -117,7 +117,6 @@ class EventCard extends React.Component {
     } else {
       result = num + ":00";
     }
-
     return result;
   }
 

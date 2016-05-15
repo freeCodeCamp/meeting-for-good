@@ -12,16 +12,24 @@ class EventDetails extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/events')
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(events => {
-        events.forEach(event => {
-          if (event.uid === this.props.params.uid) {
-            this.setState({ events: [event] });
-          }
-        });
+    // fetch('/api/events')
+    //   .then(checkStatus)
+    //   .then(parseJSON)
+    //   .then(events => {
+    //     events.forEach(event => {
+    //       if (event.uid === this.props.params.uid) {
+    //         this.setState({ events: [event] });
+    //       }
+    //     });
+    //   });
+
+    $.get("/api/events", events => {
+      events.forEach(event => {
+        if (event.uid === this.props.params.uid) {
+          this.setState({ events: [event] });
+        }
       });
+    })
   }
 
   render() {
