@@ -109,13 +109,20 @@ class NewEvent extends React.Component {
       if (dateOrDay) {
         sentData = JSON.stringify({ name, weekDays, selectedTimeRange });
       } else {
+        let sameDay;
         selectedTimeRange = selectedTimeRange.map(time => {
           time = Number(time) - Number(fromUTC);
           return time;
         })
         dates.forEach(function(obj){
           Object.keys(obj).map(date => {
-            obj[date] = moment(obj[date]).format("YYYY-MM-DD")
+            console.log(obj[date])
+            if(obj[date] !== null){
+              obj[date] = moment(obj[date]).format("YYYY-MM-DD")
+              sameDay = obj[date];
+            } else {
+              obj[date] = sameDay;
+            }
           })
         })
         sentData = JSON.stringify({ name, dates, selectedTimeRange });
