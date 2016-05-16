@@ -71,7 +71,6 @@ export default (app) => {
     });
 
   /* meeetings API*/
-
   app.route('/api/events')
     .get((req, res) => {
       const username = (req.user.facebook.username || req.user.github.username || req.user.local.username)
@@ -187,6 +186,16 @@ export default (app) => {
         });
       })
     });
+
+    app.route('/api/events/getbyuid')
+      .get((req, res) => {
+        const uid = req.url.split("?")[1];
+        console.log(uid)
+        Event.find({"uid": uid}, (err, events) => {
+          if (err) res.status(500).send(err);
+          return res.status(200).json(events);
+        });
+      })
 
   /* users API */
 
