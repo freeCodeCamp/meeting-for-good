@@ -37,7 +37,7 @@ class EventCard extends React.Component {
     })
 
     //Best date/time algorithm
-    const participants = this.state.participants;
+    let participants = this.state.participants;
     let meetArray = [];
     let bestTimes = {};
     let buildToString = {};
@@ -48,13 +48,6 @@ class EventCard extends React.Component {
         meetArray.push(participants[i].availibility);
       }
     }
-
-    //Set up bestTimes object to have each date as an array
-    for(let b in meetArray[0]){
-        bestTimes[meetArray[0][b].date] = [];
-        buildToString[meetArray[0][b].date] = [];
-    }
-
 
     //Go over availabilities and add every available time to corresponding date array
     for(let j = 0; j < meetArray.length; j++){
@@ -70,27 +63,62 @@ class EventCard extends React.Component {
     }
 
     meetArray = meetArray.shift(); //Only first object is needed.
+    console.log(meetArray)
 
-    //Check if multiple hours are present within a date array, if so, add it to best times.
-    if(meetArray !== undefined){
-      for(let i = 0; i < meetArray.length; i++){
-        let temp = meetArray[i].hours.sort();
-        for(let z = 0; z < temp.length; z++){
-          if(temp[z] === temp[z+1]){
-            bestTimes[meetArray[i].date].push(temp[z]);
+    let length = meetArray.length;
+    for(let i = 0; i < length; i++){
+      let pos = meetArray.length;
+      for(let j = 0; j < meetArray[i].hours.length; j++){
+        meetArray[i].hours[j] = Number(meetArray[i].hours[j]) + 11;
+        if(meetArray[i].hours[j] > 23){
+          if(meetArray[pos] === undefined){
+            meetArray[pos] = {};
+            meetArray[pos].date = "";
+            meetArray[pos].date = moment(meetArray[i].date).add(1, "days").format("DD MMM");
+            meetArray[pos].hours = [];
+            meetArray[pos].hours.push(meetArray[i].hours[j] - 24);
+            meetArray[i].hours.splice(j,1);
+          } else {
+            meetArray[pos].hours.push(meetArray[i].hours[j] - 24);
+            meetArray[i].hours.splice(j,1);
           }
         }
       }
     }
 
-    Object.keys(bestTimes).map(date => {
-      if(bestTimes[date].length > 0){
-        for(let i = 0; i < bestTimes[date].length; i++){
-          if(Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i+1])){
-            bestTimes[date][i-1] ?
-              buildToString[date].push(this.convertTime((Number(bestTimes[date][i]) - 1)) + " to " + this.convertTime(Number(bestTimes[date][i]))) :
-              buildToString[date].push(this.convertTime(Number(bestTimes[date][i])));
+    console.log(meetArray);
+
+    //Check if multiple hours are present within a date array, if so, add it to best times.
+    if(meetArray !== undefined){
+      for(let i = 0; i < meetArray.length; i++){
+        if(meetArray[i].hours.length !== 0){
+          let temp = meetArray[i].hours.sort();
+          for(let z = 0; z < temp.length; z++){
+            if(temp[z] === temp[z+1]){
+              if(bestTimes[meetArray[i].date] !== undefined){
+                bestTimes[meetArray[i].date].push(temp[z]);
+              } else {
+                bestTimes[meetArray[i].date] = [];
+                bestTimes[meetArray[i].date].push(temp[z]);
+              }
+            }
           }
+        }
+      }
+    }
+
+    console.log(bestTimes)
+
+    Object.keys(bestTimes).map(date => {
+      let previousIndex = 0;
+      buildToString[date] = [];
+      for(let i = 0; i < bestTimes[date].length; i++){
+        if(Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i+1])){
+          bestTimes[date][i] !== bestTimes[date][previousIndex] ?
+            buildToString[date].push(this.convertTime(Number(bestTimes[date][previousIndex])) + " to " + this.convertTime(Number(bestTimes[date][i]))) :
+            buildToString[date].push(this.convertTime(Number(bestTimes[date][i])));
+          console.log(buildToString[date]);
+          previousIndex = i+1;
         }
       }
     })
