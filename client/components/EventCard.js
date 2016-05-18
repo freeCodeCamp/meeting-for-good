@@ -36,6 +36,8 @@ class EventCard extends React.Component {
       }
     })
 
+    let fromUTC = moment(new Date()).format("Z").split(":")[0];
+
     //Best date/time algorithm
     let participants = this.state.participants;
     let meetArray = [];
@@ -69,7 +71,7 @@ class EventCard extends React.Component {
     for(let i = 0; i < length; i++){
       let pos = meetArray.length;
       for(let j = 0; j < meetArray[i].hours.length; j++){
-        meetArray[i].hours[j] = Number(meetArray[i].hours[j]) + 11;
+        meetArray[i].hours[j] = Number(meetArray[i].hours[j]) + Number(fromUTC);
         if(meetArray[i].hours[j] > 23){
           if(meetArray[pos] === undefined){
             meetArray[pos] = {};

@@ -296,6 +296,41 @@ class MeetingEvent extends React.Component {
       }
     })
     console.log(available, this.state.event.uid, this.state.user);
+    let fromUTC = moment(new Date()).format("Z").split(":")[0];
+
+    let length = available.length;
+    let found = false;
+    for(let i = 0; i < length; i++){
+      for(let j = 0; j < available[i].hours.length; j++){
+        available[i].hours[j] = Number(available[i].hours[j]) - Number(fromUTC);
+        console.log(available[i].hours[j])
+        if(available[i].hours[j] < 0){
+          for(var z in available){
+            if(available[z].date === moment(available[i].date).subtract(1, "days").format("DD MMM")) {
+              available[z].hours.push(24 + available[i].hours[j]);
+              available[i].hours.splice(j,1);
+              found = true;
+            }
+          }
+
+          if(!found){
+            let newAvailable = {
+              date: moment(available[i].date).subtract(1, "days").format("DD MMM"),
+              hours: []
+            }
+
+            newAvailable.hours.push(24 + Number(available[i].hours[j]));
+
+            available[i].hours.splice(j,1);
+            i === 0 ?
+              available.splice(i, 0, newAvailable) :
+              available.splice(i-1, 0, newAvailable)
+          }
+          j = j-1
+        }
+      }
+    }
+
     if(this.state.user !== undefined){
       $.ajax({
         type: 'POST',
@@ -306,7 +341,7 @@ class MeetingEvent extends React.Component {
         success: () => {},
         error: () => Materialize.toast('An error occured. Please try again later.', 4000),
       });
-      window.location.reload()
+      // window.location.reload()
     }
   }
 
