@@ -65,13 +65,13 @@ class EventCard extends React.Component {
     }
 
     meetArray = meetArray.shift(); //Only first object is needed.
-    console.log(meetArray)
+    // console.log(meetArray)
 
     let length = meetArray.length;
     for(let i = 0; i < length; i++){
       let pos = meetArray.length;
       for(let j = 0; j < meetArray[i].hours.length; j++){
-        meetArray[i].hours[j] = Number(meetArray[i].hours[j]) - 5; //Change to -5
+        meetArray[i].hours[j] = Number(meetArray[i].hours[j]) + Number(fromUTC); 
         if(meetArray[i].hours[j] > 23){
           if(meetArray[pos] === undefined){
             meetArray[pos] = {};
@@ -84,6 +84,7 @@ class EventCard extends React.Component {
             meetArray[pos].hours.push(meetArray[i].hours[j] - 24);
             meetArray[i].hours.splice(j,1);
           }
+          j = j - 1;
         }
         if(meetArray[i].hours[j] < 0){
           if(meetArray[pos] === undefined){
@@ -97,17 +98,23 @@ class EventCard extends React.Component {
             meetArray[pos].hours.push(24 + meetArray[i].hours[j]);
             meetArray[i].hours.splice(j,1);
           }
+          j = j - 1;
         }
       }
     }
 
-    console.log(meetArray);
+    meetArray.sort((a,b) => {
+      return a.date > b.date ? 1 : b.date > a.date ? -1 : 0;
+    });
 
-    //Check if multiple hours are present within a date array, if so, add it to best times.
+    console.log(meetArray)
+
     if(meetArray !== undefined){
       for(let i = 0; i < meetArray.length; i++){
         if(meetArray[i].hours.length !== 0){
-          let temp = meetArray[i].hours.sort();
+          let temp = meetArray[i].hours.sort((a,b) => {
+            return a > b ? 1 : b > a ? -1 : 0;
+          });
           for(let z = 0; z < temp.length; z++){
             if(temp[z] === temp[z+1]){
               if(bestTimes[meetArray[i].date] !== undefined){
