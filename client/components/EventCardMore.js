@@ -47,6 +47,14 @@ class MeetingEvent extends React.Component {
       })
     }
 
+    if(timeRange[0] < 0 && timeRange[1] > 0){
+      props.event.dates.forEach(obj => {
+        props.event.dates.forEach(obj => {
+          obj["from"] = new Date(moment(new Date(obj["from"])).subtract(1,'days'));
+        })
+      })
+    }
+
     if(timeRange[0] > 23 && timeRange[1] > 23){
       console.log(">23");
       timeRange[0] = timeRange[0] - 24;
@@ -215,26 +223,28 @@ class MeetingEvent extends React.Component {
     }
 
     if(this.state.timeRange.length !== 0){
-      const timeRangeFrom = Number(this.state.timeRange[0]);
-      const timeRangeTo = Number(this.state.timeRange[1]);
-      $(".subdomain-text").each((index,el) => {
-        for(let i = timeRangeFrom; i <= timeRangeTo; i++){
-          let j = i;
-          if(j > 23){
-            j = j - 24;
-          }
-          if(j < 10){
-            if($(el).text() === ("0"+j)){
-              $(el).parent().addClass("time-range");
+      let timeRangeFrom = Number(this.state.timeRange[0]);
+      let timeRangeTo = Number(this.state.timeRange[1]);
+      if(timeRangeFrom >= 0){
+        $(".subdomain-text").each((index,el) => {
+          for(let i = timeRangeFrom; i <= timeRangeTo; i++){
+            let j = i;
+            if(j > 23){
+              j = j - 24;
             }
-          } else {
-            if($(el).text() === String(j)){
-              $(el).parent().addClass("time-range");
+            if(j < 10){
+              if($(el).text() === ("0"+j)){
+                $(el).parent().addClass("time-range");
+              }
+            } else {
+              if($(el).text() === String(j)){
+                $(el).parent().addClass("time-range");
+              }
             }
           }
-        }
-      });
-      $("g").not(".time-range").remove();
+        });
+        $("g").not(".time-range").remove();
+      }
       if(timeRangeTo > 23){
         $(".graph-domain").first().find(".subdomain-text").each((index,el) => {
           if(Number($(el).text()) <= timeRangeTo - 24){
@@ -243,6 +253,18 @@ class MeetingEvent extends React.Component {
         })
         $(".graph-domain").last().find(".subdomain-text").each((index,el) => {
           if(Number($(el).text()) > timeRangeTo - 24){
+            $(el).parent().remove();
+          }
+        })
+      }
+      if(timeRangeFrom < 0){
+        $(".graph-domain").first().find(".subdomain-text").each((index,el) => {
+          if(Number($(el).text()) < 24 + timeRangeFrom){
+            $(el).parent().remove();
+          }
+        })
+        $(".graph-domain").last().find(".subdomain-text").each((index,el) => {
+          if(Number($(el).text()) >= 24 + timeRangeFrom){
             $(el).parent().remove();
           }
         })
@@ -301,32 +323,51 @@ class MeetingEvent extends React.Component {
     let length = available.length;
     let found = false;
     for(let i = 0; i < length; i++){
+      let pos = available.length;
       for(let j = 0; j < available[i].hours.length; j++){
         available[i].hours[j] = Number(available[i].hours[j]) - Number(fromUTC);
-        console.log(available[i].hours[j])
-        if(available[i].hours[j] < 0){
-          for(var z in available){
-            if(available[z].date === moment(available[i].date).subtract(1, "days").format("DD MMM")) {
-              available[z].hours.push(24 + available[i].hours[j]);
-              available[i].hours.splice(j,1);
-              found = true;
-            }
-          }
-
-          if(!found){
-            let newAvailable = {
-              date: moment(available[i].date).subtract(1, "days").format("DD MMM"),
-              hours: []
-            }
-
-            newAvailable.hours.push(24 + Number(available[i].hours[j]));
-
+        if(available[i].hours[j] > 23){
+          if(available[pos] === undefined){
+            available[pos] = {};
+            available[pos].date = "";
+            available[pos].date = moment(available[i].date).add(1, "days").format("DD MMM");
+            available[pos].hours = [];
+            available[pos].hours.push(available[i].hours[j] - 24);
             available[i].hours.splice(j,1);
-            i === 0 ?
-              available.splice(i, 0, newAvailable) :
-              available.splice(i-1, 0, newAvailable)
+          } else {
+            available[pos].hours.push(available[i].hours[j] - 24);
+            available[i].hours.splice(j,1);
           }
-          j = j-1
+          j = j - 1;
+        }
+        if(available[i].hours[j] < 0){
+          if(available[pos] === undefined){
+            available[pos] = {};
+            available[pos].date = "";
+            available[pos].date = moment(available[i].date).subtract(1, "days").format("DD MMM");
+            available[pos].hours = [];
+            available[pos].hours.push(24 + available[i].hours[j]);
+            available[i].hours.splice(j,1);
+          } else {
+            available[pos].hours.push(24 + available[i].hours[j]);
+            available[i].hours.splice(j,1);
+          }
+          j = j - 1;
+        }
+      }
+    }
+
+    available.sort((a,b) => {
+      return a.date > b.date ? 1 : b.date > a.date ? -1 : 0;
+    });
+
+    for(let i = 0; i < available.length; i++){
+      if(available[i+1] !== undefined){
+        if(available[i].date === available[i+1].date){
+          for(let j in available[i+1].hours){
+            available[i].hours.push(available[i+1].hours[j])
+          }
+          available.splice(i+1,1);
         }
       }
     }

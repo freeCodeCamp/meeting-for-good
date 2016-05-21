@@ -71,7 +71,7 @@ class EventCard extends React.Component {
     for(let i = 0; i < length; i++){
       let pos = meetArray.length;
       for(let j = 0; j < meetArray[i].hours.length; j++){
-        meetArray[i].hours[j] = Number(meetArray[i].hours[j]) + Number(fromUTC); 
+        meetArray[i].hours[j] = Number(meetArray[i].hours[j]) + Number(fromUTC);
         if(meetArray[i].hours[j] > 23){
           if(meetArray[pos] === undefined){
             meetArray[pos] = {};
@@ -106,6 +106,17 @@ class EventCard extends React.Component {
     meetArray.sort((a,b) => {
       return a.date > b.date ? 1 : b.date > a.date ? -1 : 0;
     });
+
+    for(let i = 0; i < meetArray.length; i++){
+      if(meetArray[i+1] !== undefined){
+        if(meetArray[i].date === meetArray[i+1].date){
+          for(let j in meetArray[i+1].hours){
+            meetArray[i].hours.push(meetArray[i+1].hours[j])
+          }
+          meetArray.splice(i+1,1);
+        }
+      }
+    }
 
     console.log(meetArray)
 
