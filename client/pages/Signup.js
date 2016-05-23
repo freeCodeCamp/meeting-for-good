@@ -27,6 +27,20 @@ class Signup extends React.Component {
               </a>
             </p>
           </form>
+          <div className="center">
+            <p>-or-</p>
+            <p>
+            <a href="/api/auth/github" className="waves-effect waves-light btn grey darken-2">
+              Signup with GitHub
+            </a>
+            </p>
+            <p>
+              <a
+                href="/api/auth/facebook"
+                className="waves-effect waves-light btn blue darken-4"
+              >Signup with Facebook</a>
+            </p>
+          </div>
         </div>
       </div>
     );
