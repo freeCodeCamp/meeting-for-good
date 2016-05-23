@@ -236,7 +236,7 @@ class EventCard extends React.Component {
             </div>
           </div>
           <br />
-          <div className="participant-list">
+          <div className="participant-list" styleName="main">
             <h6><strong>Participants</strong></h6>
             {event.participants.map((participant, index) => (
               <div className="participant" styleName="participant" key={index}>
