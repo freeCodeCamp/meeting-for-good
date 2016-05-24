@@ -382,7 +382,7 @@ class MeetingEvent extends React.Component {
         success: () => {},
         error: () => Materialize.toast('An error occured. Please try again later.', 4000),
       });
-      // window.location.reload()
+      window.location.reload()
     }
   }
 
