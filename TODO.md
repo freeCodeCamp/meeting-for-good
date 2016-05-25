@@ -7,6 +7,6 @@
 - Remove timerange option when creating an event (confusing)
 - Fix DayPicker bug when removing days (browser crashes)
 - Overflow participants list
-- Add a delete button for events
+- ~~Add a delete button for events~~
 - ~~Fix white submit button~~
 - Add share link

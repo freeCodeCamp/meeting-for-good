@@ -179,6 +179,7 @@ export default (app) => {
         const avatar = (req.user.facebook.avatar || req.user.github.avatar || req.user.local.avatar)
         req.body.uid = generateID();
         req.body.participants = [{name, avatar}];
+        req.body.owner = name;
         console.log(req.body)
         Event.create(req.body, (err, event) => {
           if (err) return res.status(500).send(err);
@@ -196,6 +197,11 @@ export default (app) => {
           return res.status(200).json(events);
         });
       })
+
+      app.route('/api/events/delete')
+        .post((req, res) => {
+          Event.find({"uid": req.body.id}).remove().exec();
+        })
 
   /* users API */
 

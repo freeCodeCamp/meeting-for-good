@@ -8,6 +8,7 @@ const Event = new Schema({
   participants: Array,
   uid: String,
   selectedTimeRange: Array,
+  owner: String
 });
 
 export default mongoose.model('Event', Event);
