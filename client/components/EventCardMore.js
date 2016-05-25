@@ -398,7 +398,7 @@ class MeetingEvent extends React.Component {
 
   deleteEvent(){
     $.post("/api/events/delete", {id: this.state.event.uid});
-    window.location.href = "/";
+    window.location.href = "/"
   }
 
   render() {
@@ -411,13 +411,16 @@ class MeetingEvent extends React.Component {
     const { event } = this.props;
     let isOwner;
     if(this.state.user !== undefined){
-      isOwner = event.owner === (this.state.user.facebook.username || this.state.user.github.username || this.state.user.local.username);
+      let username = this.state.user.facebook ? this.state.user.facebook.username :
+          this.state.user.github ? this.state.user.github.username :
+          this.state.user.local ? this.state.user.local.username : null
+      isOwner = event.owner === username;
     }
     return (
       <div className="card meeting" styleName="event-details">
       {
         isOwner ?
-          <a className="btn-floating btn-large waves-effect waves-light red" styleName="delete-event" onClick={this.deleteEvent.bind(this)}><i className="material-icons">delete</i></a>
+          <a className="btn-floating btn-large waves-effect waves-light red" styleName="delete-event" onClick={this.deleteEvent}><i className="material-icons">delete</i></a>
           : ""
       }
         <div className="card-content">
