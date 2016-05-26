@@ -420,7 +420,7 @@ class MeetingEvent extends React.Component {
       <div className="card meeting" styleName="event-details">
       {
         isOwner ?
-          <a className="btn-floating btn-large waves-effect waves-light red" styleName="delete-event" onClick={this.deleteEvent}><i className="material-icons">delete</i></a>
+          <a className="btn-floating btn-large waves-effect waves-light red" styleName="delete-event" onClick={this.deleteEvent.bind(this)}><i className="material-icons">delete</i></a>
           : ""
       }
         <div className="card-content">
