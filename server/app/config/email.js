@@ -9,6 +9,8 @@ export default (message, cb) => {
     },
   });
 
+  message.from = 'theletsmeetteam@gmail.com';
+
   transporter.sendMail(message, (err, info) => {
     if (err) cb(err, info);
     else cb(undefined, info);
