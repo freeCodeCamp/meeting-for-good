@@ -130,101 +130,59 @@ export default (app) => {
     });
 
   app.route('/api/events/:id/updateAvail')
-    .post((req, res) => {
-      console.log(req.body);
-      Event.findById(req.params.id, (err, doc) => {
+    .put((req, res) => {
+      Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
-        if (doc) {
-          let participants;
-          let newParticipant;
-          let userExists = false;
-          if (req.body.user.local) {
-            if (doc.participants.length !== 0) {
-              participants = doc.participants;
-              participants.map(user => {
-                if (user.name === req.body.user.local.username) {
-                  user.availibility = req.body.data;
-                  userExists = true;
-                }
-                if (user.name !== req.body.user.local.username) {
-                  newParticipant = {
-                    avatar: req.body.user.local.avatar,
-                    name: req.body.user.local.username,
-                    availibility: req.body.data,
-                  };
-                }
-                return user;
-              });
-              if (newParticipant !== null && !userExists) participants.push(newParticipant);
-            } else {
-              participants = {
-                avatar: req.body.user.local.avatar,
-                name: req.body.user.local.username,
-                availibility: req.body.data,
-              };
-            }
-          }
-          if (req.body.user.github) {
-            if (doc.participants.length !== 0) {
-              participants = doc.participants;
-              participants.map(user => {
-                if (user.name === req.body.user.github.username) {
-                  user.availibility = req.body.data;
-                  userExists = true;
-                }
-                if (user.name !== req.body.user.github.username) {
-                  newParticipant = {
-                    avatar: req.body.user.github.avatar,
-                    name: req.body.user.github.username,
-                    availibility: req.body.data,
-                  };
-                }
-                return user;
-              });
-              if (newParticipant !== null && !userExists) participants.push(newParticipant);
-            } else {
-              participants = {
-                avatar: req.body.user.github.avatar,
-                name: req.body.user.github.username,
-                availibility: req.body.data,
-              };
-            }
-          }
-          if (req.body.user.facebook) {
-            if (doc.participants.length !== 0) {
-              participants = doc.participants;
-              participants.map(user => {
-                if (user.name === req.body.user.facebook.username) {
-                  user.availibility = req.body.data;
-                  userExists = true;
-                }
-                if (user.name !== req.body.user.facebook.username) {
-                  newParticipant = {
-                    avatar: req.body.user.facebook.avatar,
-                    name: req.body.user.facebook.username,
-                    availibility: req.body.data,
-                  };
-                }
-                return user;
-              });
-              if (newParticipant !== null && !userExists) participants.push(newParticipant);
-            } else {
-              participants = {
-                avatar: req.body.user.facebook.avatar,
-                name: req.body.user.facebook.username,
-                availibility: req.body.data,
-              };
-            }
-          }
-          doc.participants = participants;
-          doc.markModified('participants');
-          doc.save(() => {
-            if (err) console.log(err);
+        if (!event) return res.status(404).send('Not found.');
 
-            console.log(doc);
-          });
-          return;
+        let participants;
+        let newParticipant;
+        let userExists = false;
+        let username;
+        let userAvatar;
+
+        if (req.body.user.local) {
+          username = req.body.user.local.username;
+          userAvatar = req.body.user.local.avatar;
+        } else if (req.body.user.github) {
+          username = req.body.user.github.username;
+          userAvatar = req.body.user.github.avatar;
+        } else if (req.body.user.facebook) {
+          username = req.body.user.facebook.username;
+          userAvatar = req.body.user.facebook.avatar;
         }
+
+        if (event.participants.length !== 0) {
+          participants = event.participants;
+          participants.map(user => {
+            if (user.name === username) {
+              user.availibility = req.body.data;
+              userExists = true;
+            }
+            if (user.name !== username) {
+              newParticipant = {
+                avatar: userAvatar,
+                name: username,
+                availibility: req.body.data,
+              };
+            }
+            return user;
+          });
+          if (newParticipant !== null && !userExists) participants.push(newParticipant);
+        } else {
+          participants = {
+            avatar: userAvatar,
+            name: username,
+            availibility: req.body.data,
+          };
+        }
+
+        event.participants = participants;
+        event.markModified('participants');
+        event.save(() => {
+          if (err) return res.status(500).send(err);
+          return res.status(200).json(event);
+        });
       });
     });
 
