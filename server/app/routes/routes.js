@@ -81,14 +81,15 @@ export default (app) => {
       });
     })
     .post((req, res) => {
-      console.log(req.user);
       const name = (req.user.facebook.username ||
                       req.user.github.username ||
                       req.user.local.username);
       const avatar = (req.user.facebook.avatar ||
                       req.user.github.avatar ||
                       req.user.local.avatar);
-      req.body.participants = [{ name, avatar }];
+      const _id = req.user._id;
+
+      req.body.participants = [{ name, avatar, _id }];
       req.body.owner = name;
       req.body.uid = generateID();
       Event.create(req.body, (err, event) => {

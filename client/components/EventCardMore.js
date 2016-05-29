@@ -1,10 +1,12 @@
 import React from 'react';
+import update from 'react-addons-update';
 import autobind from 'autobind-decorator';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
 import 'd3';
 import CalHeatMap from 'cal-heatmap/cal-heatmap.min.js';
+import fetch from 'isomorphic-fetch';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -77,12 +79,15 @@ class MeetingEvent extends React.Component {
     console.log(props.event.dates);
     console.log(timeRange);
 
+    const eventParticipantsIds = props.event.participants.map(participant => participant._id);
+
     this.state = {
       event: props.event,
       ranges: props.event.dates,
       days: props.event.weekDays,
       timeRange,
       user: {},
+      eventParticipantsIds,
     };
   }
 
@@ -91,34 +96,6 @@ class MeetingEvent extends React.Component {
       if (user !== '') {
         this.setState({ user });
       }
-    });
-
-    $.get('/api/users', users => {
-      const participants = users.map(user => {
-        if (user.github) {
-          return {
-            name: user.github.username,
-            avatar: user.github.avatar,
-          };
-        } else if (user.facebook) {
-          return {
-            name: user.facebook.username,
-            avatar: user.facebook.avatar,
-          };
-        } else if (user.local) {
-          return {
-            name: user.local.username,
-            avatar: user.local.avatar,
-          };
-        }
-      }).filter(user => {
-        for (const participant of this.state.event.participants) {
-          if (participant.name === user.name) return false;
-        }
-        return true;
-      });
-
-      this.setState({ participants });
     });
   }
 
@@ -413,10 +390,9 @@ class MeetingEvent extends React.Component {
         data: JSON.stringify({ user: this.state.user, data: available, id: this.state.event.uid }),
         contentType: 'application/json',
         dataType: 'json',
-        success: () => {},
+        success: () => { window.location.reload(); },
         error: () => Materialize.toast('An error occured. Please try again later.', 4000),
       });
-      window.location.reload();
     }
   }
 
@@ -426,6 +402,50 @@ class MeetingEvent extends React.Component {
     const date2Ms = date2.getTime();
     const differenceMs = Math.abs(date1Ms - date2Ms);
     return Math.round(differenceMs / ONE_DAY) + 1;
+  }
+
+  @autobind
+  joinEvent() {
+    let name;
+    let avatar;
+
+    if (this.state.user.local) {
+      name = this.state.user.local.username;
+      avatar = this.state.user.local.avatar;
+    } else if (this.state.user.github) {
+      name = this.state.user.github.username;
+      avatar = this.state.user.github.avatar;
+    } else if (this.state.user.facebook) {
+      name = this.state.user.facebook.username;
+      avatar = this.state.user.facebook.avatar;
+    }
+
+    const participant = {
+      name,
+      avatar,
+      _id: this.state.user._id,
+    };
+
+    const event = update(this.state.event, {
+      participants: { $push: [participant] },
+    });
+
+    const eventParticipantsIds = update(this.state.eventParticipantsIds, {
+      $push: [this.state.user._id],
+    });
+
+    const sentData = JSON.stringify(event);
+
+    fetch(`/api/events/${event._id}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      body: sentData,
+    })
+    .then(() => this.setState({ event, eventParticipantsIds }))
+    .catch(() => { Materialize.toast('An error occured. Please try again later.', 4000); });
   }
 
   @autobind
@@ -495,10 +515,18 @@ class MeetingEvent extends React.Component {
           </div>
           <div id="heatmap" className="center">
             <div id="cal-heatmap" className="hide"></div>
-            <a
-              className="waves-effect waves-light btn"
-              onClick={this.showCalHeatmap}
-            >Enter my availability</a>
+            {Object.keys(this.state.user).length > 0 ?
+              this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
+                <a
+                  className="waves-effect waves-light btn"
+                  onClick={this.showCalHeatmap}
+                >Enter my availability</a> :
+                <a
+                  className="waves-effect waves-light btn"
+                  onClick={this.joinEvent}
+                >Join Event</a> :
+              <p>Login/Sign Up to enter your availability!</p>
+            }
             <a
               className="waves-effect waves-light btn hide"
               onClick={this.submitAvailability}
