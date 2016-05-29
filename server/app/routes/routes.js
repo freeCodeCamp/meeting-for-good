@@ -244,7 +244,7 @@ export default (app) => {
       });
     });
 
-  app.route('/api/users/:id/events')
+  app.route('/api/users/current/events')
     .get((req, res) => {
       const username = (req.user.facebook.username ||
                         req.user.github.username ||

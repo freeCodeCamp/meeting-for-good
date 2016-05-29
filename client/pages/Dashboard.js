@@ -7,7 +7,7 @@ import cssModules from 'react-css-modules';
 import EventCard from '../components/EventCard';
 
 /* styles */
-import styles from '../styles/dashboard';
+import styles from '../styles/dashboard.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../util/fetch.util';
@@ -17,6 +17,7 @@ class Dashboard extends React.Component {
     super();
     this.state = {
       events: [],
+      user: {},
     };
   }
 
@@ -25,18 +26,15 @@ class Dashboard extends React.Component {
       $('.modal-trigger').leanModal();
     });
 
-    // fetch('/api/events')
-    //   .then(checkStatus)
-    //   .then(parseJSON)
-    //   .then(events => this.setState({ events }));
+    fetch('/api/users/current/events', { credentials: 'same-origin' })
+      .then(checkStatus)
+      .then(parseJSON)
+      .then(events => this.setState({ events }));
 
-    $.get("/api/events", events => {
-      this.setState({events});
-    })
-
-    $.get('/api/auth/current', user => {
-      if (user === '') window.location.href = '/';
-    });
+    fetch('/api/auth/current', { credentials: 'same-origin' })
+      .then(checkStatus)
+      .then(parseJSON)
+      .then(user => { if (user === '') window.location.href = '/'; });
   }
 
   render() {
