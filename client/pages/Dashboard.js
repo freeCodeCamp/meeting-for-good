@@ -2,6 +2,7 @@
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
+import Masonry from 'react-masonry-component';
 
 /* external components */
 import EventCard from '../components/EventCard';
@@ -47,9 +48,11 @@ class Dashboard extends React.Component {
           </a>
         </div>
         { /* Card Template */ }
-        {this.state.events.map(event => (
-          <EventCard key={event._id} event={event} />
-        ))}
+        <Masonry>
+          {this.state.events.map(event => (
+            <EventCard key={event._id} event={event} />
+          ))}
+        </Masonry>
       </div>
     );
   }
