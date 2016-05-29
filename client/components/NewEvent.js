@@ -61,13 +61,18 @@ class NewEvent extends React.Component {
     for (const range of ranges) {
       if (DateUtils.isDayInRange(day, range)) {
         const { from, to } = range;
-        ranges.push({
-          from, to: moment(day).subtract(1, 'd')._d,
-        });
-        ranges.push({
-          from: moment(day).add(1, 'd')._d,
-          to,
-        });
+
+        if (!moment(day).isSame(from)) {
+          ranges.push({
+            from, to: moment(day).subtract(1, 'd')._d,
+          });
+        }
+
+        if (!moment(day).isSame(to)) {
+          ranges.push({
+            from: moment(day).add(1, 'd')._d, to,
+          });
+        }
         _.remove(ranges, r => r === range);
       }
     }
