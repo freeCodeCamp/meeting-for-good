@@ -3,6 +3,7 @@ import Event from '../models/event';
 import User from '../models/users';
 import passport from 'passport';
 import _ from 'lodash';
+import sendEmail from '../config/email';
 
 const generateID = () => {
   let ID = '';
@@ -292,6 +293,14 @@ export default (app) => {
       Event.find({ 'participants.name': username }, (err, events) => {
         if (err) return res.status(500).send(err);
         return res.status(200).json(events);
+      });
+    });
+
+  app.route('/api/sendEmail')
+    .post((req, res) => {
+      sendEmail(req.body.message, (err, info) => {
+        if (err) return res.status(500).send(err);
+        return res.status(200).json(info);
       });
     });
 
