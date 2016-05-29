@@ -2,7 +2,7 @@ import React from 'react';
 
 import Navbar from './Navbar';
 
-import '../styles/main';
+import '../styles/main.css';
 
 const App = (props) => (
   <div>

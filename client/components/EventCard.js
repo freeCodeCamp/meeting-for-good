@@ -23,45 +23,45 @@ class EventCard extends React.Component {
       delete props.event.weekDays;
     }
 
-    let fromUTC = moment(new Date()).format("Z").split(":")[0];
-    //Convert times back to client time
-    let timeRange = props.event.selectedTimeRange.map(time => {
+    const fromUTC = moment(new Date()).format('Z').split(':')[0];
+    // Convert times back to client time
+    const timeRange = props.event.selectedTimeRange.map(time => {
       time = Number(time) + Number(fromUTC);
       return time;
-    })
+    });
 
-    if(timeRange[0] < 0 && timeRange[1] < 0){
-      console.log("<0");
+    if (timeRange[0] < 0 && timeRange[1] < 0) {
+      console.log('<0');
       props.event.dates.forEach(obj => {
         Object.keys(obj).map(date => {
-          obj[date] = new Date(moment(new Date(obj[date])).subtract(1,'days'));
+          obj[date] = new Date(moment(new Date(obj[date])).subtract(1, 'days'));
           return date;
-        })
-      })
+        });
+      });
     }
 
-    if(timeRange[0] < 0 && timeRange[1] > 0){
-      props.event.dates.forEach(obj => {
+    if (timeRange[0] < 0 && timeRange[1] > 0) {
+      props.event.dates.forEach(() => {
         props.event.dates.forEach(obj => {
-          obj["from"] = new Date(moment(new Date(obj["from"])).subtract(1,'days'));
-        })
-      })
+          obj.from = new Date(moment(new Date(obj.from)).subtract(1, 'days'));
+        });
+      });
     }
 
-    if(timeRange[0] > 23 && timeRange[1] > 23){
-      console.log(">23");
+    if (timeRange[0] > 23 && timeRange[1] > 23) {
+      console.log('>23');
       props.event.dates.forEach(obj => {
         Object.keys(obj).map(date => {
-          obj[date] = new Date(moment(new Date(obj[date])).add(1,'days'));
+          obj[date] = new Date(moment(new Date(obj[date])).add(1, 'days'));
           return date;
-        })
-      })
+        });
+      });
     }
 
-    if(timeRange[0] < 23 && timeRange[1] > 23){
+    if (timeRange[0] < 23 && timeRange[1] > 23) {
       props.event.dates.forEach(obj => {
-        obj["to"] = new Date(moment(new Date(obj["to"])).add(1,'days'));
-      })
+        obj.to = new Date(moment(new Date(obj.to)).add(1, 'days'));
+      });
     }
 
     this.state = {
@@ -70,108 +70,109 @@ class EventCard extends React.Component {
     };
   }
 
-  componentDidMount(){
-    $(".participant-list").each((i,el) => {
-      if($(el).children().length === 1){
-        $(el).append("<em>No one has been added yet.</em>")
+  componentDidMount() {
+    $('.participant-list').each((i, el) => {
+      if ($(el).children().length === 1) {
+        $(el).append('<em>No one has been added yet.</em>');
       }
-    })
+    });
 
-    let fromUTC = moment(new Date()).format("Z").split(":")[0];
+    const fromUTC = moment(new Date()).format('Z').split(':')[0];
 
-    //Best date/time algorithm
-    let participants = this.state.participants;
+    // Best date/time algorithm
+    const participants = this.state.participants;
     let meetArray = [];
-    let bestTimes = {};
-    let buildToString = {};
+    const bestTimes = {};
+    const buildToString = {};
 
-    //Loop over participants list, if participant has entered availability - add it to the meetArray
-    for(let i = 0; i < participants.length; i++){
-      if(participants[i].availibility){
+    // Loop over participants list, if participant has entered availability - add it to the
+    // meetArray
+    for (let i = 0; i < participants.length; i++) {
+      if (participants[i].availibility) {
         meetArray.push(participants[i].availibility);
       }
     }
 
-    //Go over availabilities and add every available time to corresponding date array
-    for(let j = 0; j < meetArray.length; j++){
-      for(let k = 0; k < meetArray[j].length; k++){
-        if(meetArray[j+1] !== undefined && meetArray[j+1][k]){
-          if(meetArray[j][k].date === meetArray[j+1][k].date){
-            for(let l = 0; l < meetArray[j+1][k].hours.length; l++){
-              meetArray[j][k].hours.push(meetArray[j+1][k].hours[l]);
+    // Go over availabilities and add every available time to corresponding date array
+    for (let j = 0; j < meetArray.length; j++) {
+      for (let k = 0; k < meetArray[j].length; k++) {
+        if (meetArray[j + 1] !== undefined && meetArray[j + 1][k]) {
+          if (meetArray[j][k].date === meetArray[j + 1][k].date) {
+            for (let l = 0; l < meetArray[j + 1][k].hours.length; l++) {
+              meetArray[j][k].hours.push(meetArray[j + 1][k].hours[l]);
             }
           }
         }
       }
     }
 
-    meetArray = meetArray.shift(); //Only first object is needed.
+    meetArray = meetArray.shift(); // Only first object is needed.
     // console.log(meetArray)
 
-    let length = meetArray !== undefined ? meetArray.length : null;
-    for(let i = 0; i < length; i++){
-      let pos = meetArray.length;
-      for(let j = 0; j < meetArray[i].hours.length; j++){
+    const length = meetArray !== undefined ? meetArray.length : null;
+    for (let i = 0; i < length; i++) {
+      const pos = meetArray.length;
+      for (let j = 0; j < meetArray[i].hours.length; j++) {
         meetArray[i].hours[j] = Number(meetArray[i].hours[j]) + Number(fromUTC);
-        if(meetArray[i].hours[j] > 23){
-          if(meetArray[pos] === undefined){
+        if (meetArray[i].hours[j] > 23) {
+          if (meetArray[pos] === undefined) {
             meetArray[pos] = {};
-            meetArray[pos].date = "";
-            meetArray[pos].date = moment(meetArray[i].date).add(1, "days").format("DD MMM");
+            meetArray[pos].date = '';
+            meetArray[pos].date = moment(meetArray[i].date).add(1, 'days').format('DD MMM');
             meetArray[pos].hours = [];
             meetArray[pos].hours.push(meetArray[i].hours[j] - 24);
-            meetArray[i].hours.splice(j,1);
+            meetArray[i].hours.splice(j, 1);
           } else {
             meetArray[pos].hours.push(meetArray[i].hours[j] - 24);
-            meetArray[i].hours.splice(j,1);
+            meetArray[i].hours.splice(j, 1);
           }
           j = j - 1;
         }
-        if(meetArray[i].hours[j] < 0){
-          if(meetArray[pos] === undefined){
+        if (meetArray[i].hours[j] < 0) {
+          if (meetArray[pos] === undefined) {
             meetArray[pos] = {};
-            meetArray[pos].date = "";
-            meetArray[pos].date = moment(meetArray[i].date).subtract(1, "days").format("DD MMM");
+            meetArray[pos].date = '';
+            meetArray[pos].date = moment(meetArray[i].date).subtract(1, 'days').format('DD MMM');
             meetArray[pos].hours = [];
             meetArray[pos].hours.push(24 + meetArray[i].hours[j]);
-            meetArray[i].hours.splice(j,1);
+            meetArray[i].hours.splice(j, 1);
           } else {
             meetArray[pos].hours.push(24 + meetArray[i].hours[j]);
-            meetArray[i].hours.splice(j,1);
+            meetArray[i].hours.splice(j, 1);
           }
           j = j - 1;
         }
       }
     }
 
-    if(meetArray !== undefined){
-      meetArray.sort((a,b) => {
-        return a.date > b.date ? 1 : b.date > a.date ? -1 : 0;
-      });
+    if (meetArray !== undefined) {
+      meetArray.sort((a, b) =>
+        a.date > b.date ? 1 : b.date > a.date ? -1 : 0
+      );
     }
 
-    if(meetArray !== undefined){
-      for(let i = 0; i < meetArray.length; i++){
-        if(meetArray[i+1] !== undefined){
-          if(meetArray[i].date === meetArray[i+1].date){
-            for(let j in meetArray[i+1].hours){
-              meetArray[i].hours.push(meetArray[i+1].hours[j])
+    if (meetArray !== undefined) {
+      for (let i = 0; i < meetArray.length; i++) {
+        if (meetArray[i + 1] !== undefined) {
+          if (meetArray[i].date === meetArray[i + 1].date) {
+            for (let j in meetArray[i + 1].hours) {
+              meetArray[i].hours.push(meetArray[i + 1].hours[j]);
             }
-            meetArray.splice(i+1,1);
+            meetArray.splice(i + 1, 1);
           }
         }
       }
     }
 
-    if(meetArray !== undefined){
-      for(let i = 0; i < meetArray.length; i++){
-        if(meetArray[i].hours.length !== 0){
-          let temp = meetArray[i].hours.sort((a,b) => {
+    if (meetArray !== undefined) {
+      for (let i = 0; i < meetArray.length; i++) {
+        if (meetArray[i].hours.length !== 0) {
+          const temp = meetArray[i].hours.sort((a, b) => {
             return a > b ? 1 : b > a ? -1 : 0;
           });
-          for(let z = 0; z < temp.length; z++){
-            if(temp[z] === temp[z+1]){
-              if(bestTimes[meetArray[i].date] !== undefined){
+          for (let z = 0; z < temp.length; z++) {
+            if (temp[z] === temp[z + 1]) {
+              if (bestTimes[meetArray[i].date] !== undefined) {
                 bestTimes[meetArray[i].date].push(temp[z]);
               } else {
                 bestTimes[meetArray[i].date] = [];
@@ -183,43 +184,43 @@ class EventCard extends React.Component {
       }
     }
 
-    console.log(bestTimes)
+    console.log(bestTimes);
 
     Object.keys(bestTimes).map(date => {
       let previousIndex = 0;
       buildToString[date] = [];
-      for(let i = 0; i < bestTimes[date].length; i++){
-        if(Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i+1])){
+      for (let i = 0; i < bestTimes[date].length; i++) {
+        if (Number(bestTimes[date][i]) + 1 !== Number(bestTimes[date][i + 1])) {
           bestTimes[date][i] !== bestTimes[date][previousIndex] ?
             buildToString[date].push(this.convertTime(Number(bestTimes[date][previousIndex])) + " to " + this.convertTime(Number(bestTimes[date][i]))) :
             buildToString[date].push(this.convertTime(Number(bestTimes[date][i])));
           console.log(buildToString[date]);
-          previousIndex = i+1;
+          previousIndex = i + 1;
         }
       }
-    })
+    });
 
-    for(let i in buildToString){
-      if(buildToString[i].length === 0){
+    for (let i in buildToString) {
+      if (buildToString[i].length === 0) {
         delete buildToString[i];
       }
     }
 
-    this.setState({bestTimes: buildToString})
+    this.setState({ bestTimes: buildToString });
 
     setTimeout(() => {
-      $(".alt").each((i,el) => {
-        $(el).parents(".card").find("#best").remove();
-      })
-    }, 100)
+      $('.alt').each((i, el) => {
+        $(el).parents('.card').find('#best').remove();
+      });
+    }, 100);
   }
 
-  convertTime(num){
+  convertTime(num) {
     let result;
-    if(num < 10){
-      result = "0" + num + ":00";
+    if (num < 10) {
+      result = `0${num}:00`;
     } else {
-      result = num + ":00";
+      result = `${num}:00`;
     }
     return result;
   }
@@ -233,7 +234,13 @@ class EventCard extends React.Component {
 
     const { event } = this.props;
     const { bestTimes } = this.state;
-    const isBestTime = bestTimes !== undefined ? Object.keys(bestTimes).length > 0 ? true : false : false;
+    let isBestTime;
+    if (bestTimes !== undefined) {
+      if (Object.keys(bestTimes).length > 0) isBestTime = true;
+      else isBestTime = false;
+    } else isBestTime = false;
+
+    console.log(event);
 
     return (
       <div className="card" styleName="event">
@@ -242,37 +249,46 @@ class EventCard extends React.Component {
           <h6 id="best"><strong>Best dates & times</strong></h6>
           <div className="row">
             <div className="col s12">
-                {isBestTime ?
-                Object.keys(bestTimes).map(date => {
-                  return (
-                    <div>
-                      <p><i className="material-icons" styleName="material-icons">date_range</i>{date}</p>
-                      <p><i className="material-icons" styleName="material-icons">alarm</i>{bestTimes[date].join(", ")}</p>
-                      <hr />
-                    </div>
-                  )
-                }) : event.dates ?
-                <DayPicker
-                  className="alt"
-                  styleName="day-picker"
-                  fromMonth={new Date()}
-                  modifiers = { modifiers }
-                /> :
-                Object.keys(event.weekDays).map((day, index) => {
-                  let className = 'btn-flat alt';
-                  if (!event.weekDays[day]) {
-                    className += ' disabled';
-                  }
+              {isBestTime ?
+                Object.keys(bestTimes).map(date => (
+                  <div>
+                    <p>
+                      <i
+                        className="material-icons"
+                        styleName="material-icons"
+                      >date_range</i>{date}
+                    </p>
+                    <p>
+                      <i
+                        className="material-icons"
+                        styleName="material-icons"
+                      >alarm</i>
+                      {bestTimes[date].join(', ')}
+                    </p>
+                    <hr />
+                  </div>
+                )) : event.dates ?
+                  <DayPicker
+                    className="alt"
+                    styleName="day-picker"
+                    fromMonth={new Date()}
+                    modifiers={modifiers}
+                  /> :
+                  Object.keys(event.weekDays).map((day, index) => {
+                    let className = 'btn-flat alt';
+                    if (!event.weekDays[day]) {
+                      className += ' disabled';
+                    }
 
-                  return (
-                    <a
-                      id="alt"
-                      key={index}
-                      className={className}
-                      onClick={this.handleWeekdaySelect}
-                    >{day}</a>
-                  );
-                })
+                    return (
+                      <a
+                        id="alt"
+                        key={index}
+                        className={className}
+                        onClick={this.handleWeekdaySelect}
+                      >{day}</a>
+                    );
+                  })
               }
             </div>
           </div>

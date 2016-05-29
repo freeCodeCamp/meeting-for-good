@@ -1,9 +1,11 @@
 import React from 'react';
-import CSSModules from 'react-css-modules';
-import styles from '../styles/main';
-import EventCardMore from '../components/EventCardMore';
+import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
+
+import EventCardMore from '../components/EventCardMore';
 import { checkStatus, parseJSON } from '../util/fetch.util';
+
+import styles from '../styles/main.css';
 
 class EventDetails extends React.Component {
   constructor() {
@@ -12,21 +14,12 @@ class EventDetails extends React.Component {
   }
 
   componentDidMount() {
-    // fetch('/api/events')
-    //   .then(checkStatus)
-    //   .then(parseJSON)
-    //   .then(events => {
-    //     events.forEach(event => {
-    //       if (event.uid === this.props.params.uid) {
-    //         this.setState({ events: [event] });
-    //       }
-    //     });
-    //   });
-
-    //Change this to use UID (create new route on server)
-    $.get("/api/events/getbyuid", this.props.params.uid, event => {
-      this.setState({ events: event });
-    })
+    fetch(`/api/events/getbyuid/${this.props.params.uid}`)
+      .then(checkStatus)
+      .then(parseJSON)
+      .then(event => {
+        this.setState({ events: event });
+      });
   }
 
   render() {
@@ -42,4 +35,8 @@ class EventDetails extends React.Component {
   }
 }
 
-export default CSSModules(EventDetails, styles);
+EventDetails.propTypes = {
+  params: React.PropTypes.object,
+};
+
+export default cssModules(EventDetails, styles);

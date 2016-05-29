@@ -5,6 +5,7 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import moment from 'moment';
 import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 import React from 'react';
+import fetch from 'isomorphic-fetch';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -103,9 +104,10 @@ class NewEvent extends React.Component {
     if (ev.target.className.indexOf('disabled') > -1) {
       Materialize.toast('Please enter an event name!', 4000);
     } else {
-      let { eventName: name, ranges: dates, dateOrDay, weekDays, selectedTimeRange } = this.state;
+      const { eventName: name, ranges: dates, dateOrDay, weekDays } = this.state;
+      let { selectedTimeRange } = this.state;
       let sentData;
-      let fromUTC = moment(new Date()).format("Z").split(":")[0];
+      const fromUTC = moment(new Date()).format('Z').split(':')[0];
       if (dateOrDay) {
         sentData = JSON.stringify({ name, weekDays, selectedTimeRange });
       } else {
@@ -113,32 +115,34 @@ class NewEvent extends React.Component {
         selectedTimeRange = selectedTimeRange.map(time => {
           time = Number(time) - Number(fromUTC);
           return time;
-        })
-        dates.forEach(function(obj){
+        });
+        dates.forEach(obj => {
           Object.keys(obj).map(date => {
-            console.log(obj[date])
-            if(obj[date] !== null){
-              obj[date] = moment(obj[date]).format("YYYY-MM-DD")
+            console.log(obj[date]);
+            if (obj[date] !== null) {
+              obj[date] = moment(obj[date]).format('YYYY-MM-DD');
               sameDay = obj[date];
             } else {
               obj[date] = sameDay;
             }
-          })
-        })
+          });
+        });
         sentData = JSON.stringify({ name, dates, selectedTimeRange });
       }
 
-      $.ajax({
-        type: 'POST',
-        url: '/api/events',
-        data: sentData,
-        contentType: 'application/json',
-        dataType: 'json',
-        success: () => {},
-        error: () => Materialize.toast('An error occured. Please try again later.', 4000),
-      });
-
-      window.location.replace('/dashboard')
+      fetch('/api/events', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: sentData,
+        credentials: 'same-origin',
+      })
+      .then(() => window.location.replace('/dashboard'))
+      .catch(() =>
+        Materialize.toast('An error occured. Please try again later.', 4000)
+      );
     }
   }
 
@@ -199,8 +203,8 @@ class NewEvent extends React.Component {
                 <input
                   id="event_name"
                   type="text"
-                  value={ this.state.eventName }
-                  onChange={ this.handleEventNameChange }
+                  value={this.state.eventName}
+                  onChange={this.handleEventNameChange}
                   className="validate"
                 />
                 <label htmlFor="event_name">Event Name</label>
@@ -211,42 +215,42 @@ class NewEvent extends React.Component {
                 Specific Dates
                 <input
                   type="checkbox"
-                  onClick={ this.handleDateOrDay }
-                  checked={ this.state.dateOrDay }
+                  onClick={this.handleDateOrDay}
+                  checked={this.state.dateOrDay}
                 />
                 <span className="lever" />
                 Weekdays
               </label>
             </div>
-            { !this.state.dateOrDay ?
+            {!this.state.dateOrDay ?
               <div>
-                { from && to &&
+                {from && to &&
                   <p className="center">
                     <a
                       className="btn-flat"
                       href="#"
-                      onClick={ this.handleResetClick }
+                      onClick={this.handleResetClick}
                     >Reset</a>
                   </p>
                 }
                 <DayPicker
-                  fromMonth={ new Date() }
-                  modifiers = { modifiers }
-                  onDayClick={ this.handleDayClick }
+                  fromMonth={new Date()}
+                  modifiers={modifiers}
+                  onDayClick={this.handleDayClick}
                 />
               </div>
               : null
             }
-            { this.state.dateOrDay ?
+            {this.state.dateOrDay ?
               <div styleName="weekdayList">
                 {
                   weekDays.map((day, index) => (
                     <a
-                      key={ index }
+                      key={index}
                       className="btn-flat disabled"
-                      onClick={ this.handleWeekdaySelect }
-                      style={{cursor: "pointer"}}
-                    >{ day }</a>
+                      onClick={this.handleWeekdaySelect}
+                      style={{ cursor: 'pointer' }}
+                    >{day}</a>
                   ))
                 }
               </div>
