@@ -109,6 +109,10 @@ class NewEvent extends React.Component {
       let sentData;
       const fromUTC = moment(new Date()).format('Z').split(':')[0];
       if (dateOrDay) {
+        selectedTimeRange = selectedTimeRange.map(time => {
+          time = Number(time) - Number(fromUTC);
+          return time;
+        })
         sentData = JSON.stringify({ name, weekDays, selectedTimeRange });
       } else {
         let sameDay;
