@@ -24,48 +24,11 @@ class EventCard extends React.Component {
     }
 
     const fromUTC = moment(new Date()).format('Z').split(':')[0];
-    // Convert times back to client time
-    const timeRange = props.event.selectedTimeRange.map(time => {
-
-    let fromUTC = moment(new Date()).format("Z").split(":")[0];
 
     let timeRange = props.event.selectedTimeRange.map(time => {
       time = Number(time) + Number(fromUTC);
       return time;
     });
-
-    if (timeRange[0] < 0 && timeRange[1] < 0) {
-      console.log('<0');
-      props.event.dates.forEach(obj => {
-        Object.keys(obj).map(date => {
-          obj[date] = new Date(moment(new Date(obj[date])).subtract(1, 'days'));
-          return date;
-        });
-      });
-    }
-
-    if (timeRange[0] < 0 && timeRange[1] > 0) {
-      props.event.dates.forEach(() => {
-        props.event.dates.forEach(obj => {
-          obj.from = new Date(moment(new Date(obj.from)).subtract(1, 'days'));
-        });
-      });
-    }
-
-    if (timeRange[0] > 23 && timeRange[1] > 23) {
-      console.log('>23');
-      props.event.dates.forEach(obj => {
-        Object.keys(obj).map(date => {
-          obj[date] = new Date(moment(new Date(obj[date])).add(1, 'days'));
-          return date;
-        });
-      });
-    }
-
-    if (timeRange[0] < 23 && timeRange[1] > 23) {
-      props.event.dates.forEach(obj => {
-        obj.to = new Date(moment(new Date(obj.to)).add(1, 'days'));
-      });
 
     if(props.event.dates){
       if(timeRange[0] < 0 && timeRange[1] < 0){
