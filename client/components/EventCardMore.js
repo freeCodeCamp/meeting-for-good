@@ -1,12 +1,10 @@
 import React from 'react';
-import update from 'react-addons-update';
+import autobind from 'autobind-decorator';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
 import 'd3';
 import CalHeatMap from 'cal-heatmap/cal-heatmap.min.js';
-import AutoComplete from 'react-autocomplete';
-import fetch from 'isomorphic-fetch';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -79,19 +77,11 @@ class MeetingEvent extends React.Component {
     console.log(props.event.dates);
     console.log(timeRange);
 
-    this.deleteEvent = this.deleteEvent.bind(this);
-    this.showCalHeatmap = this.showCalHeatmap.bind(this);
-    this.submitAvailability = this.submitAvailability.bind(this);
-    this.showChooseUsers = this.showChooseUsers.bind(this);
-    this.addParticipant = this.addParticipant.bind(this);
-
     this.state = {
       event: props.event,
       ranges: props.event.dates,
       days: props.event.weekDays,
       timeRange,
-      participantPickerValue: '',
-      participants: [],
       user: {},
     };
   }
@@ -132,6 +122,7 @@ class MeetingEvent extends React.Component {
     });
   }
 
+  @autobind
   showCalHeatmap() {
     $('#cal-heatmap').removeClass('hide');
     $('#heatmap a').toggleClass('hide');
@@ -276,7 +267,7 @@ class MeetingEvent extends React.Component {
               j = j - 24;
             }
             if (j < 10) {
-              if ($(el).text() === ('0' + j)) {
+              if ($(el).text() === (`0${j}`)) {
                 $(el).parent().addClass('time-range');
               }
             } else {
@@ -340,6 +331,7 @@ class MeetingEvent extends React.Component {
     });
   }
 
+  @autobind
   submitAvailability() {
     const available = [];
     $('.graph-label').each((index, element) => {
@@ -436,6 +428,7 @@ class MeetingEvent extends React.Component {
     return Math.round(differenceMs / ONE_DAY) + 1;
   }
 
+  @autobind
   deleteEvent() {
     $.ajax({
       url: `/api/events/${this.state.event._id}`,
@@ -443,42 +436,6 @@ class MeetingEvent extends React.Component {
       error: () => Materialize.toast('An error occured. Please try again later.', 4000),
       success: () => { window.location.href = '/'; },
     });
-  }
-
-  showChooseUsers() {
-    $('#addParticipant').removeClass('hide');
-    $('#inviteUser').addClass('hide');
-  }
-
-  addParticipant(participantName) {
-    this.setState({ participantPickerValue: participantName });
-
-    let participants = JSON.parse(JSON.stringify(this.state.participants));
-    const participant = participants.find(participant => participant.name === participantName);
-
-    const event = update(this.state.event, {
-      participants: { $push: [participant] },
-    });
-
-    const sentData = JSON.stringify(event);
-
-    participants = participants.filter(user => participant.name !== user.name);
-
-    fetch(`/api/events/${event._id}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-      body: sentData,
-      credentials: 'same-origin',
-    })
-    .then(() => {
-      this.setState({ event, participants, participantPickerValue: '' });
-    })
-    .catch(() =>
-      Materialize.toast('An error occured. Please try again later.', 4000)
-    );
   }
 
   render() {
@@ -548,35 +505,16 @@ class MeetingEvent extends React.Component {
             >Submit</a>
           </div>
           <br />
-          <div className="center">
-            <div id="addParticipant" className="hide">
-              <AutoComplete
-                value={this.state.participantPickerValue}
-                items={this.state.participants}
-                onSelect={this.addParticipant}
-                onChange={(ev, participantPickerValue) => this.setState({ participantPickerValue })}
-                renderItem={(item, isHighlighted) => {
-                  if (isHighlighted) {
-                    return <div className="teal white-text">{item.name}</div>;
-                  }
-                  return <div>{item.name}</div>;
-                }}
-                getItemValue={item => item.name}
-              />
-            </div>
-            <br />
-            <a
-              id="inviteUser"
-              onClick={this.showChooseUsers}
-              className="waves-effect waves-light btn"
-            >Invite a user</a>
-          </div>
-          <br />
           <div>
             <h6><strong>Participants</strong></h6>
             {event.participants.map((participant, index) => (
               <div className="participant" styleName="participant" key={index}>
-                <img className="circle" styleName="participant-img" src={participant.avatar} />
+                <img
+                  className="circle"
+                  styleName="participant-img"
+                  src={participant.avatar}
+                  alt="participant avatar"
+                />
                 {participant.name}
               </div>
             ))}
