@@ -300,19 +300,20 @@ class EventCard extends React.Component {
               {isBestTime ?
                 Object.keys(bestTimes).map(date => (
                   <div>
-                    <p>
+                    <div styleName="bestTimeDate">
                       <i
                         className="material-icons"
                         styleName="material-icons"
-                      >date_range</i>{date}
-                    </p>
-                    <p>
+                      >date_range</i>
+                      {date}
+                    </div>
+                    <div styleName="bestTime">
                       <i
                         className="material-icons"
                         styleName="material-icons"
                       >alarm</i>
                       {bestTimes[date].join(', ')}
-                    </p>
+                    </div>
                     <hr />
                   </div>
                 )) : event.dates ?
@@ -341,7 +342,7 @@ class EventCard extends React.Component {
             </div>
           </div>
           <br />
-          <div className="participant-list" styleName="main">
+          <div className="participant-list">
             <h6><strong>Participants</strong></h6>
             {event.participants.map((participant, index) => (
               <div className="participant" styleName="participant" key={index}>
@@ -351,7 +352,7 @@ class EventCard extends React.Component {
             ))}
           </div>
         </div>
-        <div className="card-action" styleName="card-action">
+        <div className="card-action">
           <a href={`/event/${event.uid}`}>View Details</a>
         </div>
       </div>

@@ -1,13 +1,6 @@
 .event {
   margin: 1% 1%;
   width: 23%;
-  height: 645px;
-}
-
-.card-action {
-  position: absolute !important;
-  bottom: 0;
-  width: 100%;
 }
 
 .event-details {
@@ -15,15 +8,22 @@
     margin: 0 auto;
 }
 
+.bestTimeDate {
+  margin: 10px 0;
+}
+
+.bestTime {
+  margin: 10px 0;
+}
+
 hr {
   width: 50px;
-  margin: 0 auto;
-  margin-top: 10px;
+  margin: 25px auto;
 }
 
 .material-icons {
   vertical-align: bottom !important;
-  margin-left: 5px !important;
+  margin: auto 5px !important;
 }
 
 .participant {
@@ -43,11 +43,6 @@ hr {
 
 .day-picker {
   outline: none;
-}
-
-.main {
-  position: absolute;
-  top: 390px;
 }
 
 .delete-event {
