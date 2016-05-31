@@ -377,6 +377,8 @@ class MeetingEvent extends React.Component {
     const fromUTC = moment(new Date()).format('Z').split(':')[0];
 
     const length = available.length;
+    const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
     for (let i = 0; i < length; i++) {
       const pos = available.length;
       for (let j = 0; j < available[i].hours.length; j++) {
@@ -385,7 +387,8 @@ class MeetingEvent extends React.Component {
           if (available[pos] === undefined) {
             available[pos] = {};
             available[pos].date = '';
-            available[pos].date = moment(available[i].date).add(1, 'days').format('DD MMM');
+            if(this.state.ranges) available[pos].date = moment(available[i].date).add(1, 'days').format('DD MMM');
+            if(this.state.days) available[pos].date = moment(new Date(1970,5,days.indexOf(available[i].date.toLowerCase()) + 1)).add(1, "days").format("dddd")
             available[pos].hours = [];
             available[pos].hours.push(available[i].hours[j] - 24);
             available[i].hours.splice(j, 1);
@@ -399,7 +402,8 @@ class MeetingEvent extends React.Component {
           if (available[pos] === undefined) {
             available[pos] = {};
             available[pos].date = '';
-            available[pos].date = moment(available[i].date).subtract(1, 'days').format('DD MMM');
+            if(this.state.ranges) available[pos].date = moment(available[i].date).subtract(1, 'days').format('DD MMM');
+            if(this.state.days) available[pos].date = moment(new Date(1970,5,days.indexOf(available[i].date.toLowerCase()) + 1)).subtract(1, "days").format("dddd")
             available[pos].hours = [];
             available[pos].hours.push(24 + available[i].hours[j]);
             available[i].hours.splice(j, 1);

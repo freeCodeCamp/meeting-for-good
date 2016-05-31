@@ -74,7 +74,7 @@ class EventCard extends React.Component {
         Object.keys(props.event.weekDays).map(day => {
           if(props.event.weekDays[day]){
             props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day)))).format("dddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("dddd").toLowerCase()];
+            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day)))).format("ddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
           }
           return day;
         })
@@ -84,7 +84,7 @@ class EventCard extends React.Component {
         Object.keys(props.event.weekDays).map(day => {
           if(props.event.weekDays[day]){
             props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("dddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("dddd").toLowerCase()];
+            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("ddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
           }
           return day;
         })
@@ -94,7 +94,7 @@ class EventCard extends React.Component {
         Object.keys(props.event.weekDays).map(day => {
           if(props.event.weekDays[day]){
             props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("dddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("dddd").toLowerCase()];
+            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("ddd").toLowerCse()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
           }
           return day;
         })
@@ -104,7 +104,7 @@ class EventCard extends React.Component {
         Object.keys(props.event.weekDays).map(day => {
           if(props.event.weekDays[day]){
             props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("dddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("dddd").toLowerCase()];
+            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("ddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
           }
           return day;
         })
