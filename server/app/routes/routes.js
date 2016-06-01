@@ -16,6 +16,14 @@ const generateID = () => {
   return ID;
 };
 
+const isAuthenticated = (req, res, next) => {
+  if(req.isAuthenticated())
+    return next()
+
+  res.send("Authentiation required.");
+}
+
+
 export default (app) => {
   /*
   ....###....########..####..######.
@@ -74,13 +82,13 @@ export default (app) => {
 
   /* meeetings API*/
   app.route('/api/events')
-    .get((req, res) => {
+    .get(isAuthenticated, (req, res) => {
       Event.find((err, events) => {
         if (err) res.status(500).send(err);
         return res.status(200).json(events);
       });
     })
-    .post((req, res) => {
+    .post(isAuthenticated, (req, res) => {
       const name = (req.user.facebook.username ||
                       req.user.github.username ||
                       req.user.local.username);
@@ -99,14 +107,14 @@ export default (app) => {
     });
 
   app.route('/api/events/:id')
-    .get((req, res) => {
+    .get(isAuthenticated, (req, res) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
         if (!event) return res.status(404).send('Not found.');
         return res.status(200).json(event);
       });
     })
-    .put((req, res) => {
+    .put(isAuthenticated, (req, res) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
         if (!event) return res.status(404).send('Not found.');
@@ -118,7 +126,7 @@ export default (app) => {
         });
       });
     })
-    .delete((req, res) => {
+    .delete(isAuthenticated, (req, res) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
         if (!event) return res.status(404).send('Not found.');
@@ -131,7 +139,7 @@ export default (app) => {
     });
 
   app.route('/api/events/:id/updateAvail')
-    .put((req, res) => {
+    .put(isAuthenticated, (req, res) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
         if (!event) return res.status(404).send('Not found.');
@@ -199,13 +207,13 @@ export default (app) => {
 
   /* users API */
   app.route('/api/users')
-    .get((req, res) => {
+    .get(isAuthenticated, (req, res) => {
       User.find((err, users) => {
         if (err) res.status(500).send(err);
         return res.status(200).json(users);
       });
     })
-    .post((req, res) => {
+    .post(isAuthenticated, (req, res) => {
       User.create(req.body, (err, user) => {
         if (err) return res.status(500).send(err);
         return res.status(201).json(user);
@@ -213,14 +221,14 @@ export default (app) => {
     });
 
   app.route('/api/users/:id')
-    .get((req, res) => {
+    .get(isAuthenticated, (req, res) => {
       User.findById(req.params.id, (err, user) => {
         if (err) return res.status(500).send(err);
         if (!user) return res.status(404).send('Not found.');
         return res.status(200).json(user);
       });
     })
-    .put((req, res) => {
+    .put(isAuthenticated, (req, res) => {
       User.findById(req.params.id, (err, user) => {
         if (err) return res.status(500).send(err);
         if (!user) return res.status(404).send('Not found.');
@@ -232,7 +240,7 @@ export default (app) => {
         });
       });
     })
-    .delete((req, res) => {
+    .delete(isAuthenticated, (req, res) => {
       User.findById(req.params.id, (err, user) => {
         if (err) return res.status(500).send(err);
         if (!user) return res.status(404).send('Not found.');
@@ -245,7 +253,7 @@ export default (app) => {
     });
 
   app.route('/api/users/current/events')
-    .get((req, res) => {
+    .get(isAuthenticated, (req, res) => {
       const username = (req.user.facebook.username ||
                         req.user.github.username ||
                         req.user.local.username);
@@ -256,7 +264,7 @@ export default (app) => {
     });
 
   app.route('/api/sendEmail')
-    .post((req, res) => {
+    .post(isAuthenticated, (req, res) => {
       sendEmail(req.body.message, (err, info) => {
         if (err) return res.status(500).send(err);
         return res.status(200).json(info);
