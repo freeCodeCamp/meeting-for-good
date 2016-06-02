@@ -1,8 +1,10 @@
 /* vendor dependencies */
 import React from 'react';
+import update from 'react-addons-update';
 import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
+import autobind from 'autobind-decorator';
 
 /* external components */
 import EventCard from '../components/EventCard';
@@ -38,6 +40,13 @@ class Dashboard extends React.Component {
       .then(user => { if (user === '') window.location.href = '/'; });
   }
 
+  @autobind
+  removeEventFromDashboard(eventId) {
+    this.setState({
+      events: this.state.events.filter(event => event._id !== eventId),
+    });
+  }
+
   render() {
     return (
       <div styleName="wrapper">
@@ -50,7 +59,11 @@ class Dashboard extends React.Component {
         { /* Card Template */ }
         <Masonry>
           {this.state.events.map(event => (
-            <EventCard key={event._id} event={event} />
+            <EventCard
+              key={event._id}
+              event={event}
+              removeEventFromDashboard={this.removeEventFromDashboard}
+            />
           ))}
         </Masonry>
       </div>

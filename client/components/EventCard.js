@@ -2,6 +2,7 @@ import React from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
+import autobind from 'autobind-decorator';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -25,100 +26,105 @@ class EventCard extends React.Component {
 
     const fromUTC = moment(new Date()).format('Z').split(':')[0];
 
-    let timeRange = props.event.selectedTimeRange.map(time => {
+    const timeRange = props.event.selectedTimeRange.map(time => {
       time = Number(time) + Number(fromUTC);
       return time;
     });
 
-    if(props.event.dates){
-      if(timeRange[0] < 0 && timeRange[1] < 0){
-        console.log("<0");
+    if (props.event.dates) {
+      if (timeRange[0] < 0 && timeRange[1] < 0) {
+        console.log('<0');
         props.event.dates.forEach(obj => {
           Object.keys(obj).map(date => {
-            obj[date] = new Date(moment(new Date(obj[date])).subtract(1,'days'));
+            obj[date] = new Date(moment(new Date(obj[date])).subtract(1, 'days'));
             return date;
-          })
-        })
+          });
+        });
       }
 
-      if(timeRange[0] < 0 && timeRange[1] > 0){
-        props.event.dates.forEach(obj => {
+      if (timeRange[0] < 0 && timeRange[1] > 0) {
+        props.event.dates.forEach(() => {
           props.event.dates.forEach(obj => {
-            obj["from"] = new Date(moment(new Date(obj["from"])).subtract(1,'days'));
-          })
-        })
+            obj.from = new Date(moment(new Date(obj.from)).subtract(1, 'days'));
+          });
+        });
       }
 
-      if(timeRange[0] > 23 && timeRange[1] > 23){
-        console.log(">23");
+      if (timeRange[0] > 23 && timeRange[1] > 23) {
+        console.log('>23');
         props.event.dates.forEach(obj => {
           Object.keys(obj).map(date => {
-            obj[date] = new Date(moment(new Date(obj[date])).add(1,'days'));
+            obj[date] = new Date(moment(new Date(obj[date])).add(1, 'days'));
             return date;
-          })
-        })
+          });
+        });
       }
 
-      if(timeRange[0] < 23 && timeRange[1] > 23){
+      if (timeRange[0] < 23 && timeRange[1] > 23) {
         props.event.dates.forEach(obj => {
-          obj["to"] = new Date(moment(new Date(obj["to"])).add(1,'days'));
-        })
+          obj.to = new Date(moment(new Date(obj.to)).add(1, 'days'));
+        });
       }
     }
 
-    if(props.event.weekDays){
-      const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+    if (props.event.weekDays) {
+      const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
-      if(timeRange[0] < 0 && timeRange[1] < 0){
-        console.log("<0");
+      if (timeRange[0] < 0 && timeRange[1] < 0) {
+        console.log('<0');
         Object.keys(props.event.weekDays).map(day => {
-          if(props.event.weekDays[day]){
-            props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day)))).format("ddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
+          if (props.event.weekDays[day]) {
+            props.event.weekDays[day] = !props.event.weekDays[day];
+            props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day)))).format('ddd').toLowerCase()] = !props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day) + 1))).format('ddd').toLowerCase()];
           }
           return day;
-        })
+        });
       }
 
-      if(timeRange[0] < 0 && timeRange[1] > 0){
+      if (timeRange[0] < 0 && timeRange[1] > 0) {
         Object.keys(props.event.weekDays).map(day => {
-          if(props.event.weekDays[day]){
-            props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("ddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
+          if (props.event.weekDays[day]) {
+            props.event.weekDays[day] = !props.event.weekDays[day];
+            props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day) + 2))).format('ddd').toLowerCase()] = !props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day) + 1))).format('ddd').toLowerCase()];
           }
           return day;
-        })
+        });
       }
 
-      if(timeRange[0] > 23 && timeRange[1] > 23){
+      if (timeRange[0] > 23 && timeRange[1] > 23) {
         Object.keys(props.event.weekDays).map(day => {
-          if(props.event.weekDays[day]){
-            props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("ddd").toLowerCse()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
+          if (props.event.weekDays[day]) {
+            props.event.weekDays[day] = !props.event.weekDays[day];
+            props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day) + 2))).format('ddd').toLowerCse()] = !props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day) + 1))).format('ddd').toLowerCase()];
           }
           return day;
-        })
+        });
       }
 
-      if(timeRange[0] < 23 && timeRange[1] > 23){
+      if (timeRange[0] < 23 && timeRange[1] > 23) {
         Object.keys(props.event.weekDays).map(day => {
-          if(props.event.weekDays[day]){
-            props.event.weekDays[day] = !props.event.weekDays[day]
-            props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("ddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("ddd").toLowerCase()];
+          if (props.event.weekDays[day]) {
+            props.event.weekDays[day] = !props.event.weekDays[day];
+            props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day) + 2))).format('ddd').toLowerCase()] = !props.event.weekDays[moment(new Date(1970, 5, (days.indexOf(day) + 1))).format('ddd').toLowerCase()];
           }
           return day;
-        })
+        });
       }
-
     }
 
     this.state = {
       participants: props.event.participants,
       ranges: props.event.dates,
+      event: props.event,
+      user: {},
     };
   }
 
   componentDidMount() {
+    $.get('/api/auth/current', user => {
+      if (user !== '') this.setState({ user });
+    });
+
     $('.participant-list').each((i, el) => {
       if ($(el).children().length === 1) {
         $(el).append('<em>No one has been added yet.</em>');
@@ -263,6 +269,18 @@ class EventCard extends React.Component {
     }, 100);
   }
 
+  @autobind
+  deleteEvent() {
+    $.ajax({
+      url: `/api/events/${this.state.event._id}`,
+      type: 'DELETE',
+      error: () => Materialize.toast('An error occured. Please try again later.', 4000),
+      success: () => {
+        this.props.removeEventFromDashboard(this.state.event._id);
+      },
+    });
+  }
+
   convertTime(num) {
     let result;
     if (num < 10) {
@@ -280,18 +298,37 @@ class EventCard extends React.Component {
         this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
     };
 
-    const { event } = this.props;
-    const { bestTimes } = this.state;
+    const { event, user, bestTimes } = this.state;
     let isBestTime;
+
     if (bestTimes !== undefined) {
       if (Object.keys(bestTimes).length > 0) isBestTime = true;
       else isBestTime = false;
-    } else isBestTime = false;
+    } else {
+      isBestTime = false;
+    }
+
+    let isOwner;
+
+    if (user !== undefined) {
+      if (user.github) isOwner = event.owner === user.github.username;
+      else if (user.facebook) isOwner = event.owner === user.facebook.username;
+      else if (user.local) isOwner = event.owner === user.local.username;
+    }
 
     console.log(event);
 
     return (
       <div className="card" styleName="event">
+        {
+          isOwner ?
+            <a
+              className="btn-floating btn-large waves-effect waves-light red"
+              styleName="delete-event"
+              onClick={this.deleteEvent}
+            ><i className="material-icons">delete</i></a>
+            : null
+        }
         <div className="card-content">
           <span className="card-title">{event.name}</span>
           <h6 id="best"><strong>Best dates & times</strong></h6>
@@ -362,6 +399,7 @@ class EventCard extends React.Component {
 
 EventCard.propTypes = {
   event: React.PropTypes.object,
+  removeEventFromDashboard: React.PropTypes.func,
 };
 
 export default cssModules(EventCard, styles);
