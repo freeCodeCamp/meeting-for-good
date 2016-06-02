@@ -1,5 +1,7 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WriteFilePlugin   = require('write-file-webpack-plugin');
 const webpack           = require('webpack');
+const path              = require('path');
 
 module.exports = {
   entry: [
@@ -7,17 +9,20 @@ module.exports = {
     './client/client.js',
   ],
   output: {
-    path: require('path').resolve('./build/client'),
+    path: path.resolve('./build/client'),
     filename: 'bundle.js',
     publicPath: '/client/',
   },
   plugins: [
     new CopyWebpackPlugin([
       {
-        from: './client/index.dev.html',
-        to: '../index.html',
+        from: path.join(__dirname, 'client/index.dev.html'),
+        to: path.join(__dirname, 'build/index.html'),
       },
     ]),
+    new WriteFilePlugin({
+      test: /\.html$/,
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
