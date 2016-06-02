@@ -55,25 +55,44 @@ class NewEvent extends React.Component {
 
   @autobind
   handleDayClick(e, day) {
-    const ranges = Object.keys(this.state.ranges).map(i => this.state.ranges[i]);
+    let ranges = Object.keys(this.state.ranges).map(i => this.state.ranges[i]);
+
+    function removeRange(ranges, range) {
+      const newRange = ranges.filter(r => !_.isEqual(r, range));
+      if (newRange.length === 0) {
+        return [{
+          from: null,
+          to: null,
+        }];
+      }
+      return newRange;
+    }
     // Check if day already exists in a range. If yes, remove it from all the
     // ranges that it exists in.
     for (const range of ranges) {
       if (DateUtils.isDayInRange(day, range)) {
         const { from, to } = range;
+        const yesterday = moment(day).subtract(1, 'd')._d;
+        const tomorrow = moment(day).add(1, 'd')._d;
+
+        if (!DateUtils.isDayInRange(yesterday, range) && !DateUtils.isDayInRange(tomorrow, range)) {
+          ranges = removeRange(ranges, range);
+          continue;
+        }
 
         if (!moment(day).isSame(from)) {
           ranges.push({
-            from, to: moment(day).subtract(1, 'd')._d,
+            from, to: yesterday,
           });
         }
 
         if (!moment(day).isSame(to)) {
           ranges.push({
-            from: moment(day).add(1, 'd')._d, to,
+            from: tomorrow, to,
           });
         }
-        _.remove(ranges, r => r === range);
+
+        ranges = removeRange(ranges, range);
       }
     }
 
@@ -114,10 +133,7 @@ class NewEvent extends React.Component {
       let sentData;
       const fromUTC = moment(new Date()).format('Z').split(':')[0];
       if (dateOrDay) {
-        selectedTimeRange = selectedTimeRange.map(time => {
-          time = Number(time) - Number(fromUTC);
-          return time;
-        })
+        selectedTimeRange = selectedTimeRange.map(time => Number(time) - Number(fromUTC));
         sentData = JSON.stringify({ name, weekDays, selectedTimeRange });
       } else {
         let sameDay;
