@@ -115,13 +115,9 @@ class MeetingEvent extends React.Component {
             props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 2))).format("dddd").toLowerCase()] = !props.event.weekDays[moment(new Date(1970,5,(days.indexOf(day) + 1))).format("dddd").toLowerCase()];
           }
           return day;
-        })
+        });
       }
-
     }
-
-    console.log(props.event.dates);
-    console.log(timeRange);
 
     const eventParticipantsIds = props.event.participants.map(participant => participant._id);
 
@@ -523,6 +519,15 @@ class MeetingEvent extends React.Component {
       else if (user.local) isOwner = event.owner === user.local.username;
     }
 
+    let maxDate;
+    let minDate;
+
+    if (this.state.ranges) {
+      const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
+      maxDate = new Date(Math.max.apply(null, dateInRanges));
+      minDate = new Date(Math.min.apply(null, dateInRanges));
+    }
+
     return (
       <div className="card meeting" styleName="event-details">
       {
@@ -540,7 +545,9 @@ class MeetingEvent extends React.Component {
             <div className="col s12">
               {event.dates ?
                 <DayPicker
-                  fromMonth={new Date()}
+                  initialMonth={minDate}
+                  fromMonth={minDate}
+                  toMonth={maxDate}
                   modifiers={modifiers}
                 /> :
                 Object.keys(event.weekDays).map((day, index) => {

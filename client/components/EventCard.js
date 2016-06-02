@@ -3,6 +3,7 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
+import _ from 'lodash';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -316,7 +317,15 @@ class EventCard extends React.Component {
       else if (user.local) isOwner = event.owner === user.local.username;
     }
 
-    console.log(event);
+    // Get maximum and minimum month from the selected dates to limit the daypicker to those months
+    let maxDate;
+    let minDate;
+
+    if (this.state.ranges) {
+      const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
+      maxDate = new Date(Math.max.apply(null, dateInRanges));
+      minDate = new Date(Math.min.apply(null, dateInRanges));
+    }
 
     return (
       <div className="card" styleName="event">
@@ -357,7 +366,9 @@ class EventCard extends React.Component {
                   <DayPicker
                     className="alt"
                     styleName="day-picker"
-                    fromMonth={new Date()}
+                    initialMonth={minDate}
+                    fromMonth={minDate}
+                    toMonth={maxDate}
                     modifiers={modifiers}
                   /> :
                   Object.keys(event.weekDays).map((day, index) => {
