@@ -5,23 +5,11 @@ import passport from 'passport';
 import _ from 'lodash';
 import sendEmail from '../config/email';
 
-const generateID = () => {
-  let ID = '';
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  for (let i = 0; i < 6; i++) {
-    ID += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-
-  return ID;
-};
-
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next();
 
   res.send('Authentiation required.');
 };
-
 
 export default (app) => {
   /*
@@ -98,7 +86,6 @@ export default (app) => {
 
       req.body.participants = [{ name, avatar, _id }];
       req.body.owner = name;
-      req.body.uid = generateID();
       Event.create(req.body, (err, event) => {
         if (err) return res.status(500).send(err);
         return res.status(201).json(event);
