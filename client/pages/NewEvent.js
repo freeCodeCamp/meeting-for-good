@@ -16,7 +16,7 @@ class NewEvent extends React.Component {
     super();
     this.state = {
       ranges: [{ from: null, to: null }],
-      eventName: null,
+      eventName: '',
       weekDays: {
         mon: false,
         tue: false,
