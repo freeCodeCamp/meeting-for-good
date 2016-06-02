@@ -502,7 +502,7 @@ class MeetingEvent extends React.Component {
       url: `/api/events/${this.state.event._id}`,
       type: 'DELETE',
       error: () => Materialize.toast('An error occured. Please try again later.', 4000),
-      success: () => { window.location.href = '/'; },
+      success: () => { window.location.href = '/dashboard'; },
     });
   }
 
@@ -532,7 +532,7 @@ class MeetingEvent extends React.Component {
             styleName="delete-event"
             onClick={this.deleteEvent}
           ><i className="material-icons">delete</i></a>
-          : ''
+          : null
       }
         <div className="card-content">
           <span className="card-title">{event.name}</span>
