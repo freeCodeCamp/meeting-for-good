@@ -17,11 +17,10 @@ const generateID = () => {
 };
 
 const isAuthenticated = (req, res, next) => {
-  if(req.isAuthenticated())
-    return next()
+  if (req.isAuthenticated()) return next();
 
-  res.send("Authentiation required.");
-}
+  res.send('Authentiation required.');
+};
 
 
 export default (app) => {
@@ -212,12 +211,6 @@ export default (app) => {
         if (err) res.status(500).send(err);
         return res.status(200).json(users);
       });
-    })
-    .post(isAuthenticated, (req, res) => {
-      User.create(req.body, (err, user) => {
-        if (err) return res.status(500).send(err);
-        return res.status(201).json(user);
-      });
     });
 
   app.route('/api/users/:id')
@@ -232,22 +225,12 @@ export default (app) => {
       User.findById(req.params.id, (err, user) => {
         if (err) return res.status(500).send(err);
         if (!user) return res.status(404).send('Not found.');
+        if (user._id !== req.user._id) return res.status(550).send('Permission denied.');
 
         const updated = _.extend(user, req.body);
         updated.save(err => {
           if (err) return res.status(500).send(err);
           return res.status(200).json(user);
-        });
-      });
-    })
-    .delete(isAuthenticated, (req, res) => {
-      User.findById(req.params.id, (err, user) => {
-        if (err) return res.status(500).send(err);
-        if (!user) return res.status(404).send('Not found.');
-
-        user.remove(err => {
-          if (err) return res.status(500).send(err);
-          return res.status(204).send('No Content');
         });
       });
     });
