@@ -16,7 +16,7 @@ class NewEvent extends React.Component {
     super();
     this.state = {
       ranges: [{ from: null, to: null }],
-      eventName: null,
+      eventName: '',
       weekDays: {
         mon: false,
         tue: false,
@@ -126,6 +126,19 @@ class NewEvent extends React.Component {
 
   @autobind
   createEvent(ev) {
+    function generateID() {
+      let ID = '';
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+      for (let i = 0; i < 6; i++) {
+        ID += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      return ID;
+    }
+
+    const uid = generateID();
+
     if (ev.target.className.indexOf('disabled') > -1) {
       Materialize.toast('Please enter an event name!', 4000);
     } else {
@@ -135,7 +148,7 @@ class NewEvent extends React.Component {
       const fromUTC = moment(new Date()).format('Z').split(':')[0];
       if (dateOrDay) {
         selectedTimeRange = selectedTimeRange.map(time => Number(time) - Number(fromUTC));
-        sentData = JSON.stringify({ name, weekDays, selectedTimeRange });
+        sentData = JSON.stringify({ uid, name, weekDays, selectedTimeRange });
       } else {
         let sameDay;
         selectedTimeRange = selectedTimeRange.map(time => {
@@ -153,7 +166,7 @@ class NewEvent extends React.Component {
             }
           });
         });
-        sentData = JSON.stringify({ name, dates, selectedTimeRange });
+        sentData = JSON.stringify({ uid, name, dates, selectedTimeRange });
       }
 
       fetch('/api/events', {
@@ -165,7 +178,7 @@ class NewEvent extends React.Component {
         body: sentData,
         credentials: 'same-origin',
       })
-      .then(() => window.location.replace('/dashboard'))
+      .then(() => window.location.replace(`/event/${uid}`))
       .catch(() =>
         Materialize.toast('An error occured. Please try again later.', 4000)
       );
