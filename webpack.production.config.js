@@ -24,6 +24,9 @@ module.exports = {
     publicPath: '/client/',
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"',
+    }),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash].js'),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',

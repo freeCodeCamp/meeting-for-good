@@ -13,7 +13,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import EventDetails from './pages/EventDetails';
-import NewEvent from './components/NewEvent';
+import NewEvent from './pages/NewEvent';
 
 render((
   <Router history={browserHistory}>
