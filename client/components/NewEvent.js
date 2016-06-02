@@ -221,7 +221,7 @@ class NewEvent extends React.Component {
     return (
       <div className="card" styleName="new-event-card">
         <div className="card-content">
-          <span className="card-title">New Event</span>
+          <span className="card-title">Create a new event</span>
           <form>
             <div className="row">
               <div className="input-field col s12">
@@ -249,6 +249,7 @@ class NewEvent extends React.Component {
             </div>
             {!this.state.dateOrDay ?
               <div>
+                <h6 styleName="heading-dates">What dates might work?</h6>
                 {from && to &&
                   <p className="center">
                     <a
@@ -262,25 +263,26 @@ class NewEvent extends React.Component {
                   fromMonth={new Date()}
                   modifiers={modifiers}
                   onDayClick={this.handleDayClick}
+                  styleName="daypicker"
                 />
+              </div> :
+              <div>
+                <h6 styleName="heading">What days might work?</h6>
+                <div styleName="weekdayList">
+                  {
+                    weekDays.map((day, index) => (
+                      <a
+                        key={index}
+                        className="btn-flat disabled"
+                        onClick={this.handleWeekdaySelect}
+                        style={{ cursor: 'pointer' }}
+                      >{day}</a>
+                    ))
+                  }
+                </div>
               </div>
-              : null
             }
-            {this.state.dateOrDay ?
-              <div styleName="weekdayList">
-                {
-                  weekDays.map((day, index) => (
-                    <a
-                      key={index}
-                      className="btn-flat disabled"
-                      onClick={this.handleWeekdaySelect}
-                      style={{ cursor: 'pointer' }}
-                    >{day}</a>
-                  ))
-                }
-              </div>
-              : null
-            }
+            <h6 styleName="heading">What times might work?</h6>
             <div id="timeSlider" />
             <br />
             <p className="center">
