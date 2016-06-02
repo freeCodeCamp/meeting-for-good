@@ -54,7 +54,8 @@ class NewEvent extends React.Component {
   }
 
   @autobind
-  handleDayClick(e, day) {
+  handleDayClick(e, day, { disabled }) {
+    if (disabled) return;
     let ranges = Object.keys(this.state.ranges).map(i => this.state.ranges[i]);
 
     function removeRange(ranges, range) {
@@ -261,6 +262,7 @@ class NewEvent extends React.Component {
                 }
                 <DayPicker
                   fromMonth={new Date()}
+                  disabledDays={DateUtils.isPastDay}
                   modifiers={modifiers}
                   onDayClick={this.handleDayClick}
                   styleName="daypicker"
