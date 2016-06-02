@@ -14,7 +14,6 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import EventDetails from './pages/EventDetails';
 import NewEvent from './pages/NewEvent';
-import Home from './pages/Home';
 
 render((
   <Router history={browserHistory}>
