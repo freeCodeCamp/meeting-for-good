@@ -4,6 +4,11 @@ import CSSModules from 'react-css-modules';
 import styles from '../styles/auth';
 
 class Login extends React.Component {
+  componentDidMount(){
+    $.get('/api/auth/current', user => {
+      if (user !== "") window.location.href = '/dashboard';
+    });
+  }
   render() {
     return (
       <div className="card" styleName="card">
@@ -35,7 +40,10 @@ class Login extends React.Component {
             </a>
             </p>
             <p>
-              <a className="waves-effect waves-light btn blue darken-4">Login with Facebook</a>
+              <a
+                href="/api/auth/facebook"
+                className="waves-effect waves-light btn blue darken-4"
+              >Login with Facebook</a>
             </p>
           </div>
         </div>

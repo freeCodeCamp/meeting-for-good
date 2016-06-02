@@ -9,6 +9,7 @@ module.exports = {
   output: {
     path: require('path').resolve('./build/client'),
     filename: 'bundle.js',
+    publicPath: '/client/',
   },
   plugins: [
     new CopyWebpackPlugin([
@@ -33,10 +34,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        exclude: [/node_modules/],
         loaders: [
           'style?sourceMap',
           'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
         ],
+      },
+      {
+        test: /\.css$/,
+        include: [/node_modules/],
+        loaders: ['style?sourceMap', 'css'],
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,

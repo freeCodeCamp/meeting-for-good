@@ -1,97 +1,74 @@
+/* vendor dependencies */
 import React from 'react';
-import moment from 'moment';
+import update from 'react-addons-update';
 import fetch from 'isomorphic-fetch';
-import CSSModules from 'react-css-modules';
+import cssModules from 'react-css-modules';
+import Masonry from 'react-masonry-component';
+import autobind from 'autobind-decorator';
 
-import styles from '../styles/dashboard';
+/* external components */
+import EventCard from '../components/EventCard';
 
+/* styles */
+import styles from '../styles/dashboard.css';
+
+/* utilities */
 import { checkStatus, parseJSON } from '../util/fetch.util';
 
 class Dashboard extends React.Component {
   constructor() {
     super();
     this.state = {
-      meetings: [],
+      events: [],
+      user: {},
     };
   }
 
   componentDidMount() {
-    fetch('/api/meetings')
-        .then(checkStatus)
-        .then(parseJSON)
-        .then(meetings => {
-      this.setState({ meetings });
+    $(document).ready(() => {
+      $('.modal-trigger').leanModal();
     });
 
-    $.get('/api/auth/current', user => {
-      if (user === '') window.location.href = '/';
+    fetch('/api/users/current/events', { credentials: 'same-origin' })
+      .then(checkStatus)
+      .then(parseJSON)
+      .then(events => this.setState({ events }));
+
+    fetch('/api/auth/current', { credentials: 'same-origin' })
+      .then(checkStatus)
+      .then(parseJSON)
+      .then(user => { if (user === '') window.location.href = '/'; });
+  }
+
+  @autobind
+  removeEventFromDashboard(eventId) {
+    this.setState({
+      events: this.state.events.filter(event => event._id !== eventId),
     });
   }
 
   render() {
     return (
       <div styleName="wrapper">
-        <div className="card hoverable" styleName="new-meeting">
-          <div className="card-content">
-              <i
-                className="material-icons activator large"
-                styleName="new-meeting-icon"
-              >
-                note_add
-              </i>
-          </div>
-          <div className="card-reveal">
-            <span className="card-title" styleName="reveal-card-title">
-              New Meeting
-              <i className="material-icons right">close</i>
-            </span>
-            <form>
-              <div className="row">
-                <div className="col s12">
-                  <div className="input-field">
-                    <input id="name" type="text" className="validate" />
-                    <label htmlFor="name">Meeting Name</label>
-                  </div>
-                  <input type="date" className="datepicker" />
-                </div>
-              </div>
-            </form>
-            <div className="card-action">
-              <a href="#">Submit</a>
-            </div>
-          </div>
+        { /* New Event Icon */ }
+        <div className="fixed-action-btn" styleName="new-event-icon">
+          <a className="btn-floating btn-large red" href="/event/new">
+            <i className="large material-icons">add</i>
+          </a>
         </div>
-        {this.state.meetings.map((meeting, index) => (
-          <div className="card meeting" key={index} styleName="meeting">
-            <div className="card-content">
-              <span className="card-title">{meeting.name}</span>
-              <p styleName="detail">
-                <i className="material-icons" styleName="material-icons">date_range</i>
-                {moment(meeting.preferredDate).format('Do MMMM YYYY')}
-              </p>
-              <p styleName="detail">
-                <i className="material-icons" styleName="material-icons">alarm</i>
-                {meeting.preferredTime}
-              </p>
-              <br />
-              <div>
-                <h6><strong>Participants</strong></h6>
-                {meeting.participants.map(participant => (
-                  <div className="participant" styleName="participant">
-                    <img className="circle" styleName="participant-img" src={participant.avatar} />
-                    {participant.name}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="card-action">
-              <a href="#">View Details</a>
-            </div>
-          </div>
-        ))}
+        { /* Card Template */ }
+        <Masonry>
+          {this.state.events.map(event => (
+            <EventCard
+              key={event._id}
+              event={event}
+              removeEventFromDashboard={this.removeEventFromDashboard}
+            />
+          ))}
+        </Masonry>
       </div>
     );
   }
 }
 
-export default CSSModules(Dashboard, styles);
+export default cssModules(Dashboard, styles);

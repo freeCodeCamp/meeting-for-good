@@ -1,0 +1,37 @@
+.new-event-card {
+  width: 500px;
+}
+
+@media (min-width:550px) and (max-width:850px) {
+  .new-event-card {
+    width: 80%;
+  }
+}
+
+@media (max-width:550px) {
+  .new-event-card {
+    width: 98%;
+  }
+}
+
+.daypicker {
+  outline: none;
+}
+
+.weekdayList {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.heading {
+  font-size: 1.2em;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.heading-dates {
+  composes: heading;
+  margin-top: 15px;
+}
