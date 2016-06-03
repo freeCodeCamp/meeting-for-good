@@ -11,8 +11,6 @@ import bodyParser from 'body-parser';
 const app = express();
 mongoose.connect(process.env.MONGO_URI);
 
-if (process.env.seedDB === 'true') require(`${__dirname}/app/config/seed.js`);
-
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Start dev server

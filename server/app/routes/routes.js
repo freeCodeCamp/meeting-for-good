@@ -184,7 +184,6 @@ export default (app) => {
   app.route('/api/events/getbyuid/:uid')
     .get((req, res) => {
       const uid = req.params.uid;
-      console.log(uid);
       Event.find({ uid }, (err, events) => {
         if (err) res.status(500).send(err);
         return res.status(200).json(events);
