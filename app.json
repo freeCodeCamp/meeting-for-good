@@ -1,0 +1,45 @@
+{
+  "name": "LetsMeet",
+  "description": "",
+  "scripts": {
+  },
+  "env": {
+    "APP_URL": {
+      "required": true
+    },
+    "FACEBOOK_KEY": {
+      "required": true
+    },
+    "FACEBOOK_SECRET": {
+      "required": true
+    },
+    "GITHUB_KEY": {
+      "required": true
+    },
+    "GITHUB_SECRET": {
+      "required": true
+    },
+    "MONGO_URI": {
+      "required": true
+    },
+    "NODE_ENV": {
+      "required": true
+    },
+    "seedDB": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "mongolab"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
