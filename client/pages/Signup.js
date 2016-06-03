@@ -1,12 +1,13 @@
 import React from 'react';
-import CSSModules from 'react-css-modules';
+import cssModules from 'react-css-modules';
+import { browserHistory } from 'react-router';
 
-import styles from '../styles/auth';
+import styles from '../styles/auth.css';
 
 class Signup extends React.Component {
-  componentDidMount(){
+  componentDidMount() {
     $.get('/api/auth/current', user => {
-      if (user !== "") window.location.href = '/dashboard';
+      if (user !== '') browserHistory.push('/dashboard');
     });
   }
   render() {
@@ -30,9 +31,9 @@ class Signup extends React.Component {
           <div className="center">
             <p>-or-</p>
             <p>
-            <a href="/api/auth/github" className="waves-effect waves-light btn grey darken-2">
-              Signup with GitHub
-            </a>
+              <a href="/api/auth/github" className="waves-effect waves-light btn grey darken-2">
+                Signup with GitHub
+              </a>
             </p>
             <p>
               <a
@@ -47,4 +48,4 @@ class Signup extends React.Component {
   }
 }
 
-export default CSSModules(Signup, styles);
+export default cssModules(Signup, styles);
