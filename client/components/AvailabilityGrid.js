@@ -31,16 +31,15 @@ class AvailabilityGrid extends React.Component {
   }
 
   render() {
+    // Get all dates in the range(s) provided
     const allDates = _.flatten(this.props.dates.map(({ from, to }) =>
       this.getDaysBetween(from, to)
     ));
 
+    // Get all integer times within the timerange provided
     const startTime = Number(this.props.times[0]);
     const endTime   = Number(this.props.times[1]);
-
     const allTimes = this.getNumbersBetween(startTime, endTime);
-
-    console.log(allTimes);
 
     return (
       <div>

@@ -95,6 +95,19 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
+  showAvailability(ev) {
+    document.getElementById('availability-grid').className = '';
+    ev.target.className += ' hide';
+  }
+
+  @autobind
+  submitAvailability() {
+    document.getElementById('availability-grid').className += ' hide';
+    const enterAvailButton = document.getElementById('enterAvailButton');
+    enterAvailButton.className = enterAvailButton.className.replace('hide', '');
+  }
+
+  @autobind
   async deleteEvent() {
     const response = await fetch(`/api/events/${this.state.event._id}`, {
       credentials: 'same-origin', method: 'DELETE',
@@ -178,14 +191,23 @@ class EventDetailsComponent extends React.Component {
             </div>
           </div>
           <div id="grid" className="center">
-            <AvailabilityGrid
-              dates={this.state.ranges}
-              times={this.state.event.selectedTimeRange}
-            />
+            <div id="availability-grid" className="hide">
+              <AvailabilityGrid
+                dates={this.state.ranges}
+                times={this.state.event.selectedTimeRange}
+              />
+              <br />
+              <a
+                className="waves-effect waves-light btn"
+                onClick={this.submitAvailability}
+              >Submit</a>
+            </div>
             {Object.keys(this.state.user).length > 0 ?
               this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
                 <a
+                  id="enterAvailButton"
                   className="waves-effect waves-light btn"
+                  onClick={this.showAvailability}
                 >Enter my availability</a> :
                 <a
                   className="waves-effect waves-light btn"
