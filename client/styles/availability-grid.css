@@ -7,4 +7,10 @@
 .cell {
   padding: 5px 10px;
   border: 1px solid #efefef;
+  cursor: pointer;
+}
+
+.cell-aside {
+  composes: cell;
+  cursor: default;
 }

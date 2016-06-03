@@ -45,7 +45,7 @@ class AvailabilityGrid extends React.Component {
       <div>
         {allDates.map((date, i) => (
           <div key={i} styleName="row">
-            <div styleName="cell">
+            <div styleName="cell-aside">
               {moment(date).format('Do MMM YYYY')}
             </div>
             {allTimes.map((time, i) => (
