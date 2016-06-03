@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack           = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeCSS       = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -16,6 +18,9 @@ module.exports = {
       'react-day-picker',
       'autobind-decorator',
       'materialize-css',
+      'cal-heatmap',
+      'd3',
+      'react-masonry-component',
     ],
   },
   output: {
@@ -26,6 +31,10 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
+    }),
+    new ExtractTextPlugin('vendor.css'),
+    new OptimizeCSS({
+      cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash].js'),
     new HtmlWebpackPlugin({
@@ -56,7 +65,7 @@ module.exports = {
       {
         test: /\.css$/,
         include: [/node_modules/],
-        loaders: ['style', 'css'],
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,

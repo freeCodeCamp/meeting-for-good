@@ -7,8 +7,10 @@ import mongoose from 'mongoose';
 import passport from 'passport';
 import session from 'express-session';
 import bodyParser from 'body-parser';
+import compression from 'compression';
 
 const app = express();
+app.use(compression({ threshold: 0 }));
 mongoose.connect(process.env.MONGO_URI);
 
 if (process.env.NODE_ENV === 'development') {
