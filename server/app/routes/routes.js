@@ -8,7 +8,7 @@ import sendEmail from '../config/email';
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next();
 
-  res.send('Authentiation required.');
+  return res.status(403).send('Authentiation required.');
 };
 
 export default (app) => {
