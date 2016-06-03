@@ -186,7 +186,7 @@ export default (app) => {
       const uid = req.params.uid;
       Event.find({ uid }, (err, events) => {
         if (err) res.status(500).send(err);
-        return res.status(200).json(events);
+        return res.status(200).json(events[0]);
       });
     });
 
