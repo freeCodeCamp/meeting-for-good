@@ -35,12 +35,12 @@ class NewEvent extends React.Component {
   componentDidMount() {
     const slider = document.getElementById('timeSlider');
     noUiSlider.create(slider, {
-      start: [0, 24],
+      start: [0, 23],
       connect: true,
       step: 1,
       range: {
         min: 0,
-        max: 24,
+        max: 23,
       }, format: wNumb({
         decimals: 0,
       }),
