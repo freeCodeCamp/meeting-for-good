@@ -9,6 +9,7 @@ import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 
 import { checkStatus } from '../util/fetch.util';
+import formatTime from '../util/time-format';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -38,15 +39,21 @@ class NewEvent extends React.Component {
   componentDidMount() {
     const slider = document.getElementById('timeSlider');
     noUiSlider.create(slider, {
-      start: [0, 23],
+      start: [0, 24],
       connect: true,
-      step: 1,
+      step: 0.25,
       range: {
         min: 0,
-        max: 23,
-      }, format: wNumb({
-        decimals: 0,
-      }),
+        max: 24,
+      },
+      format: {
+        to: (val) => {
+          return formatTime(val);
+        },
+        from: (val) => {
+          return val;
+        }
+      }
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
@@ -253,7 +260,7 @@ class NewEvent extends React.Component {
             </div>
             {!this.state.dateOrDay ?
               <div>
-                <h6 styleName="heading-dates">What dates might work?</h6>
+                <h6 styleName="heading-dates">What dates might work for you?</h6>
                 {from && to &&
                   <p className="center">
                     <a
@@ -272,7 +279,7 @@ class NewEvent extends React.Component {
                 />
               </div> :
               <div>
-                <h6 styleName="heading">What days might work?</h6>
+                <h6 styleName="heading">What days might work for you?</h6>
                 <div styleName="weekdayList">
                   {
                     weekDays.map((day, index) => (
@@ -291,7 +298,7 @@ class NewEvent extends React.Component {
             <div id="timeSlider" />
             <br />
             <p className="center">
-              From {this.state.selectedTimeRange[0]}:00 to {this.state.selectedTimeRange[1]}:00
+              From {this.state.selectedTimeRange[0]} to {this.state.selectedTimeRange[1]}
             </p>
             <br />
             <p className="center">
