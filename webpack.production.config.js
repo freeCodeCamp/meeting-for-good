@@ -18,8 +18,6 @@ module.exports = {
       'react-day-picker',
       'autobind-decorator',
       'materialize-css',
-      'cal-heatmap',
-      'd3',
       'react-masonry-component',
     ],
   },
@@ -49,9 +47,13 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
+        exclude: /node_modules/,
         query: {
           presets: ['es2015', 'react'],
-          plugins: ['transform-decorators-legacy'],
+          plugins: [
+            'transform-decorators-legacy',
+            ['transform-runtime', { polyfill: false, regenerator: true }],
+          ],
         },
       },
       {

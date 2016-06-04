@@ -1,6 +1,6 @@
 /* vendor dependencies */
 import React from 'react';
-import update from 'react-addons-update';
+import { browserHistory } from 'react-router';
 import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
@@ -37,7 +37,7 @@ class Dashboard extends React.Component {
     fetch('/api/auth/current', { credentials: 'same-origin' })
       .then(checkStatus)
       .then(parseJSON)
-      .then(user => { if (user === '') window.location.href = '/'; });
+      .then(user => { if (user === '') browserHistory.push('/'); });
   }
 
   @autobind
@@ -50,13 +50,13 @@ class Dashboard extends React.Component {
   render() {
     return (
       <div styleName="wrapper">
-        { /* New Event Icon */ }
+        {/* New Event Icon */}
         <div className="fixed-action-btn" styleName="new-event-icon">
           <a className="btn-floating btn-large red" href="/event/new">
             <i className="large material-icons">add</i>
           </a>
         </div>
-        { /* Card Template */ }
+        {/* Card Template */}
         <Masonry>
           {this.state.events.map(event => (
             <EventCard

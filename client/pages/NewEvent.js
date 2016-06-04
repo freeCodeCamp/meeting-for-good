@@ -6,6 +6,9 @@ import moment from 'moment';
 import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 import React from 'react';
 import fetch from 'isomorphic-fetch';
+import { browserHistory } from 'react-router';
+
+import { checkStatus } from '../util/fetch.util';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -125,7 +128,7 @@ class NewEvent extends React.Component {
   }
 
   @autobind
-  createEvent(ev) {
+  async createEvent(ev) {
     function generateID() {
       let ID = '';
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -143,33 +146,16 @@ class NewEvent extends React.Component {
       Materialize.toast('Please enter an event name!', 4000);
     } else {
       const { eventName: name, ranges: dates, dateOrDay, weekDays } = this.state;
-      let { selectedTimeRange } = this.state;
+      const { selectedTimeRange } = this.state;
       let sentData;
-      const fromUTC = moment(new Date()).format('Z').split(':')[0];
+
       if (dateOrDay) {
-        selectedTimeRange = selectedTimeRange.map(time => Number(time) - Number(fromUTC));
         sentData = JSON.stringify({ uid, name, weekDays, selectedTimeRange });
       } else {
-        let sameDay;
-        selectedTimeRange = selectedTimeRange.map(time => {
-          time = Number(time) - Number(fromUTC);
-          return time;
-        });
-        dates.forEach(obj => {
-          Object.keys(obj).map(date => {
-            console.log(obj[date]);
-            if (obj[date] !== null) {
-              obj[date] = moment(obj[date]).format('YYYY-MM-DD');
-              sameDay = obj[date];
-            } else {
-              obj[date] = sameDay;
-            }
-          });
-        });
         sentData = JSON.stringify({ uid, name, dates, selectedTimeRange });
       }
 
-      fetch('/api/events', {
+      const response = await fetch('/api/events', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -177,11 +163,15 @@ class NewEvent extends React.Component {
         method: 'POST',
         body: sentData,
         credentials: 'same-origin',
-      })
-      .then(() => window.location.replace(`/event/${uid}`))
-      .catch(() =>
-        Materialize.toast('An error occured. Please try again later.', 4000)
-      );
+      });
+
+      try {
+        checkStatus(response);
+      } catch (err) {
+        console.log(err); return;
+      }
+
+      browserHistory.push(`/event/${uid}`);
     }
   }
 
