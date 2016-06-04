@@ -1,26 +1,31 @@
 const formatTime = (value) => {
-  let prefix = String(value).split(".")[0];
-  let suffix = String(value).split(".")[1];
-  let minutes;
+  let hours = String(value).split('.')[0];
+  let minutes = String(value).split('.')[1];
+  let suffix = 'AM';
 
-  switch (suffix) {
-    case "25":
-      minutes = "15";
+  switch (minutes) {
+    case '25':
+      minutes = '15';
       break;
-    case "5":
-      minutes = "30";
+    case '5':
+      minutes = '30';
       break;
-    case "75":
-      minutes = "45"
+    case '75':
+      minutes = '45';
       break;
     default:
-      minutes = "00";
+      minutes = '00';
       break;
   }
 
-  if (prefix === "24") prefix = "0";
+  if (hours === '24') hours = '0';
 
-  return prefix + ":" + minutes;
-}
+  if (Number(hours) >= 12) {
+    hours = String(Number(hours) - 12);
+    suffix = 'PM';
+  }
+
+  return `${hours}:${minutes} ${suffix}`;
+};
 
 export default formatTime;
