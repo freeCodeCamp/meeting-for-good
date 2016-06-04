@@ -9,7 +9,7 @@ import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 
 import { checkStatus } from '../util/fetch.util';
-import formatTime from '../util/time-format';
+import { formatTime, getHours, getMinutes } from '../util/time-format';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -47,13 +47,9 @@ class NewEvent extends React.Component {
         max: 24,
       },
       format: {
-        to: (val) => {
-          return formatTime(val);
-        },
-        from: (val) => {
-          return val;
-        }
-      }
+        to: val => formatTime(val),
+        from: val => val,
+      },
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
@@ -152,63 +148,62 @@ class NewEvent extends React.Component {
     if (ev.target.className.indexOf('disabled') > -1) {
       Materialize.toast('Please enter an event name!', 4000);
     } else {
-      const { eventName: name, ranges: dates, dateOrDay, weekDays } = this.state;
-      const { selectedTimeRange } = this.state;
+      const {
+        eventName: name,
+        ranges, dateOrDay,
+        weekDays,
+        selectedTimeRange: [fromTime, toTime],
+      } = this.state;
       let sentData;
 
       if (dateOrDay) {
-        sentData = JSON.stringify({ uid, name, weekDays, selectedTimeRange });
+        sentData = JSON.stringify({ uid, name, weekDays });
       } else {
-        console.log(dates)
-        for(const i in dates){
-          Object.keys(dates[i]).map(val => {
-            if(val = "from"){
-              let dateString = dates[i].from;
-              dates[i].from = {}
-              console.log(typeof dateString)
+        const dates = ranges.map(({ from, to }) => {
+          if (from > to) {
+            [from, to] = [to, from]
+          };
 
-              //dateString needs to be a string!
+          const fromHours = getHours(fromTime);
+          const toHours = getHours(toTime);
 
-              dateString = dateString.split(" ")
-              dateString[4] = "00:00:00"
-              dateString = dateString.join(" ")
+          const fromMinutes = getMinutes(fromTime);
+          const toMinutes = getMinutes(toTime);
 
-              dates[i].from.date = dateString;
+          return {
+            fromDate: {
+              date: moment(from).set('hour', 0).set('minute', 0)._d,
+              fromTime: moment(from).set('hour', fromHours).set('minute', fromMinutes)._d,
+              toTime: moment(from).set('hour', toHours).set('minute', toMinutes)._d,
+            },
+            toDate: {
+              date: moment(to).set('hour', 0).set('minute', 0)._d,
+              fromTime: moment(to).set('hour', fromHours).set('minute', fromMinutes)._d,
+              toTime: moment(to).set('hour', toHours).set('minute', toMinutes)._d,
+            },
+          };
+        });
 
-              dateString = dateString.split(" ")
-              dateString[4] = selectedTimeRange[0]
-              dateString = dateString.join(" ")
-
-              dates[i].from.fromTime = dateString;
-
-              dateString = dateString.split(" ")
-              dateString[4] = selectedTimeRange[1]
-              dateString = dateString.join(" ")
-
-              dates[i].from.toTime = dateString;
-            }
-          })
-        }
-        sentData = JSON.stringify({ uid, name, dates, selectedTimeRange });
+        sentData = JSON.stringify({ uid, name, dates });
       }
 
-      // const response = await fetch('/api/events', {
-      //   headers: {
-      //     Accept: 'application/json',
-      //     'Content-Type': 'application/json',
-      //   },
-      //   method: 'POST',
-      //   body: sentData,
-      //   credentials: 'same-origin',
-      // });
-      //
-      // try {
-      //   checkStatus(response);
-      // } catch (err) {
-      //   console.log(err); return;
-      // }
-      //
-      // browserHistory.push(`/event/${uid}`);
+      const response = await fetch('/api/events', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: sentData,
+        credentials: 'same-origin',
+      });
+
+      try {
+        checkStatus(response);
+      } catch (err) {
+        console.log(err); return;
+      }
+
+      browserHistory.push(`/event/${uid}`);
     }
   }
 
