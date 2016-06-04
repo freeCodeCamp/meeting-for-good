@@ -171,8 +171,8 @@ class NewEvent extends React.Component {
           const toMinutes = getMinutes(toTime);
 
           return {
-            fromDate: moment(from).set('hour', fromHours).set('minute', fromMinutes)._d,
-            toDate: moment(to).set('hour', toHours).set('minute', toMinutes)._d,
+            fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
+            toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
           };
         });
 

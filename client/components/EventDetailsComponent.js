@@ -19,16 +19,20 @@ class EventDetailsComponent extends React.Component {
     super(props);
     const eventParticipantsIds = props.event.participants.map(participant => participant._id);
 
-    const ranges = props.event.dates.map(({ from, to }) => (
-      { from: new Date(from), to: new Date(to) }
-    )).map(({ from, to }) => {
-      if (to < from) [to, from] = [from, to];
-      return { from, to };
-    });
+    const ranges = props.event.dates.map(({ fromDate, toDate }) => ({
+      from: new Date(fromDate),
+      to: new Date(toDate),
+    }));
+
+    const dates = props.event.dates.map(({ fromDate, toDate }) => ({
+      fromDate: new Date(fromDate),
+      toDate: new Date(toDate),
+    }));
 
     this.state = {
       event: props.event,
       ranges,
+      dates,
       days: props.event.weekDays,
       user: {},
       eventParticipantsIds,
@@ -193,8 +197,7 @@ class EventDetailsComponent extends React.Component {
           <div id="grid" className="center">
             <div id="availability-grid" className="hide">
               <AvailabilityGrid
-                dates={this.state.ranges}
-                times={this.state.event.selectedTimeRange}
+                dates={this.state.dates}
               />
               <br />
               <a
