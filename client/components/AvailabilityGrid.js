@@ -2,6 +2,7 @@ import React from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
+import autobind from 'autobind-decorator';
 
 import styles from '../styles/availability-grid.css';
 
@@ -10,7 +11,7 @@ class AvailabilityGrid extends React.Component {
     const dates = [start];
     let currentDay = start;
 
-    while (dates[dates.length - 1] < end) {
+    while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
       currentDay = moment(currentDay).add(1, 'd')._d;
       dates.push(currentDay);
     }
@@ -18,40 +19,53 @@ class AvailabilityGrid extends React.Component {
     return dates;
   }
 
-  getNumbersBetween(start, end) {
-    const arr = [start];
-    let currentNum = start;
+  getTimesBetween(start, end) {
+    const times = [start];
+    let currentTime = start;
 
-    while (arr[arr.length - 1] < end) {
-      currentNum++;
-      arr.push(currentNum);
+    end = moment(end).set('d', moment(start).get('d'));
+
+    while (times[times.length - 1] < end) {
+      currentTime = moment(currentTime).add(15, 'm')._d;
+      times.push(currentTime);
     }
 
-    return arr;
+    return times;
+  }
+
+  @autobind
+  addCellToAvail(ev) {
+    console.log(ev.target.getAttribute('data-time'));
+    console.log(ev.target.getAttribute('data-date'));
   }
 
   render() {
-    // Get all dates in the range(s) provided
-    const allDates = _.flatten(this.props.dates.map(({ from, to }) =>
-      this.getDaysBetween(from, to)
+    const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+      this.getDaysBetween(fromDate, toDate)
     ));
 
-    // Get all integer times within the timerange provided
-    const startTime = Number(this.props.times[0]);
-    const endTime   = Number(this.props.times[1]);
-    const allTimes = this.getNumbersBetween(startTime, endTime);
+    const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+      this.getTimesBetween(fromDate, toDate)
+    ));
+
+    const allDatesRender = allDates.map(date => moment(date).format('Do MMM YYYY'));
+    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
 
     return (
       <div>
-        {allDates.map((date, i) => (
+        {allDatesRender.map((date, i) => (
           <div key={i} styleName="row">
             <div styleName="cell-aside">
-              {moment(date).format('Do MMM YYYY')}
+              {date}
             </div>
-            {allTimes.map((time, i) => (
-              <div key={i} styleName="cell">
-                {time}
-              </div>
+            {allTimesRender.map((time, i) => (
+              <div
+                key={i}
+                styleName="cell"
+                data-time={time}
+                data-date={date}
+                onClick={this.addCellToAvail}
+              >{time}</div>
             ))}
           </div>
         ))}
@@ -62,7 +76,6 @@ class AvailabilityGrid extends React.Component {
 
 AvailabilityGrid.propTypes = {
   dates: React.PropTypes.array.isRequired,
-  times: React.PropTypes.array.isRequired,
 };
 
 export default cssModules(AvailabilityGrid, styles);
