@@ -23,10 +23,9 @@ const formatTime = timeNum => {
     minutes = 59;
   }
 
-  if (Number(hours) >= 12) {
-    hours = String(Number(hours) - 12);
-    suffix = 'PM';
-  }
+  if (Number(hours) >= 12) suffix = 'PM';
+  if (Number(hours) > 12) hours = String(Number(hours) - 12);
+  if (hours === '0') hours = '12';
 
   return `${hours}:${minutes} ${suffix}`;
 };
