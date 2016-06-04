@@ -161,8 +161,8 @@ class NewEvent extends React.Component {
       } else {
         const dates = ranges.map(({ from, to }) => {
           if (from > to) {
-            [from, to] = [to, from]
-          };
+            [from, to] = [to, from];
+          }
 
           const fromHours = getHours(fromTime);
           const toHours = getHours(toTime);
