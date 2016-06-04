@@ -159,26 +159,56 @@ class NewEvent extends React.Component {
       if (dateOrDay) {
         sentData = JSON.stringify({ uid, name, weekDays, selectedTimeRange });
       } else {
+        console.log(dates)
+        for(const i in dates){
+          Object.keys(dates[i]).map(val => {
+            if(val = "from"){
+              let dateString = dates[i].from;
+              dates[i].from = {}
+              console.log(typeof dateString)
+
+              //dateString needs to be a string!
+
+              dateString = dateString.split(" ")
+              dateString[4] = "00:00:00"
+              dateString = dateString.join(" ")
+
+              dates[i].from.date = dateString;
+
+              dateString = dateString.split(" ")
+              dateString[4] = selectedTimeRange[0]
+              dateString = dateString.join(" ")
+
+              dates[i].from.fromTime = dateString;
+
+              dateString = dateString.split(" ")
+              dateString[4] = selectedTimeRange[1]
+              dateString = dateString.join(" ")
+
+              dates[i].from.toTime = dateString;
+            }
+          })
+        }
         sentData = JSON.stringify({ uid, name, dates, selectedTimeRange });
       }
 
-      const response = await fetch('/api/events', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: sentData,
-        credentials: 'same-origin',
-      });
-
-      try {
-        checkStatus(response);
-      } catch (err) {
-        console.log(err); return;
-      }
-
-      browserHistory.push(`/event/${uid}`);
+      // const response = await fetch('/api/events', {
+      //   headers: {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'application/json',
+      //   },
+      //   method: 'POST',
+      //   body: sentData,
+      //   credentials: 'same-origin',
+      // });
+      //
+      // try {
+      //   checkStatus(response);
+      // } catch (err) {
+      //   console.log(err); return;
+      // }
+      //
+      // browserHistory.push(`/event/${uid}`);
     }
   }
 
