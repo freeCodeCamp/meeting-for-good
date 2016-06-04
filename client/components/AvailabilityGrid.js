@@ -7,6 +7,35 @@ import autobind from 'autobind-decorator';
 import styles from '../styles/availability-grid.css';
 
 class AvailabilityGrid extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      availability: [],
+      allTimes: [],
+      allTimesRender: [],
+      allDates: [],
+      allDatesRender: [],
+    };
+  }
+
+  componentWillMount() {
+    const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+      this.getDaysBetween(fromDate, toDate)
+    ));
+
+    const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+      this.getTimesBetween(fromDate, toDate)
+    ));
+
+    const allDatesRender = allDates.map(date => moment(date).format('Do MMM YYYY'));
+    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
+
+    allTimesRender.pop();
+
+    this.setState({ allDates, allTimes, allDatesRender, allTimesRender });
+  }
+
   getDaysBetween(start, end) {
     const dates = [start];
     let currentDay = start;
@@ -35,21 +64,23 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   addCellToAvail(ev) {
-    console.log(ev.target.getAttribute('data-time'));
-    console.log(ev.target.getAttribute('data-date'));
+    const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
+
+    const timeIndex = allTimesRender.indexOf(ev.target.getAttribute('data-time'));
+    const dateIndex = allDatesRender.indexOf(ev.target.getAttribute('data-date'));
+
+    const day = moment(allDates[dateIndex]).get('d');
+
+    const from = moment(allTimes[timeIndex]).set('d', day)._d;
+    const to = moment(allTimes[timeIndex + 1]).set('d', day)._d;
+
+    const availability = JSON.parse(JSON.stringify(this.state.availability));
+    availability.push([from, to]);
+    this.setState({ availability });
   }
 
   render() {
-    const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
-      this.getDaysBetween(fromDate, toDate)
-    ));
-
-    const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
-      this.getTimesBetween(fromDate, toDate)
-    ));
-
-    const allDatesRender = allDates.map(date => moment(date).format('Do MMM YYYY'));
-    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
+    const { allDatesRender, allTimesRender } = this.state;
 
     return (
       <div>
