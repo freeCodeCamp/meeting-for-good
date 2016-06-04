@@ -1,6 +1,6 @@
-const formatTime = (value) => {
-  let hours = String(value).split('.')[0];
-  let minutes = String(value).split('.')[1];
+const formatTime = timeNum => {
+  let hours = String(timeNum).split('.')[0];
+  let minutes = String(timeNum).split('.')[1];
   let suffix = 'AM';
 
   switch (minutes) {
@@ -18,7 +18,10 @@ const formatTime = (value) => {
       break;
   }
 
-  if (hours === '24') hours = '0';
+  if (hours === '24') {
+    hours = 23;
+    minutes = 59;
+  }
 
   if (Number(hours) >= 12) {
     hours = String(Number(hours) - 12);
@@ -28,4 +31,13 @@ const formatTime = (value) => {
   return `${hours}:${minutes} ${suffix}`;
 };
 
-export default formatTime;
+const getHours = timeString => {
+  const suffix = timeString.split(':')[1].split(' ')[1];
+  if (suffix === 'AM') return Number(timeString.split(':')[0]);
+
+  return Number(timeString.split(':')[0]) + 12;
+};
+
+const getMinutes = timeString => Number(timeString.split(':')[1].split(' ')[0]);
+
+export { formatTime, getHours, getMinutes };
