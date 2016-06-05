@@ -31,10 +31,12 @@ const formatTime = timeNum => {
 };
 
 const getHours = timeString => {
+  const prefix = timeString.split(':')[0];
   const suffix = timeString.split(':')[1].split(' ')[1];
-  if (suffix === 'AM') return Number(timeString.split(':')[0]);
 
-  return Number(timeString.split(':')[0]) + 12;
+  if (suffix === 'AM' && prefix !== "12") return Number(prefix);
+  else if (suffix === 'AM' && prefix === "12") return 0;
+  else return Number(timeString.split(':')[0]) + 12;
 };
 
 const getMinutes = timeString => Number(timeString.split(':')[1].split(' ')[0]);
