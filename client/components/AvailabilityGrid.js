@@ -24,11 +24,16 @@ class AvailabilityGrid extends React.Component {
       this.getDaysBetween(fromDate, toDate)
     ));
 
-    const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
-      this.getTimesBetween(fromDate, toDate)
-    ));
+    //console.log(this.props.dates)
 
-    const allDatesRender = allDates.map(date => moment(date).format('Do MMM YYYY'));
+    // const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+    //   console.log(fromDate, toDate)
+    // ));
+
+    const allTimes = this.getTimesBetween(this.props.dates[0].fromDate, this.props.dates[0].toDate)
+    // /console.log(allTimes.length )
+
+    const allDatesRender = allDates.map(date => moment(date).format('Do MMM'));
     const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
 
     allTimesRender.pop();
@@ -52,13 +57,14 @@ class AvailabilityGrid extends React.Component {
     const times = [start];
     let currentTime = start;
 
-    end = moment(end).set('d', moment(start).get('d'));
+    end = moment(end).set("date", moment(start).get("date"));
 
     while (times[times.length - 1] < end) {
       currentTime = moment(currentTime).add(15, 'm')._d;
       times.push(currentTime);
     }
 
+    console.log(times.length)
     return times;
   }
 
@@ -96,7 +102,7 @@ class AvailabilityGrid extends React.Component {
                 data-time={time}
                 data-date={date}
                 onClick={this.addCellToAvail}
-              >{time}</div>
+              ></div>
             ))}
           </div>
         ))}
