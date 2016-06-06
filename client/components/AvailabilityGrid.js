@@ -24,14 +24,9 @@ class AvailabilityGrid extends React.Component {
       this.getDaysBetween(fromDate, toDate)
     ));
 
-    //console.log(this.props.dates)
-
-    // const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
-    //   console.log(fromDate, toDate)
-    // ));
-
-    const allTimes = this.getTimesBetween(this.props.dates[0].fromDate, this.props.dates[0].toDate)
-    // /console.log(allTimes.length )
+    const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+      this.getTimesBetween(fromDate, toDate)
+    ));
 
     const allDatesRender = allDates.map(date => moment(date).format('Do MMM'));
     const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
@@ -87,11 +82,17 @@ class AvailabilityGrid extends React.Component {
 
   render() {
     const { allDatesRender, allTimesRender } = this.state;
+    const hourTime = allTimesRender.filter(time => String(time).split(":")[1].split(" ")[0] === "00")
 
     return (
       <div>
+        {hourTime.map((time,i) => {
+          return (
+            <p styleName="grid-hour">{time.split(" ")[0]}</p>
+          )
+        })}
         {allDatesRender.map((date, i) => (
-          <div key={i} styleName="row">
+          <div key={i} className="grid-row" styleName="row">
             <div styleName="cell-aside">
               {date}
             </div>

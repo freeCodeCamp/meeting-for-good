@@ -1,6 +1,7 @@
 .row {
   display: flex;
   justify-content: space-between;
+  clear: both;
 }
 
 .cell {
@@ -14,4 +15,11 @@
   width: 75px;
   composes: cell;
   cursor: default;
+}
+
+.grid-hour {
+  float: left;
+  font-size: 13px;
+  margin-left: 15.55px !important;
+  transform: translateX(44px);
 }
