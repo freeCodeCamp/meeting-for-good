@@ -36,6 +36,14 @@ class AvailabilityGrid extends React.Component {
     this.setState({ allDates, allTimes, allDatesRender, allTimesRender });
   }
 
+  componentDidMount() {
+    $(".cell").on("mousedown mouseover", function (e) {
+      if (e.buttons == 1 || e.buttons == 3) {
+        $(this).css("background-color") !== "rgb(128, 0, 128)" ? $(this).css("background-color", "purple") : $(this).css("background-color", "white")
+      }
+    })
+  }
+
   getDaysBetween(start, end) {
     const dates = [start];
     let currentDay = start;
@@ -65,6 +73,7 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   addCellToAvail(ev) {
+    $(ev.target).css("background-color", "purple")
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
 
     const timeIndex = allTimesRender.indexOf(ev.target.getAttribute('data-time'));
@@ -102,7 +111,7 @@ class AvailabilityGrid extends React.Component {
                 styleName="cell"
                 data-time={time}
                 data-date={date}
-                onClick={this.addCellToAvail}
+                className="cell"
               ></div>
             ))}
           </div>
