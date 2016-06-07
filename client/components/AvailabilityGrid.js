@@ -3,6 +3,9 @@ import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
+import fetch from 'isomorphic-fetch';
+import { checkStatus } from '../util/fetch.util';
+import { browserHistory } from 'react-router';
 
 import styles from '../styles/availability-grid.css';
 
@@ -37,10 +40,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
-    $(".cell").on("mousedown mouseover", function (e) {
-      if (e.buttons == 1 || e.buttons == 3) {
-        $(this).css("background-color") !== "rgb(128, 0, 128)" ? $(this).css("background-color", "purple") : $(this).css("background-color", "white")
-      }
+    $(".cell").on("mousedown mouseover", e => {
+      this.addCellToAvail(e)
     })
   }
 
@@ -73,20 +74,51 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   addCellToAvail(ev) {
-    $(ev.target).css("background-color", "purple")
+    if (ev.buttons == 1 || ev.buttons == 3) {
+      if($(ev.target).css("background-color") !== "rgb(128, 0, 128)"){
+        $(ev.target).css("background-color", "purple")
+      } else {
+        $(ev.target).css("background-color", "white")
+      }
+    }
+  }
+
+  @autobind
+  async submitAvailability() {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
+    const availability = [];
 
-    const timeIndex = allTimesRender.indexOf(ev.target.getAttribute('data-time'));
-    const dateIndex = allDatesRender.indexOf(ev.target.getAttribute('data-date'));
+    $(".cell").each((i, el) => {
+      if($(el).css("background-color") === "rgb(128, 0, 128)"){
 
-    const day = moment(allDates[dateIndex]).get('d');
+        const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
+        const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
 
-    const from = moment(allTimes[timeIndex]).set('d', day)._d;
-    const to = moment(allTimes[timeIndex + 1]).set('d', day)._d;
+        const day = moment(allDates[dateIndex]).get('d');
 
-    const availability = JSON.parse(JSON.stringify(this.state.availability));
-    availability.push([from, to]);
-    this.setState({ availability });
+        const from = moment(allTimes[timeIndex]).set('d', day)._d;
+        const to = moment(allTimes[timeIndex + 1]).set('d', day)._d;
+
+        availability.push([from, to]);
+      }
+    })
+    const response = await fetch(`/api/events/${window.location.pathname.split("/")[2]}/updateAvail`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      body: JSON.stringify({data: availability, user: this.props.user}),
+      credentials: 'same-origin',
+    });
+
+    try {
+      checkStatus(response);
+    } catch (err) {
+      console.log(err); return;
+    }
+
+    browserHistory.push(`/event/${window.location.pathname.split("/")[2]}`);
   }
 
   render() {
@@ -112,10 +144,16 @@ class AvailabilityGrid extends React.Component {
                 data-time={time}
                 data-date={date}
                 className="cell"
+                onClick={this.addCellToAvail}
               ></div>
             ))}
           </div>
         ))}
+        <br />
+        <a
+          className="waves-effect waves-light btn"
+          onClick={this.submitAvailability}
+        >Submit</a>
       </div>
     );
   }

@@ -198,12 +198,8 @@ class EventDetailsComponent extends React.Component {
             <div id="availability-grid" className="hide">
               <AvailabilityGrid
                 dates={this.state.dates}
+                user={this.state.user}
               />
-              <br />
-              <a
-                className="waves-effect waves-light btn"
-                onClick={this.submitAvailability}
-              >Submit</a>
             </div>
             {Object.keys(this.state.user).length > 0 ?
               this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
