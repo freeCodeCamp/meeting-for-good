@@ -6,6 +6,7 @@ import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
 import { checkStatus } from '../util/fetch.util';
 import { browserHistory } from 'react-router';
+import { getHours } from "../util/time-format";
 
 import styles from '../styles/availability-grid.css';
 
@@ -42,6 +43,15 @@ class AvailabilityGrid extends React.Component {
   componentDidMount() {
     $(".cell").on("mousedown mouseover", e => {
       this.addCellToAvail(e)
+    })
+
+    $(".cell").each(function(i, el){
+      if($(el).attr("data-time").split(":")[1].split(" ")[0] === "00"){
+        $(this).css("border-left", "1px solid #909090")
+      }
+      else if($(el).attr("data-time").split(":")[1].split(" ")[0] === "30"){
+        $(this).css("border-left", "1px solid #c3bebe")
+      }
     })
   }
 
@@ -121,6 +131,13 @@ class AvailabilityGrid extends React.Component {
     browserHistory.push(`/event/${window.location.pathname.split("/")[2]}`);
   }
 
+  addZero(time) {
+    if(Number(String(time).split(":")[0]) < 10){
+      time = `0${time}`
+    }
+    return time;
+  }
+
   render() {
     const { allDatesRender, allTimesRender } = this.state;
     const hourTime = allTimesRender.filter(time => String(time).split(":")[1].split(" ")[0] === "00")
@@ -129,7 +146,7 @@ class AvailabilityGrid extends React.Component {
       <div>
         {hourTime.map((time,i) => {
           return (
-            <p styleName="grid-hour">{time.split(" ")[0]}</p>
+            <p styleName="grid-hour">{this.addZero(getHours(time.toUpperCase())) + ":00"}</p>
           )
         })}
         {allDatesRender.map((date, i) => (
