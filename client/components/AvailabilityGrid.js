@@ -43,6 +43,23 @@ class AvailabilityGrid extends React.Component {
   componentDidMount() {
     $(".cell").on("mousedown mouseover", e => {
       this.addCellToAvail(e)
+    }).on("click", e => {
+      if (e.shiftKey) {
+        let next = false;
+        let startCell;
+        const currentCell = $(e.target);
+        const parentRow = $(e.target).parent();
+        parentRow.children(".cell").each((i, el) => {
+          if($(el).css("background-color") === "rgb(128, 0, 128)" && $(el).prev().css("background-color") !== "rgb(128, 0, 128)" && $(el).next().css("background-color") !== "rgb(128, 0, 128)"){
+            startCell = $(el)
+            return false;
+          }
+        })
+        while(startCell.attr("data-time") !== currentCell.attr("data-time")) {
+          $(startCell).next().css("background-color", "rgb(128, 0, 128")
+          startCell = $(startCell).next();
+        }
+      }
     })
 
     $(".cell").each(function(i, el){

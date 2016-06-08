@@ -36,6 +36,7 @@ class EventDetailsComponent extends React.Component {
       days: props.event.weekDays,
       user: {},
       eventParticipantsIds,
+      participants: props.event.participants
     };
   }
 
@@ -45,6 +46,12 @@ class EventDetailsComponent extends React.Component {
         this.setState({ user });
       }
     });
+
+    let availability = []
+    this.state.participants.forEach(user => {
+      availability.push(user.availability);
+    })
+    console.log(availability)
   }
 
   @autobind
