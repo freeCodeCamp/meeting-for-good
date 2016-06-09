@@ -6,6 +6,7 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import _ from 'lodash';
+import moment from 'moment';
 
 import AvailabilityGrid from './AvailabilityGrid';
 
@@ -48,10 +49,48 @@ class EventDetailsComponent extends React.Component {
     });
 
     let availability = []
+    let overlaps = [];
+    let displayTimes = {};
+
     this.state.participants.forEach(user => {
-      availability.push(user.availability);
+      if(user.availibility !== undefined) availability.push(user.availibility);
     })
-    console.log(availability)
+
+    for(let i = 0; i < availability[0].length; i++){
+      let current = availability[0][i]
+      let count = 0;
+      for(let j = 0; j < availability.length; j++){
+        for(let k = 0; k < availability[j].length; k++){
+          if(availability[j][k][0] === current[0]) {
+            count++;
+          }
+        }
+      }
+      if(count === availability.length) overlaps.push(current);
+    }
+
+    if(overlaps.length !== 0){
+      let index = 0;
+      for(let i = 0; i < overlaps.length; i++){
+        if(overlaps[i+1] !== undefined && overlaps[i][1] !== overlaps[i+1][0]){
+          if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
+            displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+          } else {
+            displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
+            displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
+            displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+          }
+          index = i+1;
+        } else if(overlaps[i+1] === undefined){
+          displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
+          displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
+          displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+        }
+      }
+    }
+
+    console.log(displayTimes)
+    this.setState({displayTimes})
   }
 
   @autobind
@@ -161,6 +200,14 @@ class EventDetailsComponent extends React.Component {
       minDate = new Date(Math.min.apply(null, dateInRanges));
     }
 
+    const bestTimes = this.state.displayTimes;
+    let isBestTime;
+
+    if (bestTimes !== undefined) {
+      if (Object.keys(bestTimes).length > 0) isBestTime = true;
+      else isBestTime = false;
+    } else isBestTime = false;
+
     return (
       <div className="card meeting" styleName="event-details">
       {
@@ -176,7 +223,26 @@ class EventDetailsComponent extends React.Component {
           <span className="card-title">{event.name}</span>
           <div className="row">
             <div className="col s12">
-              {event.dates ?
+              {isBestTime ?
+                Object.keys(bestTimes).map(date => (
+                  <div>
+                    <div styleName="bestTimeDate">
+                      <i
+                        className="material-icons"
+                        styleName="material-icons"
+                      >date_range</i>
+                      {date}
+                    </div>
+                    <div styleName="bestTime">
+                      <i
+                        className="material-icons"
+                        styleName="material-icons"
+                      >alarm</i>
+                      {bestTimes[date].hours.join(', ')}
+                    </div>
+                    <hr />
+                  </div>
+                )) : event.dates ?
                 <DayPicker
                   initialMonth={minDate}
                   fromMonth={minDate}
