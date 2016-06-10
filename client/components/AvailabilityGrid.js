@@ -28,7 +28,7 @@ class AvailabilityGrid extends React.Component {
       this.getDaysBetween(fromDate, toDate)
     ));
 
-    const allTimes = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+    const allTimes = _.flatten([this.props.dates[0]].map(({ fromDate, toDate }) =>
       this.getTimesBetween(fromDate, toDate)
     ));
 
