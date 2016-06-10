@@ -160,6 +160,8 @@ class NewEvent extends React.Component {
         sentData = JSON.stringify({ uid, name, weekDays });
       } else {
         const dates = ranges.map(({ from, to }) => {
+          if (!to) to = from;
+
           if (from > to) {
             [from, to] = [to, from];
           }
