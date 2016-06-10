@@ -53,6 +53,7 @@ class EventCard extends React.Component {
       console.log(err); return;
     }
 
+    browserHistory.push('/');
     browserHistory.push('/dashboard');
   }
 

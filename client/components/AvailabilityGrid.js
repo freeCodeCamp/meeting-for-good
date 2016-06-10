@@ -117,18 +117,18 @@ class AvailabilityGrid extends React.Component {
 
     $(".cell").each((i, el) => {
       if($(el).css("background-color") === "rgb(128, 0, 128)"){
-
         const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
         const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
 
-        const day = moment(allDates[dateIndex]).get('d');
+        const date = moment(allDates[dateIndex]).get('date');
 
-        const from = moment(allTimes[timeIndex]).set('d', day)._d;
-        const to = moment(allTimes[timeIndex + 1]).set('d', day)._d;
+        const from = moment(allTimes[timeIndex]).set('date', date)._d;
+        const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
 
         availability.push([from, to]);
       }
     })
+    console.log(availability)
     const response = await fetch(`/api/events/${window.location.pathname.split("/")[2]}/updateAvail`, {
       headers: {
         Accept: 'application/json',
