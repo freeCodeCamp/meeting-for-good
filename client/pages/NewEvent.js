@@ -6,6 +6,10 @@ import moment from 'moment';
 import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 import React from 'react';
 import fetch from 'isomorphic-fetch';
+import { browserHistory } from 'react-router';
+
+import { checkStatus } from '../util/fetch.util';
+import { formatTime, getHours, getMinutes } from '../util/time-format';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -35,15 +39,17 @@ class NewEvent extends React.Component {
   componentDidMount() {
     const slider = document.getElementById('timeSlider');
     noUiSlider.create(slider, {
-      start: [0, 23],
+      start: [0, 24],
       connect: true,
-      step: 1,
+      step: 0.25,
       range: {
         min: 0,
-        max: 23,
-      }, format: wNumb({
-        decimals: 0,
-      }),
+        max: 24,
+      },
+      format: {
+        to: val => formatTime(val),
+        from: val => val,
+      },
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
@@ -125,7 +131,7 @@ class NewEvent extends React.Component {
   }
 
   @autobind
-  createEvent(ev) {
+  async createEvent(ev) {
     function generateID() {
       let ID = '';
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -142,34 +148,40 @@ class NewEvent extends React.Component {
     if (ev.target.className.indexOf('disabled') > -1) {
       Materialize.toast('Please enter an event name!', 4000);
     } else {
-      const { eventName: name, ranges: dates, dateOrDay, weekDays } = this.state;
-      let { selectedTimeRange } = this.state;
+      const {
+        eventName: name,
+        ranges, dateOrDay,
+        weekDays,
+        selectedTimeRange: [fromTime, toTime],
+      } = this.state;
       let sentData;
-      const fromUTC = moment(new Date()).format('Z').split(':')[0];
+
       if (dateOrDay) {
-        selectedTimeRange = selectedTimeRange.map(time => Number(time) - Number(fromUTC));
-        sentData = JSON.stringify({ uid, name, weekDays, selectedTimeRange });
+        sentData = JSON.stringify({ uid, name, weekDays });
       } else {
-        let sameDay;
-        selectedTimeRange = selectedTimeRange.map(time => {
-          time = Number(time) - Number(fromUTC);
-          return time;
+        const dates = ranges.map(({ from, to }) => {
+          if (!to) to = from;
+
+          if (from > to) {
+            [from, to] = [to, from];
+          }
+
+          const fromHours = getHours(fromTime);
+          const toHours = getHours(toTime);
+
+          const fromMinutes = getMinutes(fromTime);
+          const toMinutes = getMinutes(toTime);
+
+          return {
+            fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
+            toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
+          };
         });
-        dates.forEach(obj => {
-          Object.keys(obj).map(date => {
-            console.log(obj[date]);
-            if (obj[date] !== null) {
-              obj[date] = moment(obj[date]).format('YYYY-MM-DD');
-              sameDay = obj[date];
-            } else {
-              obj[date] = sameDay;
-            }
-          });
-        });
-        sentData = JSON.stringify({ uid, name, dates, selectedTimeRange });
+
+        sentData = JSON.stringify({ uid, name, dates });
       }
 
-      fetch('/api/events', {
+      const response = await fetch('/api/events', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -177,11 +189,15 @@ class NewEvent extends React.Component {
         method: 'POST',
         body: sentData,
         credentials: 'same-origin',
-      })
-      .then(() => window.location.replace(`/event/${uid}`))
-      .catch(() =>
-        Materialize.toast('An error occured. Please try again later.', 4000)
-      );
+      });
+
+      try {
+        checkStatus(response);
+      } catch (err) {
+        console.log(err); return;
+      }
+
+      browserHistory.push(`/event/${uid}`);
     }
   }
 
@@ -263,7 +279,7 @@ class NewEvent extends React.Component {
             </div>
             {!this.state.dateOrDay ?
               <div>
-                <h6 styleName="heading-dates">What dates might work?</h6>
+                <h6 styleName="heading-dates">What dates might work for you?</h6>
                 {from && to &&
                   <p className="center">
                     <a
@@ -282,7 +298,7 @@ class NewEvent extends React.Component {
                 />
               </div> :
               <div>
-                <h6 styleName="heading">What days might work?</h6>
+                <h6 styleName="heading">What days might work for you?</h6>
                 <div styleName="weekdayList">
                   {
                     weekDays.map((day, index) => (
@@ -301,7 +317,7 @@ class NewEvent extends React.Component {
             <div id="timeSlider" />
             <br />
             <p className="center">
-              From {this.state.selectedTimeRange[0]}:00 to {this.state.selectedTimeRange[1]}:00
+              From {this.state.selectedTimeRange[0]} to {this.state.selectedTimeRange[1]}
             </p>
             <br />
             <p className="center">

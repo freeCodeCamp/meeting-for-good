@@ -1,0 +1,29 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  clear: both;
+}
+
+.cell {
+  padding: 5px;
+  border: 1px solid #efefef;
+  cursor: pointer;
+  /*font-size: 0.25em;*/
+}
+
+.cell-aside {
+  width: 75px;
+  composes: cell;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.grid-hour {
+  float: left;
+  font-size: 13px;
+  margin-left: 15.55px !important;
+  transform: translateX(44px);
+  user-select: none;
+  -webkit-user-select: none;
+}

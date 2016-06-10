@@ -8,7 +8,7 @@ import sendEmail from '../config/email';
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next();
 
-  res.send('Authentiation required.');
+  return res.status(403).send('Authentiation required.');
 };
 
 export default (app) => {
@@ -126,7 +126,7 @@ export default (app) => {
 
   app.route('/api/events/:id/updateAvail')
     .put(isAuthenticated, (req, res) => {
-      Event.findById(req.params.id, (err, event) => {
+      Event.findOne({"uid": req.params.id}, (err, event) => {
         if (err) return res.status(500).send(err);
         if (!event) return res.status(404).send('Not found.');
 
@@ -174,7 +174,7 @@ export default (app) => {
 
         event.participants = participants;
         event.markModified('participants');
-        event.save(() => {
+        event.save((err) => {
           if (err) return res.status(500).send(err);
           return res.status(200).json(event);
         });
@@ -186,7 +186,7 @@ export default (app) => {
       const uid = req.params.uid;
       Event.find({ uid }, (err, events) => {
         if (err) res.status(500).send(err);
-        return res.status(200).json(events);
+        return res.status(200).json(events[0]);
       });
     });
 

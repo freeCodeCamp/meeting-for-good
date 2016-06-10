@@ -2,36 +2,40 @@ import React from 'react';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 
-import EventCardMore from '../components/EventCardMore';
+import EventDetailsComponent from '../components/EventDetailsComponent';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 
-import styles from '../styles/main.css';
+import styles from '../styles/event-card.css';
 
 class EventDetails extends React.Component {
-  constructor() {
-    super();
-    this.state = { events: [] };
+  constructor(props) {
+    super(props);
+    this.state = { event: null };
   }
 
   componentDidMount() {
-    fetch(`/api/events/getbyuid/${this.props.params.uid}`)
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(event => {
-        this.setState({ events: event });
-      });
+    async function getEvent() {
+      const response = await fetch(`/api/events/getbyuid/${this.props.params.uid}`);
+      let event;
+
+      try {
+        checkStatus(response);
+        event = await parseJSON(response);
+      } catch (err) {
+        console.log(err);
+      }
+
+      this.setState({ event });
+    }
+
+    getEvent.bind(this)();
   }
 
   render() {
-    return (
-      <div>
-        {
-          this.state.events.map(event => (
-            <EventCardMore key={event._id} event={event} />
-          ))
-        }
-      </div>
-    );
+    if (this.state.event) {
+      return <EventDetailsComponent event={this.state.event} />;
+    }
+    return null;
   }
 }
 
