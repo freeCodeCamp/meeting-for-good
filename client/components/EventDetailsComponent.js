@@ -56,41 +56,43 @@ class EventDetailsComponent extends React.Component {
       if(user.availibility !== undefined) availability.push(user.availibility);
     })
 
-    for(let i = 0; i < availability[0].length; i++){
-      let current = availability[0][i]
-      let count = 0;
-      for(let j = 0; j < availability.length; j++){
-        for(let k = 0; k < availability[j].length; k++){
-          if(availability[j][k][0] === current[0]) {
-            count++;
+    if(availability.length > 1){
+      for(let i = 0; i < availability[0].length; i++){
+        let current = availability[0][i]
+        let count = 0;
+        for(let j = 0; j < availability.length; j++){
+          for(let k = 0; k < availability[j].length; k++){
+            if(availability[j][k][0] === current[0]) {
+              count++;
+            }
           }
         }
+        if(count === availability.length) overlaps.push(current);
       }
-      if(count === availability.length) overlaps.push(current);
-    }
 
-    if(overlaps.length !== 0){
-      let index = 0;
-      for(let i = 0; i < overlaps.length; i++){
-        if(overlaps[i+1] !== undefined && overlaps[i][1] !== overlaps[i+1][0]){
-          if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
-            displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-          } else {
+      if(overlaps.length !== 0){
+        let index = 0;
+        for(let i = 0; i < overlaps.length; i++){
+          if(overlaps[i+1] !== undefined && overlaps[i][1] !== overlaps[i+1][0]){
+            if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            } else {
+              displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
+              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
+              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            }
+            index = i+1;
+          } else if(overlaps[i+1] === undefined){
             displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
             displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
             displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
           }
-          index = i+1;
-        } else if(overlaps[i+1] === undefined){
-          displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
-          displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
-          displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
         }
       }
-    }
 
-    console.log(displayTimes)
-    this.setState({displayTimes})
+      console.log(displayTimes)
+      this.setState({displayTimes})
+    }
   }
 
   @autobind
