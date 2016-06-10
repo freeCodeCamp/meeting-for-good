@@ -66,7 +66,7 @@ class EventDetailsComponent extends React.Component {
     const displayTimes = {};
 
     this.state.participants.forEach(user => {
-      if(user.availibility !== undefined) availability.push(user.availibility);
+      if(user.availability !== undefined) availability.push(user.availability);
     });
 
     console.log(this.state.participants)

@@ -45,11 +45,7 @@ class NewEvent extends React.Component {
       range: {
         min: 0,
         max: 24,
-      },
-      format: {
-        to: val => formatTime(val),
-        from: val => val,
-      },
+      }
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
