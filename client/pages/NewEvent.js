@@ -45,14 +45,20 @@ class NewEvent extends React.Component {
       range: {
         min: 0,
         max: 24,
+      },
+      format: {
+        to: val => formatTime(val),
+        from: val => val,
       }
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
+      $(".range-label span").text("")
       const { selectedTimeRange } = this.state;
       selectedTimeRange[handle] = value[handle];
       this.setState({ selectedTimeRange });
     });
+
   }
 
   @autobind
