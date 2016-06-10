@@ -37,7 +37,7 @@ class EventDetailsComponent extends React.Component {
       days: props.event.weekDays,
       user: {},
       eventParticipantsIds,
-      participants: props.event.participants
+      participants: props.event.participants,
     };
   }
 
@@ -53,7 +53,7 @@ class EventDetailsComponent extends React.Component {
     let displayTimes = {};
 
     this.state.participants.forEach(user => {
-      if(user.availibility !== undefined) availability.push(user.availibility);
+      if(user.availability !== undefined) availability.push(user.availability);
     })
 
     if(availability.length > 1){

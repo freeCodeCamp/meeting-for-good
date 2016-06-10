@@ -151,14 +151,14 @@ export default (app) => {
           participants = event.participants;
           participants.map(user => {
             if (user.name === username) {
-              user.availibility = req.body.data;
+              user.availability = req.body.data;
               userExists = true;
             }
             if (user.name !== username) {
               newParticipant = {
                 avatar: userAvatar,
                 name: username,
-                availibility: req.body.data,
+                availability: req.body.data,
               };
             }
             return user;
@@ -168,7 +168,7 @@ export default (app) => {
           participants = {
             avatar: userAvatar,
             name: username,
-            availibility: req.body.data,
+            availability: req.body.data,
           };
         }
 
