@@ -145,7 +145,7 @@ class AvailabilityGrid extends React.Component {
       console.log(err); return;
     }
 
-    browserHistory.push(`/event/${window.location.pathname.split("/")[2]}`);
+    window.location.reload();
   }
 
   addZero(time) {
