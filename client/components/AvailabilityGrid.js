@@ -93,11 +93,24 @@ class AvailabilityGrid extends React.Component {
     const times = [start];
     let currentTime = start;
 
-    end = moment(end).set('date', moment(start).get('date'));
+    if (moment(end).hour() < moment(start).hour()) {
+      while (moment(end).hour() < moment(times[times.length - 1]).hour()) {
+        currentTime = moment(currentTime).add(15, 'm')._d;
+        times.push(currentTime);
+        if (moment(currentTime).hour() === 0) break;
+      }
 
-    while (times[times.length - 1] < end) {
-      currentTime = moment(currentTime).add(15, 'm')._d;
-      times.push(currentTime);
+      while (moment(end).hour() > moment(times[times.length - 1]).hour()) {
+        currentTime = moment(currentTime).add(15, 'm')._d;
+        times.push(currentTime);
+      }
+    } else {
+      end = moment(end).set('date', moment(start).get('date'));
+
+      while (moment(end).hour() > moment(times[times.length - 1]).hour()) {
+        currentTime = moment(currentTime).add(15, 'm')._d;
+        times.push(currentTime);
+      }
     }
 
     return times;
@@ -105,7 +118,7 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   addCellToAvail(ev) {
-    if (this.props.heatmap) return;
+    if (this.props.heatmap || ev.target.className.includes('disabled')) return;
 
     if (ev.buttons == 1 || ev.buttons == 3) {
       if($(ev.target).css("background-color") !== "rgb(128, 0, 128)"){
@@ -208,6 +221,7 @@ class AvailabilityGrid extends React.Component {
 
   render() {
     const { allDatesRender, allTimesRender } = this.state;
+    const { dates } = this.props;
     const hourTime = allTimesRender.filter(time => String(time).split(":")[1].split(" ")[0] === "00")
 
     return (
@@ -222,16 +236,34 @@ class AvailabilityGrid extends React.Component {
             <div styleName="cell-aside">
               {date}
             </div>
-            {allTimesRender.map((time, i) => (
-              <div
-                key={i}
-                styleName="cell"
-                data-time={time}
-                data-date={date}
-                className="cell"
-                onClick={this.addCellToAvail}
-              ></div>
-            ))}
+            {allTimesRender.map((time, i) => {
+              let disabled = '';
+              let styleName = 'cell';
+
+              dates.forEach(({ fromDate, toDate }) => {
+                const fromDateFormatted = moment(fromDate).format('hh:mm a');
+                const toDateFormatted = moment(toDate).format('hh:mm a');
+
+                if (moment(fromDate).format('Do MMM') === date &&
+                    moment(fromDateFormatted, 'hh:mm a').isAfter(moment(time, 'hh:mm a')) ||
+                    moment(toDate).format('Do MMM') === date &&
+                    moment(toDateFormatted, 'hh:mm a').isBefore(moment(time, 'hh:mm a'))) {
+                  disabled = 'disabled';
+                  styleName = 'disabled';
+                }
+              });
+
+              return (
+                <div
+                  key={i}
+                  styleName={`${styleName}`}
+                  data-time={time}
+                  data-date={date}
+                  className={`cell ${disabled}`}
+                  onClick={this.addCellToAvail}
+                ></div>
+              );
+            })}
           </div>
         ))}
         <br />
