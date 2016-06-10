@@ -38,23 +38,36 @@ class EventDetailsComponent extends React.Component {
       user: {},
       eventParticipantsIds,
       participants: props.event.participants,
+      showHeatmap: false,
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     $.get('/api/auth/current', user => {
       if (user !== '') {
-        this.setState({ user });
+        let showHeatmap = false;
+
+        const currentParticipant = this.state.participants.find(participant =>
+          participant._id === user._id
+        );
+
+        if (currentParticipant && currentParticipant.availability) {
+          showHeatmap = true;
+        }
+
+        this.setState({ user, showHeatmap });
       }
     });
+  }
 
-    let availability = []
-    let overlaps = [];
-    let displayTimes = {};
+  componentDidMount() {
+    const availability = [];
+    const overlaps = [];
+    const displayTimes = {};
 
     this.state.participants.forEach(user => {
-      if(user.availability !== undefined) availability.push(user.availability);
-    })
+      if (user.availability !== undefined) availability.push(user.availability);
+    });
 
     if(availability.length > 1){
       for(let i = 0; i < availability[0].length; i++){
@@ -90,8 +103,8 @@ class EventDetailsComponent extends React.Component {
         }
       }
 
-      console.log(displayTimes)
-      this.setState({displayTimes})
+      console.log(displayTimes);
+      this.setState({ displayTimes });
     }
   }
 
@@ -153,10 +166,11 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  submitAvailability() {
-    document.getElementById('availability-grid').className += ' hide';
-    const enterAvailButton = document.getElementById('enterAvailButton');
-    enterAvailButton.className = enterAvailButton.className.replace('hide', '');
+  submitAvailability(availability) {
+    // document.getElementById('availability-grid').className += ' hide';
+    // const enterAvailButton = document.getElementById('enterAvailButton');
+    // enterAvailButton.className = enterAvailButton.className.replace('hide', '');
+    this.setState({ showHeatmap: true, availability });
   }
 
   @autobind
@@ -181,7 +195,8 @@ class EventDetailsComponent extends React.Component {
         this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
     };
 
-    const { event, user } = this.state;
+    const { event, user, showHeatmap, participants } = this.state;
+    const availability = participants.map(participant => participant.availability);
     let isOwner;
 
     if (user !== undefined) {
@@ -244,52 +259,59 @@ class EventDetailsComponent extends React.Component {
                     </div>
                     <hr />
                   </div>
-                )) : event.dates ?
-                <DayPicker
-                  initialMonth={minDate}
-                  fromMonth={minDate}
-                  toMonth={maxDate}
-                  modifiers={modifiers}
-                /> :
-                Object.keys(event.weekDays).map((day, index) => {
-                  let className = 'btn-flat';
-                  if (!event.weekDays[day]) {
-                    className += ' disabled';
-                  }
+                )) :
+                event.dates ?
+                  <DayPicker
+                    initialMonth={minDate}
+                    fromMonth={minDate}
+                    toMonth={maxDate}
+                    modifiers={modifiers}
+                  /> :
+                  Object.keys(event.weekDays).map((day, index) => {
+                    let className = 'btn-flat';
+                    if (!event.weekDays[day]) {
+                      className += ' disabled';
+                    }
 
-                  return (
-                    <a
-                      key={index}
-                      className={className}
-                      onClick={this.handleWeekdaySelect}
-                      style={{ cursor: 'default' }}
-                    >{day}</a>
-                  );
-                })
+                    return (
+                      <a
+                        key={index}
+                        className={className}
+                        onClick={this.handleWeekdaySelect}
+                        style={{ cursor: 'default' }}
+                      >{day}</a>
+                    );
+                  })
               }
             </div>
           </div>
-          <div id="grid" className="center">
-            <div id="availability-grid" className="hide">
-              <AvailabilityGrid
-                dates={this.state.dates}
-                user={this.state.user}
-              />
+          {showHeatmap ?
+            <div id="heatmap">
+              <AvailabilityGrid dates={this.state.dates} availability={availability} heatmap />
+            </div> :
+            <div id="grid" className="center">
+              <div id="availability-grid" className="hide">
+                <AvailabilityGrid
+                  dates={this.state.dates}
+                  user={this.state.user}
+                  submitAvail={this.submitAvailability}
+                />
+              </div>
+              {Object.keys(this.state.user).length > 0 ?
+                this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
+                  <a
+                    id="enterAvailButton"
+                    className="waves-effect waves-light btn"
+                    onClick={this.showAvailability}
+                  >Enter my availability</a> :
+                  <a
+                    className="waves-effect waves-light btn"
+                    onClick={this.joinEvent}
+                  >Join Event</a> :
+                <p>Login/Sign Up to enter your availability!</p>
+              }
             </div>
-            {Object.keys(this.state.user).length > 0 ?
-              this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
-                <a
-                  id="enterAvailButton"
-                  className="waves-effect waves-light btn"
-                  onClick={this.showAvailability}
-                >Enter my availability</a> :
-                <a
-                  className="waves-effect waves-light btn"
-                  onClick={this.joinEvent}
-                >Join Event</a> :
-              <p>Login/Sign Up to enter your availability!</p>
-            }
-          </div>
+          }
           <br />
           <div>
             <h6><strong>Participants</strong></h6>

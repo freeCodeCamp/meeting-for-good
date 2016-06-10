@@ -7,6 +7,7 @@ import fetch from 'isomorphic-fetch';
 import { checkStatus } from '../util/fetch.util';
 import { browserHistory } from 'react-router';
 import { getHours } from "../util/time-format";
+import colorsys from 'colorsys';
 
 import styles from '../styles/availability-grid.css';
 
@@ -41,6 +42,10 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
+    if (this.props.heatmap) {
+      this.renderHeatmap();
+    }
+
     $(".cell").on("mousedown mouseover", e => {
       this.addCellToAvail(e)
     }).on("click", e => {
@@ -88,19 +93,20 @@ class AvailabilityGrid extends React.Component {
     const times = [start];
     let currentTime = start;
 
-    end = moment(end).set("date", moment(start).get("date"));
+    end = moment(end).set('date', moment(start).get('date'));
 
     while (times[times.length - 1] < end) {
       currentTime = moment(currentTime).add(15, 'm')._d;
       times.push(currentTime);
     }
 
-    console.log(times.length)
     return times;
   }
 
   @autobind
   addCellToAvail(ev) {
+    if (this.props.heatmap) return;
+
     if (ev.buttons == 1 || ev.buttons == 3) {
       if($(ev.target).css("background-color") !== "rgb(128, 0, 128)"){
         $(ev.target).css("background-color", "purple")
@@ -145,6 +151,7 @@ class AvailabilityGrid extends React.Component {
       console.log(err); return;
     }
 
+    this.props.submitAvail(availability);
     browserHistory.push(`/event/${window.location.pathname.split("/")[2]}`);
   }
 
@@ -153,6 +160,50 @@ class AvailabilityGrid extends React.Component {
       time = `0${time}`
     }
     return time;
+  }
+
+  renderHeatmap() {
+    const availabilityLength = this.props.availability.filter(av => av).length;
+    const saturationDivisions = 100 / availabilityLength;
+    const saturations = [];
+
+    for (let i = 0; i <= 100; i += saturationDivisions) {
+      saturations.push(i);
+    }
+
+    const colors = saturations.map(saturation => colorsys.hsvToHex({
+      h: 271,
+      s: saturation,
+      v: 100,
+    }));
+
+    const formatStr = 'Do MMMM YYYY hh:mm a';
+
+    const cells = document.querySelectorAll('.cell');
+    let flattenedAvailability = _.flatten(this.props.availability);
+    flattenedAvailability = flattenedAvailability.filter(avail => avail).map(avail =>
+      new Date(avail[0])
+    ).map(avail =>
+      moment(avail).format(formatStr)
+    );
+
+
+    const availabilityNum = {};
+    flattenedAvailability.forEach(avail => {
+      if (availabilityNum[avail]) availabilityNum[avail] += 1;
+      else availabilityNum[avail] = 1;
+    });
+
+    for (const cell of cells) {
+      const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+      const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
+      const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
+
+      const date = moment(allDates[dateIndex]).get('date');
+      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+
+      cell.style.background = colors[availabilityNum[cellFormatted]];
+    }
   }
 
   render() {
@@ -184,10 +235,13 @@ class AvailabilityGrid extends React.Component {
           </div>
         ))}
         <br />
-        <a
-          className="waves-effect waves-light btn"
-          onClick={this.submitAvailability}
-        >Submit</a>
+        {this.props.heatmap ?
+          null :
+          <a
+            className="waves-effect waves-light btn"
+            onClick={this.submitAvailability}
+          >Submit</a>
+        }
       </div>
     );
   }
@@ -195,6 +249,10 @@ class AvailabilityGrid extends React.Component {
 
 AvailabilityGrid.propTypes = {
   dates: React.PropTypes.array.isRequired,
+  heatmap: React.PropTypes.bool,
+  user: React.PropTypes.object,
+  availability: React.PropTypes.array,
+  submitAvail: React.PropTypes.func,
 };
 
 export default cssModules(AvailabilityGrid, styles);
