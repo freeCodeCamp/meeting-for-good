@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import AvailabilityGrid from './AvailabilityGrid';
 
-import { checkStatus } from '../util/fetch.util';
+import { checkStatus, parseJSON } from '../util/fetch.util';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -25,8 +25,6 @@ class EventDetailsComponent extends React.Component {
     let dates;
 
     if (event.weekDays) {
-      console.log(event.weekDays);
-      console.log(event.dates);
       dates = event.dates;
     } else {
       delete event.weekDays;
@@ -51,6 +49,7 @@ class EventDetailsComponent extends React.Component {
       eventParticipantsIds,
       participants: event.participants,
       showHeatmap: false,
+      myAvailability: [],
     };
   }
 
@@ -58,16 +57,18 @@ class EventDetailsComponent extends React.Component {
     $.get('/api/auth/current', user => {
       if (user !== '') {
         let showHeatmap = false;
+        let myAvailability = [];
 
-        const currentParticipant = this.state.participants.find(participant =>
+        const me = this.state.participants.find(participant =>
           participant._id === user._id
         );
 
-        if (currentParticipant && currentParticipant.availability) {
+        if (me && me.availability) {
           showHeatmap = true;
+          myAvailability = me.availability;
         }
 
-        this.setState({ user, showHeatmap });
+        this.setState({ user, showHeatmap, myAvailability });
       }
     });
   }
@@ -79,10 +80,8 @@ class EventDetailsComponent extends React.Component {
     const formatStr = this.state.days ? "dddd" : "DD MMM"
 
     this.state.participants.forEach(user => {
-      if(user.availability !== undefined) availability.push(user.availability);
+      if (user.availability !== undefined) availability.push(user.availability);
     });
-
-    console.log(this.state.participants)
 
     if(availability.length > 1){
       console.log(availability)
@@ -191,11 +190,27 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  submitAvailability(availability) {
-    // document.getElementById('availability-grid').className += ' hide';
-    // const enterAvailButton = document.getElementById('enterAvailButton');
-    // enterAvailButton.className = enterAvailButton.className.replace('hide', '');
-    this.setState({ showHeatmap: true, availability });
+  editAvail() {
+    this.setState({ showHeatmap: false }, () => {
+      document.getElementById('enterAvailButton').click();
+    });
+  }
+
+  @autobind
+  async submitAvailability(myAvailability) {
+    const response = await fetch(`/api/events/${this.state.event._id}`, {
+      credentials: 'same-origin',
+    });
+    let event;
+
+    try {
+      checkStatus(response);
+      event = await parseJSON(response);
+    } catch (err) {
+      console.log(err); return;
+    }
+
+    this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
   }
 
   @autobind
@@ -216,7 +231,7 @@ class EventDetailsComponent extends React.Component {
   render() {
     let modifiers;
 
-    const { event, user, showHeatmap, participants } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
 
@@ -315,8 +330,19 @@ class EventDetailsComponent extends React.Component {
           {showHeatmap ?
             <div id="heatmap">
               {event.weekDays ?
-                <AvailabilityGrid dates={this.state.dates} availability={availability} heatmap weekDays/> :
-                <AvailabilityGrid dates={this.state.dates} availability={availability} heatmap />
+                <AvailabilityGrid
+                  dates={this.state.dates}
+                  availability={availability}
+                  editAvail={this.editAvail}
+                  heatmap
+                  weekDays
+                /> :
+                <AvailabilityGrid
+                  dates={this.state.dates}
+                  availability={availability}
+                  editAvail={this.editAvail}
+                  heatmap
+                />
               }
             </div> :
             <div id="grid" className="center">
@@ -326,11 +352,15 @@ class EventDetailsComponent extends React.Component {
                     dates={this.state.dates}
                     user={this.state.user}
                     submitAvail={this.submitAvailability}
+                    availability={availability}
+                    myAvailability={myAvailability}
                     weekDays
                   /> :
                   <AvailabilityGrid
                     dates={this.state.dates}
                     user={this.state.user}
+                    availability={availability}
+                    myAvailability={myAvailability}
                     submitAvail={this.submitAvailability}
                   />
                 }
