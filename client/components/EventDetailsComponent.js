@@ -334,6 +334,7 @@ class EventDetailsComponent extends React.Component {
                   dates={this.state.dates}
                   availability={availability}
                   editAvail={this.editAvail}
+                  participants={participants}
                   heatmap
                   weekDays
                 /> :
@@ -341,6 +342,7 @@ class EventDetailsComponent extends React.Component {
                   dates={this.state.dates}
                   availability={availability}
                   editAvail={this.editAvail}
+                  participants={participants}
                   heatmap
                 />
               }
