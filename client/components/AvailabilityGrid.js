@@ -97,17 +97,28 @@ class AvailabilityGrid extends React.Component {
   }
 
   getTimesBetween(start, end) {
-    const times = [start];
+    let times = [start];
     let currentTime = start;
 
     if (moment(end).hour() < moment(start).hour()) {
-      while (moment(end).hour() < moment(times[times.length - 1]).hour()) {
-        currentTime = moment(currentTime).add(15, 'm')._d;
-        times.push(currentTime);
-        if (moment(currentTime).hour() === 0) break;
-      }
+      currentTime = moment()
+        .set('date', moment(start).get('date'))
+        .set('hour', 0)
+        .set('minute', 0)._d;
+      times = [currentTime];
 
       while (moment(end).hour() > moment(times[times.length - 1]).hour()) {
+        currentTime = moment(currentTime).add(15, 'm')._d;
+        times.push(currentTime);
+      }
+
+      currentTime = moment(currentTime)
+        .set('hour', moment(start).get('hour'))
+        .set('minute', moment(start).get('minute'))._d;
+
+      times.push(currentTime);
+
+      while (moment(times[times.length - 1]).hour() > 0) {
         currentTime = moment(currentTime).add(15, 'm')._d;
         times.push(currentTime);
       }

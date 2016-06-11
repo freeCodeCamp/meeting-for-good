@@ -3,7 +3,6 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
-import { browserHistory } from 'react-router';
 import { checkStatus } from '../util/fetch.util';
 import moment from 'moment';
 
@@ -120,8 +119,7 @@ class EventCard extends React.Component {
       console.log(err); return;
     }
 
-    browserHistory.push('/');
-    browserHistory.push('/dashboard');
+    this.props.removeEventFromDashboard(this.state.event._id);
   }
 
   render() {
