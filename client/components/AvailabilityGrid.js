@@ -15,12 +15,17 @@ class AvailabilityGrid extends React.Component {
   constructor(props) {
     super(props);
 
+    let dateFormatStr = 'Do MMM';
+
+    if (props.weekDays) dateFormatStr = 'ddd';
+
     this.state = {
       availability: [],
       allTimes: [],
       allTimesRender: [],
       allDates: [],
       allDatesRender: [],
+      dateFormatStr,
     };
   }
 
@@ -33,7 +38,7 @@ class AvailabilityGrid extends React.Component {
       this.getTimesBetween(fromDate, toDate)
     ));
 
-    const allDatesRender = allDates.map(date => moment(date).format('Do MMM'));
+    const allDatesRender = allDates.map(date => moment(date).format(this.state.dateFormatStr));
     const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
 
     allTimesRender.pop();
@@ -244,9 +249,9 @@ class AvailabilityGrid extends React.Component {
                 const fromDateFormatted = moment(fromDate).format('hh:mm a');
                 const toDateFormatted = moment(toDate).format('hh:mm a');
 
-                if (moment(fromDate).format('Do MMM') === date &&
+                if (moment(fromDate).format(this.state.dateFormatStr) === date &&
                     moment(fromDateFormatted, 'hh:mm a').isAfter(moment(time, 'hh:mm a')) ||
-                    moment(toDate).format('Do MMM') === date &&
+                    moment(toDate).format(this.state.dateFormatStr) === date &&
                     moment(toDateFormatted, 'hh:mm a').isBefore(moment(time, 'hh:mm a'))) {
                   disabled = 'disabled';
                   styleName = 'disabled';
@@ -282,6 +287,7 @@ class AvailabilityGrid extends React.Component {
 AvailabilityGrid.propTypes = {
   dates: React.PropTypes.array.isRequired,
   heatmap: React.PropTypes.bool,
+  weekDays: React.PropTypes.bool,
   user: React.PropTypes.object,
   availability: React.PropTypes.array,
   submitAvail: React.PropTypes.func,

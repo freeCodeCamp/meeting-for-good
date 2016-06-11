@@ -19,25 +19,37 @@ class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
     const eventParticipantsIds = props.event.participants.map(participant => participant._id);
+    const { event } = props;
 
-    const ranges = props.event.dates.map(({ fromDate, toDate }) => ({
-      from: new Date(fromDate),
-      to: new Date(toDate),
-    }));
+    let ranges;
+    let dates;
 
-    const dates = props.event.dates.map(({ fromDate, toDate }) => ({
-      fromDate: new Date(fromDate),
-      toDate: new Date(toDate),
-    }));
+    if (event.weekDays) {
+      console.log(event.weekDays);
+      console.log(event.dates);
+      dates = event.dates;
+    } else {
+      delete event.weekDays;
+
+      ranges = event.dates.map(({ fromDate, toDate }) => ({
+        from: new Date(fromDate),
+        to: new Date(toDate),
+      }));
+
+      dates = event.dates.map(({ fromDate, toDate }) => ({
+        fromDate: new Date(fromDate),
+        toDate: new Date(toDate),
+      }));
+    }
 
     this.state = {
-      event: props.event,
+      event,
       ranges,
       dates,
-      days: props.event.weekDays,
+      days: event.weekDays,
       user: {},
       eventParticipantsIds,
-      participants: props.event.participants,
+      participants: event.participants,
       showHeatmap: false,
     };
   }
@@ -201,11 +213,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    const modifiers = {
-      selected: day =>
-        DateUtils.isDayInRange(day, this.state) ||
-        this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
-    };
+    let modifiers;
 
     const { event, user, showHeatmap, participants } = this.state;
     const availability = participants.map(participant => participant.availability);
@@ -227,6 +235,12 @@ class EventDetailsComponent extends React.Component {
       const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
       maxDate = new Date(Math.max.apply(null, dateInRanges));
       minDate = new Date(Math.min.apply(null, dateInRanges));
+
+      modifiers = {
+        selected: day =>
+          DateUtils.isDayInRange(day, this.state) ||
+          this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
+      };
     }
 
     const bestTimes = this.state.displayTimes;
@@ -303,11 +317,19 @@ class EventDetailsComponent extends React.Component {
             </div> :
             <div id="grid" className="center">
               <div id="availability-grid" className="hide">
-                <AvailabilityGrid
-                  dates={this.state.dates}
-                  user={this.state.user}
-                  submitAvail={this.submitAvailability}
-                />
+                {event.weekDays ?
+                  <AvailabilityGrid
+                    dates={this.state.dates}
+                    user={this.state.user}
+                    submitAvail={this.submitAvailability}
+                    weekDays
+                  /> :
+                  <AvailabilityGrid
+                    dates={this.state.dates}
+                    user={this.state.user}
+                    submitAvail={this.submitAvailability}
+                  />
+                }
               </div>
               {Object.keys(this.state.user).length > 0 ?
                 this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?

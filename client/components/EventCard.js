@@ -14,24 +14,33 @@ class EventCard extends React.Component {
   constructor(props) {
     super(props);
 
-    const ranges = props.event.dates.map(({ fromDate, toDate }) => ({
-      from: new Date(fromDate),
-      to: new Date(toDate),
-    }));
+    const { event } = props;
+    let ranges;
+    let dates;
 
-    const dates = props.event.dates.map(({ fromDate, toDate }) => ({
-      fromDate: new Date(fromDate),
-      toDate: new Date(toDate),
-    }));
+    if (event.weekDays) {
+      console.log(event.weekDays);
+      console.log(event.dates);
+      dates = event.dates;
+    } else {
+      delete event.weekDays;
 
-    if (props.event.dates.length === 0) delete props.event.dates;
-    else if (props.event.weekDays === undefined) delete props.event.weekDays;
+      ranges = event.dates.map(({ fromDate, toDate }) => ({
+        from: new Date(fromDate),
+        to: new Date(toDate),
+      }));
+
+      dates = event.dates.map(({ fromDate, toDate }) => ({
+        fromDate: new Date(fromDate),
+        toDate: new Date(toDate),
+      }));
+    }
 
     this.state = {
       participants: props.event.participants,
       ranges,
       dates,
-      event: props.event,
+      event,
       user: {},
     };
   }
@@ -118,15 +127,9 @@ class EventCard extends React.Component {
   }
 
   render() {
-    const modifiers = {
-      selected: day =>
-        DateUtils.isDayInRange(day, this.state) ||
-        this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
-    };
-
     const { event, user } = this.state;
-
     let isOwner;
+    let modifiers;
 
     if (user !== undefined) {
       if (user.github) isOwner = event.owner === user.github.username;
@@ -139,6 +142,11 @@ class EventCard extends React.Component {
     let minDate;
 
     if (this.state.ranges) {
+      modifiers = {
+        selected: day =>
+          DateUtils.isDayInRange(day, this.state) ||
+          this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
+      };
       const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
       maxDate = new Date(Math.max.apply(null, dateInRanges));
       minDate = new Date(Math.min.apply(null, dateInRanges));
@@ -186,7 +194,7 @@ class EventCard extends React.Component {
                     </div>
                     <hr />
                   </div>
-                )) : event.dates ?
+                )) : !event.weekDays ?
                 <DayPicker
                   className="alt"
                   styleName="day-picker"

@@ -49,7 +49,7 @@ class NewEvent extends React.Component {
       format: {
         to: val => formatTime(val),
         from: val => val,
-      }
+      },
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
@@ -58,7 +58,6 @@ class NewEvent extends React.Component {
       selectedTimeRange[handle] = value[handle];
       this.setState({ selectedTimeRange });
     });
-
   }
 
   @autobind
@@ -152,14 +151,37 @@ class NewEvent extends React.Component {
     } else {
       const {
         eventName: name,
-        ranges, dateOrDay,
+        ranges,
+        dateOrDay,
         weekDays,
         selectedTimeRange: [fromTime, toTime],
       } = this.state;
       let sentData;
 
+      const fromHours = getHours(fromTime);
+      const toHours = getHours(toTime);
+
+      const fromMinutes = getMinutes(fromTime);
+      const toMinutes = getMinutes(toTime);
+
       if (dateOrDay) {
-        sentData = JSON.stringify({ uid, name, weekDays });
+        const dates = [];
+
+        for (const key of Object.keys(weekDays)) {
+          if (!weekDays[key]) continue;
+          dates.push({
+            fromDate: moment()
+                        .day(key)
+                        .set('h', fromHours)
+                        .set('m', fromMinutes)._d,
+            toDate: moment()
+                        .day(key)
+                        .set('h', toHours)
+                        .set('m', toMinutes)._d,
+          });
+        }
+
+        sentData = JSON.stringify({ uid, name, weekDays, dates });
       } else {
         const dates = ranges.map(({ from, to }) => {
           if (!to) to = from;
@@ -167,12 +189,6 @@ class NewEvent extends React.Component {
           if (from > to) {
             [from, to] = [to, from];
           }
-
-          const fromHours = getHours(fromTime);
-          const toHours = getHours(toTime);
-
-          const fromMinutes = getMinutes(fromTime);
-          const toMinutes = getMinutes(toTime);
 
           return {
             fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
