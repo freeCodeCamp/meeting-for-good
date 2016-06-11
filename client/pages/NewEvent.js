@@ -80,8 +80,8 @@ class NewEvent extends React.Component {
     for (const range of ranges) {
       if (DateUtils.isDayInRange(day, range)) {
         const { from, to } = range;
-        const yesterday = moment(day).subtract(1, 'd')._d;
-        const tomorrow = moment(day).add(1, 'd')._d;
+        const yesterday = moment(day).subtract(1, 'date')._d;
+        const tomorrow = moment(day).add(1, 'date')._d;
 
         if (!DateUtils.isDayInRange(yesterday, range) && !DateUtils.isDayInRange(tomorrow, range)) {
           ranges = removeRange(ranges, range);

@@ -313,7 +313,10 @@ class EventDetailsComponent extends React.Component {
           </div>
           {showHeatmap ?
             <div id="heatmap">
-              <AvailabilityGrid dates={this.state.dates} availability={availability} heatmap />
+              {event.weekDays ?
+                <AvailabilityGrid dates={this.state.dates} availability={availability} heatmap weekDays/> :
+                <AvailabilityGrid dates={this.state.dates} availability={availability} heatmap />
+              }
             </div> :
             <div id="grid" className="center">
               <div id="availability-grid" className="hide">
