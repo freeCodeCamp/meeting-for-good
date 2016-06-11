@@ -65,9 +65,12 @@ class AvailabilityGrid extends React.Component {
             return false;
           }
         })
-        while(startCell.attr("data-time") !== currentCell.attr("data-time")) {
-          $(startCell).next().css("background-color", "rgb(128, 0, 128")
-          startCell = $(startCell).next();
+        console.log(next)
+        if(startCell.index() < currentCell.index()){
+          while(startCell.attr("data-time") !== currentCell.attr("data-time")) {
+            $(startCell).next().css("background-color", "rgb(128, 0, 128")
+            startCell = $(startCell).next();
+          }
         }
       }
     })
