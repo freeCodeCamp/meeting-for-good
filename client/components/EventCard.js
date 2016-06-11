@@ -19,8 +19,6 @@ class EventCard extends React.Component {
     let dates;
 
     if (event.weekDays) {
-      console.log(event.weekDays);
-      console.log(event.dates);
       dates = event.dates;
     } else {
       delete event.weekDays;
