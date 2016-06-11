@@ -76,6 +76,7 @@ class EventDetailsComponent extends React.Component {
     const availability = [];
     const overlaps = [];
     const displayTimes = {};
+    const formatStr = this.state.days ? "dddd" : "DD MMM"
 
     this.state.participants.forEach(user => {
       if(user.availability !== undefined) availability.push(user.availability);
@@ -104,24 +105,24 @@ class EventDetailsComponent extends React.Component {
         let index = 0;
         for(let i = 0; i < overlaps.length; i++){
           if(overlaps[i+1] !== undefined && overlaps[i][1] !== overlaps[i+1][0]){
-            if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            if(displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
               console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
             } else {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              displayTimes[moment(overlaps[index][0]).format(formatStr)] = {}
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours = [];
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
               console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
             }
             index = i+1;
           } else if(overlaps[i+1] === undefined){
-            if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            if(displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
               console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
             } else {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              displayTimes[moment(overlaps[index][0]).format(formatStr)] = {}
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours = [];
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
               console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
             }
           }
