@@ -53,6 +53,7 @@ class NewEvent extends React.Component {
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
+      $(".range-label span").text("")
       const { selectedTimeRange } = this.state;
       selectedTimeRange[handle] = value[handle];
       this.setState({ selectedTimeRange });
@@ -79,8 +80,8 @@ class NewEvent extends React.Component {
     for (const range of ranges) {
       if (DateUtils.isDayInRange(day, range)) {
         const { from, to } = range;
-        const yesterday = moment(day).subtract(1, 'd')._d;
-        const tomorrow = moment(day).add(1, 'd')._d;
+        const yesterday = moment(day).subtract(1, 'date')._d;
+        const tomorrow = moment(day).add(1, 'date')._d;
 
         if (!DateUtils.isDayInRange(yesterday, range) && !DateUtils.isDayInRange(tomorrow, range)) {
           ranges = removeRange(ranges, range);
@@ -150,14 +151,37 @@ class NewEvent extends React.Component {
     } else {
       const {
         eventName: name,
-        ranges, dateOrDay,
+        ranges,
+        dateOrDay,
         weekDays,
         selectedTimeRange: [fromTime, toTime],
       } = this.state;
       let sentData;
 
+      const fromHours = getHours(fromTime);
+      const toHours = getHours(toTime);
+
+      const fromMinutes = getMinutes(fromTime);
+      const toMinutes = getMinutes(toTime);
+
       if (dateOrDay) {
-        sentData = JSON.stringify({ uid, name, weekDays });
+        const dates = [];
+
+        for (const key of Object.keys(weekDays)) {
+          if (!weekDays[key]) continue;
+          dates.push({
+            fromDate: moment()
+                        .day(key)
+                        .set('h', fromHours)
+                        .set('m', fromMinutes)._d,
+            toDate: moment()
+                        .day(key)
+                        .set('h', toHours)
+                        .set('m', toMinutes)._d,
+          });
+        }
+
+        sentData = JSON.stringify({ uid, name, weekDays, dates });
       } else {
         const dates = ranges.map(({ from, to }) => {
           if (!to) to = from;
@@ -165,12 +189,6 @@ class NewEvent extends React.Component {
           if (from > to) {
             [from, to] = [to, from];
           }
-
-          const fromHours = getHours(fromTime);
-          const toHours = getHours(toTime);
-
-          const fromMinutes = getMinutes(fromTime);
-          const toMinutes = getMinutes(toTime);
 
           return {
             fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
