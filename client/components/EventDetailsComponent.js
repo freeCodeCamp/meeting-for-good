@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import AvailabilityGrid from './AvailabilityGrid';
 
-import { checkStatus } from '../util/fetch.util';
+import { checkStatus, parseJSON } from '../util/fetch.util';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -19,78 +19,117 @@ class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
     const eventParticipantsIds = props.event.participants.map(participant => participant._id);
+    const { event } = props;
 
-    const ranges = props.event.dates.map(({ fromDate, toDate }) => ({
-      from: new Date(fromDate),
-      to: new Date(toDate),
-    }));
+    let ranges;
+    let dates;
 
-    const dates = props.event.dates.map(({ fromDate, toDate }) => ({
-      fromDate: new Date(fromDate),
-      toDate: new Date(toDate),
-    }));
+    if (event.weekDays) {
+      dates = event.dates;
+    } else {
+      delete event.weekDays;
+
+      ranges = event.dates.map(({ fromDate, toDate }) => ({
+        from: new Date(fromDate),
+        to: new Date(toDate),
+      }));
+
+      dates = event.dates.map(({ fromDate, toDate }) => ({
+        fromDate: new Date(fromDate),
+        toDate: new Date(toDate),
+      }));
+    }
 
     this.state = {
-      event: props.event,
+      event,
       ranges,
       dates,
-      days: props.event.weekDays,
+      days: event.weekDays,
       user: {},
       eventParticipantsIds,
-      participants: props.event.participants
+      participants: event.participants,
+      showHeatmap: false,
+      myAvailability: [],
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     $.get('/api/auth/current', user => {
       if (user !== '') {
-        this.setState({ user });
+        let showHeatmap = false;
+        let myAvailability = [];
+
+        const me = this.state.participants.find(participant =>
+          participant._id === user._id
+        );
+
+        if (me && me.availability) {
+          showHeatmap = true;
+          myAvailability = me.availability;
+        }
+
+        this.setState({ user, showHeatmap, myAvailability });
       }
     });
+  }
 
-    let availability = []
-    let overlaps = [];
-    let displayTimes = {};
+  componentDidMount() {
+    const availability = [];
+    const overlaps = [];
+    const displayTimes = {};
+    const formatStr = this.state.days ? "dddd" : "DD MMM"
 
     this.state.participants.forEach(user => {
-      if(user.availibility !== undefined) availability.push(user.availibility);
-    })
+      if (user.availability !== undefined) availability.push(user.availability);
+    });
 
-    for(let i = 0; i < availability[0].length; i++){
-      let current = availability[0][i]
-      let count = 0;
-      for(let j = 0; j < availability.length; j++){
-        for(let k = 0; k < availability[j].length; k++){
-          if(availability[j][k][0] === current[0]) {
-            count++;
+    if(availability.length > 1){
+      console.log(availability)
+      for(let i = 0; i < availability[0].length; i++){
+        let current = availability[0][i]
+        let count = 0;
+        for(let j = 0; j < availability.length; j++){
+          for(let k = 0; k < availability[j].length; k++){
+            if(availability[j][k][0] === current[0]) {
+              count++;
+            }
+          }
+        }
+        if(count === availability.length) overlaps.push(current);
+      }
+
+      // console.log(overlaps)
+
+      if(overlaps.length !== 0){
+        let index = 0;
+        for(let i = 0; i < overlaps.length; i++){
+          if(overlaps[i+1] !== undefined && overlaps[i][1] !== overlaps[i+1][0]){
+            if(displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            } else {
+              displayTimes[moment(overlaps[index][0]).format(formatStr)] = {}
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours = [];
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            }
+            index = i+1;
+          } else if(overlaps[i+1] === undefined){
+            if(displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            } else {
+              displayTimes[moment(overlaps[index][0]).format(formatStr)] = {}
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours = [];
+              displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            }
           }
         }
       }
-      if(count === availability.length) overlaps.push(current);
-    }
 
-    if(overlaps.length !== 0){
-      let index = 0;
-      for(let i = 0; i < overlaps.length; i++){
-        if(overlaps[i+1] !== undefined && overlaps[i][1] !== overlaps[i+1][0]){
-          if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
-            displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-          } else {
-            displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
-            displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
-            displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-          }
-          index = i+1;
-        } else if(overlaps[i+1] === undefined){
-          displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
-          displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
-          displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-        }
-      }
+      this.setState({displayTimes})
     }
-
-    console.log(displayTimes)
-    this.setState({displayTimes})
   }
 
   @autobind
@@ -151,10 +190,27 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  submitAvailability() {
-    document.getElementById('availability-grid').className += ' hide';
-    const enterAvailButton = document.getElementById('enterAvailButton');
-    enterAvailButton.className = enterAvailButton.className.replace('hide', '');
+  editAvail() {
+    this.setState({ showHeatmap: false }, () => {
+      document.getElementById('enterAvailButton').click();
+    });
+  }
+
+  @autobind
+  async submitAvailability(myAvailability) {
+    const response = await fetch(`/api/events/${this.state.event._id}`, {
+      credentials: 'same-origin',
+    });
+    let event;
+
+    try {
+      checkStatus(response);
+      event = await parseJSON(response);
+    } catch (err) {
+      console.log(err); return;
+    }
+
+    this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
   }
 
   @autobind
@@ -173,13 +229,10 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    const modifiers = {
-      selected: day =>
-        DateUtils.isDayInRange(day, this.state) ||
-        this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
-    };
+    let modifiers;
 
-    const { event, user } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability } = this.state;
+    const availability = participants.map(participant => participant.availability);
     let isOwner;
 
     if (user !== undefined) {
@@ -198,6 +251,12 @@ class EventDetailsComponent extends React.Component {
       const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
       maxDate = new Date(Math.max.apply(null, dateInRanges));
       minDate = new Date(Math.min.apply(null, dateInRanges));
+
+      modifiers = {
+        selected: day =>
+          DateUtils.isDayInRange(day, this.state) ||
+          this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
+      };
     }
 
     const bestTimes = this.state.displayTimes;
@@ -242,52 +301,87 @@ class EventDetailsComponent extends React.Component {
                     </div>
                     <hr />
                   </div>
-                )) : event.dates ?
-                <DayPicker
-                  initialMonth={minDate}
-                  fromMonth={minDate}
-                  toMonth={maxDate}
-                  modifiers={modifiers}
-                /> :
-                Object.keys(event.weekDays).map((day, index) => {
-                  let className = 'btn-flat';
-                  if (!event.weekDays[day]) {
-                    className += ' disabled';
-                  }
+                )) :
+                event.dates ?
+                  <DayPicker
+                    initialMonth={minDate}
+                    fromMonth={minDate}
+                    toMonth={maxDate}
+                    modifiers={modifiers}
+                  /> :
+                  Object.keys(event.weekDays).map((day, index) => {
+                    let className = 'btn-flat';
+                    if (!event.weekDays[day]) {
+                      className += ' disabled';
+                    }
 
-                  return (
-                    <a
-                      key={index}
-                      className={className}
-                      onClick={this.handleWeekdaySelect}
-                      style={{ cursor: 'default' }}
-                    >{day}</a>
-                  );
-                })
+                    return (
+                      <a
+                        key={index}
+                        className={className}
+                        onClick={this.handleWeekdaySelect}
+                        style={{ cursor: 'default' }}
+                      >{day}</a>
+                    );
+                  })
               }
             </div>
           </div>
-          <div id="grid" className="center">
-            <div id="availability-grid" className="hide">
-              <AvailabilityGrid
-                dates={this.state.dates}
-                user={this.state.user}
-              />
+          {showHeatmap ?
+            <div id="heatmap">
+              {event.weekDays ?
+                <AvailabilityGrid
+                  dates={this.state.dates}
+                  availability={availability}
+                  editAvail={this.editAvail}
+                  participants={participants}
+                  heatmap
+                  weekDays
+                /> :
+                <AvailabilityGrid
+                  dates={this.state.dates}
+                  availability={availability}
+                  editAvail={this.editAvail}
+                  participants={participants}
+                  heatmap
+                />
+              }
+            </div> :
+            <div id="grid" className="center">
+              <div id="availability-grid" className="hide">
+                {event.weekDays ?
+                  <AvailabilityGrid
+                    dates={this.state.dates}
+                    user={this.state.user}
+                    submitAvail={this.submitAvailability}
+                    availability={availability}
+                    myAvailability={myAvailability}
+                    weekDays
+                  /> :
+                  <AvailabilityGrid
+                    dates={this.state.dates}
+                    user={this.state.user}
+                    availability={availability}
+                    myAvailability={myAvailability}
+                    submitAvail={this.submitAvailability}
+                  />
+                }
+              </div>
+              {Object.keys(this.state.user).length > 0 ?
+                this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
+                  <a
+                    id="enterAvailButton"
+                    className="waves-effect waves-light btn"
+                    onClick={this.showAvailability}
+                  >Enter my availability</a> :
+                  <a
+                    className="waves-effect waves-light btn"
+                    onClick={this.joinEvent}
+                  >Join Event</a> :
+                <p>Login/Sign Up to enter your availability!</p>
+              }
             </div>
-            {Object.keys(this.state.user).length > 0 ?
-              this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
-                <a
-                  id="enterAvailButton"
-                  className="waves-effect waves-light btn"
-                  onClick={this.showAvailability}
-                >Enter my availability</a> :
-                <a
-                  className="waves-effect waves-light btn"
-                  onClick={this.joinEvent}
-                >Join Event</a> :
-              <p>Login/Sign Up to enter your availability!</p>
-            }
-          </div>
+          }
           <br />
           <div>
             <h6><strong>Participants</strong></h6>

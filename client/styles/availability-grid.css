@@ -27,3 +27,8 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
+.disabled {
+  composes: cell;
+  background-color: #eee;
+}
