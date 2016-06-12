@@ -1,6 +1,5 @@
 .row {
   display: flex;
-  justify-content: space-between;
   clear: both;
 }
 
@@ -8,12 +7,11 @@
   padding: 5px;
   border: 1px solid #efefef;
   cursor: pointer;
-  /*font-size: 0.25em;*/
 }
 
 .cell-aside {
-  width: 75px;
   composes: cell;
+  width: 75px;
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
@@ -31,4 +29,5 @@
 .disabled {
   composes: cell;
   background-color: #eee;
+  cursor: default;
 }
