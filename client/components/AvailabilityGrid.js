@@ -100,7 +100,7 @@ class AvailabilityGrid extends React.Component {
     let times = [start];
     let currentTime = start;
 
-    if (moment(end).hour() < moment(start).hour()) {
+    if (moment(end).hour() < moment(start).hour() && moment(end).hour() !== 0) {
       currentTime = moment(start)
         .set('hour', 0)
         .set('minute', 0)._d;
@@ -118,14 +118,14 @@ class AvailabilityGrid extends React.Component {
       times.pop();
       times.push(currentTime);
 
-      while (moment(times.slice(0)[-1]).hour() > 0) {
+      while (moment(times.slice(-1)[0]).hour() > 0) {
         currentTime = moment(currentTime).add(15, 'm')._d;
         times.push(currentTime);
       }
     } else {
       end = moment(end).set('date', moment(start).get('date'));
 
-      while (moment(end).isAfter(moment(times.slice(0)[-1]))) {
+      while (moment(end).isAfter(moment(times.slice(-1)[0]))) {
         currentTime = moment(currentTime).add(15, 'm')._d;
         times.push(currentTime);
       }
