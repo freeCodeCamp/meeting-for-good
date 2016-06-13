@@ -310,13 +310,14 @@ class EventDetailsComponent extends React.Component {
                 )) :
                 event.dates ?
                   <DayPicker
+                    className="alt"
                     initialMonth={minDate}
                     fromMonth={minDate}
                     toMonth={maxDate}
                     modifiers={modifiers}
                   /> :
                   Object.keys(event.weekDays).map((day, index) => {
-                    let className = 'btn-flat';
+                    let className = 'btn-flat alt';
                     if (!event.weekDays[day]) {
                       className += ' disabled';
                     }
