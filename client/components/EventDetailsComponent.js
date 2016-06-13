@@ -130,6 +130,11 @@ class EventDetailsComponent extends React.Component {
 
       this.setState({displayTimes})
     }
+    setTimeout(() => {
+      $('.alt').each((i, el) => {
+        $(el).parents('.card').find('#best').remove();
+      });
+    }, 100);
   }
 
   @autobind
@@ -280,6 +285,7 @@ class EventDetailsComponent extends React.Component {
       }
         <div className="card-content">
           <span className="card-title">{event.name}</span>
+          <h6 id="best"><strong>Best times & dates</strong></h6>
           <div className="row">
             <div className="col s12">
               {isBestTime ?
