@@ -209,23 +209,23 @@ class NewEvent extends React.Component {
         sentData = JSON.stringify({ uid, name, dates });
       }
 
-      // const response = await fetch('/api/events', {
-      //   headers: {
-      //     Accept: 'application/json',
-      //     'Content-Type': 'application/json',
-      //   },
-      //   method: 'POST',
-      //   body: sentData,
-      //   credentials: 'same-origin',
-      // });
+      const response = await fetch('/api/events', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: sentData,
+        credentials: 'same-origin',
+      });
 
-      // try {
-      //   checkStatus(response);
-      // } catch (err) {
-      //   console.log(err); return;
-      // }
+      try {
+        checkStatus(response);
+      } catch (err) {
+        console.log(err); return;
+      }
 
-      // browserHistory.push(`/event/${uid}`);
+      browserHistory.push(`/event/${uid}`);
     }
   }
 
