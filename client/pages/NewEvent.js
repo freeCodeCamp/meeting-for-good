@@ -183,7 +183,8 @@ class NewEvent extends React.Component {
 
         sentData = JSON.stringify({ uid, name, weekDays, dates });
       } else {
-        const dates = ranges.map(({ from, to }) => {
+        const dates = [];
+        ranges.map(({ from, to }) => {
           if (!to) to = from;
 
           if (from > to) {
@@ -194,28 +195,37 @@ class NewEvent extends React.Component {
             fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
             toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
           };
+        }).forEach(({ fromDate, toDate }, i, arr) => {
+          if (arr[i + 1]) {
+            const nextDayMomentFrom = moment(arr[i + 1].fromDate);
+
+            if (moment(toDate).add(1, 'd').isSame(nextDayMomentFrom, 'd')) {
+              toDate = arr[i + 1].toDate;
+              dates.push({ fromDate, toDate });
+            }
+          }
         });
 
         sentData = JSON.stringify({ uid, name, dates });
       }
 
-      const response = await fetch('/api/events', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: sentData,
-        credentials: 'same-origin',
-      });
+      // const response = await fetch('/api/events', {
+      //   headers: {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'application/json',
+      //   },
+      //   method: 'POST',
+      //   body: sentData,
+      //   credentials: 'same-origin',
+      // });
 
-      try {
-        checkStatus(response);
-      } catch (err) {
-        console.log(err); return;
-      }
+      // try {
+      //   checkStatus(response);
+      // } catch (err) {
+      //   console.log(err); return;
+      // }
 
-      browserHistory.push(`/event/${uid}`);
+      // browserHistory.push(`/event/${uid}`);
     }
   }
 
