@@ -1,6 +1,5 @@
 # TODOs
 - ~~Event cards should be consistent in layout~~
-- Add a simple profile page
 - Add a home page
 - ~~Calendars on dashboard should be converted to users time zone~~
 - ~~Add GitHub and Facebook buttons to signup page~~
