@@ -30,4 +30,5 @@
   composes: cell;
   background-color: #eee;
   cursor: default;
+  pointer-events: none;
 }
