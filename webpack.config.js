@@ -32,7 +32,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'eslint-loader',
-        exclude: '/node_modules'
+        exclude: '/node_modules',
       }
     ],
     loaders: [
@@ -73,6 +73,5 @@ module.exports = {
   },
   eslint: {
     formatter: require('eslint-friendly-formatter'),
-    fix: true
-  }
+  },
 };
