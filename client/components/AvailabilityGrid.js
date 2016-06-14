@@ -5,7 +5,7 @@ import moment from 'moment';
 import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
 import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes } from '../util/time-format';
+import { getHours } from '../util/time-format';
 import colorsys from 'colorsys';
 
 import styles from '../styles/availability-grid.css';
@@ -47,58 +47,58 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
-    const hoursArr = []
+    const hoursArr = [];
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
     $('.cell').on('mousedown mouseover', e => {
       if (!this.props.heatmap) this.addCellToAvail(e);
-    }).on("click", e => {
+    }).on('click', e => {
       if (e.shiftKey) {
-        let next = false;
         let startCell;
         const currentCell = $(e.target);
         const parentRow = $(e.target).parent();
-        parentRow.children(".cell").each((i, el) => {
-          if($(el).css("background-color") === "rgb(128, 0, 128)" && $(el).prev().css("background-color") !== "rgb(128, 0, 128)" && $(el).next().css("background-color") !== "rgb(128, 0, 128)"){
-            startCell = $(el)
+        parentRow.children('.cell').each((i, el) => {
+          if ($(el).css('background-color') === 'rgb(128, 0, 128)' &&
+              $(el).prev().css('background-color') !== 'rgb(128, 0, 128)' &&
+              $(el).next().css('background-color') !== 'rgb(128, 0, 128)') {
+            startCell = $(el);
             return false;
           }
-        })
-        console.log(next)
-        if(startCell.index() < currentCell.index()){
-          while(startCell.attr("data-time") !== currentCell.attr("data-time")) {
-            $(startCell).next().css("background-color", "rgb(128, 0, 128")
+        });
+
+        if (startCell.index() < currentCell.index()) {
+          while (startCell.attr('data-time') !== currentCell.attr('data-time')) {
+            $(startCell).next().css('background-color', 'rgb(128, 0, 128');
             startCell = $(startCell).next();
           }
         }
       }
-    })
+    });
 
-    $(".cell").each(function(i, el){
-      if($(el).attr("data-time").split(":")[1].split(" ")[0] === "00"){
-        $(this).css("border-left", "1px solid #909090")
+    $('.cell').each((i, el) => {
+      if ($(el).attr('data-time').split(':')[1].split(' ')[0] === '00') {
+        $(this).css('border-left', '1px solid #909090');
+      } else if ($(el).attr('data-time').split(':')[1].split(' ')[0] === '30') {
+        $(this).css('border-left', '1px solid #c3bebe');
       }
-      else if($(el).attr("data-time").split(":")[1].split(" ")[0] === "30"){
-        $(this).css("border-left", "1px solid #c3bebe")
-      }
-    })
+    });
 
-    $(".grid-hour").each((i, el) => {
+    $('.grid-hour').each((i, el) => {
       hoursArr.push($(el).text());
-    })
+    });
 
-    for(var i = 0; i < hoursArr.length; i++){
-      if(hoursArr[i+1] !== undefined){
+    for (let i = 0; i < hoursArr.length; i++) {
+      if (hoursArr[i + 1] !== undefined) {
         const date = moment(new Date());
         const nextDate = moment(new Date());
-        date.set("h", hoursArr[i].split(":")[0]);
-        date.set("m", hoursArr[i].split(":")[1]);
-        nextDate.set("h", hoursArr[i+1].split(":")[0]);
-        nextDate.set("m", hoursArr[i+1].split(":")[1]);
-        if(date.add(1, "h").format("hh:mm") !== nextDate.format("hh:mm")){
-          $(".cell[data-time='" + nextDate.format("hh:mm a") + "']").css("margin-left", "50px");
-          $($(".grid-hour")[i]).css("margin-right", "50px");
+        date.set('h', hoursArr[i].split(':')[0]);
+        date.set('m', hoursArr[i].split(':')[1]);
+        nextDate.set('h', hoursArr[i + 1].split(':')[0]);
+        nextDate.set('m', hoursArr[i + 1].split(':')[1]);
+        if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
+          $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
+          $($('.grid-hour')[i]).css('margin-right', '50px');
         }
       }
     }
@@ -209,8 +209,8 @@ class AvailabilityGrid extends React.Component {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const availability = [];
 
-    $(".cell").each((i, el) => {
-      if($(el).css("background-color") === "rgb(128, 0, 128)"){
+    $('.cell').each((i, el) => {
+      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
         const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
         const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
 
@@ -221,17 +221,20 @@ class AvailabilityGrid extends React.Component {
 
         availability.push([from, to]);
       }
-    })
-    console.log(availability)
-    const response = await fetch(`/api/events/${window.location.pathname.split("/")[2]}/updateAvail`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-      body: JSON.stringify({data: availability, user: this.props.user}),
-      credentials: 'same-origin',
     });
+    console.log(availability);
+    const response = await fetch(
+      `/api/events/${window.location.pathname.split('/')[2]}/updateAvail`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'PUT',
+        body: JSON.stringify({ data: availability, user: this.props.user }),
+        credentials: 'same-origin',
+      }
+    );
 
     try {
       checkStatus(response);
@@ -248,8 +251,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   addZero(time) {
-    if(Number(String(time).split(":")[0]) < 10){
-      time = `0${time}`
+    if (Number(String(time).split(':')[0]) < 10) {
+      time = `0${time}`;
     }
     return time;
   }
@@ -322,19 +325,20 @@ class AvailabilityGrid extends React.Component {
   render() {
     const { allDatesRender, allTimesRender } = this.state;
     const { dates } = this.props;
-    let hourTime = allTimesRender.filter(time => String(time).split(":")[1].split(" ")[0] === "00")
+    const hourTime = allTimesRender
+      .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
 
     const date = moment(new Date());
-    date.set("h", hourTime[hourTime.length - 1].split(":")[0]);
-    date.set("m", hourTime[hourTime.length - 1].split(":")[1]);
-    hourTime.push(date.add(1, "h").format("hh:mm a"));
+    date.set('h', hourTime[hourTime.length - 1].split(':')[0]);
+    date.set('m', hourTime[hourTime.length - 1].split(':')[1]);
+    hourTime.push(date.add(1, 'h').format('hh:mm a'));
 
     return (
       <div>
-        {hourTime.map((time,i) => {
+        {hourTime.map(time => {
           return (
-            <p className="grid-hour" styleName="grid-hour">{this.addZero(getHours(time.toUpperCase())) + ":00"}</p>
-          )
+            <p styleName="grid-hour">{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
+          );
         })}
         {allDatesRender.map((date, i) => (
           <div key={i} className="grid-row" styleName="row">
