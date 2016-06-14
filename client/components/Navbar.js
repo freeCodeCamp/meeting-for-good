@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
 import styles from '../styles/navbar.css';
 
@@ -23,32 +24,28 @@ class Navbar extends React.Component {
   }
 
   render() {
-    let links;
-    if (this.state.user) {
-      links = ['<a href="/api/auth/logout">Logout</a>', '<a href="/dashboard">Dashboard</a>'];
-    } else {
-      links = [];
-    }
-    $('#nav-mobile li a').not(':last').remove();
     return (
       <nav className="grey darken-3">
         <div className="container">
-          <a href="/" className="brand-logo">Lets Meet</a>
+          <Link to="/" className="brand-logo">Lets Meet</Link>
           <ul id="nav-mobile" className="right hide-on-med-and-down">
-            <li>
-              {links.forEach(el => {
-                $('#nav-mobile li').prepend(el);
-              })}
-              <a href="/login">Login</a>
-              <a href="/signup">Signup</a>
-              <a href="#">
-                <img
-                  alt="avatar"
-                  styleName="nav-img"
-                  src={this.state.userAvatar}
-                />
-              </a>
-            </li>
+            {this.state.user ?
+              <li>
+                <a href="/api/auth/logout">Logout</a>
+                <Link to="/dashboard">Dashboard</Link>
+                <a href="#">
+                  <img
+                    alt="avatar"
+                    styleName="nav-img"
+                    src={this.state.userAvatar}
+                  />
+                </a>
+              </li> :
+              <li>
+                <Link to="/login">Login</Link>
+                <Link to="/signup">Signup</Link>
+              </li>
+            }
           </ul>
         </div>
       </nav>

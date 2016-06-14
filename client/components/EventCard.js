@@ -5,6 +5,7 @@ import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import { checkStatus } from '../util/fetch.util';
 import moment from 'moment';
+import { Link } from 'react-router';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -240,7 +241,7 @@ class EventCard extends React.Component {
           </div>
         </div>
         <div className="card-action">
-          <a href={`/event/${event.uid}`}>View Details</a>
+          <Link to={`/event/${event.uid}`}>View Details</Link>
         </div>
       </div>
     );
