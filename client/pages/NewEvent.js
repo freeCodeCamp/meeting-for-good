@@ -39,8 +39,8 @@ class NewEvent extends React.Component {
 
   async componentWillMount() {
     if (!await isAuthenticated()) {
-      if (!localStorage.getItem('redirectTo')) {
-        localStorage.setItem('redirectTo', '/event/new');
+      if (!sessionStorage.getItem('redirectTo')) {
+        sessionStorage.setItem('redirectTo', '/event/new');
       }
       browserHistory.push('/login');
     }

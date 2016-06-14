@@ -5,9 +5,9 @@ import { isAuthenticated } from '../util/auth';
 
 class Home extends React.Component {
   async componentWillMount() {
-    if (localStorage.getItem('redirectTo')) {
-      browserHistory.push(localStorage.getItem('redirectTo'));
-      localStorage.removeItem('redirectTo');
+    if (sessionStorage.getItem('redirectTo')) {
+      browserHistory.push(sessionStorage.getItem('redirectTo'));
+      sessionStorage.removeItem('redirectTo');
     }
 
     if (await isAuthenticated()) browserHistory.push('/dashboard');
