@@ -38,7 +38,12 @@ class NewEvent extends React.Component {
   }
 
   async componentWillMount() {
-    if (!await isAuthenticated()) { browserHistory.push('/login'); return; }
+    if (!await isAuthenticated()) {
+      if (!localStorage.getItem('redirectTo')) {
+        localStorage.setItem('redirectTo', '/event/new');
+      }
+      browserHistory.push('/login');
+    }
   }
 
   componentDidMount() {
