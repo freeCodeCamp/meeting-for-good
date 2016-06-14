@@ -183,8 +183,7 @@ class NewEvent extends React.Component {
 
         sentData = JSON.stringify({ uid, name, weekDays, dates });
       } else {
-        const dates = [];
-        ranges.map(({ from, to }) => {
+        const dates = ranges.map(({ from, to }) => {
           if (!to) to = from;
 
           if (from > to) {
@@ -195,16 +194,54 @@ class NewEvent extends React.Component {
             fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
             toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
           };
-        }).forEach(({ fromDate, toDate }, i, arr) => {
-          if (arr[i + 1]) {
-            const nextDayMomentFrom = moment(arr[i + 1].fromDate);
+        });
 
-            if (moment(toDate).add(1, 'd').isSame(nextDayMomentFrom, 'd')) {
-              toDate = arr[i + 1].toDate;
-              dates.push({ fromDate, toDate });
+        // ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)
+        for (let i = 0; i < dates.length; i++) {
+          for (let x = i + 1; x < dates.length; x++) {
+            // `dates[i]` represents every date object starting from index 0.
+            //
+            // `dates[x]` is every date object after dates[i]. Some dates[x] objects may get deleted
+            //            as their values are merged with the current dates[i] object. In such a
+            //            scenario, the dates[x] object in question will not be iterated over later
+            //            as dates[i].
+
+            const iToMoment = moment(dates[i].toDate);
+            const iFromMoment = moment(dates[i].fromDate);
+            const xToMoment = moment(dates[x].toDate);
+            const xFromMoment = moment(dates[x].fromDate);
+
+            // If the current dates[x] object completely overlaps the current dates[x] object, then
+            // set dates[i] to dates[x] and delete the current dates[x] object from the array.
+            if (xToMoment.isAfter(iToMoment) && xFromMoment.isBefore(iFromMoment)) {
+              dates[i].toDate = dates[x].toDate;
+              dates[i].fromDate = dates[x].fromDate;
+              dates.splice(x, 1);
+              x = i; continue;
+            }
+
+            if (iFromMoment.isBefore(xFromMoment) && iToMoment.isAfter(xToMoment)) {
+              dates.splice(x, 1);
+              x = i; continue;
+            }
+
+            // If the current dates[x] object is adjacent the current dates[i] object and
+            // dates[x] > dates[i].
+            if (iToMoment.add(1, 'd').isSame(xFromMoment, 'd')) {
+              dates[i].toDate = dates[x].toDate;
+              dates.splice(x, 1);
+              x = i; continue;
+            }
+
+            // If the current dates[x] object is adjacent the current dates[i] object and
+            // dates[x] < dates[i].
+            if (iFromMoment.subtract(1, 'd').isSame(xToMoment, 'd')) {
+              dates[i].fromDate = dates[x].fromDate;
+              dates.splice(x, 1);
+              x = i; continue;
             }
           }
-        });
+        }
 
         sentData = JSON.stringify({ uid, name, dates });
       }
