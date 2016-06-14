@@ -14,30 +14,28 @@ import styles from '../styles/dashboard.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../util/fetch.util';
+import { isAuthenticated } from '../util/auth';
 
 class Dashboard extends React.Component {
   constructor() {
     super();
-    this.state = {
-      events: [],
-      user: {},
-    };
+    this.state = { events: [] };
   }
 
-  componentDidMount() {
-    $(document).ready(() => {
-      $('.modal-trigger').leanModal();
-    });
+  async componentWillMount() {
+    if (!await isAuthenticated()) { browserHistory.push('/login'); return; }
 
-    fetch('/api/users/current/events', { credentials: 'same-origin' })
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(events => this.setState({ events }));
+    const response = await fetch('/api/users/current/events', { credentials: 'same-origin' });
+    let events;
 
-    fetch('/api/auth/current', { credentials: 'same-origin' })
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(user => { if (user === '') browserHistory.push('/'); });
+    try {
+      checkStatus(response);
+      events = await parseJSON(response);
+    } catch (err) {
+      console.log(err); return;
+    }
+
+    this.setState({ events });
   }
 
   @autobind

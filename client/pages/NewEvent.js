@@ -10,6 +10,7 @@ import { browserHistory } from 'react-router';
 
 import { checkStatus } from '../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../util/time-format';
+import { isAuthenticated } from '../util/auth';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -34,6 +35,10 @@ class NewEvent extends React.Component {
       selectedTimeRange: [0, 23],
       submitClass: 'waves-effect waves-light btn purple disabled',
     };
+  }
+
+  async componentWillMount() {
+    if (!await isAuthenticated()) { browserHistory.push('/login'); return; }
   }
 
   componentDidMount() {

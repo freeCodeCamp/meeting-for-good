@@ -26,7 +26,8 @@ export default (app) => {
 
   app.route('/api/auth/current')
     .get((req, res) => {
-      res.status(200).send(req.user);
+      if (req.user) return res.status(200).send(req.user);
+      return res.status(500).send('User not found');
     });
 
   app.route('/api/auth/github')
