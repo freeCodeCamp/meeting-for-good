@@ -6,7 +6,7 @@ import '../styles/main.css';
 
 const App = (props) => (
   <div>
-    <Navbar />
+    <Navbar location={props.location} />
     <main styleName="main">
       {props.children}
     </main>
@@ -15,6 +15,7 @@ const App = (props) => (
 
 App.propTypes = {
   children: React.PropTypes.element,
+  location: React.PropTypes.object.isRequired,
 };
 
 export default App;

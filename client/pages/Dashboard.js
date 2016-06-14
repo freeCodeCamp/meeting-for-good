@@ -23,7 +23,12 @@ class Dashboard extends React.Component {
   }
 
   async componentWillMount() {
-    if (!await isAuthenticated()) { browserHistory.push('/login'); return; }
+    if (localStorage.getItem('redirectTo')) {
+      browserHistory.push(localStorage.getItem('redirectTo'));
+      localStorage.removeItem('redirectTo');
+    }
+
+    if (!await isAuthenticated()) browserHistory.push('/login');
 
     const response = await fetch('/api/users/current/events', { credentials: 'same-origin' });
     let events;
