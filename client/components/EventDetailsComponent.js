@@ -305,8 +305,7 @@ class EventDetailsComponent extends React.Component {
                     </div>
                     <hr />
                   </div>
-                )) :
-                event.dates ?
+                )) : !event.weekDays ?
                   <DayPicker
                     className="alt"
                     initialMonth={minDate}
