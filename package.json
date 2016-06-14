@@ -35,6 +35,7 @@
     "babel-preset-stage-1": "^6.5.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.1",
+    "chunk-manifest-webpack-plugin": "^0.1.0",
     "colorsys": "^1.0.9",
     "compression": "^1.6.2",
     "connect-flash": "^0.1.1",

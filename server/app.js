@@ -64,7 +64,8 @@ require('./app/config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', express.static(`${__dirname}/`));
+app.use('/', express.static(`${__dirname}/`, { maxAge: 31557600000 }));
+app.use('/client/', express.static(`${__dirname}/client/`, { maxAge: 31557600000 }));
 
 routes(app);
 
