@@ -29,6 +29,7 @@
 .disabled {
   composes: cell;
   background-color: #eee;
-  cursor: default;
+  cursor: disable;
   pointer-events: none;
+  border: 1px solid #eee !important;
 }

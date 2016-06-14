@@ -5,7 +5,7 @@ import moment from 'moment';
 import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
 import { checkStatus } from '../util/fetch.util';
-import { getHours } from '../util/time-format';
+import { getHours, getMinutes } from '../util/time-format';
 import colorsys from 'colorsys';
 
 import styles from '../styles/availability-grid.css';
@@ -47,6 +47,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
+    const hoursArr = []
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
@@ -82,6 +83,25 @@ class AvailabilityGrid extends React.Component {
         $(this).css("border-left", "1px solid #c3bebe")
       }
     })
+
+    $(".grid-hour").each((i, el) => {
+      hoursArr.push($(el).text());
+    })
+
+    for(var i = 0; i < hoursArr.length; i++){
+      if(hoursArr[i+1] !== undefined){
+        const date = moment(new Date());
+        const nextDate = moment(new Date());
+        date.set("h", hoursArr[i].split(":")[0]);
+        date.set("m", hoursArr[i].split(":")[1]);
+        nextDate.set("h", hoursArr[i+1].split(":")[0]);
+        nextDate.set("m", hoursArr[i+1].split(":")[1]);
+        if(date.add(1, "h").format("hh:mm") !== nextDate.format("hh:mm")){
+          $(".cell[data-time='" + nextDate.format("hh:mm a") + "']").css("margin-left", "50px");
+          $($(".grid-hour")[i]).css("margin-right", "50px");
+        }
+      }
+    }
   }
 
   getDaysBetween(start, end) {
@@ -302,13 +322,18 @@ class AvailabilityGrid extends React.Component {
   render() {
     const { allDatesRender, allTimesRender } = this.state;
     const { dates } = this.props;
-    const hourTime = allTimesRender.filter(time => String(time).split(":")[1].split(" ")[0] === "00")
+    let hourTime = allTimesRender.filter(time => String(time).split(":")[1].split(" ")[0] === "00")
+
+    const date = moment(new Date());
+    date.set("h", hourTime[hourTime.length - 1].split(":")[0]);
+    date.set("m", hourTime[hourTime.length - 1].split(":")[1]);
+    hourTime.push(date.add(1, "h").format("hh:mm a"));
 
     return (
       <div>
         {hourTime.map((time,i) => {
           return (
-            <p styleName="grid-hour">{this.addZero(getHours(time.toUpperCase())) + ":00"}</p>
+            <p className="grid-hour" styleName="grid-hour">{this.addZero(getHours(time.toUpperCase())) + ":00"}</p>
           )
         })}
         {allDatesRender.map((date, i) => (

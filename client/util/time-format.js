@@ -38,6 +38,7 @@ const getHours = timeString => {
   else if (suffix === 'AM' && prefix === "12") return 0;
   else if(suffix === 'PM' && prefix === "12") return 12;
   else return Number(timeString.split(':')[0]) + 12;
+
 };
 
 const getMinutes = timeString => Number(timeString.split(':')[1].split(' ')[0]);
