@@ -72,6 +72,7 @@ module.exports = {
     extensions: ['', '.js', '.css'],
   },
   eslint: {
-    formatter: require('eslint-friendly-formatter')
+    formatter: require('eslint-friendly-formatter'),
+    fix: true
   }
 };
