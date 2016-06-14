@@ -29,8 +29,8 @@ class Navbar extends React.Component {
 
   @autobind
   handleAuthClick() {
-    if (!localStorage.getItem('redirectTo')) {
-      localStorage.setItem('redirectTo', this.props.location.pathname);
+    if (!sessionStorage.getItem('redirectTo')) {
+      sessionStorage.setItem('redirectTo', this.props.location.pathname);
     }
   }
 
