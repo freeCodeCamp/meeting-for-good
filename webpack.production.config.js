@@ -1,7 +1,8 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack           = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSS       = require('optimize-css-assets-webpack-plugin');
+const HtmlWebpackPlugin   = require('html-webpack-plugin');
+const webpack             = require('webpack');
+const ExtractTextPlugin   = require('extract-text-webpack-plugin');
+const OptimizeCSS         = require('optimize-css-assets-webpack-plugin');
+const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -19,6 +20,8 @@ module.exports = {
       'autobind-decorator',
       'materialize-css',
       'react-masonry-component',
+      'colorsys',
+      'react-addons-update',
     ],
   },
   output: {
@@ -27,6 +30,7 @@ module.exports = {
     publicPath: '/client/',
   },
   plugins: [
+    new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
     }),
@@ -35,12 +39,17 @@ module.exports = {
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash].js'),
+    new ChunkManifestPlugin({
+      filename: 'manifest.json',
+      manifestVariable: 'webpackManifest',
+    }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html!./client/index.html',
       filename: '../index.html',
       inject: 'body',
     }),
+    new webpack.optimize.OccurenceOrderPlugin(),
   ],
   module: {
     loaders: [
