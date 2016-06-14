@@ -98,8 +98,9 @@ class EventCard extends React.Component {
       }
 
       // console.log(displayTimes)
-      this.setState({ displayTimes, user });
     }
+
+    this.setState({ displayTimes, user });
   }
 
   componentDidMount() {
