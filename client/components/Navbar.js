@@ -1,23 +1,22 @@
 import React from 'react';
-import CSSModules from 'react-css-modules';
-
-import styles from '../styles/navbar';
+import cssModules from 'react-css-modules';
+import styles from '../styles/navbar.css';
 
 class Navbar extends React.Component {
   constructor() {
     super();
     this.state = {
       userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
-      user: false
+      user: false,
     };
   }
 
   componentDidMount() {
     $.get('/api/auth/current', user => {
-      if (user !== "") {
-        let userAvatar= this.state.userAvatar;
-        if(user.github) userAvatar = user.github.avatar;
-        else if(user.facebook) userAvatar = user.facebook.avatar;
+      if (user !== '') {
+        let userAvatar = this.state.userAvatar;
+        if (user.github) userAvatar = user.github.avatar;
+        else if (user.facebook) userAvatar = user.facebook.avatar;
         this.setState({ userAvatar, user: true });
       }
     });
@@ -25,12 +24,12 @@ class Navbar extends React.Component {
 
   render() {
     let links;
-    if(this.state.user){
+    if (this.state.user) {
       links = ['<a href="/api/auth/logout">Logout</a>', '<a href="/dashboard">Dashboard</a>'];
     } else {
-      links = []
+      links = [];
     }
-    $("#nav-mobile li a").not(":last").remove();
+    $('#nav-mobile li a').not(':last').remove();
     return (
       <nav className="grey darken-3">
         <div className="container">
@@ -38,12 +37,13 @@ class Navbar extends React.Component {
           <ul id="nav-mobile" className="right hide-on-med-and-down">
             <li>
               {links.forEach(el => {
-                $("#nav-mobile li").prepend(el);
+                $('#nav-mobile li').prepend(el);
               })}
               <a href="/login">Login</a>
               <a href="/signup">Signup</a>
               <a href="#">
                 <img
+                  alt="avatar"
                   styleName="nav-img"
                   src={this.state.userAvatar}
                 />
@@ -56,4 +56,4 @@ class Navbar extends React.Component {
   }
 }
 
-export default CSSModules(Navbar, styles);
+export default cssModules(Navbar, styles);

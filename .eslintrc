@@ -1,7 +1,7 @@
 {
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
   },
   "extends": "airbnb",
   "rules": {
@@ -11,15 +11,19 @@
     "react/prefer-stateless-function": 0,
     "no-multi-spaces": ["error", { "exceptions": { "VariableDeclarator": true } }],
     "no-shadow": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "arrow-body-style": 0,
+    "consistent-return": 0,
+    "no-nested-ternary": 0,
+    "max-len": 0,
   },
   "plugins": [
-    "react"
+    "react",
   ],
   "globals": {
     "$": true,
     "Materialize": true,
-    "wNumb": true
+    "wNumb": true,
   },
-  "parser": "babel-eslint"
+  "parser": "babel-eslint",
 }

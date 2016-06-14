@@ -28,6 +28,13 @@ module.exports = {
     new webpack.NoErrorsPlugin(),
   ],
   module: {
+    preLoaders: [
+      {
+        test: /\.js$/,
+        loader: 'eslint-loader',
+        exclude: '/node_modules'
+      }
+    ],
     loaders: [
       {
         test: /\.js$/,
@@ -64,4 +71,7 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.css'],
   },
+  eslint: {
+    formatter: require('eslint-friendly-formatter')
+  }
 };

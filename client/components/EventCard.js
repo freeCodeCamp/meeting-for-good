@@ -42,73 +42,72 @@ class EventCard extends React.Component {
     };
   }
 
-  componentDidMount() {
-    $.get('/api/auth/current', user => {
-      if (user !== '') this.setState({ user });
-    });
-
-    let availability = []
-    let overlaps = [];
-    let displayTimes = {};
+  componentWillMount() {
+    const availability = [];
+    const overlaps = [];
+    const displayTimes = {};
 
     this.state.participants.forEach(user => {
-      if(user.availability !== undefined) availability.push(user.availability);
-    })
+      if (user.availability !== undefined) availability.push(user.availability);
+    });
 
-    console.log(this.state.participants)
+    console.log(this.state.participants);
 
-    if(availability.length > 1){
-      console.log(availability)
-      for(let i = 0; i < availability[0].length; i++){
-        let current = availability[0][i]
+    if (availability.length > 1) {
+      console.log(availability);
+      for (let i = 0; i < availability[0].length; i++) {
+        const current = availability[0][i];
         let count = 0;
-        for(let j = 0; j < availability.length; j++){
-          for(let k = 0; k < availability[j].length; k++){
-            if(availability[j][k][0] === current[0]) {
+        for (let j = 0; j < availability.length; j++) {
+          for (let k = 0; k < availability[j].length; k++) {
+            if (availability[j][k][0] === current[0]) {
               count++;
             }
           }
         }
-        if(count === availability.length) overlaps.push(current);
+        if (count === availability.length) overlaps.push(current);
       }
 
       // console.log(overlaps)
 
-      if(overlaps.length !== 0){
+      if (overlaps.length !== 0) {
         let index = 0;
-        for(let i = 0; i < overlaps.length; i++){
-          if(overlaps[i+1] !== undefined && overlaps[i][1] !== overlaps[i+1][0]){
-            if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+        for (let i = 0; i < overlaps.length; i++) {
+          if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
+            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
             } else {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
             }
-            index = i+1;
-          } else if(overlaps[i+1] === undefined){
-            if(displayTimes[moment(overlaps[index][0]).format("DD MMM")] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+            index = i + 1;
+          } else if (overlaps[i + 1] === undefined) {
+            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
             } else {
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")] = {}
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours = [];
-              displayTimes[moment(overlaps[index][0]).format("DD MMM")].hours.push(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
-              console.log(moment(overlaps[index][0]).format("HH:mm") + " to " + moment(overlaps[i][1]).format("HH:mm"))
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
             }
           }
         }
       }
 
       // console.log(displayTimes)
-      this.setState({displayTimes})
+      this.setState({ displayTimes });
     }
+  }
+
+  componentDidMount() {
+    $.get('/api/auth/current', user => {
+      if (user !== '') this.setState({ user });
+    });
 
     setTimeout(() => {
       $('.alt').each((i, el) => {
-        $(el).parents('.card').find('#best').remove();
+        $(el).parents('.card').find('#best')
+          .remove();
       });
     }, 100);
   }
@@ -198,14 +197,14 @@ class EventCard extends React.Component {
                     <hr />
                   </div>
                 )) : !event.weekDays ?
-                <DayPicker
-                  className="alt"
-                  styleName="day-picker"
-                  initialMonth={minDate}
-                  fromMonth={minDate}
-                  toMonth={maxDate}
-                  modifiers={modifiers}
-                /> :
+                  <DayPicker
+                    className="alt"
+                    styleName="day-picker"
+                    initialMonth={minDate}
+                    fromMonth={minDate}
+                    toMonth={maxDate}
+                    modifiers={modifiers}
+                  /> :
                 Object.keys(event.weekDays).map((day, index) => {
                   let className = 'btn-flat alt';
                   if (!event.weekDays[day]) {

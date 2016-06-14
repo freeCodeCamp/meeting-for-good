@@ -52,36 +52,36 @@ class AvailabilityGrid extends React.Component {
 
     $('.cell').on('mousedown mouseover', e => {
       if (!this.props.heatmap) this.addCellToAvail(e);
-    }).on("click", e => {
+    }).on('click', e => {
       if (e.shiftKey) {
-        let next = false;
         let startCell;
         const currentCell = $(e.target);
         const parentRow = $(e.target).parent();
-        parentRow.children(".cell").each((i, el) => {
-          if($(el).css("background-color") === "rgb(128, 0, 128)" && $(el).prev().css("background-color") !== "rgb(128, 0, 128)" && $(el).next().css("background-color") !== "rgb(128, 0, 128)"){
-            startCell = $(el)
+        parentRow.children('.cell').each((i, el) => {
+          if ($(el).css('background-color') === 'rgb(128, 0, 128)' &&
+              $(el).prev().css('background-color') !== 'rgb(128, 0, 128)' &&
+              $(el).next().css('background-color') !== 'rgb(128, 0, 128)') {
+            startCell = $(el);
             return false;
           }
-        })
-        console.log(next)
-        if(startCell.index() < currentCell.index()){
-          while(startCell.attr("data-time") !== currentCell.attr("data-time")) {
-            $(startCell).next().css("background-color", "rgb(128, 0, 128")
+        });
+
+        if (startCell.index() < currentCell.index()) {
+          while (startCell.attr('data-time') !== currentCell.attr('data-time')) {
+            $(startCell).next().css('background-color', 'rgb(128, 0, 128');
             startCell = $(startCell).next();
           }
         }
       }
-    })
+    });
 
-    $(".cell").each(function(i, el){
-      if($(el).attr("data-time").split(":")[1].split(" ")[0] === "00"){
-        $(this).css("border-left", "1px solid #909090")
+    $('.cell').each((i, el) => {
+      if ($(el).attr('data-time').split(':')[1].split(' ')[0] === '00') {
+        $(this).css('border-left', '1px solid #909090');
+      } else if ($(el).attr('data-time').split(':')[1].split(' ')[0] === '30') {
+        $(this).css('border-left', '1px solid #c3bebe');
       }
-      else if($(el).attr("data-time").split(":")[1].split(" ")[0] === "30"){
-        $(this).css("border-left", "1px solid #c3bebe")
-      }
-    })
+    });
   }
 
   getDaysBetween(start, end) {
@@ -189,8 +189,8 @@ class AvailabilityGrid extends React.Component {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const availability = [];
 
-    $(".cell").each((i, el) => {
-      if($(el).css("background-color") === "rgb(128, 0, 128)"){
+    $('.cell').each((i, el) => {
+      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
         const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
         const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
 
@@ -201,17 +201,20 @@ class AvailabilityGrid extends React.Component {
 
         availability.push([from, to]);
       }
-    })
-    console.log(availability)
-    const response = await fetch(`/api/events/${window.location.pathname.split("/")[2]}/updateAvail`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-      body: JSON.stringify({data: availability, user: this.props.user}),
-      credentials: 'same-origin',
     });
+    console.log(availability);
+    const response = await fetch(
+      `/api/events/${window.location.pathname.split('/')[2]}/updateAvail`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'PUT',
+        body: JSON.stringify({ data: availability, user: this.props.user }),
+        credentials: 'same-origin',
+      }
+    );
 
     try {
       checkStatus(response);
@@ -228,8 +231,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   addZero(time) {
-    if(Number(String(time).split(":")[0]) < 10){
-      time = `0${time}`
+    if (Number(String(time).split(':')[0]) < 10) {
+      time = `0${time}`;
     }
     return time;
   }
@@ -302,14 +305,15 @@ class AvailabilityGrid extends React.Component {
   render() {
     const { allDatesRender, allTimesRender } = this.state;
     const { dates } = this.props;
-    const hourTime = allTimesRender.filter(time => String(time).split(":")[1].split(" ")[0] === "00")
+    const hourTime = allTimesRender
+      .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
 
     return (
       <div>
-        {hourTime.map((time,i) => {
+        {hourTime.map(time => {
           return (
-            <p styleName="grid-hour">{this.addZero(getHours(time.toUpperCase())) + ":00"}</p>
-          )
+            <p styleName="grid-hour">{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
+          );
         })}
         {allDatesRender.map((date, i) => (
           <div key={i} className="grid-row" styleName="row">

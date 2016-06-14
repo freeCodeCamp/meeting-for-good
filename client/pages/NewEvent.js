@@ -53,7 +53,7 @@ class NewEvent extends React.Component {
     });
 
     slider.noUiSlider.on('update', (value, handle) => {
-      $(".range-label span").text("")
+      $('.range-label span').text('');
       const { selectedTimeRange } = this.state;
       selectedTimeRange[handle] = value[handle];
       this.setState({ selectedTimeRange });
