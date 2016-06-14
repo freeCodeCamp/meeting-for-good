@@ -1,15 +1,15 @@
 import React from 'react';
 import cssModules from 'react-css-modules';
 import { browserHistory } from 'react-router';
+import { isAuthenticated } from '../util/auth';
 
 import styles from '../styles/auth.css';
 
 class Signup extends React.Component {
-  componentDidMount() {
-    $.get('/api/auth/current', user => {
-      if (user !== '') browserHistory.push('/dashboard');
-    });
+  async componentWillMount() {
+    if (await isAuthenticated()) browserHistory.push('/dashboard');
   }
+
   render() {
     return (
       <div className="card" styleName="card">

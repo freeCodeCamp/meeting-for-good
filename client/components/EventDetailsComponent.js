@@ -11,6 +11,7 @@ import moment from 'moment';
 import AvailabilityGrid from './AvailabilityGrid';
 
 import { checkStatus, parseJSON } from '../util/fetch.util';
+import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -53,24 +54,23 @@ class EventDetailsComponent extends React.Component {
     };
   }
 
-  componentWillMount() {
-    $.get('/api/auth/current', user => {
-      if (user !== '') {
-        let showHeatmap = false;
-        let myAvailability = [];
+  async componentWillMount() {
+    const user = await getCurrentUser();
+    if (user) {
+      let showHeatmap = false;
+      let myAvailability = [];
 
-        const me = this.state.participants.find(participant =>
-          participant._id === user._id
-        );
+      const me = this.state.participants.find(participant =>
+        participant._id === user._id
+      );
 
-        if (me && me.availability) {
-          showHeatmap = true;
-          myAvailability = me.availability;
-        }
-
-        this.setState({ user, showHeatmap, myAvailability });
+      if (me && me.availability) {
+        showHeatmap = true;
+        myAvailability = me.availability;
       }
-    });
+
+      this.setState({ user, showHeatmap, myAvailability });
+    }
 
     const availability = [];
     const overlaps = [];

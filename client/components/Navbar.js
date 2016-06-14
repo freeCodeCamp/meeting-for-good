@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
 import styles from '../styles/navbar.css';
 
+import { getCurrentUser } from '../util/auth';
+
 class Navbar extends React.Component {
   constructor() {
     super();
@@ -12,15 +14,16 @@ class Navbar extends React.Component {
     };
   }
 
-  componentDidMount() {
-    $.get('/api/auth/current', user => {
-      if (user !== '') {
-        let userAvatar = this.state.userAvatar;
-        if (user.github) userAvatar = user.github.avatar;
-        else if (user.facebook) userAvatar = user.facebook.avatar;
-        this.setState({ userAvatar, user: true });
-      }
-    });
+  async componentWillMount() {
+    const user = await getCurrentUser();
+    if (user) {
+      let userAvatar = this.state.userAvatar;
+
+      if (user.github) userAvatar = user.github.avatar;
+      else if (user.facebook) userAvatar = user.facebook.avatar;
+
+      this.setState({ userAvatar, user: true });
+    }
   }
 
   render() {

@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { checkStatus } from '../util/fetch.util';
 import moment from 'moment';
 import { Link } from 'react-router';
+import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
@@ -43,10 +44,11 @@ class EventCard extends React.Component {
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const availability = [];
     const overlaps = [];
     const displayTimes = {};
+    const user = await getCurrentUser();
 
     this.state.participants.forEach(user => {
       if (user.availability !== undefined) availability.push(user.availability);
@@ -96,15 +98,11 @@ class EventCard extends React.Component {
       }
 
       // console.log(displayTimes)
-      this.setState({ displayTimes });
+      this.setState({ displayTimes, user });
     }
   }
 
   componentDidMount() {
-    $.get('/api/auth/current', user => {
-      if (user !== '') this.setState({ user });
-    });
-
     setTimeout(() => {
       $('.alt').each((i, el) => {
         $(el).parents('.card').find('#best')
