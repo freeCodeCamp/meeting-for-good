@@ -1,6 +1,6 @@
 /* vendor dependencies */
 import React from 'react';
-import { browserHistory } from 'react-router';
+import { browserHistory, Link } from 'react-router';
 import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
@@ -52,9 +52,9 @@ class Dashboard extends React.Component {
       <div styleName="wrapper">
         {/* New Event Icon */}
         <div className="fixed-action-btn" styleName="new-event-icon">
-          <a className="btn-floating btn-large red" href="/event/new">
+          <Link to="/event/new" className="btn-floating btn-large red">
             <i className="large material-icons">add</i>
-          </a>
+          </Link>
         </div>
         {/* Card Template */}
         <Masonry>
