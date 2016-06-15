@@ -5,7 +5,7 @@ import moment from 'moment';
 import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
 import { checkStatus } from '../util/fetch.util';
-import { getHours } from '../util/time-format';
+import { getHours, getMinutes } from '../util/time-format';
 import colorsys from 'colorsys';
 
 import styles from '../styles/availability-grid.css';
@@ -76,13 +76,15 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
-    $('.cell').each((i, el) => {
-      if ($(el).attr('data-time').split(':')[1].split(' ')[0] === '00') {
-        $(this).css('border-left', '1px solid #909090');
-      } else if ($(el).attr('data-time').split(':')[1].split(' ')[0] === '30') {
-        $(this).css('border-left', '1px solid #c3bebe');
+    const cells = document.querySelectorAll('.cell');
+
+    for (const cell of cells) {
+      if (getMinutes(cell.getAttribute('data-time')) === 0) {
+        cell.style.borderLeft = '1px solid #909090';
+      } else if (getMinutes(cell.getAttribute('data-time')) === 30) {
+        cell.style.borderLeft = '1px solid #c3bebe';
       }
-    });
+    }
 
     $('.grid-hour').each((i, el) => {
       hoursArr.push($(el).text());
@@ -328,10 +330,18 @@ class AvailabilityGrid extends React.Component {
     const hourTime = allTimesRender
       .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
 
-    const date = moment(new Date());
-    date.set('h', hourTime[hourTime.length - 1].split(':')[0]);
-    date.set('m', hourTime[hourTime.length - 1].split(':')[1]);
-    hourTime.push(date.add(1, 'h').format('hh:mm a'));
+    const lastHourTimeEl = hourTime.slice(-1)[0];
+    const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
+
+    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
+      hourTime.push(
+        moment(new Date())
+        .set('h', getHours(lastHourTimeEl))
+        .set('m', getMinutes(lastHourTimeEl))
+        .add(1, 'h')
+        .format('hh:mm a')
+      );
+    }
 
     return (
       <div>
