@@ -26,6 +26,7 @@ class AvailabilityGrid extends React.Component {
       allDatesRender: [],
       dateFormatStr,
       availableOnDate: [],
+      hourTime: [],
     };
   }
 
@@ -43,11 +44,28 @@ class AvailabilityGrid extends React.Component {
 
     allTimesRender.pop();
 
-    this.setState({ allDates, allTimes, allDatesRender, allTimesRender });
+    const hourTime = allTimesRender
+      .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
+
+    const lastHourTimeEl = hourTime.slice(-1)[0];
+    const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
+
+    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
+      hourTime.push(
+        moment(new Date())
+        .set('h', getHours(lastHourTimeEl))
+        .set('m', getMinutes(lastHourTimeEl))
+        .add(1, 'h')
+        .format('hh:mm a')
+      );
+    }
+
+    this.setState({ allDates, allTimes, allDatesRender, allTimesRender, hourTime });
   }
 
   componentDidMount() {
-    const hoursArr = [];
+    const hourTime = this.state.hourTime.slice(0);
+
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
@@ -86,21 +104,27 @@ class AvailabilityGrid extends React.Component {
       }
     }
 
-    $('.grid-hour').each((i, el) => {
-      hoursArr.push($(el).text());
-    });
+    // SPLIT THE GRID IF TIMEZONE CONVERSION CAUSES DAYS TO SPLIT
 
-    for (let i = 0; i < hoursArr.length; i++) {
-      if (hoursArr[i + 1] !== undefined) {
+    // Populate the hoursArr array with the contents of the hour labels in the grid
+    // eg. [..., '13:00', '14:00', ...]
+
+    // Check if two adjacent grid hours labels are consecutive or not. If not, then split the grid
+    // at this point.
+    for (let i = 0; i < hourTime.length; i++) {
+      if (hourTime[i + 1]) {
         const date = moment(new Date());
         const nextDate = moment(new Date());
-        date.set('h', hoursArr[i].split(':')[0]);
-        date.set('m', hoursArr[i].split(':')[1]);
-        nextDate.set('h', hoursArr[i + 1].split(':')[0]);
-        nextDate.set('m', hoursArr[i + 1].split(':')[1]);
+
+        date.set('h', getHours(hourTime[i]));
+        date.set('m', getMinutes(hourTime[i]));
+
+        nextDate.set('h', getHours(hourTime[i + 1]));
+        nextDate.set('m', getMinutes(hourTime[i + 1]));
+
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
           $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
-          $($('.grid-hour')[i]).css('margin-right', '50px');
+          this.modifyHourTime(hourTime, date, i);
         }
       }
     }
@@ -156,6 +180,16 @@ class AvailabilityGrid extends React.Component {
     }
 
     return times;
+  }
+
+  modifyHourTime(hourTime, date, i) {
+    this.setState({
+      hourTime: [
+        ...hourTime.slice(0, i + 1),
+        date.format('hh:mm a'),
+        ...hourTime.slice(i + 1),
+      ],
+    });
   }
 
   @autobind
@@ -325,29 +359,14 @@ class AvailabilityGrid extends React.Component {
   }
 
   render() {
-    const { allDatesRender, allTimesRender } = this.state;
+    const { allDatesRender, allTimesRender, hourTime } = this.state;
     const { dates } = this.props;
-    const hourTime = allTimesRender
-      .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
-
-    const lastHourTimeEl = hourTime.slice(-1)[0];
-    const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
-
-    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
-      hourTime.push(
-        moment(new Date())
-        .set('h', getHours(lastHourTimeEl))
-        .set('m', getMinutes(lastHourTimeEl))
-        .add(1, 'h')
-        .format('hh:mm a')
-      );
-    }
 
     return (
       <div>
         {hourTime.map(time => {
           return (
-            <p styleName="grid-hour">{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
+            <p className="grid-hour" styleName="grid-hour">{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
           );
         })}
         {allDatesRender.map((date, i) => (
