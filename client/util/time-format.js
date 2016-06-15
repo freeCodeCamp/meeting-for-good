@@ -32,7 +32,10 @@ const formatTime = timeNum => {
 
 const getHours = timeString => {
   const prefix = timeString.split(':')[0];
-  const suffix = timeString.split(':')[1].split(' ')[1];
+  let suffix = timeString.split(':')[1].split(' ')[1];
+
+  if (suffix === 'am') suffix = 'AM';
+  else if (suffix === 'pm') suffix = 'PM';
 
   if (suffix === 'AM' && prefix !== '12') return Number(prefix);
   else if (suffix === 'AM' && prefix === '12') return 0;
