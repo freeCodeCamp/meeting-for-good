@@ -64,8 +64,6 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
-    const hourTime = this.state.hourTime.slice(0);
-
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
@@ -94,6 +92,21 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
+    // Offset the grid-hour row if the event starts with a date that's offset by
+    // 15/30/45 minutes.
+    const gridHour = document.querySelector('.grid-hour');
+    const { allTimesRender } = this.state;
+
+    if (getMinutes(allTimesRender[0]) === 15) {
+      gridHour.setAttribute('style', 'margin-left: 50.6px !important');
+    } else if (getMinutes(allTimesRender[0]) === 30) {
+      gridHour.setAttribute('style', 'margin-left: 38px !important');
+    } else if (getMinutes(allTimesRender[0]) === 45) {
+      gridHour.setAttribute('style', 'margin-left: 25.2px !important');
+    }
+
+    // Change the border of the cell if it's minutes = 0 or 30 to help visually
+    // separate 15 minute blocks from 30 minute and 1 hour blocks.
     const cells = document.querySelectorAll('.cell');
 
     for (const cell of cells) {
@@ -104,13 +117,10 @@ class AvailabilityGrid extends React.Component {
       }
     }
 
-    // SPLIT THE GRID IF TIMEZONE CONVERSION CAUSES DAYS TO SPLIT
-
-    // Populate the hoursArr array with the contents of the hour labels in the grid
-    // eg. [..., '13:00', '14:00', ...]
-
     // Check if two adjacent grid hours labels are consecutive or not. If not, then split the grid
     // at this point.
+    const hourTime = this.state.hourTime.slice(0);
+
     for (let i = 0; i < hourTime.length; i++) {
       if (hourTime[i + 1]) {
         const date = moment(new Date());
@@ -122,8 +132,13 @@ class AvailabilityGrid extends React.Component {
         nextDate.set('h', getHours(hourTime[i + 1]));
         nextDate.set('m', getMinutes(hourTime[i + 1]));
 
+        // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
+        // to the object again when it's inserted into this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
           $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
+
+          // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
+          // eslint. Using setState in componentDidMount couldn't be avoided in this case.
           this.modifyHourTime(hourTime, date, i);
         }
       }
@@ -183,6 +198,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   modifyHourTime(hourTime, date, i) {
+    // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
     this.setState({
       hourTime: [
         ...hourTime.slice(0, i + 1),
@@ -366,7 +382,10 @@ class AvailabilityGrid extends React.Component {
       <div>
         {hourTime.map(time => {
           return (
-            <p className="grid-hour" styleName="grid-hour">{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
+            <p
+              className="grid-hour"
+              styleName="grid-hour"
+            >{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
           );
         })}
         {allDatesRender.map((date, i) => (
