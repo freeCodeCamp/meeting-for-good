@@ -65,6 +65,7 @@ class AvailabilityGrid extends React.Component {
 
   componentDidMount() {
     const hourTime = this.state.hourTime.slice(0);
+    const { allTimesRender } = this.state;
 
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
@@ -93,6 +94,18 @@ class AvailabilityGrid extends React.Component {
         }
       }
     });
+
+    // Offset the grid-hour row if the event starts with a date that's offset by
+    // 15/30/45 minutes.
+    const gridHours = document.querySelectorAll('.grid-hour');
+
+    if (getMinutes(allTimesRender[0]) === 15) {
+      gridHours[0].setAttribute('style', 'margin-left: 50.6px !important');
+    } else if (getMinutes(allTimesRender[0]) === 30) {
+      gridHours[0].setAttribute('style', 'margin-left: 38px !important');
+    } else if (getMinutes(allTimesRender[0]) === 45) {
+      gridHours[0].setAttribute('style', 'margin-left: 25.2px !important');
+    }
 
     const cells = document.querySelectorAll('.cell');
 
