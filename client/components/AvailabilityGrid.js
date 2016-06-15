@@ -133,7 +133,7 @@ class AvailabilityGrid extends React.Component {
         nextDate.set('m', getMinutes(hourTime[i + 1]));
 
         // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
-        // again when actually add it to this.state.hourTime.
+        // to the object again when it's inserted into this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
           $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
 
