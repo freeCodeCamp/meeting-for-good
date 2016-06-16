@@ -140,9 +140,7 @@ class EventCard extends React.Component {
     let modifiers;
 
     if (user !== undefined) {
-      if (user.github) isOwner = event.owner === user.github.username;
-      else if (user.facebook) isOwner = event.owner === user.facebook.username;
-      else if (user.local) isOwner = event.owner === user.local.username;
+      isOwner = event.owner === user._id;
     }
 
     // Get maximum and minimum month from the selected dates to limit the daypicker to those months
