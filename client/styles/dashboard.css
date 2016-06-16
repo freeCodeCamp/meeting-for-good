@@ -1,3 +1,8 @@
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .wrapper {
   min-width: 95%;
 }

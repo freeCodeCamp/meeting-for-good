@@ -60,15 +60,18 @@ class Dashboard extends React.Component {
           </Link>
         </div>
         {/* Card Template */}
-        <Masonry>
-          {this.state.events.map(event => (
-            <EventCard
-              key={event._id}
-              event={event}
-              removeEventFromDashboard={this.removeEventFromDashboard}
-            />
-          ))}
-        </Masonry>
+        {this.state.events.length !== 0 ?
+          <Masonry>
+            {this.state.events.map(event => (
+              <EventCard
+                key={event._id}
+                event={event}
+                removeEventFromDashboard={this.removeEventFromDashboard}
+              />
+            ))}
+          </Masonry> :
+          <em><h4 styleName="no-select" className="card-title center-align white-text">You have no scheduled events yet...</h4></em>
+        }
       </div>
     );
   }
