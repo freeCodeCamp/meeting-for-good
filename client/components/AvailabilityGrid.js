@@ -310,7 +310,6 @@ class AvailabilityGrid extends React.Component {
     }
 
     this.props.submitAvail(availability);
-    this.props.generateMeeting();
   }
 
   @autobind
@@ -478,7 +477,6 @@ AvailabilityGrid.propTypes = {
   editAvail: React.PropTypes.func,
   myAvailability: React.PropTypes.array,
   participants: React.PropTypes.array,
-  generateMeeting: React.PropTypes.func,
 };
 
 export default cssModules(AvailabilityGrid, styles);
