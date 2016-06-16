@@ -71,9 +71,50 @@ class NewEvent extends React.Component {
   }
 
   @autobind
+  toggleSubmitDisabled() {
+    // Checks whether the event name and dates/weekDays have been entered. If so, un-disable the
+    // submit button. Otherwise, disable the submit button (if it isn't already');
+
+    const { submitClass, ranges, eventName, dateOrDay, weekDays } = this.state;
+
+    if (!dateOrDay) { // dates
+      if (ranges.length > 0 && ranges[0].from && eventName.length > 0) {
+        this.setState({
+          submitClass: submitClass.replace(' disabled', ''),
+        });
+      } else {
+        if (submitClass.indexOf('disabled') === -1) {
+          this.setState({
+            submitClass: `${submitClass} disabled`,
+          });
+        }
+      }
+    } else { // weekdays
+      let numOfWeekdaysSelected = 0;
+
+      for (const weekDay of Object.keys(weekDays)) {
+        if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
+      }
+
+      if (eventName.length > 0 && numOfWeekdaysSelected > 0) {
+        this.setState({
+          submitClass: submitClass.replace(' disabled', ''),
+        });
+      } else {
+        if (submitClass.indexOf('disabled') === -1) {
+          this.setState({
+            submitClass: `${submitClass} disabled`,
+          });
+        }
+      }
+    }
+  }
+
+  @autobind
   handleDayClick(e, day, { disabled }) {
     if (disabled) return;
-    let ranges = Object.keys(this.state.ranges).map(i => this.state.ranges[i]);
+
+    let ranges = _.map(this.state.ranges, _.clone); // deep copy this.state.ranges to ranges
 
     function removeRange(ranges, range) {
       const newRange = ranges.filter(r => !_.isEqual(r, range));
@@ -85,6 +126,7 @@ class NewEvent extends React.Component {
       }
       return newRange;
     }
+
     // Check if day already exists in a range. If yes, remove it from all the
     // ranges that it exists in.
     for (const range of ranges) {
@@ -121,14 +163,14 @@ class NewEvent extends React.Component {
       if (!ranges[ranges.length - 1].from ||
           !ranges[ranges.length - 1].to) {
         ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
-        this.setState({ ranges });
+        this.setState({ ranges }, () => this.toggleSubmitDisabled());
       } else {
         ranges.push({ from: null, to: null });
         ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
-        this.setState({ ranges });
+        this.setState({ ranges }, () => this.toggleSubmitDisabled());
       }
     } else {
-      this.setState({ ranges });
+      this.setState({ ranges }, () => this.toggleSubmitDisabled());
     }
   }
 
@@ -278,21 +320,8 @@ class NewEvent extends React.Component {
 
   @autobind
   handleEventNameChange(ev) {
-    this.setState({ eventName: ev.target.value });
-    let { submitClass } = this.state;
-    if (ev.target.value.length > 0) {
-      this.setState({
-        submitClass: submitClass.replace(' disabled', ''),
-      });
-    } else {
-      if (submitClass.indexOf('disabled') === -1) {
-        this.setState({
-          submitClass: submitClass += ' disabled',
-        });
-      }
-    }
+    this.setState({ eventName: ev.target.value }, () => this.toggleSubmitDisabled());
   }
-
   @autobind
   handleWeekdaySelect(ev) {
     if (ev.target.className.indexOf('disabled') > -1) {
@@ -304,12 +333,12 @@ class NewEvent extends React.Component {
     const { weekDays } = this.state;
     const weekDay = ev.target.text.toLowerCase();
     weekDays[weekDay] = !weekDays[weekDay];
-    this.setState({ weekDays });
+    this.setState({ weekDays }, () => this.toggleSubmitDisabled());
   }
 
   @autobind
   handleDateOrDay() {
-    this.setState({ dateOrDay: !this.state.dateOrDay });
+    this.setState({ dateOrDay: !this.state.dateOrDay }, () => this.toggleSubmitDisabled());
   }
 
   render() {
