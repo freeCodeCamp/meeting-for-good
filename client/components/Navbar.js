@@ -42,8 +42,8 @@ class Navbar extends React.Component {
           <ul id="nav-mobile" className="right hide-on-med-and-down">
             {this.state.user ?
               <li>
-                <a href="/api/auth/logout">Logout</a>
                 <Link to="/dashboard">Dashboard</Link>
+                <a href="/api/auth/logout">Logout</a>
                 <a href="#">
                   <img
                     alt="avatar"
