@@ -86,7 +86,7 @@ export default (app) => {
       const _id = req.user._id;
 
       req.body.participants = [{ name, avatar, _id }];
-      req.body.owner = name;
+      req.body.owner = _id;
       Event.create(req.body, (err, event) => {
         if (err) return res.status(500).send(err);
         return res.status(201).json(event);

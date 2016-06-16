@@ -269,9 +269,7 @@ class EventDetailsComponent extends React.Component {
     let isOwner;
 
     if (user !== undefined) {
-      if (user.github) isOwner = event.owner === user.github.username;
-      else if (user.facebook) isOwner = event.owner === user.facebook.username;
-      else if (user.local) isOwner = event.owner === user.local.username;
+      isOwner = event.owner === user._id;
     }
 
     // Determine the months to show in the datepicker via the maximum and minimum date in the time
