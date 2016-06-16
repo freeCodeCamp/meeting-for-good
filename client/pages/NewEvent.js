@@ -225,11 +225,11 @@ class NewEvent extends React.Component {
             fromDate: moment()
                         .day(key)
                         .set('h', fromHours)
-                        .set('m', fromMinutes)._d,
+                        .set('m', fromMinutes),
             toDate: moment()
                         .day(key)
                         .set('h', toHours)
-                        .set('m', toMinutes)._d,
+                        .set('m', toMinutes),
           });
         }
 
