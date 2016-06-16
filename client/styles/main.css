@@ -18,3 +18,12 @@ main {
   justify-content: center;
   align-items: center;
 }
+
+#nprogress .bar {
+  height: 5px;
+  background: #b642ef;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #b642ef, 0 0 5px #b642ef;
+}
