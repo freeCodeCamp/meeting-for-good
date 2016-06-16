@@ -3,13 +3,16 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
-import { checkStatus } from '../util/fetch.util';
 import moment from 'moment';
 import { Link } from 'react-router';
+import nprogress from 'nprogress';
+
+import { checkStatus } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
+import 'nprogress/nprogress.css';
 
 class EventCard extends React.Component {
   constructor(props) {
@@ -118,10 +121,14 @@ class EventCard extends React.Component {
       credentials: 'same-origin', method: 'DELETE',
     });
 
+    nprogress.configure({ showSpinner: false });
+    nprogress.start();
     try {
       checkStatus(response);
     } catch (err) {
       console.log(err); return;
+    } finally {
+      nprogress.done();
     }
 
     this.props.removeEventFromDashboard(this.state.event._id);

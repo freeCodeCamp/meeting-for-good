@@ -7,6 +7,7 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import _ from 'lodash';
 import moment from 'moment';
+import nprogress from 'nprogress';
 
 import AvailabilityGrid from './AvailabilityGrid';
 
@@ -15,6 +16,7 @@ import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
+import 'nprogress/nprogress.css';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -115,6 +117,8 @@ class EventDetailsComponent extends React.Component {
 
     const sentData = JSON.stringify(event);
 
+    nprogress.configure({ showSpinner: false });
+    nprogress.start();
     const response = await fetch(`/api/events/${event._id}`, {
       headers: {
         Accept: 'application/json',
@@ -129,6 +133,8 @@ class EventDetailsComponent extends React.Component {
       checkStatus(response);
     } catch (err) {
       console.log(err); return;
+    } finally {
+      nprogress.done();
     }
 
     this.setState({ event, eventParticipantsIds });
@@ -149,6 +155,8 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async submitAvailability(myAvailability) {
+    nprogress.configure({ showSpinner: false });
+    nprogress.start();
     const response = await fetch(`/api/events/${this.state.event._id}`, {
       credentials: 'same-origin',
     });
@@ -159,6 +167,8 @@ class EventDetailsComponent extends React.Component {
       event = await parseJSON(response);
     } catch (err) {
       console.log(err); return;
+    } finally {
+      nprogress.done();
     }
 
     this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
@@ -166,6 +176,8 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async deleteEvent() {
+    nprogress.configure({ showSpinner: false });
+    nprogress.start();
     const response = await fetch(`/api/events/${this.state.event._id}`, {
       credentials: 'same-origin', method: 'DELETE',
     });
@@ -174,6 +186,8 @@ class EventDetailsComponent extends React.Component {
       checkStatus(response);
     } catch (err) {
       console.log(err); return;
+    } finally {
+      nprogress.done();
     }
 
     browserHistory.push('/dashboard');

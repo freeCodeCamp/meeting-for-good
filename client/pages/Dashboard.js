@@ -5,12 +5,14 @@ import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import autobind from 'autobind-decorator';
+import nprogress from 'nprogress';
 
 /* external components */
 import EventCard from '../components/EventCard';
 
 /* styles */
 import styles from '../styles/dashboard.css';
+import 'nprogress/nprogress.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../util/fetch.util';
@@ -19,7 +21,10 @@ import { isAuthenticated } from '../util/auth';
 class Dashboard extends React.Component {
   constructor() {
     super();
-    this.state = { events: [] };
+    this.state = {
+      events: [],
+      showNoScheduledMessage: false,
+    };
   }
 
   async componentWillMount() {
@@ -30,6 +35,8 @@ class Dashboard extends React.Component {
 
     if (!await isAuthenticated()) browserHistory.push('/login');
 
+    nprogress.configure({ showSpinner: false });
+    nprogress.start();
     const response = await fetch('/api/users/current/events', { credentials: 'same-origin' });
     let events;
 
@@ -38,6 +45,9 @@ class Dashboard extends React.Component {
       events = await parseJSON(response);
     } catch (err) {
       console.log(err); return;
+    } finally {
+      nprogress.done();
+      this.setState({ showNoScheduledMessage: true });
     }
 
     this.setState({ events });
@@ -70,7 +80,13 @@ class Dashboard extends React.Component {
               />
             ))}
           </Masonry> :
-          <em><h4 styleName="no-select" className="card-title center-align white-text">You have no scheduled events yet.</h4></em>
+            this.state.showNoScheduledMessage ?
+              <em>
+                <h4 styleName="no-select" className="card-title center-align white-text">
+                  You have no scheduled events yet.
+                </h4>
+              </em> :
+              null
         }
       </div>
     );
