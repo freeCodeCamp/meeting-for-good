@@ -54,10 +54,7 @@ class EventCard extends React.Component {
       if (user.availability !== undefined) availability.push(user.availability);
     });
 
-    console.log(this.state.participants);
-
     if (availability.length > 1) {
-      console.log(availability);
       for (let i = 0; i < availability[0].length; i++) {
         const current = availability[0][i];
         let count = 0;
@@ -70,8 +67,6 @@ class EventCard extends React.Component {
         }
         if (count === availability.length) overlaps.push(current);
       }
-
-      // console.log(overlaps)
 
       if (overlaps.length !== 0) {
         let index = 0;
@@ -96,8 +91,6 @@ class EventCard extends React.Component {
           }
         }
       }
-
-      // console.log(displayTimes)
     }
 
     this.setState({ displayTimes, user });

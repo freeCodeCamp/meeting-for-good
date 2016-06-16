@@ -289,7 +289,7 @@ class AvailabilityGrid extends React.Component {
         availability.push([from, to]);
       }
     });
-    console.log(availability);
+
     const response = await fetch(
       `/api/events/${window.location.pathname.split('/')[2]}/updateAvail`,
       {

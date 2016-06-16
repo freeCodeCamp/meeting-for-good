@@ -192,7 +192,6 @@ class EventDetailsComponent extends React.Component {
 
     if (availability.length <= 1) return;
 
-    console.log(availability);
     for (let i = 0; i < availability[0].length; i++) {
       const current = availability[0][i];
       let count = 0;
@@ -207,7 +206,7 @@ class EventDetailsComponent extends React.Component {
     }
 
 
-    if (overlaps.length !== 0) {
+    if (overlaps.length === 0) {
       this.setState({ displayTimes });
       return;
     }

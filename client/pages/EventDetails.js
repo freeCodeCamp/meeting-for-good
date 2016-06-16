@@ -13,22 +13,18 @@ class EventDetails extends React.Component {
     this.state = { event: null };
   }
 
-  componentDidMount() {
-    async function getEvent() {
-      const response = await fetch(`/api/events/getbyuid/${this.props.params.uid}`);
-      let event;
+  async componentWillMount() {
+    const response = await fetch(`/api/events/getbyuid/${this.props.params.uid}`);
+    let event;
 
-      try {
-        checkStatus(response);
-        event = await parseJSON(response);
-      } catch (err) {
-        console.log(err);
-      }
-
-      this.setState({ event });
+    try {
+      checkStatus(response);
+      event = await parseJSON(response);
+    } catch (err) {
+      console.log(err); return;
     }
 
-    getEvent.bind(this)();
+    this.setState({ event });
   }
 
   render() {
