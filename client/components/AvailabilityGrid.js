@@ -145,9 +145,16 @@ class AvailabilityGrid extends React.Component {
     }
   }
 
+  // Get all days between start and end.
+  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
+  // (all input and output is in javascript Date objects)
   getDaysBetween(start, end) {
     const dates = [start];
     let currentDay = start;
+
+    // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
+    // create an extra row in the grid made up only of disabled cells.
+    if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
 
     while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
       currentDay = moment(currentDay).add(1, 'd')._d;
@@ -161,7 +168,15 @@ class AvailabilityGrid extends React.Component {
     let times = [start];
     let currentTime = start;
 
+    if (moment(end).hour() === 0) {
+      end = moment(end)
+        .subtract(1, 'd')
+        .hour(23)
+        .minute(59)._d;
+    }
+
     if (moment(end).hour() < moment(start).hour()) {
+      // days are split
       currentTime = moment(start)
         .set('hour', 0)
         .set('minute', 0)._d;
