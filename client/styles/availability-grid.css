@@ -33,3 +33,10 @@
   pointer-events: none;
   border: 1px solid #eee !important;
 }
+
+.info {
+  margin-top: 5px !important;
+  margin-bottom: -10px !important;
+  text-align: left;
+  font-size: 12px;
+}

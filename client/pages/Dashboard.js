@@ -70,7 +70,7 @@ class Dashboard extends React.Component {
               />
             ))}
           </Masonry> :
-          <em><h4 styleName="no-select" className="card-title center-align white-text">You have no scheduled events yet...</h4></em>
+          <em><h4 styleName="no-select" className="card-title center-align white-text">You have no scheduled events yet.</h4></em>
         }
       </div>
     );

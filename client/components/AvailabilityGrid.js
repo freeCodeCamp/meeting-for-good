@@ -438,6 +438,7 @@ class AvailabilityGrid extends React.Component {
             })}
           </div>
         ))}
+        <p styleName="info"><em>Each time slot represents 15 minutes</em></p>
         <br />
         <div className="center">
           {this.props.heatmap ?
