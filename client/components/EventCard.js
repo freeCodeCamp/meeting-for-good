@@ -6,6 +6,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router';
 import nprogress from 'nprogress';
+import { Notification } from 'react-notification';
 
 import { checkStatus } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
@@ -44,6 +45,8 @@ class EventCard extends React.Component {
       dates,
       event,
       user: {},
+      notificationMessage: '',
+      notificationIsActive: false,
     };
   }
 
@@ -119,7 +122,12 @@ class EventCard extends React.Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log(err); return;
+      console.log(err);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to delete event. Please try again later.',
+      });
+      return;
     } finally {
       nprogress.done();
     }
@@ -240,6 +248,14 @@ class EventCard extends React.Component {
         <div className="card-action">
           <Link to={`/event/${event.uid}`}>View Details</Link>
         </div>
+        <Notification
+          isActive={this.state.notificationIsActive}
+          message={this.state.notificationMessage}
+          action="Dismiss"
+          title="Error!"
+          onDismiss={() => this.setState({ notificationIsActive: false })}
+          onClick={() => this.setState({ notificationIsActive: false })}
+        />
       </div>
     );
   }

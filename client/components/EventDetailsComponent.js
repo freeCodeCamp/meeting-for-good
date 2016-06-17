@@ -8,6 +8,7 @@ import fetch from 'isomorphic-fetch';
 import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
+import { Notification } from 'react-notification';
 
 import AvailabilityGrid from './AvailabilityGrid';
 
@@ -53,6 +54,8 @@ class EventDetailsComponent extends React.Component {
       participants: event.participants,
       showHeatmap: false,
       myAvailability: [],
+      notificationIsActive: false,
+      notificationMessage: '',
     };
   }
 
@@ -132,7 +135,12 @@ class EventDetailsComponent extends React.Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log(err); return;
+      console.log(err);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to join event. Please try again later.',
+      });
+      return;
     } finally {
       nprogress.done();
     }
@@ -166,7 +174,12 @@ class EventDetailsComponent extends React.Component {
       checkStatus(response);
       event = await parseJSON(response);
     } catch (err) {
-      console.log(err); return;
+      console.log(err);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to update availability. Please try again later.',
+      });
+      return;
     } finally {
       nprogress.done();
     }
@@ -186,7 +199,12 @@ class EventDetailsComponent extends React.Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log(err); return;
+      console.log(err);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to delete event. Please try again later.',
+      });
+      return;
     } finally {
       nprogress.done();
     }
@@ -423,6 +441,14 @@ class EventDetailsComponent extends React.Component {
             ))}
           </div>
         </div>
+        <Notification
+          isActive={this.state.notificationIsActive}
+          message={this.state.notificationMessage}
+          action="Dismiss"
+          title="Error!"
+          onDismiss={() => this.setState({ notificationIsActive: false })}
+          onClick={() => this.setState({ notificationIsActive: false })}
+        />
       </div>
     );
   }
