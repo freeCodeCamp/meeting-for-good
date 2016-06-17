@@ -6,6 +6,7 @@ import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
+import { Notification } from 'react-notification';
 
 /* external components */
 import EventCard from '../components/EventCard';
@@ -24,6 +25,8 @@ class Dashboard extends React.Component {
     this.state = {
       events: [],
       showNoScheduledMessage: false,
+      notificationIsActive: false,
+      notificationMessage: '',
     };
   }
 
@@ -44,7 +47,12 @@ class Dashboard extends React.Component {
       checkStatus(response);
       events = await parseJSON(response);
     } catch (err) {
-      console.log(err); return;
+      console.log(err);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to load events. Please try again later.',
+      });
+      return;
     } finally {
       nprogress.done();
       this.setState({ showNoScheduledMessage: true });
@@ -88,6 +96,14 @@ class Dashboard extends React.Component {
               </em> :
               null
         }
+        <Notification
+          isActive={this.state.notificationIsActive}
+          message={this.state.notificationMessage}
+          action="Dismiss"
+          title="Error!"
+          onDismiss={() => this.setState({ notificationIsActive: false })}
+          onClick={() => this.setState({ notificationIsActive: false })}
+        />
       </div>
     );
   }
