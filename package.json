@@ -69,6 +69,7 @@
     "react-day-picker": "^2.1.0",
     "react-dom": "^15.1.0",
     "react-masonry-component": "^4.0.4",
+    "react-notification": "^5.0.5",
     "react-router": "^2.4.1",
     "react-transform-hmr": "^1.0.4",
     "style-loader": "^0.13.1",

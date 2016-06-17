@@ -7,6 +7,7 @@ import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
+import { Notification } from 'react-notification';
 
 import { checkStatus } from '../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../util/time-format';
@@ -34,6 +35,8 @@ class NewEvent extends React.Component {
       dateOrDay: false,
       selectedTimeRange: [0, 23],
       submitClass: 'waves-effect waves-light btn purple disabled',
+      notificationIsActive: false,
+      notificationMessage: '',
     };
   }
 
@@ -185,6 +188,63 @@ class NewEvent extends React.Component {
 
   @autobind
   async createEvent(ev) {
+    const {
+      eventName: name,
+      ranges,
+      dateOrDay,
+      weekDays,
+      selectedTimeRange: [fromTime, toTime],
+    } = this.state;
+
+    if (ev.target.className.indexOf('disabled') > -1) {
+      if (!dateOrDay) { // dates
+        if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
+          this.setState({
+            notificationIsActive: true,
+            notificationMessage: 'Please select a date and enter an event name.',
+          });
+        } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
+          this.setState({
+            notificationIsActive: true,
+            notificationMessage: 'Please select a date.',
+          });
+        } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
+          this.setState({
+            notificationIsActive: true,
+            notificationMessage: 'Please enter an event name.',
+          });
+        }
+
+        return;
+      }
+
+      // weekdays
+      let numOfWeekdaysSelected = 0;
+
+      for (const weekDay of Object.keys(weekDays)) {
+        if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
+      }
+
+      if (name.length === 0 && numOfWeekdaysSelected === 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please select a weekday and enter an event name.',
+        });
+      } else if (name.length !== 0 && numOfWeekdaysSelected === 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please select a weekday.',
+        });
+      } else if (name.length === 0 && numOfWeekdaysSelected !== 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please enter an event name.',
+        });
+      }
+
+      return;
+    }
+
     function generateID() {
       let ID = '';
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -197,125 +257,113 @@ class NewEvent extends React.Component {
     }
 
     const uid = generateID();
+    let sentData;
 
-    if (ev.target.className.indexOf('disabled') > -1) {
-      Materialize.toast('Please enter an event name!', 4000);
-    } else {
-      const {
-        eventName: name,
-        ranges,
-        dateOrDay,
-        weekDays,
-        selectedTimeRange: [fromTime, toTime],
-      } = this.state;
-      let sentData;
+    const fromHours = getHours(fromTime);
+    const toHours = getHours(toTime);
 
-      const fromHours = getHours(fromTime);
-      const toHours = getHours(toTime);
+    const fromMinutes = getMinutes(fromTime);
+    const toMinutes = getMinutes(toTime);
 
-      const fromMinutes = getMinutes(fromTime);
-      const toMinutes = getMinutes(toTime);
+    if (dateOrDay) {
+      const dates = [];
 
-      if (dateOrDay) {
-        const dates = [];
-
-        for (const key of Object.keys(weekDays)) {
-          if (!weekDays[key]) continue;
-          dates.push({
-            fromDate: moment()
-                        .day(key)
-                        .set('h', fromHours)
-                        .set('m', fromMinutes),
-            toDate: moment()
-                        .day(key)
-                        .set('h', toHours)
-                        .set('m', toMinutes),
-          });
-        }
-
-        sentData = JSON.stringify({ uid, name, weekDays, dates });
-      } else {
-        const dates = ranges.map(({ from, to }) => {
-          if (!to) to = from;
-
-          if (from > to) {
-            [from, to] = [to, from];
-          }
-
-          return {
-            fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
-            toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
-          };
+      for (const key of Object.keys(weekDays)) {
+        if (!weekDays[key]) continue;
+        dates.push({
+          fromDate: moment()
+                      .day(key)
+                      .set('h', fromHours)
+                      .set('m', fromMinutes),
+          toDate: moment()
+                      .day(key)
+                      .set('h', toHours)
+                      .set('m', toMinutes),
         });
-
-        // ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)
-        for (let i = 0; i < dates.length; i++) {
-          for (let x = i + 1; x < dates.length; x++) {
-            // `dates[i]` represents every date object starting from index 0.
-            //
-            // `dates[x]` is every date object after dates[i]. Some dates[x] objects may get deleted
-            //            as their values are merged with the current dates[i] object. In such a
-            //            scenario, the dates[x] object in question will not be iterated over later
-            //            as dates[i].
-
-            const iToMoment = moment(dates[i].toDate);
-            const iFromMoment = moment(dates[i].fromDate);
-            const xToMoment = moment(dates[x].toDate);
-            const xFromMoment = moment(dates[x].fromDate);
-
-            // If the current dates[x] object completely overlaps the current dates[x] object, then
-            // set dates[i] to dates[x] and delete the current dates[x] object from the array.
-            if (xToMoment.isAfter(iToMoment) && xFromMoment.isBefore(iFromMoment)) {
-              dates[i].toDate = dates[x].toDate;
-              dates[i].fromDate = dates[x].fromDate;
-              dates.splice(x, 1);
-              x = i; continue;
-            }
-
-            if (iFromMoment.isBefore(xFromMoment) && iToMoment.isAfter(xToMoment)) {
-              dates.splice(x, 1);
-              x = i; continue;
-            }
-
-            // If the current dates[x] object is adjacent the current dates[i] object and
-            // dates[x] > dates[i].
-            if (iToMoment.add(1, 'd').isSame(xFromMoment, 'd')) {
-              dates[i].toDate = dates[x].toDate;
-              dates.splice(x, 1);
-              x = i; continue;
-            }
-
-            // If the current dates[x] object is adjacent the current dates[i] object and
-            // dates[x] < dates[i].
-            if (iFromMoment.subtract(1, 'd').isSame(xToMoment, 'd')) {
-              dates[i].fromDate = dates[x].fromDate;
-              dates.splice(x, 1);
-              x = i; continue;
-            }
-          }
-        }
-
-        sentData = JSON.stringify({ uid, name, dates });
       }
 
-      const response = await fetch('/api/events', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: sentData,
-        credentials: 'same-origin',
+      sentData = JSON.stringify({ uid, name, weekDays, dates });
+    } else {
+      const dates = ranges.map(({ from, to }) => {
+        if (!to) to = from;
+
+        if (from > to) {
+          [from, to] = [to, from];
+        }
+
+        return {
+          fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
+          toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
+        };
       });
 
-      try {
-        checkStatus(response);
-      } catch (err) {
-        console.log(err); return;
+      // ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)
+      for (let i = 0; i < dates.length; i++) {
+        for (let x = i + 1; x < dates.length; x++) {
+          // `dates[i]` represents every date object starting from index 0.
+          //
+          // `dates[x]` is every date object after dates[i]. Some dates[x] objects may get deleted
+          //            as their values are merged with the current dates[i] object. In such a
+          //            scenario, the dates[x] object in question will not be iterated over later
+          //            as dates[i].
+
+          const iToMoment = moment(dates[i].toDate);
+          const iFromMoment = moment(dates[i].fromDate);
+          const xToMoment = moment(dates[x].toDate);
+          const xFromMoment = moment(dates[x].fromDate);
+
+          // If the current dates[x] object completely overlaps the current dates[x] object, then
+          // set dates[i] to dates[x] and delete the current dates[x] object from the array.
+          if (xToMoment.isAfter(iToMoment) && xFromMoment.isBefore(iFromMoment)) {
+            dates[i].toDate = dates[x].toDate;
+            dates[i].fromDate = dates[x].fromDate;
+            dates.splice(x, 1);
+            x = i; continue;
+          }
+
+          if (iFromMoment.isBefore(xFromMoment) && iToMoment.isAfter(xToMoment)) {
+            dates.splice(x, 1);
+            x = i; continue;
+          }
+
+          // If the current dates[x] object is adjacent the current dates[i] object and
+          // dates[x] > dates[i].
+          if (iToMoment.add(1, 'd').isSame(xFromMoment, 'd')) {
+            dates[i].toDate = dates[x].toDate;
+            dates.splice(x, 1);
+            x = i; continue;
+          }
+
+          // If the current dates[x] object is adjacent the current dates[i] object and
+          // dates[x] < dates[i].
+          if (iFromMoment.subtract(1, 'd').isSame(xToMoment, 'd')) {
+            dates[i].fromDate = dates[x].fromDate;
+            dates.splice(x, 1);
+            x = i; continue;
+          }
+        }
       }
 
-      browserHistory.push(`/event/${uid}`);
+      sentData = JSON.stringify({ uid, name, dates });
     }
+
+    const response = await fetch('/api/events', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: sentData,
+      credentials: 'same-origin',
+    });
+
+    try {
+      checkStatus(response);
+    } catch (err) {
+      console.log(err); return;
+    }
+
+    browserHistory.push(`/event/${uid}`);
   }
 
   @autobind
@@ -431,6 +479,14 @@ class NewEvent extends React.Component {
             </p>
           </form>
         </div>
+        <Notification
+          isActive={this.state.notificationIsActive}
+          message={this.state.notificationMessage}
+          action="Dismiss"
+          title="Error!"
+          onDismiss={() => this.setState({ notificationIsActive: false })}
+          onClick={() => this.setState({ notificationIsActive: false })}
+        />
       </div>
     );
   }
