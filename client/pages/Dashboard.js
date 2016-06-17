@@ -13,7 +13,6 @@ import EventCard from '../components/EventCard';
 
 /* styles */
 import styles from '../styles/dashboard.css';
-import 'nprogress/nprogress.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../util/fetch.util';

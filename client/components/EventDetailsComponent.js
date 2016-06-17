@@ -17,7 +17,6 @@ import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
 import 'react-day-picker/lib/style.css';
-import 'nprogress/nprogress.css';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {

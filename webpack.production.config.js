@@ -67,7 +67,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        exclude: [/node_modules/],
+        exclude: [/node_modules/, /no-css-modules/],
         loaders: [
           'style',
           'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
@@ -75,7 +75,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: [/node_modules/],
+        include: [/node_modules/, /no-css-modules/],
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
       },
       {
