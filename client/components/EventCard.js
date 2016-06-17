@@ -180,7 +180,7 @@ class EventCard extends React.Component {
         }
         <div className="card-content">
           <span className="card-title">{event.name}</span>
-          <h6 id="best"><strong>Best times & dates</strong></h6>
+          <h6 id="best"><strong>All participants so far are available at:</strong></h6>
           <div className="row">
             <div className="col s12">
               {isBestTime ?

@@ -56,6 +56,7 @@ class EventDetailsComponent extends React.Component {
       myAvailability: [],
       notificationIsActive: false,
       notificationMessage: '',
+      notificationTitle: '',
     };
   }
 
@@ -86,6 +87,25 @@ class EventDetailsComponent extends React.Component {
           .remove();
       });
     }, 100);
+
+    $('.notification-bar-action').on('click', () => {
+      this.setState({ notificationIsActive: false });
+    });
+  }
+
+  selectElementContents(el) {
+    let range;
+    if (window.getSelection && document.createRange) {
+      range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(el);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (document.body && document.body.createTextRange) {
+      range = document.body.createTextRange();
+      range.moveToElementText(el);
+      range.select();
+    }
   }
 
   @autobind
@@ -139,6 +159,7 @@ class EventDetailsComponent extends React.Component {
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to join event. Please try again later.',
+        notificationTitle: 'Error!',
       });
       return;
     } finally {
@@ -178,6 +199,7 @@ class EventDetailsComponent extends React.Component {
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to update availability. Please try again later.',
+        notificationTitle: 'Error!',
       });
       return;
     } finally {
@@ -203,6 +225,7 @@ class EventDetailsComponent extends React.Component {
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
+        notificationTitle: 'Error!',
       });
       return;
     } finally {
@@ -272,6 +295,18 @@ class EventDetailsComponent extends React.Component {
     this.setState({ displayTimes });
   }
 
+  @autobind
+  shareEvent() {
+    this.setState({
+      notificationIsActive: true,
+      notificationMessage: window.location.href,
+      notificationTitle: 'Event URL:',
+    });
+    setTimeout(() => {
+      this.selectElementContents(document.getElementsByClassName('notification-bar-message')[1]);
+    }, 100);
+  }
+
   render() {
     let modifiers;
 
@@ -322,7 +357,7 @@ class EventDetailsComponent extends React.Component {
       }
         <div className="card-content">
           <span className="card-title">{event.name}</span>
-          <h6 id="best"><strong>Best times & dates</strong></h6>
+          <h6 id="best"><strong>All participants so far are available at:</strong></h6>
           <div className="row">
             <div className="col s12">
               {isBestTime ?
@@ -441,13 +476,17 @@ class EventDetailsComponent extends React.Component {
             ))}
           </div>
         </div>
+        <div className="card-action">
+          <a onClick={this.shareEvent}>Share Event</a>
+        </div>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
           action="Dismiss"
-          title="Error!"
+          title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
+          dismissAfter="10000"
+          // onClick={() => this.setState({ notificationIsActive: false })}
         />
       </div>
     );
