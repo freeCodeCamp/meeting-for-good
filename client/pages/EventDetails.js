@@ -31,6 +31,7 @@ class EventDetails extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to load event. Please try again later.',
       });
+      window.location.href = '/';
       return;
     }
 

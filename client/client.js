@@ -1,7 +1,7 @@
 // Vendor Dependencies
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 import './styles/no-css-modules/nprogress.css';
 
 require('es6-promise').polyfill();
@@ -27,5 +27,6 @@ render((
         <Route path=":uid" component={EventDetails} />
       </Route>
     </Route>
+    <Redirect from="*" to="/" />
   </Router>
 ), document.getElementById('app'));
