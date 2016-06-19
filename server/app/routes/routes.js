@@ -224,10 +224,8 @@ export default (app) => {
 
   app.route('/api/users/current/events')
     .get(isAuthenticated, (req, res) => {
-      const username = (req.user.facebook.username ||
-                        req.user.github.username ||
-                        req.user.local.username);
-      Event.find({ 'participants.name': username }, (err, events) => {
+      const _id = req.user._id;
+      Event.find({ 'participants._id': _id }, (err, events) => {
         if (err) return res.status(500).send(err);
         return res.status(200).json(events);
       });
