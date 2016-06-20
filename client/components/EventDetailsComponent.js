@@ -56,6 +56,8 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: false,
       notificationMessage: '',
       notificationTitle: '',
+      emails: [],
+      email: '',
     };
   }
 
@@ -312,10 +314,37 @@ class EventDetailsComponent extends React.Component {
     }, 100);
   }
 
+  @autobind
+  removeEmail(ev) {
+    const emailToDelete = ev.target.getAttribute('data-email');
+
+    this.setState({
+      emails: this.state.emails.filter(email => email !== emailToDelete),
+    });
+  }
+
+  @autobind
+  handleEmailChange(ev) {
+    this.setState({
+      email: ev.target.value,
+    });
+  }
+
+  @autobind
+  addEmail(ev) {
+    ev.preventDefault();
+
+    const emails = update(this.state.emails, {
+      $push: [this.state.email],
+    });
+
+    this.setState({ emails, email: '' });
+  }
+
   render() {
     let modifiers;
 
-    const { event, user, showHeatmap, participants, myAvailability } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability, emails, eventParticipantsIds } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
 
@@ -451,8 +480,8 @@ class EventDetailsComponent extends React.Component {
                   />
                 }
               </div>
-              {Object.keys(this.state.user).length > 0 ?
-                this.state.eventParticipantsIds.indexOf(this.state.user._id) > -1 ?
+              {Object.keys(user).length > 0 ?
+                eventParticipantsIds.indexOf(user._id) > -1 ?
                   <a
                     id="enterAvailButton"
                     className="waves-effect waves-light btn"
@@ -484,6 +513,7 @@ class EventDetailsComponent extends React.Component {
         </div>
         <div className="card-action">
           <a onClick={this.shareEvent}>Share Event</a>
+          <a onClick={() => $('#emailEventModal').openModal()}>Email Event</a>
         </div>
         <Notification
           isActive={this.state.notificationIsActive}
@@ -491,7 +521,7 @@ class EventDetailsComponent extends React.Component {
           action="Dismiss"
           title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter="10000"
+          dismissAfter={10000}
         />
         <div id="deleteEventConfirmation" className="modal bottom-sheet">
           <div className="modal-content">
@@ -500,15 +530,60 @@ class EventDetailsComponent extends React.Component {
           <div className="modal-footer">
             <a
               href="#!"
-              className=" modal-action modal-close waves-effect red-text waves-red btn-flat"
+              className="modal-action modal-close waves-effect red-text waves-red btn-flat"
               onClick={this.deleteEvent}
             >Yes</a>
             <a
               href="#!"
-              className=" modal-action modal-close waves-effect btn-flat"
+              className="modal-action modal-close waves-effect btn-flat"
               onClick={() => $('#deleteEventConfirmation').closeModal()}
             >Cancel</a>
           </div>
+        </div>
+        <div id="emailEventModal" className="modal">
+          <div className="modal-content">
+            <h5 styleName="modal-title">Enter the email addresses of the attendees</h5>
+            {emails.map((email, i) => (
+              <div className="chip" key={i}>
+                {email}
+                <i
+                  className="material-icons"
+                  data-email={email}
+                  onClick={this.removeEmail}
+                >close</i>
+              </div>
+            ))}
+            <form onSubmit={this.addEmail}>
+              <div className="row">
+                <div className="input-field col s12">
+                  <input
+                    id="email"
+                    type="email"
+                    className="validate"
+                    value={this.state.email}
+                    onChange={this.handleEmailChange}
+                  />
+                  <label
+                    htmlFor="email"
+                    data-error="wrong"
+                    data-success="right"
+                  >Enter an email and press enter</label>
+                </div>
+              </div>
+            </form>
+          </div>
+          {emails.length > 0 ?
+            <div className="modal-footer">
+              <a
+                href={`mailto:${emails.join(',')}?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}. All times will automatically be converted to your local timezone:%0D%0A%0D%0A${window.location.href}`}
+                className="modal-action modal-close waves-effect btn-flat"
+                onClick={() => {
+                  $('#emailEventModal').closeModal();
+                  this.setState({ emails: [] });
+                }}
+              >Send</a>
+            </div> : null
+          }
         </div>
       </div>
     );

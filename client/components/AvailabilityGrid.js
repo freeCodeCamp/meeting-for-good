@@ -408,9 +408,10 @@ class AvailabilityGrid extends React.Component {
 
     return (
       <div>
-        {hourTime.map(time => {
+        {hourTime.map((time, i) => {
           return (
             <p
+              key={i}
               className="grid-hour"
               styleName="grid-hour"
             >{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
