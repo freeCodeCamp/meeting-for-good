@@ -4,7 +4,7 @@ import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import moment from 'moment';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 
@@ -134,6 +134,11 @@ class EventCard extends React.Component {
     this.props.removeEventFromDashboard(this.state.event._id);
   }
 
+  @autobind
+  redirectToEvent() {
+    browserHistory.push(`/event/${this.state.event.uid}`);
+  }
+
   render() {
     const { event, user } = this.state;
     let isOwner;
@@ -167,7 +172,7 @@ class EventCard extends React.Component {
     } else isBestTime = false;
 
     return (
-      <div to={`/event/${event.uid}`} className="card" styleName="event">
+      <div onClick={this.redirectToEvent} className="card" styleName="event">
         {
           isOwner ?
             <a
