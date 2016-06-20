@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const Event = new Schema({
   name: String,
   dates: Array,
+  active: Boolean,
   weekDays: Object,
   participants: Array,
   uid: String,
