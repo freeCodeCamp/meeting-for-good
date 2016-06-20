@@ -21,7 +21,16 @@ class NewEvent extends React.Component {
   constructor() {
     super();
     this.state = {
-      ranges: [{ from: null, to: null }],
+      ranges: [{
+        from: moment()
+          .hour(0)
+          .minute(0)
+          .second(0)._d,
+        to: moment()
+          .hour(0)
+          .minute(0)
+          .second(0)._d,
+      }],
       eventName: '',
       weekDays: {
         mon: false,
