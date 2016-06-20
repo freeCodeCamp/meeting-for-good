@@ -173,7 +173,7 @@ class EventCard extends React.Component {
             <a
               className="btn-floating btn-large waves-effect waves-light red"
               styleName="delete-event"
-              onClick={this.deleteEvent}
+              onClick={() => $(`#deleteEventConfirmation${this.state.event._id}`).openModal()}
             ><i className="material-icons">delete</i></a>
             : null
         }
@@ -255,6 +255,23 @@ class EventCard extends React.Component {
           onDismiss={() => this.setState({ notificationIsActive: false })}
           onClick={() => this.setState({ notificationIsActive: false })}
         />
+        <div id={`deleteEventConfirmation${this.state.event._id}`} className="modal bottom-sheet">
+          <div className="modal-content">
+            <h5 styleName="modal-title">Are you sure you want to delete the event?</h5>
+          </div>
+          <div className="modal-footer">
+            <a
+              href="#!"
+              className=" modal-action modal-close waves-effect red-text waves-red btn-flat"
+              onClick={this.deleteEvent}
+            >Yes</a>
+            <a
+              href="#!"
+              className=" modal-action modal-close waves-effect btn-flat"
+              onClick={() => $(`#deleteEventConfirmation${this.state.event._id}`).closeModal()}
+            >Cancel</a>
+          </div>
+        </div>
       </div>
     );
   }

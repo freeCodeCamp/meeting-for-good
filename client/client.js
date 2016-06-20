@@ -2,8 +2,6 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
-import 'materialize-css';
-import 'materialize-css/bin/materialize.css';
 import './styles/no-css-modules/nprogress.css';
 
 require('es6-promise').polyfill();
