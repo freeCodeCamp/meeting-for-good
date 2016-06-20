@@ -54,7 +54,7 @@ class NewEvent extends React.Component {
       if (!sessionStorage.getItem('redirectTo')) {
         sessionStorage.setItem('redirectTo', '/event/new');
       }
-      browserHistory.push('/login');
+      browserHistory.push('/');
     }
   }
 
@@ -499,7 +499,7 @@ class NewEvent extends React.Component {
           action="Dismiss"
           title=" "
           onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter="10000"
+          dismissAfter={10000}
         />
       </div>
     );

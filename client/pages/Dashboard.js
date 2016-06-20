@@ -35,7 +35,7 @@ class Dashboard extends React.Component {
       sessionStorage.removeItem('redirectTo');
     }
 
-    if (!await isAuthenticated()) browserHistory.push('/login');
+    if (!await isAuthenticated()) browserHistory.push('/');
 
     nprogress.configure({ showSpinner: false });
     nprogress.start();
