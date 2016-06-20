@@ -417,6 +417,7 @@ class NewEvent extends React.Component {
                   value={this.state.eventName}
                   onChange={this.handleEventNameChange}
                   className="validate"
+                  placeholder="Enter an event name..."
                 />
                 <label htmlFor="event_name">Event Name</label>
               </div>
