@@ -52,7 +52,7 @@ class NewEvent extends React.Component {
   componentDidMount() {
     const slider = document.getElementById('timeSlider');
     noUiSlider.create(slider, {
-      start: [0, 24],
+      start: [9, 17],
       connect: true,
       step: 0.25,
       range: {
