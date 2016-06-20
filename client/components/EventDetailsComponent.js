@@ -231,6 +231,12 @@ class EventDetailsComponent extends React.Component {
       nprogress.done();
     }
 
+    this.setState({
+      notificationIsActive: true,
+      notificationMessage: 'Event successfully deleted!',
+      notificationTitle: '',
+    });
+
     browserHistory.push('/dashboard');
   }
 
@@ -349,8 +355,9 @@ class EventDetailsComponent extends React.Component {
         isOwner ?
           <a
             className="btn-floating btn-large waves-effect waves-light red"
+            onClick={() => $('#deleteEventConfirmation').openModal()}
+            href="#"
             styleName="delete-event"
-            onClick={this.deleteEvent}
           ><i className="material-icons">delete</i></a>
           : null
       }
@@ -485,8 +492,24 @@ class EventDetailsComponent extends React.Component {
           title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
           dismissAfter="10000"
-          // onClick={() => this.setState({ notificationIsActive: false })}
         />
+        <div id="deleteEventConfirmation" className="modal bottom-sheet">
+          <div className="modal-content">
+            <h5 styleName="modal-title">Are you sure you want to delete the event?</h5>
+          </div>
+          <div className="modal-footer">
+            <a
+              href="#!"
+              className=" modal-action modal-close waves-effect red-text waves-red btn-flat"
+              onClick={this.deleteEvent}
+            >Yes</a>
+            <a
+              href="#!"
+              className=" modal-action modal-close waves-effect btn-flat"
+              onClick={() => $('#deleteEventConfirmation').closeModal()}
+            >Cancel</a>
+          </div>
+        </div>
       </div>
     );
   }
