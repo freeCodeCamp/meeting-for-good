@@ -7,4 +7,11 @@
 - ~~Overflow participants list~~
 - ~~Add a delete button for events~~
 - ~~Fix white submit button~~
-- Add share link
+- ~~Add share link~~
+- Fix border styling on heatmap
+- Fix the sentence at the top of best times and dates
+- Make 404 page
+- Nice to have: colour design
+- Fix login and signup buttons
+- Disallow same username
+- Change available users shown from click to hover
