@@ -71,6 +71,10 @@ class NewEvent extends React.Component {
       selectedTimeRange[handle] = value[handle];
       this.setState({ selectedTimeRange });
     });
+
+    $('.notification-bar-action').on('click', () => {
+      this.setState({ notificationIsActive: false });
+    });
   }
 
   @autobind
@@ -483,9 +487,9 @@ class NewEvent extends React.Component {
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
           action="Dismiss"
-          title="Error!"
+          title=" "
           onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
+          dismissAfter="10000"
         />
       </div>
     );

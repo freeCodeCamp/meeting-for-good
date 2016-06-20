@@ -167,7 +167,7 @@ class EventCard extends React.Component {
     } else isBestTime = false;
 
     return (
-      <div className="card" styleName="event">
+      <div to={`/event/${event.uid}`} className="card" styleName="event">
         {
           isOwner ?
             <a
