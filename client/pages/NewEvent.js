@@ -407,7 +407,7 @@ class NewEvent extends React.Component {
     return (
       <div className="card" styleName="new-event-card">
         <div className="card-content">
-          <span className="card-title">Create a new event</span>
+          <h1 className="card-title">Create a New Event</h1>
           <form>
             <div className="row">
               <div className="input-field col s12">
