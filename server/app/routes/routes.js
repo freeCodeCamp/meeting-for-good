@@ -71,7 +71,7 @@ export default (app) => {
   /* meeetings API*/
   app.route('/api/events')
     .get(isAuthenticated, (req, res) => {
-      Event.find((err, events) => {
+      Event.find({ active: true }, (err, events) => {
         if (err) res.status(500).send(err);
         return res.status(200).json(events);
       });
@@ -87,6 +87,7 @@ export default (app) => {
 
       req.body.participants = [{ name, avatar, _id }];
       req.body.owner = _id;
+      req.body.active = true;
       Event.create(req.body, (err, event) => {
         if (err) return res.status(500).send(err);
         return res.status(201).json(event);
@@ -97,14 +98,15 @@ export default (app) => {
     .get(isAuthenticated, (req, res) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
-        if (!event) return res.status(404).send('Not found.');
+        if (!event || !event.active) return res.status(404).send('Not found.');
+
         return res.status(200).json(event);
       });
     })
     .put(isAuthenticated, (req, res) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
-        if (!event) return res.status(404).send('Not found.');
+        if (!event || !event.active) return res.status(404).send('Not found.');
 
         const updated = _.extend(event, req.body);
         updated.save(err => {
@@ -116,18 +118,19 @@ export default (app) => {
     .delete(isAuthenticated, (req, res) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
-        if (!event) return res.status(404).send('Not found.');
+        if (!event || !event.active) return res.status(404).send('Not found.');
 
-        event.remove(err => {
+        event.active = false;
+        event.save(err => {
           if (err) return res.status(500).send(err);
-          return res.status(204).send('No Content');
+          return res.status(200).json(event);
         });
       });
     });
 
   app.route('/api/events/:id/updateAvail')
     .put(isAuthenticated, (req, res) => {
-      Event.findOne({"uid": req.params.id}, (err, event) => {
+      Event.findOne({ uid: req.params.id, active: true }, (err, event) => {
         if (err) return res.status(500).send(err);
         if (!event) return res.status(404).send('Not found.');
 
@@ -185,8 +188,10 @@ export default (app) => {
   app.route('/api/events/getbyuid/:uid')
     .get((req, res) => {
       const uid = req.params.uid;
-      Event.find({ uid }, (err, events) => {
-        if (err) res.status(500).send(err);
+      Event.find({ uid, active: true }, (err, events) => {
+        if (err) return res.status(500).send(err);
+        if (!events[0]) return res.status(404).send('Not found.');
+
         return res.status(200).json(events[0]);
       });
     });
@@ -224,13 +229,7 @@ export default (app) => {
 
   app.route('/api/users/current/events')
     .get(isAuthenticated, (req, res) => {
-      const username = (
-        req.user.facebook.username ||
-        req.user.github.username ||
-        req.user.local.username
-      );
-
-      Event.find({ 'participants.name': username }, (err, events) => {
+      Event.find({ 'participants._id': req.user._id, active: true }, (err, events) => {
         if (err) return res.status(500).send(err);
         return res.status(200).json(events);
       });
