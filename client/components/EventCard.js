@@ -175,18 +175,17 @@ class EventCard extends React.Component {
       <div onClick={this.redirectToEvent} className="card" styleName="event">
         {
           isOwner ?
-            <a
-              className="btn-floating btn-large waves-effect waves-light red"
+            <button
+              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
               styleName="delete-event"
               onClick={(ev) => {
                 ev.stopPropagation();
                 document.querySelector(`#deleteEventModal${this.state.event._id}`).showModal();
               }}
-            ><i className="material-icons">delete</i></a>
-            : null
+            ><i className="material-icons">delete</i></button> : null
         }
         <div className="card-content">
-          <span className="card-title">{event.name}</span>
+          <span styleName="card-title" className="card-title">{event.name}</span>
           <h6 id="best"><strong>All participants so far are available at:</strong></h6>
           <div className="row">
             <div className="col s12">

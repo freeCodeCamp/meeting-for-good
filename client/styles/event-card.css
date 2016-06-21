@@ -69,6 +69,10 @@ hr {
   cursor: default;
 }
 
+.card-title {
+  font-family: Roboto, sans-serif;
+}
+
 @media (min-width:850px) and (max-width:1200px) {
   .event {
     margin: 2% 1.5%;
