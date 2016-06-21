@@ -65,6 +65,10 @@ hr {
   font-size: 20px;
 }
 
+.mdl-dialog {
+  cursor: default;
+}
+
 @media (min-width:850px) and (max-width:1200px) {
   .event {
     margin: 2% 1.5%;

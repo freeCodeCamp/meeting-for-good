@@ -384,7 +384,7 @@ class EventDetailsComponent extends React.Component {
         isOwner ?
           <a
             className="btn-floating btn-large waves-effect waves-light red"
-            onClick={() => $('#deleteEventConfirmation').openModal()}
+            onClick={() => document.querySelector('#deleteEventModal').showModal()}
             href="#"
             styleName="delete-event"
           ><i className="material-icons">delete</i></a>
@@ -523,23 +523,26 @@ class EventDetailsComponent extends React.Component {
           onDismiss={() => this.setState({ notificationIsActive: false })}
           dismissAfter={10000}
         />
-        <div id="deleteEventConfirmation" className="modal bottom-sheet">
-          <div className="modal-content">
-            <h5 styleName="modal-title">Are you sure you want to delete the event?</h5>
-          </div>
-          <div className="modal-footer">
-            <a
-              href="#!"
-              className="modal-action modal-close waves-effect red-text waves-red btn-flat"
+        <dialog
+          onClick={(ev) => ev.stopPropagation()}
+          className="mdl-dialog"
+          styleName="mdl-dialog"
+          id="deleteEventModal"
+        >
+          <h6 styleName="modal-title" className="mdl-dialog__title">Are you sure you want to delete the event?</h6>
+          <div className="mdl-dialog__actions">
+            <button
+              type="button"
+              className="mdl-button close"
+              onClick={() => document.querySelector('#deleteEventModal').close()}
+            >Cancel</button>
+            <button
+              type="button"
+              className="mdl-button mdl-button--accent"
               onClick={this.deleteEvent}
-            >Yes</a>
-            <a
-              href="#!"
-              className="modal-action modal-close waves-effect btn-flat"
-              onClick={() => $('#deleteEventConfirmation').closeModal()}
-            >Cancel</a>
+            >Yes</button>
           </div>
-        </div>
+        </dialog>
         <div id="emailEventModal" className="modal">
           <div className="modal-content">
             <h5 styleName="modal-title">Enter the email addresses of the attendees</h5>

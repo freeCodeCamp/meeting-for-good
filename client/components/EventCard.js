@@ -178,7 +178,10 @@ class EventCard extends React.Component {
             <a
               className="btn-floating btn-large waves-effect waves-light red"
               styleName="delete-event"
-              onClick={() => $(`#deleteEventConfirmation${this.state.event._id}`).openModal()}
+              onClick={(ev) => {
+                ev.stopPropagation();
+                document.querySelector(`#deleteEventModal${this.state.event._id}`).showModal();
+              }}
             ><i className="material-icons">delete</i></a>
             : null
         }
@@ -260,23 +263,26 @@ class EventCard extends React.Component {
           onDismiss={() => this.setState({ notificationIsActive: false })}
           onClick={() => this.setState({ notificationIsActive: false })}
         />
-        <div id={`deleteEventConfirmation${this.state.event._id}`} className="modal bottom-sheet">
-          <div className="modal-content">
-            <h5 styleName="modal-title">Are you sure you want to delete the event?</h5>
-          </div>
-          <div className="modal-footer">
-            <a
-              href="#!"
-              className=" modal-action modal-close waves-effect red-text waves-red btn-flat"
+        <dialog
+          onClick={(ev) => ev.stopPropagation()}
+          className="mdl-dialog"
+          styleName="mdl-dialog"
+          id={`deleteEventModal${this.state.event._id}`}
+        >
+          <h6 styleName="modal-title" className="mdl-dialog__title">Are you sure you want to delete the event?</h6>
+          <div className="mdl-dialog__actions">
+            <button
+              type="button"
+              className="mdl-button close"
+              onClick={() => document.querySelector(`#deleteEventModal${this.state.event._id}`).close()}
+            >Cancel</button>
+            <button
+              type="button"
+              className="mdl-button mdl-button--accent"
               onClick={this.deleteEvent}
-            >Yes</a>
-            <a
-              href="#!"
-              className=" modal-action modal-close waves-effect btn-flat"
-              onClick={() => $(`#deleteEventConfirmation${this.state.event._id}`).closeModal()}
-            >Cancel</a>
+            >Yes</button>
           </div>
-        </div>
+        </dialog>
       </div>
     );
   }
