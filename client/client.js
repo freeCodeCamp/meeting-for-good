@@ -3,6 +3,8 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 import './styles/no-css-modules/nprogress.css';
+import 'dialog-polyfill/dialog-polyfill.js';
+import 'dialog-polyfill/dialog-polyfill.css';
 
 require('es6-promise').polyfill();
 
