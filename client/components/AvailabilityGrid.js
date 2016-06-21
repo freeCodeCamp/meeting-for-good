@@ -321,15 +321,13 @@ class AvailabilityGrid extends React.Component {
       checkStatus(response);
     } catch (err) {
       console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to update availability. Please try again later.',
-      });
+      Materialize.toast('Failed to update availability. Please try again later.', 10000);
       return;
     } finally {
       nprogress.done();
     }
 
+    Materialize.toast('Saved availability successfully.', 10000);
     this.props.submitAvail(availability);
   }
 
@@ -491,6 +489,7 @@ class AvailabilityGrid extends React.Component {
           title="Error!"
           onDismiss={() => this.setState({ notificationIsActive: false })}
           onClick={() => this.setState({ notificationIsActive: false })}
+          dismissAfter={10000}
         />
       </div>
     );
