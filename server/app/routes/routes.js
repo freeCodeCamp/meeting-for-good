@@ -40,6 +40,14 @@ export default (app) => {
       successRedirect: '/dashboard',
     }));
 
+  app.route('/api/auth/facebook')
+    .get(passport.authenticate('facebook'));
+
+  app.route('/api/auth/facebook/callback')
+    .get(passport.authenticate('facebook', {
+      successRedirect: '/dashboard',
+    }));
+
   app.route('/api/auth/logout')
     .get((req, res) => {
       req.logout();

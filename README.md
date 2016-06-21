@@ -17,6 +17,8 @@ A meeting coordination app for your team.
 MONGO_URI=mongodb://localhost:27017/letsmeet
 GOOGLE_KEY=[YOUR_GOOGLE_KEY]
 GOOGLE_SECRET=[YOUR_GOOGLE_SECRET]
+FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
+FACEBOOK_SECRET=[YOUR_FACEBOOK_SECRET]
 APP_URL= http://localhost:8080/
 seedDB=true
 ```
