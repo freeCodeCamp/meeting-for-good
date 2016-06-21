@@ -207,6 +207,12 @@ class EventDetailsComponent extends React.Component {
       nprogress.done();
     }
 
+    this.setState({
+      notificationIsActive: true,
+      notificationMessage: 'Saved availability successfully.',
+      notificationTitle: 'Success!',
+    });
+
     this.generateBestDatesAndTimes(event);
     this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
   }

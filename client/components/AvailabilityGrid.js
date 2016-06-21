@@ -7,7 +7,6 @@ import fetch from 'isomorphic-fetch';
 import { checkStatus } from '../util/fetch.util';
 import { getHours, getMinutes } from '../util/time-format';
 import colorsys from 'colorsys';
-import { Notification } from 'react-notification';
 import nprogress from 'nprogress';
 
 import styles from '../styles/availability-grid.css';
@@ -29,8 +28,6 @@ class AvailabilityGrid extends React.Component {
       dateFormatStr,
       availableOnDate: [],
       hourTime: [],
-      notificationIsActive: false,
-      notificationMessage: '',
     };
   }
 
@@ -313,13 +310,11 @@ class AvailabilityGrid extends React.Component {
       checkStatus(response);
     } catch (err) {
       console.log(err);
-      Materialize.toast('Failed to update availability. Please try again later.', 10000);
       return;
     } finally {
       nprogress.done();
     }
 
-    Materialize.toast('Saved availability successfully.', 10000);
     this.props.submitAvail(availability);
   }
 
@@ -474,15 +469,6 @@ class AvailabilityGrid extends React.Component {
             >Submit</a>
           }
         </div>
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          action="Dismiss"
-          title="Error!"
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={10000}
-        />
       </div>
     );
   }
