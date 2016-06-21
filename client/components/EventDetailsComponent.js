@@ -56,8 +56,6 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: false,
       notificationMessage: '',
       notificationTitle: '',
-      emails: [],
-      email: '',
     };
   }
 
@@ -320,37 +318,10 @@ class EventDetailsComponent extends React.Component {
     }, 100);
   }
 
-  @autobind
-  removeEmail(ev) {
-    const emailToDelete = ev.target.getAttribute('data-email');
-
-    this.setState({
-      emails: this.state.emails.filter(email => email !== emailToDelete),
-    });
-  }
-
-  @autobind
-  handleEmailChange(ev) {
-    this.setState({
-      email: ev.target.value,
-    });
-  }
-
-  @autobind
-  addEmail(ev) {
-    ev.preventDefault();
-
-    const emails = update(this.state.emails, {
-      $push: [this.state.email],
-    });
-
-    this.setState({ emails, email: '' });
-  }
-
   render() {
     let modifiers;
 
-    const { event, user, showHeatmap, participants, myAvailability, emails, eventParticipantsIds } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
 
@@ -517,7 +488,7 @@ class EventDetailsComponent extends React.Component {
         </div>
         <div className="card-action">
           <a onClick={this.shareEvent}>Share Event</a>
-          <a onClick={() => $('#emailEventModal').openModal()}>Email Event</a>
+          <a href={`mailto:?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:%0D%0A%0D%0A${window.location.href} %0D%0A%0D%0A All times will automatically be converted to your local timezone.`}>Email Event</a>
         </div>
         <Notification
           isActive={this.state.notificationIsActive}
@@ -547,51 +518,6 @@ class EventDetailsComponent extends React.Component {
             >Yes</button>
           </div>
         </dialog>
-        <div id="emailEventModal" className="modal">
-          <div className="modal-content">
-            <h5 styleName="modal-title">Enter the email addresses of the attendees</h5>
-            {emails.map((email, i) => (
-              <div className="chip" key={i}>
-                {email}
-                <i
-                  className="material-icons"
-                  data-email={email}
-                  onClick={this.removeEmail}
-                >close</i>
-              </div>
-            ))}
-            <form onSubmit={this.addEmail}>
-              <div className="row">
-                <div className="input-field col s12">
-                  <input
-                    id="email"
-                    type="email"
-                    className="validate"
-                    value={this.state.email}
-                    onChange={this.handleEmailChange}
-                  />
-                  <label
-                    htmlFor="email"
-                    data-error="wrong"
-                    data-success="right"
-                  >Enter an email and press enter</label>
-                </div>
-              </div>
-            </form>
-          </div>
-          {emails.length > 0 ?
-            <div className="modal-footer">
-              <a
-                href={`mailto:${emails.join(',')}?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}. All times will automatically be converted to your local timezone:%0D%0A%0D%0A${window.location.href}`}
-                className="modal-action modal-close waves-effect btn-flat"
-                onClick={() => {
-                  $('#emailEventModal').closeModal();
-                  this.setState({ emails: [] });
-                }}
-              >Send</a>
-            </div> : null
-          }
-        </div>
       </div>
     );
   }
