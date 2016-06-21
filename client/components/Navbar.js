@@ -6,6 +6,8 @@ import autobind from 'autobind-decorator';
 
 import { getCurrentUser } from '../util/auth';
 
+import '../styles/no-css-modules/mdl.css';
+
 class Navbar extends React.Component {
   constructor(props) {
     super(props);
@@ -36,30 +38,29 @@ class Navbar extends React.Component {
 
   render() {
     return (
-      <nav className="grey darken-3">
-        <div className="container">
-          <Link to="/" className="brand-logo">Lets Meet</Link>
-          <ul id="nav-mobile" className="right hide-on-med-and-down">
-            {this.state.user ?
-              <li>
-                <Link to="/dashboard">Dashboard</Link>
-                <a href="/api/auth/logout">Logout</a>
-                <a href="#">
-                  <img
-                    alt="avatar"
-                    styleName="nav-img"
-                    src={this.state.userAvatar}
-                  />
-                </a>
-              </li> :
-              <li>
-                <Link to="/login" onClick={this.handleAuthClick}>Login</Link>
-                <Link to="/signup" onClick={this.handleAuthClick}>Signup</Link>
-              </li>
-            }
-          </ul>
+      <header className="mdl-layout__header">
+        <div className="mdl-layout__header-row">
+          <Link to="/" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
+          <div className="mdl-layout-spacer"></div>
+          {this.state.user ?
+            <div className="mdl-navigation">
+              <Link className="mdl-navigation__link" to="/dashboard">Dashboard</Link>
+              <a className="mdl-navigation__link" href="/api/auth/logout">Logout</a>
+              <a className="mdl-navigation__link" href="#">
+                <img
+                  alt="avatar"
+                  styleName="nav-img"
+                  src={this.state.userAvatar}
+                />
+              </a>
+            </div> :
+            <div className="mdl-navigation">
+              <Link className="mdl-navigation__link" to="/login" onClick={this.handleAuthClick}>Login</Link>
+              <Link className="mdl-navigation__link" to="/signup" onClick={this.handleAuthClick}>Signup</Link>
+            </div>
+          }
         </div>
-      </nav>
+      </header>
     );
   }
 }
