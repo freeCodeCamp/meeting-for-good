@@ -1,3 +1,7 @@
 header.mdl-layout__header {
   background-color: #424242;
 }
+
+.mdl-button--fab {
+  background: #F44336 !important;
+}

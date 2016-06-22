@@ -1,0 +1,10 @@
+.notification-bar {
+  z-index: 999999999;
+}
+
+.notification-bar-is-active {
+  right: 1rem;
+  top: 6rem;
+  bottom: auto !important;
+  left: auto !important;
+}
