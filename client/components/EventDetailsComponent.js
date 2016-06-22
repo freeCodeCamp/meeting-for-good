@@ -56,8 +56,6 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: false,
       notificationMessage: '',
       notificationTitle: '',
-      emails: [],
-      email: '',
     };
   }
 
@@ -302,33 +300,6 @@ class EventDetailsComponent extends React.Component {
     setTimeout(() => {
       this.selectElementContents(document.getElementsByClassName('notification-bar-message')[1]);
     }, 100);
-  }
-
-  @autobind
-  removeEmail(ev) {
-    const emailToDelete = ev.target.getAttribute('data-email');
-
-    this.setState({
-      emails: this.state.emails.filter(email => email !== emailToDelete),
-    });
-  }
-
-  @autobind
-  handleEmailChange(ev) {
-    this.setState({
-      email: ev.target.value,
-    });
-  }
-
-  @autobind
-  addEmail(ev) {
-    ev.preventDefault();
-
-    const emails = update(this.state.emails, {
-      $push: [this.state.email],
-    });
-
-    this.setState({ emails, email: '' });
   }
 
   render() {
