@@ -52,15 +52,27 @@ class Navbar extends React.Component {
             </div> :
             <div className="mdl-navigation">
               <a
+                id="loginDropdown"
                 className="mdl-navigation__link"
-                href="/api/auth/google"
-                onClick={this.handleAuthClick}
-              >Login with Google</a>
-              <a
-                className="mdl-navigation__link"
-                href="/api/auth/facebook"
-                onClick={this.handleAuthClick}
-              >Login with Facebook</a>
+              >Login</a>
+
+              <ul
+                className="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                htmlFor="loginDropdown"
+              >
+                <li className="mdl-menu__item">
+                  <a
+                    href="/api/auth/google"
+                    onClick={this.handleAuthClick}
+                  >Login with Google</a>
+                </li>
+                <li className="mdl-menu__item">
+                  <a
+                    href="/api/auth/facebook"
+                    onClick={this.handleAuthClick}
+                  >Login with Facebook</a>
+                </li>
+              </ul>
             </div>
           }
         </div>
