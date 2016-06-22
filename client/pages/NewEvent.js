@@ -84,6 +84,8 @@ class NewEvent extends React.Component {
     $('.notification-bar-action').on('click', () => {
       this.setState({ notificationIsActive: false });
     });
+
+    $('input[type="text"]+label').addClass('active');
   }
 
   @autobind
