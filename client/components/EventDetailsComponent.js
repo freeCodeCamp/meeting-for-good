@@ -8,7 +8,7 @@ import fetch from 'isomorphic-fetch';
 import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
-import { Notification } from 'react-notification';
+import Notification from '../components/vendor/react-notification';
 
 import AvailabilityGrid from './AvailabilityGrid';
 
@@ -488,15 +488,24 @@ class EventDetailsComponent extends React.Component {
         </div>
         <div className="card-action">
           <a onClick={this.shareEvent}>Share Event</a>
-          <a href={`mailto:?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:%0D%0A%0D%0A${window.location.href} %0D%0A%0D%0A All times will automatically be converted to your local timezone.`}>Email Event</a>
         </div>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
-          action="Dismiss"
+          actions={[
+            {
+              text: 'Dismiss',
+              handleClick: () => { this.setState({ notificationIsActive: false }); },
+            },
+            {
+              text: 'Email me',
+              handleClick: () => { window.location.href = `mailto:?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:%0D%0A%0D%0A${window.location.href} %0D%0A%0D%0A All times will automatically be converted to your local timezone.`; },
+            },
+          ]}
           title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
           dismissAfter={10000}
+          activeClassName="notification-bar-is-active"
         />
         <dialog
           onClick={(ev) => ev.stopPropagation()}
