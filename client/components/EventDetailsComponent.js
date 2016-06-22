@@ -56,6 +56,7 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: false,
       notificationMessage: '',
       notificationTitle: '',
+      showEmail: false,
     };
   }
 
@@ -88,7 +89,7 @@ class EventDetailsComponent extends React.Component {
     }, 100);
 
     $('.notification-bar-action').on('click', () => {
-      this.setState({ notificationIsActive: false });
+      this.setState({ notificationIsActive: false, showEmail: false });
     });
   }
 
@@ -143,6 +144,7 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to join event. Please try again later.',
         notificationTitle: 'Error!',
+        showEmail: false,
       });
       return;
     } finally {
@@ -183,6 +185,7 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to update availability. Please try again later.',
         notificationTitle: 'Error!',
+        showEmail: false,
       });
       return;
     } finally {
@@ -193,6 +196,7 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: true,
       notificationMessage: 'Saved availability successfully.',
       notificationTitle: 'Success!',
+      showEmail: false,
     });
 
     this.generateBestDatesAndTimes(event);
@@ -215,6 +219,7 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
         notificationTitle: 'Error!',
+        showEmail: false,
       });
       return;
     } finally {
@@ -225,6 +230,7 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: true,
       notificationMessage: 'Event successfully deleted!',
       notificationTitle: '',
+      showEmail: false,
     });
 
     browserHistory.push('/dashboard');
@@ -296,6 +302,7 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: true,
       notificationMessage: window.location.href,
       notificationTitle: 'Event URL:',
+      showEmail: true,
     });
     setTimeout(() => {
       this.selectElementContents(document.getElementsByClassName('notification-bar-message')[1]);
@@ -338,6 +345,18 @@ class EventDetailsComponent extends React.Component {
       if (Object.keys(bestTimes).length > 0) isBestTime = true;
       else isBestTime = false;
     } else isBestTime = false;
+
+    const notifActions = [{
+      text: 'Dismiss',
+      handleClick: () => { this.setState({ notificationIsActive: false }); },
+    }];
+
+    if (this.state.showEmail) {
+      notifActions.push({
+        text: 'Email Event',
+        handleClick: () => { window.location.href = `mailto:?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:%0D%0A%0D%0A${window.location.href} %0D%0A%0D%0A All times will automatically be converted to your local timezone.`; },
+      });
+    }
 
     return (
       <div className="card meeting" styleName="event-details">
@@ -478,16 +497,7 @@ class EventDetailsComponent extends React.Component {
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
-          actions={[
-            {
-              text: 'Dismiss',
-              handleClick: () => { this.setState({ notificationIsActive: false }); },
-            },
-            {
-              text: 'Email me',
-              handleClick: () => { window.location.href = `mailto:?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:%0D%0A%0D%0A${window.location.href} %0D%0A%0D%0A All times will automatically be converted to your local timezone.`; },
-            },
-          ]}
+          actions={notifActions}
           title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
           dismissAfter={10000}
