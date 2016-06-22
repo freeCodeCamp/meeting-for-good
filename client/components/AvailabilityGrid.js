@@ -28,6 +28,8 @@ class AvailabilityGrid extends React.Component {
       dateFormatStr,
       availableOnDate: [],
       hourTime: [],
+      startCell: null,
+      endCell: null,
     };
   }
 
@@ -68,29 +70,8 @@ class AvailabilityGrid extends React.Component {
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
-    $('.cell').on('mousedown mouseover', e => {
+    $('.cell').on('click', e => {
       if (!this.props.heatmap) this.addCellToAvail(e);
-    }).on('click', e => {
-      if (e.shiftKey) {
-        let startCell;
-        const currentCell = $(e.target);
-        const parentRow = $(e.target).parent();
-        parentRow.children('.cell').each((i, el) => {
-          if ($(el).css('background-color') === 'rgb(128, 0, 128)' &&
-              $(el).prev().css('background-color') !== 'rgb(128, 0, 128)' &&
-              $(el).next().css('background-color') !== 'rgb(128, 0, 128)') {
-            startCell = $(el);
-            return false;
-          }
-        });
-
-        if (startCell.index() < currentCell.index()) {
-          while (startCell.attr('data-time') !== currentCell.attr('data-time')) {
-            $(startCell).next().css('background-color', 'rgb(128, 0, 128');
-            startCell = $(startCell).next();
-          }
-        }
-      }
     });
 
     // Offset the grid-hour row if the event starts with a date that's offset by
@@ -256,19 +237,42 @@ class AvailabilityGrid extends React.Component {
       });
 
       this.setState({ availableOnDate });
-    } else {
-      this.addCellToAvail(ev);
     }
   }
 
   @autobind
-  addCellToAvail(ev) {
-    if (ev.buttons === 1 || ev.buttons === 3) {
-      if ($(ev.target).css('background-color') !== 'rgb(128, 0, 128)') {
-        $(ev.target).css('background-color', 'purple');
-      } else {
-        $(ev.target).css('background-color', 'white');
+  addCellToAvail(e) {
+    if ($(e.target).css('background-color') !== 'rgb(128, 0, 128)') {
+      $(e.target).css('background-color', 'purple');
+    } else {
+      $(e.target).css('background-color', 'white');
+    }
+
+    if (this.state.startCell === null) this.setState({ startCell: $(e.target) });
+    else {
+      this.setState({ endCell: $(e.target) });
+
+      let startCell = this.state.startCell;
+      const endCell = this.state.endCell;
+
+      if (startCell.css('background-color') === 'rgb(128, 0, 128)' && endCell.css('background-color') === 'rgb(128, 0, 128)') {
+        if (startCell.index() < endCell.index()) {
+          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
+            startCell.next().css('background-color', 'rgb(128, 0, 128');
+            startCell = startCell.next();
+          }
+        }
+      } else if (startCell.css('background-color') === 'rgb(255, 255, 255)' && endCell.css('background-color') === 'rgb(255, 255, 255)') {
+        if (startCell.index() < endCell.index()) {
+          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
+            startCell.next().css('background-color', 'rgb(255, 255, 255)');
+            startCell = startCell.next();
+          }
+        }
       }
+
+      this.setState({ startCell: null });
+      this.setState({ endCell: null });
     }
   }
 
