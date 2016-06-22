@@ -93,7 +93,7 @@ class AvailabilityGrid extends React.Component {
 
     for (const cell of cells) {
       if (getMinutes(cell.getAttribute('data-time')) === 0) {
-        cell.style.borderLeft = '1px solid #909090';
+        cell.style.borderLeft = '1px solid rgb(120, 120, 120)';
       } else if (getMinutes(cell.getAttribute('data-time')) === 30) {
         cell.style.borderLeft = '1px solid #c3bebe';
       }
@@ -334,6 +334,13 @@ class AvailabilityGrid extends React.Component {
     return time;
   }
 
+  removeZero(time) {
+    if (Number(String(time).split(':')[0]) < 10) {
+      time = Number(String(time).split(':')[0]);
+    }
+    return time;
+  }
+
   renderHeatmap() {
     const availabilityLength = this.props.availability.filter(av => av).length;
     const saturationDivisions = 100 / availabilityLength;
@@ -402,7 +409,6 @@ class AvailabilityGrid extends React.Component {
   render() {
     const { allDatesRender, allTimesRender, hourTime } = this.state;
     const { dates } = this.props;
-
     return (
       <div>
         {hourTime.map((time, i) => {
@@ -411,7 +417,7 @@ class AvailabilityGrid extends React.Component {
               key={i}
               className="grid-hour"
               styleName="grid-hour"
-            >{`${this.addZero(getHours(time.toUpperCase()))}:00`}</p>
+            >{`${this.removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
           );
         })}
         {allDatesRender.map((date, i) => (
