@@ -102,6 +102,8 @@ class Dashboard extends React.Component {
           title="Error!"
           onDismiss={() => this.setState({ notificationIsActive: false })}
           onClick={() => this.setState({ notificationIsActive: false })}
+          activeClassName="notification-bar-is-active"
+          dismissAfter={10000}
         />
       </div>
     );

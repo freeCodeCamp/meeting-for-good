@@ -497,6 +497,7 @@ class EventDetailsComponent extends React.Component {
           title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
           dismissAfter={10000}
+          activeClassName="notification-bar-is-active"
         />
         <dialog
           onClick={(ev) => ev.stopPropagation()}
