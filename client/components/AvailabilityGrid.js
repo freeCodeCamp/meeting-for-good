@@ -295,17 +295,25 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
+    const { _id } = this.props.user;
+    const event = JSON.parse(JSON.stringify(this.props.event));
+
+    event.participants = event.participants.map(user => {
+      if (user._id === _id) user.availability = availability;
+      return user;
+    });
+
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     const response = await fetch(
-      `/api/events/${window.location.pathname.split('/')[2]}/updateAvail`,
+      `/api/events/${event._id}`,
       {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        body: JSON.stringify({ data: availability, user: this.props.user }),
+        body: JSON.stringify(event),
         credentials: 'same-origin',
       }
     );
@@ -494,6 +502,7 @@ AvailabilityGrid.propTypes = {
   editAvail: React.PropTypes.func,
   myAvailability: React.PropTypes.array,
   participants: React.PropTypes.array,
+  event: React.PropTypes.object,
 };
 
 export default cssModules(AvailabilityGrid, styles);

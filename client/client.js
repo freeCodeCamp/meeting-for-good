@@ -13,8 +13,6 @@ require('es6-promise').polyfill();
 import App from './components/App';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
 import EventDetails from './pages/EventDetails';
 import NewEvent from './pages/NewEvent';
 
@@ -23,8 +21,6 @@ render((
     <Route path="/" component={App}>
       <IndexRoute component={Home} />
       <Route path="dashboard" component={Dashboard} />
-      <Route path="login" component={Login} />
-      <Route path="signup" component={Signup} />
       <Route path="event">
         <Route path="new" component={NewEvent} />
         <Route path=":uid" component={EventDetails} />

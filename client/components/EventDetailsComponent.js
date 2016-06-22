@@ -109,25 +109,9 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async joinEvent() {
-    let name;
-    let avatar;
+    const { name, avatar, _id } = this.state.user;
 
-    if (this.state.user.local) {
-      name = this.state.user.local.username;
-      avatar = this.state.user.local.avatar;
-    } else if (this.state.user.github) {
-      name = this.state.user.github.username;
-      avatar = this.state.user.github.avatar;
-    } else if (this.state.user.facebook) {
-      name = this.state.user.facebook.username;
-      avatar = this.state.user.facebook.avatar;
-    }
-
-    const participant = {
-      name,
-      avatar,
-      _id: this.state.user._id,
-    };
+    const participant = { name, avatar, _id };
 
     const event = update(this.state.event, {
       participants: { $push: [participant] },
@@ -444,6 +428,7 @@ class EventDetailsComponent extends React.Component {
                     submitAvail={this.submitAvailability}
                     availability={availability}
                     myAvailability={myAvailability}
+                    event={event}
                     weekDays
                   /> :
                   <AvailabilityGrid
@@ -452,6 +437,7 @@ class EventDetailsComponent extends React.Component {
                     availability={availability}
                     myAvailability={myAvailability}
                     submitAvail={this.submitAvailability}
+                    event={event}
                   />
                 }
               </div>
@@ -466,7 +452,7 @@ class EventDetailsComponent extends React.Component {
                     className="waves-effect waves-light btn"
                     onClick={this.joinEvent}
                   >Join Event</a> :
-                <p>Login/Sign Up to enter your availability!</p>
+                <p>Login to enter your availability!</p>
               }
             </div>
           }

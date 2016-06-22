@@ -30,13 +30,14 @@ export default (app) => {
       return res.status(500).send('User not found');
     });
 
-  app.route('/api/auth/github')
-    .get(passport.authenticate('github'));
+  app.route('/api/auth/google')
+    .get(passport.authenticate('google', {
+      scope: ['profile'],
+    }));
 
-  app.route('/api/auth/github/callback')
-    .get(passport.authenticate('github', {
+  app.route('/api/auth/google/callback')
+    .get(passport.authenticate('google', {
       successRedirect: '/dashboard',
-      failureRedirect: '/login',
     }));
 
   app.route('/api/auth/facebook')
@@ -45,21 +46,6 @@ export default (app) => {
   app.route('/api/auth/facebook/callback')
     .get(passport.authenticate('facebook', {
       successRedirect: '/dashboard',
-      failureRedirect: '/login',
-    }));
-
-
-  app.route('/api/auth/local/login')
-    .post(passport.authenticate('login', {
-      successRedirect: '/dashboard',
-      failureRedirect: '/login',
-    }));
-
-  app.route('/api/auth/local/signup')
-    .post(passport.authenticate('signup', {
-      successRedirect: '/dashboard',
-      failureRedirect: '/signup',
-      failureFlash: true,
     }));
 
   app.route('/api/auth/logout')
@@ -77,17 +63,14 @@ export default (app) => {
       });
     })
     .post(isAuthenticated, (req, res) => {
-      const name = (req.user.facebook.username ||
-                      req.user.github.username ||
-                      req.user.local.username);
-      const avatar = (req.user.facebook.avatar ||
-                      req.user.github.avatar ||
-                      req.user.local.avatar);
-      const _id = req.user._id;
+      const { name, avatar } = req.user;
+      let { _id } = req.user;
+      _id = _id.toString();
 
       req.body.participants = [{ name, avatar, _id }];
       req.body.owner = _id;
       req.body.active = true;
+
       Event.create(req.body, (err, event) => {
         if (err) return res.status(500).send(err);
         return res.status(201).json(event);
@@ -122,63 +105,6 @@ export default (app) => {
 
         event.active = false;
         event.save(err => {
-          if (err) return res.status(500).send(err);
-          return res.status(200).json(event);
-        });
-      });
-    });
-
-  app.route('/api/events/:id/updateAvail')
-    .put(isAuthenticated, (req, res) => {
-      Event.findOne({ uid: req.params.id, active: true }, (err, event) => {
-        if (err) return res.status(500).send(err);
-        if (!event) return res.status(404).send('Not found.');
-
-        let participants;
-        let newParticipant;
-        let userExists = false;
-        let username;
-        let userAvatar;
-
-        if (req.body.user.local) {
-          username = req.body.user.local.username;
-          userAvatar = req.body.user.local.avatar;
-        } else if (req.body.user.github) {
-          username = req.body.user.github.username;
-          userAvatar = req.body.user.github.avatar;
-        } else if (req.body.user.facebook) {
-          username = req.body.user.facebook.username;
-          userAvatar = req.body.user.facebook.avatar;
-        }
-
-        if (event.participants.length !== 0) {
-          participants = event.participants;
-          participants.map(user => {
-            if (user.name === username) {
-              user.availability = req.body.data;
-              userExists = true;
-            }
-            if (user.name !== username) {
-              newParticipant = {
-                avatar: userAvatar,
-                name: username,
-                availability: req.body.data,
-              };
-            }
-            return user;
-          });
-          if (newParticipant !== null && !userExists) participants.push(newParticipant);
-        } else {
-          participants = {
-            avatar: userAvatar,
-            name: username,
-            availability: req.body.data,
-          };
-        }
-
-        event.participants = participants;
-        event.markModified('participants');
-        event.save((err) => {
           if (err) return res.status(500).send(err);
           return res.status(200).json(event);
         });
@@ -229,7 +155,7 @@ export default (app) => {
 
   app.route('/api/users/current/events')
     .get(isAuthenticated, (req, res) => {
-      Event.find({ 'participants._id': req.user._id, active: true }, (err, events) => {
+      Event.find({ 'participants._id': req.user._id.toString(), active: true }, (err, events) => {
         if (err) return res.status(500).send(err);
         return res.status(200).json(events);
       });

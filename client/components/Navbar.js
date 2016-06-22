@@ -20,11 +20,7 @@ class Navbar extends React.Component {
   async componentWillMount() {
     const user = await getCurrentUser();
     if (user) {
-      let userAvatar = this.state.userAvatar;
-
-      if (user.github) userAvatar = user.github.avatar;
-      else if (user.facebook) userAvatar = user.facebook.avatar;
-
+      const userAvatar = user.avatar;
       this.setState({ userAvatar, user: true });
     }
   }
@@ -55,8 +51,16 @@ class Navbar extends React.Component {
               </a>
             </div> :
             <div className="mdl-navigation">
-              <Link className="mdl-navigation__link" to="/login" onClick={this.handleAuthClick}>Login</Link>
-              <Link className="mdl-navigation__link" to="/signup" onClick={this.handleAuthClick}>Signup</Link>
+              <a
+                className="mdl-navigation__link"
+                href="/api/auth/google"
+                onClick={this.handleAuthClick}
+              >Login with Google</a>
+              <a
+                className="mdl-navigation__link"
+                href="/api/auth/facebook"
+                onClick={this.handleAuthClick}
+              >Login with Facebook</a>
             </div>
           }
         </div>

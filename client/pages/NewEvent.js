@@ -54,7 +54,7 @@ class NewEvent extends React.Component {
       if (!sessionStorage.getItem('redirectTo')) {
         sessionStorage.setItem('redirectTo', '/event/new');
       }
-      browserHistory.push('/login');
+      browserHistory.push('/');
     }
   }
 

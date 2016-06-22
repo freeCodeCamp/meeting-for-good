@@ -15,8 +15,8 @@ A meeting coordination app for your team.
 - Create a `.env` file in the root directory of the app with the following contents:
 ```
 MONGO_URI=mongodb://localhost:27017/letsmeet
-GITHUB_KEY=[YOUR_GITHUB_KEY]
-GITHUB_SECRET=[YOUR_GITHUB_SECRET]
+GOOGLE_KEY=[YOUR_GOOGLE_KEY]
+GOOGLE_SECRET=[YOUR_GOOGLE_SECRET]
 FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
 FACEBOOK_SECRET=[YOUR_FACEBOOK_SECRET]
 APP_URL= http://localhost:8080/
