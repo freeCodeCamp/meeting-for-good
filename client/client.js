@@ -3,6 +3,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 import './styles/no-css-modules/nprogress.css';
+import './styles/no-css-modules/react-notifications.css';
 import 'dialog-polyfill/dialog-polyfill.js';
 import 'dialog-polyfill/dialog-polyfill.css';
 

@@ -500,6 +500,7 @@ class NewEvent extends React.Component {
           title=" "
           onDismiss={() => this.setState({ notificationIsActive: false })}
           dismissAfter={10000}
+          activeClassName="notification-bar-is-active"
         />
       </div>
     );
