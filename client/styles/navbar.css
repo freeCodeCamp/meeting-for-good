@@ -3,3 +3,19 @@
   border-radius: 100%;
   vertical-align: middle;
 }
+
+.mdl-menu__item a {
+	width: 229px;
+}
+
+.mdl-menu__item:hover, .mdl-menu__item:active, .mdl-menu__item:focus {
+	background: none;
+}
+
+.mdl-layout-title {
+	margin-left: 50px;
+}
+
+.mdl-navigation__link {
+	margin-right: 100px;
+}
