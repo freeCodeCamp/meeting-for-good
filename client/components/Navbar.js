@@ -36,7 +36,7 @@ class Navbar extends React.Component {
     return (
       <header className="mdl-layout__header">
         <div className="mdl-layout__header-row">
-          <Link to="/" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
+          <Link to="/" styleName="mdl-layout-title" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
           <div className="mdl-layout-spacer"></div>
           {this.state.user ?
             <div className="mdl-navigation">
@@ -54,23 +54,26 @@ class Navbar extends React.Component {
               <a
                 id="loginDropdown"
                 className="mdl-navigation__link"
+                styleName="mdl-navigation__link"
               >Login</a>
 
               <ul
-                className="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                className="mdl-menu mdl-menu--bottom-right mdl-js-menu"
                 htmlFor="loginDropdown"
               >
-                <li className="mdl-menu__item">
+                <li className="mdl-menu__item" styleName="mdl-menu__item">
                   <a
-                    href="/api/auth/google"
-                    onClick={this.handleAuthClick}
-                  >Login with Google</a>
-                </li>
-                <li className="mdl-menu__item">
-                  <a
+                    className="waves-effect waves-light btn blue darken-4"
                     href="/api/auth/facebook"
                     onClick={this.handleAuthClick}
                   >Login with Facebook</a>
+                </li>
+                <li className="mdl-menu__item" styleName="mdl-menu__item">
+                  <a
+                    className="waves-effect waves-light btn red"
+                    href="/api/auth/google"
+                    onClick={this.handleAuthClick}
+                  >Login with Google</a>
                 </li>
               </ul>
             </div>
