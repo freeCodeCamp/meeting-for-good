@@ -4,8 +4,6 @@ import cssModules from 'react-css-modules';
 import styles from '../styles/navbar.css';
 import autobind from 'autobind-decorator';
 
-import { getCurrentUser } from '../util/auth';
-
 import '../styles/no-css-modules/mdl.css';
 
 class Navbar extends React.Component {
@@ -17,12 +15,13 @@ class Navbar extends React.Component {
     };
   }
 
-  async componentWillMount() {
-    const user = await getCurrentUser();
-    if (user) {
-      const userAvatar = user.avatar;
-      this.setState({ userAvatar, user: true });
-    }
+  componentWillMount() {
+    $.get('/api/auth/current', user => {
+      if (user) {
+        const userAvatar = user.avatar;
+        this.setState({ userAvatar, user: true });
+      }
+    });
   }
 
   @autobind
