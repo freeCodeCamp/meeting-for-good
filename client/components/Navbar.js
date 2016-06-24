@@ -31,56 +31,63 @@ class Navbar extends React.Component {
     }
   }
 
+  renderNav() {
+    if (this.state.user) {
+      return (
+        <div className="mdl-navigation">
+          <Link className="mdl-navigation__link" to="/dashboard">Dashboard</Link>
+          <a className="mdl-navigation__link" href="/api/auth/logout">Logout</a>
+          <a className="mdl-navigation__link" href="#">
+            <img
+              alt="avatar"
+              styleName="nav-img"
+              src={this.state.userAvatar}
+            />
+          </a>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mdl-navigation">
+        <a
+          id="loginDropdown"
+          className="mdl-navigation__link"
+          styleName="mdl-navigation__link"
+        >Login</a>
+
+        <ul
+          className="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+          htmlFor="loginDropdown"
+        >
+          <li className="mdl-menu__item" styleName="mdl-menu__item">
+            <a
+              className="waves-effect waves-light btn blue darken-4"
+              href="/api/auth/facebook"
+              onClick={this.handleAuthClick}
+            >Login with Facebook</a>
+          </li>
+          <li className="mdl-menu__item" styleName="mdl-menu__item">
+            <a
+              className="waves-effect waves-light btn red"
+              href="/api/auth/google"
+              onClick={this.handleAuthClick}
+            >Login with Google</a>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
   render() {
     return (
-      <div>
-        <header className="mdl-layout__header">
-          <div className="mdl-layout__header-row">
-            <Link to="/" styleName="mdl-layout-title" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
-            <div className="mdl-layout-spacer"></div>
-            {this.state.user ?
-              <div className="mdl-navigation">
-                <Link className="mdl-navigation__link" to="/dashboard">Dashboard</Link>
-                <a className="mdl-navigation__link" href="/api/auth/logout">Logout</a>
-                <a className="mdl-navigation__link" href="#">
-                  <img
-                    alt="avatar"
-                    styleName="nav-img"
-                    src={this.state.userAvatar}
-                  />
-                </a>
-              </div> :
-              <div className="mdl-navigation">
-                <a
-                  id="loginDropdown"
-                  className="mdl-navigation__link"
-                  styleName="mdl-navigation__link"
-                >Login</a>
-
-                <ul
-                  className="mdl-menu mdl-menu--bottom-right mdl-js-menu"
-                  htmlFor="loginDropdown"
-                >
-                  <li className="mdl-menu__item" styleName="mdl-menu__item">
-                    <a
-                      className="waves-effect waves-light btn blue darken-4"
-                      href="/api/auth/facebook"
-                      onClick={this.handleAuthClick}
-                    >Login with Facebook</a>
-                  </li>
-                  <li className="mdl-menu__item" styleName="mdl-menu__item">
-                    <a
-                      className="waves-effect waves-light btn red"
-                      href="/api/auth/google"
-                      onClick={this.handleAuthClick}
-                    >Login with Google</a>
-                  </li>
-                </ul>
-              </div>
-            }
-          </div>
-        </header>
-      </div>
+      <header className="mdl-layout__header">
+        <div className="mdl-layout__header-row">
+          <Link to="/" styleName="mdl-layout-title" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
+          <div className="mdl-layout-spacer"></div>
+          {this.renderNav()}
+        </div>
+      </header>
     );
   }
 }
