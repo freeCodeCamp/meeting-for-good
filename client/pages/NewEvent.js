@@ -429,6 +429,7 @@ class NewEvent extends React.Component {
                   onChange={this.handleEventNameChange}
                   className="validate"
                   placeholder="Enter an event name..."
+                  autoFocus
                 />
                 <label htmlFor="event_name">Event Name</label>
               </div>
