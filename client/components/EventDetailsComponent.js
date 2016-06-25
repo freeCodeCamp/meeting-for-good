@@ -491,7 +491,7 @@ class EventDetailsComponent extends React.Component {
             ))}
           </div>
         </div>
-        <div className="card-action">
+        <div styleName="action" className="card-action">
           <a onClick={this.shareEvent}>Share Event</a>
         </div>
         <Notification

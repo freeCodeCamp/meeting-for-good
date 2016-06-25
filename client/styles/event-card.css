@@ -73,6 +73,14 @@ hr {
   font-family: Roboto, sans-serif;
 }
 
+.action {
+  height: 61px; 
+}
+
+.action a {
+  float: right;
+}
+
 @media (min-width:850px) and (max-width:1200px) {
   .event {
     margin: 2% 1.5%;
