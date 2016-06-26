@@ -252,7 +252,7 @@ class EventCard extends React.Component {
           </div>
         </div>
         <div className="card-action">
-          <Link styleName="details" to={`/event/${event.uid}`}>View Details</Link>
+          <Link styleName="details-link" to={`/event/${event.uid}`}>View Details</Link>
         </div>
         <Notification
           isActive={this.state.notificationIsActive}
@@ -278,7 +278,8 @@ class EventCard extends React.Component {
             >Cancel</button>
             <button
               type="button"
-              className="mdl-button mdl-button--accent"
+              className="mdl-button"
+              style={{ color: '#f44336' }}
               onClick={this.deleteEvent}
             >Yes</button>
           </div>

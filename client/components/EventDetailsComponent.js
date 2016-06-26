@@ -518,7 +518,8 @@ class EventDetailsComponent extends React.Component {
             >Cancel</button>
             <button
               type="button"
-              className="mdl-button mdl-button--accent"
+              className="mdl-button"
+              style={{ color: '#f44336' }}
               onClick={this.deleteEvent}
             >Yes</button>
           </div>

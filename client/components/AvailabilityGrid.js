@@ -469,7 +469,7 @@ class AvailabilityGrid extends React.Component {
           {this.props.heatmap ?
             <div>
               <a
-                className="waves-effect waves-light btn"
+                className="waves-effect waves-light btn grey darken-3"
                 onClick={this.editAvailability}
               >Edit Availability</a>
               <br />
@@ -482,7 +482,7 @@ class AvailabilityGrid extends React.Component {
               }
             </div> :
             <a
-              className="waves-effect waves-light btn"
+              className="waves-effect waves-light btn grey darken-3"
               onClick={this.submitAvailability}
             >Submit</a>
           }

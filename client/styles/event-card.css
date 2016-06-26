@@ -79,6 +79,11 @@ hr {
 
 .action a {
   float: right;
+  color: #f44336 !important;
+}
+
+.details-link {
+  color: #f44336 !important;
 }
 
 @media (min-width:850px) and (max-width:1200px) {
