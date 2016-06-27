@@ -426,6 +426,9 @@ class AvailabilityGrid extends React.Component {
     const { dates } = this.props;
     return (
       <div>
+        <a styleName="info" onClick={() => document.querySelector('#showAvailHelper').showModal()}>
+          <em>How do I use the grid?</em>
+        </a>
         {hourTime.map((time, i) => {
           return (
             <p
@@ -488,7 +491,7 @@ class AvailabilityGrid extends React.Component {
             >Submit</a>
           }
         </div>
-        <div styleName='hover-container'>
+        <div styleName="hover-container">
           {this.state.availableOnDate.length > 0 ?
             <div styleName="hover-available">
               <h5>Available</h5>
@@ -504,6 +507,22 @@ class AvailabilityGrid extends React.Component {
             null
           }
         </div>
+        <dialog
+          onClick={(ev) => ev.stopPropagation()}
+          className="mdl-dialog"
+          styleName="mdl-dialog"
+          id="showAvailHelper"
+        >
+          <p className="mdl-dialog__title">This is how you can enter and remove your availablity:</p>
+          <div className="mdl-dialog__actions">
+            <img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/enteravail.gif" alt="entering availablity gif" />
+            <button
+              type="button"
+              className="mdl-button close"
+              onClick={() => document.querySelector('#showAvailHelper').close()}
+            >Cancel</button>
+          </div>
+        </dialog>
       </div>
     );
   }

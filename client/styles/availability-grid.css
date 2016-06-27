@@ -41,6 +41,12 @@
   font-size: 12px;
 }
 
+a.info {
+  position: absolute;
+  transform: translateY(-30px);
+  left: 20px;
+}
+
 .hover-container {
   text-align: center;
 }
@@ -62,4 +68,18 @@
 
 .hover-available h6 {
   margin: 5px;
+}
+
+.mdl-dialog {
+  width: 550px;
+  height: auto;
+}
+
+.mdl-dialog p {
+  font-size: 1em;
+}
+
+.mdl-dialog img {
+  width: 508px;
+  height: 163px;
 }
