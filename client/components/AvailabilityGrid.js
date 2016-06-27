@@ -27,6 +27,7 @@ class AvailabilityGrid extends React.Component {
       allDatesRender: [],
       dateFormatStr,
       availableOnDate: [],
+      notAvailableOnDate: [],
       hourTime: [],
       startCell: null,
       endCell: null,
@@ -206,13 +207,12 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  handleCellClick(ev) {
-    if (ev.target.className.includes('disabled')) {
-      return;
-    } else if (this.props.heatmap) {
+  showAvailBox(ev) {
+    if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
       let formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
+      const notAvailableOnDate = [];
 
       if (this.props.weekDays) formatStr = 'ddd hh:mm a';
       const participants = JSON.parse(JSON.stringify(this.props.participants))
@@ -233,11 +233,18 @@ class AvailabilityGrid extends React.Component {
       participants.forEach(participant => {
         if (participant.availability.indexOf(cellFormatted) > -1) {
           availableOnDate.push(participant.name);
+        } else {
+          notAvailableOnDate.push(participant.name);
         }
       });
 
-      this.setState({ availableOnDate });
+      this.setState({ availableOnDate, notAvailableOnDate });
     }
+  }
+
+  @autobind
+  hideAvailBox() {
+    this.setState({ availableOnDate: [], notAvailableOnDate: [] });
   }
 
   @autobind
@@ -258,7 +265,7 @@ class AvailabilityGrid extends React.Component {
       if (startCell.css('background-color') === 'rgb(128, 0, 128)' && endCell.css('background-color') === 'rgb(128, 0, 128)') {
         if (startCell.index() < endCell.index()) {
           while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.next().css('background-color', 'rgb(128, 0, 128');
+            startCell.next().css('background-color', 'rgb(128, 0, 128)');
             startCell = startCell.next();
           }
         }
@@ -457,7 +464,8 @@ class AvailabilityGrid extends React.Component {
                   data-time={time}
                   data-date={date}
                   className={`cell ${disabled}`}
-                  onClick={this.handleCellClick}
+                  onMouseEnter={this.showAvailBox}
+                  onMouseLeave={this.hideAvailBox}
                 ></div>
               );
             })}
@@ -473,18 +481,27 @@ class AvailabilityGrid extends React.Component {
                 onClick={this.editAvailability}
               >Edit Availability</a>
               <br />
-              {this.state.availableOnDate.length > 0 ?
-                <div>
-                  <h4>Available:</h4>
-                  {this.state.availableOnDate.map((participant, i) => <p key={i}>{participant}</p>)}
-                </div> :
-                null
-              }
             </div> :
             <a
               className="waves-effect waves-light btn grey darken-3"
               onClick={this.submitAvailability}
             >Submit</a>
+          }
+        </div>
+        <div styleName='hover-container'>
+          {this.state.availableOnDate.length > 0 ?
+            <div styleName="hover-available">
+              <h5>Available</h5>
+              {this.state.availableOnDate.map((participant, i) => <h6 key={i}>{participant}</h6>)}
+            </div> :
+            null
+          }
+          {this.state.notAvailableOnDate.length > 0 ?
+            <div styleName="hover-available">
+              <h5>Unavailable</h5>
+              {this.state.notAvailableOnDate.map((participant, i) => <h6 key={i}>{participant}</h6>)}
+            </div> :
+            null
           }
         </div>
       </div>
