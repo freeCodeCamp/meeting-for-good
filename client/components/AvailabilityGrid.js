@@ -8,7 +8,6 @@ import { checkStatus } from '../util/fetch.util';
 import { getHours, getMinutes } from '../util/time-format';
 import colorsys from 'colorsys';
 import nprogress from 'nprogress';
-
 import styles from '../styles/availability-grid.css';
 
 class AvailabilityGrid extends React.Component {
@@ -515,7 +514,7 @@ class AvailabilityGrid extends React.Component {
         >
           <p className="mdl-dialog__title">This is how you can enter and remove your availablity:</p>
           <div className="mdl-dialog__actions">
-            <img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/enteravail.gif" alt="entering availablity gif" />
+            <img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/enteravail.gif" alt="entering availablity gif" />
             <button
               type="button"
               className="mdl-button close"
