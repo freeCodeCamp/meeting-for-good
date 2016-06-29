@@ -54,12 +54,12 @@ class Navbar extends React.Component {
           className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--indigo"
           href="/api/auth/facebook"
           onClick={this.handleAuthClick}
-        >Login with Facebook</a>
+        ><img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/facebook.png" alt="Facebook Logo" /> Login with Facebook</a>
         <a
           className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red"
           href="/api/auth/google"
           onClick={this.handleAuthClick}
-        >Login with Google</a>
+        ><img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/google.png" alt="Google Logo" /> Login with Google</a>
       </div>
     );
   }
