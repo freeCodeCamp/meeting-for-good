@@ -49,32 +49,17 @@ class Navbar extends React.Component {
     }
 
     return (
-      <div className="mdl-navigation">
+      <div className="mdl-navigation" styleName="login-btn">
         <a
-          id="loginDropdown"
-          className="mdl-navigation__link"
-          styleName="mdl-navigation__link"
-        >Login</a>
-
-        <ul
-          className="mdl-menu mdl-menu--bottom-right mdl-js-menu"
-          htmlFor="loginDropdown"
-        >
-          <li className="mdl-menu__item" styleName="mdl-menu__item">
-            <a
-              className="waves-effect waves-light btn blue darken-4"
-              href="/api/auth/facebook"
-              onClick={this.handleAuthClick}
-            >Login with Facebook</a>
-          </li>
-          <li className="mdl-menu__item" styleName="mdl-menu__item">
-            <a
-              className="waves-effect waves-light btn red"
-              href="/api/auth/google"
-              onClick={this.handleAuthClick}
-            >Login with Google</a>
-          </li>
-        </ul>
+          className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--indigo"
+          href="/api/auth/facebook"
+          onClick={this.handleAuthClick}
+        >Login with Facebook</a>
+        <a
+          className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red"
+          href="/api/auth/google"
+          onClick={this.handleAuthClick}
+        >Login with Google</a>
       </div>
     );
   }
@@ -83,7 +68,7 @@ class Navbar extends React.Component {
     return (
       <header className="mdl-layout__header">
         <div className="mdl-layout__header-row">
-          <Link to="/" styleName="mdl-layout-title" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
+          <Link to="/" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
           <div className="mdl-layout-spacer"></div>
           {this.renderNav()}
         </div>
