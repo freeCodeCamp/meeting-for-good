@@ -1,4 +1,4 @@
-header.mdl-layout__header {
+header.mdl-layout__header, footer {
   background-color: #424242;
 }
 
