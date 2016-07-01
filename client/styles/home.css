@@ -25,6 +25,10 @@
   height: 163px;
 }
 
+.timezones {
+	width: 1000px !important;
+}
+
 .hr {
   width: 100px !important;
   background-color: black;

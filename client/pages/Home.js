@@ -38,6 +38,8 @@ class Home extends React.Component {
           <hr styleName="hr" />
           <h3>Timezones supported</h3>
           <h6>Don't worry about having to get everyone to convert to your timezone. Let us take of it!</h6>
+          <img src="https://raw.githubusercontent.com/AkiraLaine/LetsMeet/development/client/assets/timezones.png" styleName="timezones" alt="timezone" />
+          <p><small>Same event. Image on the left: UTC+11. Image on the right UTC-5 (Daylight saving included)</small></p>
         </div>
         <footer>
           <p>Made with ❤ by &nbsp;
