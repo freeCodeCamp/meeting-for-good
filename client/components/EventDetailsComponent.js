@@ -305,7 +305,7 @@ class EventDetailsComponent extends React.Component {
       showEmail: true,
     });
     setTimeout(() => {
-      this.selectElementContents(document.getElementsByClassName('notification-bar-message')[1]);
+      this.selectElementContents(document.getElementsByClassName('notification-bar-message')[0]);
     }, 100);
   }
 
