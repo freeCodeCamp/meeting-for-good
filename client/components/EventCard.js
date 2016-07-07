@@ -78,20 +78,20 @@ class EventCard extends React.Component {
         for (let i = 0; i < overlaps.length; i++) {
           if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
             if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`);
             } else {
               displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
               displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`);
             }
             index = i + 1;
           } else if (overlaps[i + 1] === undefined) {
             if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`);
             } else {
               displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
               displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`);
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`);
             }
           }
         }

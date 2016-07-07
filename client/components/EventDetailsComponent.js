@@ -246,7 +246,7 @@ class EventDetailsComponent extends React.Component {
       if (user.availability !== undefined) availability.push(user.availability);
     });
 
-    if (availability.length <= 1) return;
+    // if (availability.length <= 1) return;
 
     for (let i = 0; i < availability[0].length; i++) {
       const current = availability[0][i];
@@ -272,22 +272,22 @@ class EventDetailsComponent extends React.Component {
       if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
         if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
           displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`
+            `${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`
           );
         } else {
           displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`],
+            hours: [`${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`],
           };
         }
         index = i + 1;
       } else if (overlaps[i + 1] === undefined) {
         if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
           displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`
+            `${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`
           );
         } else {
           displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('HH:mm')} to ${moment(overlaps[i][1]).format('HH:mm')}`],
+            hours: [`${moment(overlaps[index][0]).format('h:m a')} to ${moment(overlaps[i][1]).format('h:m a')}`],
           };
         }
       }
