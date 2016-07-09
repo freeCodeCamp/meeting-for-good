@@ -246,7 +246,7 @@ class EventDetailsComponent extends React.Component {
       if (user.availability !== undefined) availability.push(user.availability);
     });
 
-    // if (availability.length <= 1) return;
+    if (availability.length <= 1) return;
 
     for (let i = 0; i < availability[0].length; i++) {
       const current = availability[0][i];
