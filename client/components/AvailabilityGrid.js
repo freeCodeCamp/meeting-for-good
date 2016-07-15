@@ -267,12 +267,22 @@ class AvailabilityGrid extends React.Component {
             startCell.next().css('background-color', 'rgb(128, 0, 128)');
             startCell = startCell.next();
           }
+        } else if (startCell.index() > endCell.index()) {
+          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
+            startCell.prev().css('background-color', 'rgb(128, 0, 128)');
+            startCell = startCell.prev();
+          }
         }
       } else if (startCell.css('background-color') === 'rgb(255, 255, 255)' && endCell.css('background-color') === 'rgb(255, 255, 255)') {
         if (startCell.index() < endCell.index()) {
           while (startCell.attr('data-time') !== endCell.attr('data-time')) {
             startCell.next().css('background-color', 'rgb(255, 255, 255)');
             startCell = startCell.next();
+          }
+        } else if (startCell.index() > endCell.index()) {
+          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
+            startCell.prev().css('background-color', 'rgb(255, 255, 255)');
+            startCell = startCell.prev();
           }
         }
       }
