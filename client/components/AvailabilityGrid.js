@@ -127,6 +127,31 @@ class AvailabilityGrid extends React.Component {
     }
   }
 
+  getPosition(el) {
+    let xPosition = 0;
+    let yPosition = 0;
+    let xScrollPos;
+    let yScrollPos;
+
+    while (el) {
+      if (el.tagName === 'BODY') {
+        // deal with browser quirks with body/window/document and page scroll
+        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
+        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
+        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
+        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
+      } else {
+        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+      }
+      el = el.offsetParent;
+    }
+    return {
+      x: xPosition,
+      y: yPosition,
+    };
+  }
+
   // Get all days between start and end.
   // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
   // (all input and output is in javascript Date objects)
@@ -438,6 +463,7 @@ class AvailabilityGrid extends React.Component {
         <a styleName="info" onClick={() => document.querySelector('#showAvailHelper').showModal()}>
           <em>How do I use the grid?</em>
         </a>
+        <div styleName="selectbox" id="selectbox"></div>
         {hourTime.map((time, i) => {
           return (
             <p
