@@ -37,12 +37,15 @@
 }
 
 footer {
-	height: 50px;
-	padding-top: 10px;
+	height: 75px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 footer p {
-	color: white;
+	color: #fff;
+	margin: 0;
 }
 
 footer a:hover {
