@@ -42,11 +42,16 @@ class Home extends React.Component {
           <p><small>Same event. Image on the left: UTC+11. Image on the right UTC-5 (Daylight saving included)</small></p>
         </div>
         <footer>
-          <p>Made with ❤ by &nbsp;
-            <a href="https://github.com/AkiraLaine" target="_blank">Akira Laine</a> and &nbsp;
-            <a href="https://github.com/awesomeaniruddh/" target="_blank">Aniruddh Agarwal</a> |
-            Check out the repo on <a href="https://github.com/AkiraLaine/LetsMeet" target="_blank">GitHub</a>
-          </p>
+          <div>
+            <p>Made with ❤ by &nbsp;
+              <a href="https://github.com/AkiraLaine" target="_blank">Akira Laine</a> and&nbsp;
+              <a href="https://github.com/awesomeaniruddh/" target="_blank">Aniruddh Agarwal</a>
+            </p>
+
+            <p>
+              Check out the repo on <a href="https://github.com/FreeCodeCamp/LetsMeet" target="_blank">GitHub</a>
+            </p>
+          </div>
         </footer>
       </div>
     );
