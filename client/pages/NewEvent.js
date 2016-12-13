@@ -434,18 +434,6 @@ class NewEvent extends React.Component {
                 <label htmlFor="event_name">Event Name</label>
               </div>
             </div>
-            <div className="switch center-align">
-              <label>
-                Specific Dates
-                <input
-                  type="checkbox"
-                  onClick={this.handleDateOrDay}
-                  checked={this.state.dateOrDay}
-                />
-                <span className="lever" />
-                Weekdays
-              </label>
-            </div>
             {!this.state.dateOrDay ?
               <div>
                 <h6 styleName="heading-dates">What dates might work for you?</h6>

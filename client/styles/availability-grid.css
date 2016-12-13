@@ -83,3 +83,10 @@ a.info {
   width: 508px;
   height: 163px;
 }
+
+.selectbox {
+  position: absolute;
+  border: 1px solid black;
+/*  margin-left: 75px;
+  margin-top: 24px;*/
+}
