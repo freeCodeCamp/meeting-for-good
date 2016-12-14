@@ -4,8 +4,11 @@ const webpack           = require('webpack');
 const path              = require('path');
 
 module.exports = {
+  context: __dirname,
   entry: [
-    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
+    'react-hot-loader/patch',
+    'webpack-dev-server/client?http://localhost:3000',
+    'webpack/hot/only-dev-server',
     './client/client.js',
   ],
   output: {
@@ -25,19 +28,10 @@ module.exports = {
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
     new webpack.NoErrorsPlugin(),
   ],
-  eslint: {
-    fix: true
-  },
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'eslint-loader',
-        exclude: '/node_modules',
-      }
-    ],
     loaders: [
       {
         test: /\.js$/,
@@ -55,14 +49,14 @@ module.exports = {
         test: /\.css$/,
         exclude: [/node_modules/, /no-css-modules/],
         loaders: [
-          'style?sourceMap',
-          'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+          'style-loader?sourceMap',
+          'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
         ],
       },
       {
         test: /\.css$/,
         include: [/node_modules/, /no-css-modules/],
-        loaders: ['style?sourceMap', 'css'],
+        loaders: ['style-loader?sourceMap', 'css-loader'],
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -72,9 +66,6 @@ module.exports = {
   },
   devtool: 'source-map',
   resolve: {
-    extensions: ['', '.js', '.css'],
-  },
-  eslint: {
-    formatter: require('eslint-friendly-formatter'),
+    extensions: ['.js', '.css'],
   },
 };

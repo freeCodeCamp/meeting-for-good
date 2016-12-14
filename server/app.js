@@ -1,13 +1,19 @@
-require('dotenv').load();
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
-import express from 'express';
-import routes from './app/routes/routes';
 import mongoose from 'mongoose';
+import path from 'path';
 import passport from 'passport';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import compression from 'compression';
+import dotenv from 'dotenv';
+import express from 'express';
+import connectMongo from 'connect-mongo';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpack from 'webpack';
+import routes from './app/routes/routes';
+import webpackConfig from './../webpack.config';
+
+dotenv.load();
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
 app.use(compression({ threshold: 0 }));
@@ -15,28 +21,19 @@ mongoose.connect(process.env.MONGO_URI);
 
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
-  // - Start dev server
   // - Use MemoryStore for the session
-  const webpackDevMiddleware = require('webpack-dev-middleware');
-  const webpackHotMiddleware = require('webpack-hot-middleware');
-  const webpack              = require('webpack');
-  const config               = require('../webpack.config');
-  const compiler             = webpack(config);
-
+  // - Start web-dev-server
+  const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, {
-    hot: true,
+    compress: true,
+    contentBase: path.join(__dirname, '/build'),
     filename: 'bundle.js',
-    publicPath: '/client/',
+    hot: true,
+    publicPath: '/assets/',
+    historyApiFallback: true,
     stats: {
       colors: true,
     },
-    historyApiFallback: true,
-  }));
-
-  app.use(webpackHotMiddleware(compiler, {
-    log: console.log,
-    path: '/__webpack_hmr',
-    heartbeat: 10 * 1000,
   }));
 
   app.use(session({
@@ -47,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   // Production Env Production Specific stuff
   // - Use MongoStore instead of MemoryStore for the session
-  const MongoStore = require('connect-mongo')(session);
+  const MongoStore = connectMongo(session);
   app.use(session({
     secret: 'secretClementine',
     resave: false,
