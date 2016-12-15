@@ -30,7 +30,6 @@ module.exports = {
     publicPath: '/client/',
   },
   plugins: [
-    new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
     }),
@@ -38,18 +37,20 @@ module.exports = {
     new OptimizeCSS({
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash].js'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor', 
+      filename: 'vendor.[chunkhash].js',
+    }),
     new ChunkManifestPlugin({
       filename: 'manifest.json',
       manifestVariable: 'webpackManifest',
     }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
-      template: 'html!./client/index.html',
+      template: 'html-loader!./client/index.html',
       filename: '../index.html',
       inject: 'body',
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
   ],
   module: {
     loaders: [
@@ -69,14 +70,17 @@ module.exports = {
         test: /\.css$/,
         exclude: [/node_modules/, /no-css-modules/],
         loaders: [
-          'style',
-          'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+          'style-loader',
+          'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
         ],
       },
       {
         test: /\.css$/,
         include: [/node_modules/, /no-css-modules/],
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
+        loader: ExtractTextPlugin.extract({
+          fallbackLoader: 'style-loader',
+          loader: 'css-loader', 
+        }),
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -85,6 +89,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.css'],
+    extensions: ['.js', '.css'],
   },
 };
