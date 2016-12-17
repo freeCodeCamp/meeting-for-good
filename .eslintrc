@@ -16,6 +16,7 @@
     "consistent-return": 0,
     "no-nested-ternary": 0,
     "max-len": 0,
+    "allowForLoopAfterthoughts": true,
   },
   "plugins": [
     "react",
