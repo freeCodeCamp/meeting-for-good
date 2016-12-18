@@ -5,7 +5,7 @@ import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
-import 'dialog-polyfill/dialog-polyfill.js';
+import 'dialog-polyfill/dialog-polyfill';
 import 'dialog-polyfill/dialog-polyfill.css';
 import './styles/no-css-modules/nprogress.css';
 import './styles/no-css-modules/react-notifications.css';
