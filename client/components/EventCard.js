@@ -55,7 +55,7 @@ class EventCard extends React.Component {
     const displayTimes = {};
     const user = await getCurrentUser();
 
-    this.state.participants.forEach(user => {
+    this.state.participants.forEach((user) => {
       if (user.availability !== undefined) availability.push(user.availability);
     });
 

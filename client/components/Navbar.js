@@ -69,7 +69,7 @@ class Navbar extends React.Component {
       <header className="mdl-layout__header">
         <div className="mdl-layout__header-row">
           <Link to="/" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
-          <div className="mdl-layout-spacer"></div>
+          <div className="mdl-layout-spacer" />
           {this.renderNav()}
         </div>
       </header>
