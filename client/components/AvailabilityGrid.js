@@ -91,7 +91,6 @@ class AvailabilityGrid extends React.Component {
     // separate 15 minute blocks from 30 minute and 1 hour blocks.
     const cells = document.querySelectorAll('.cell');
 
-    // for (const cell of cells) {
     cells.forEach((cell) => {
       if (getMinutes(cell.getAttribute('data-time')) === 0) {
         cell.style.borderLeft = '1px solid rgb(120, 120, 120)';
@@ -425,7 +424,6 @@ class AvailabilityGrid extends React.Component {
       else availabilityNum[avail] = 1;
     });
 
-    // for (const cell of cells) {
     cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
@@ -445,7 +443,6 @@ class AvailabilityGrid extends React.Component {
                                     .map(avail => new Date(avail[0]))
                                     .map(avail => moment(avail).format(formatStr));
 
-    // for (const cell of cells) {
     cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
