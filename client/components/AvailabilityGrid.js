@@ -11,99 +11,6 @@ import nprogress from 'nprogress';
 import styles from '../styles/availability-grid.css';
 
 class AvailabilityGrid extends React.Component {
-
-  static getTimesBetween(start, end) {
-    let times = [start];
-    let currentTime = start;
-
-    if (moment(end).hour() === 0) {
-      end = moment(end)
-        .subtract(1, 'd')
-        .hour(23)
-        .minute(59)._d;
-    }
-
-    if (moment(end).hour() < moment(start).hour()) {
-      // days are split
-      currentTime = moment(start)
-        .set('hour', 0)
-        .set('minute', 0)._d;
-      times = [currentTime];
-
-      if (moment(end).hour() === 0) times = [];
-
-      while (moment(end).hour() > moment(times.slice(-1)[0]).hour()) {
-        currentTime = moment(currentTime).add(15, 'm')._d;
-        times.push(currentTime);
-      }
-
-      currentTime = moment(currentTime)
-        .set('hour', moment(start).get('hour'))
-        .set('minute', moment(start).get('minute'))._d;
-
-      times.pop();
-      times.push(currentTime);
-
-      while (moment(times.slice(-1)[0]).hour() > 0) {
-        currentTime = moment(currentTime).add(15, 'm')._d;
-        times.push(currentTime);
-      }
-    } else {
-      end = moment(end).set('date', moment(start).get('date'));
-
-      while (moment(end).isAfter(moment(times.slice(-1)[0]))) {
-        currentTime = moment(currentTime).add(15, 'm')._d;
-        times.push(currentTime);
-      }
-    }
-
-    return times;
-  }
-
-  static getPosition(el) {
-    let xPosition = 0;
-    let yPosition = 0;
-    let xScrollPos;
-    let yScrollPos;
-
-    while (el) {
-      if (el.tagName === 'BODY') {
-        // deal with browser quirks with body/window/document and page scroll
-        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
-        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
-        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
-        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
-      } else {
-        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
-      }
-      el = el.offsetParent;
-    }
-    return {
-      x: xPosition,
-      y: yPosition,
-    };
-  }
-
-  // Get all days between start and end.
-  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
-  // (all input and output is in javascript Date objects)
-  static getDaysBetween(start, end) {
-    const dates = [start];
-    let currentDay = start;
-
-    // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
-    // create an extra row in the grid made up only of disabled cells.
-    if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
-
-    while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
-      currentDay = moment(currentDay).add(1, 'd')._d;
-      dates.push(currentDay);
-    }
-
-    return dates;
-  }
-
   constructor(props) {
     super(props);
 
@@ -221,11 +128,112 @@ class AvailabilityGrid extends React.Component {
     }
   }
 
-  
+  getTimesBetween(start, end) {
+    let times = [start];
+    let currentTime = start;
 
-  
+    if (moment(end).hour() === 0) {
+      end = moment(end)
+        .subtract(1, 'd')
+        .hour(23)
+        .minute(59)._d;
+    }
 
- 
+    if (moment(end).hour() < moment(start).hour()) {
+      // days are split
+      currentTime = moment(start)
+        .set('hour', 0)
+        .set('minute', 0)._d;
+      times = [currentTime];
+
+      if (moment(end).hour() === 0) times = [];
+
+      while (moment(end).hour() > moment(times.slice(-1)[0]).hour()) {
+        currentTime = moment(currentTime).add(15, 'm')._d;
+        times.push(currentTime);
+      }
+
+      currentTime = moment(currentTime)
+        .set('hour', moment(start).get('hour'))
+        .set('minute', moment(start).get('minute'))._d;
+
+      times.pop();
+      times.push(currentTime);
+
+      while (moment(times.slice(-1)[0]).hour() > 0) {
+        currentTime = moment(currentTime).add(15, 'm')._d;
+        times.push(currentTime);
+      }
+    } else {
+      end = moment(end).set('date', moment(start).get('date'));
+
+      while (moment(end).isAfter(moment(times.slice(-1)[0]))) {
+        currentTime = moment(currentTime).add(15, 'm')._d;
+        times.push(currentTime);
+      }
+    }
+
+    return times;
+  }
+
+  getPosition(el) {
+    let xPosition = 0;
+    let yPosition = 0;
+    let xScrollPos;
+    let yScrollPos;
+
+    while (el) {
+      if (el.tagName === 'BODY') {
+        // deal with browser quirks with body/window/document and page scroll
+        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
+        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
+        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
+        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
+      } else {
+        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+      }
+      el = el.offsetParent;
+    }
+    return {
+      x: xPosition,
+      y: yPosition,
+    };
+  }
+
+  // Get all days between start and end.
+  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
+  // (all input and output is in javascript Date objects)
+  getDaysBetween(start, end) {
+    const dates = [start];
+    let currentDay = start;
+
+    // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
+    // create an extra row in the grid made up only of disabled cells.
+    if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
+
+    while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
+      currentDay = moment(currentDay).add(1, 'd')._d;
+      dates.push(currentDay);
+    }
+
+    return dates;
+  }
+
+  addZero(time) {
+    if (Number(String(time).split(':')[0]) < 10) {
+      time = `0${time}`;
+    }
+    return time;
+  }
+
+  removeZero(time) {
+    if (Number(String(time).split(':')[0]) < 10) {
+      time = Number(String(time).split(':')[0]);
+    }
+    return time;
+  }
+
 
   modifyHourTime(hourTime, date, i) {
     // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
@@ -384,20 +392,6 @@ class AvailabilityGrid extends React.Component {
     this.props.editAvail();
   }
 
-  addZero(time) {
-    if (Number(String(time).split(':')[0]) < 10) {
-      time = `0${time}`;
-    }
-    return time;
-  }
-
-  removeZero(time) {
-    if (Number(String(time).split(':')[0]) < 10) {
-      time = Number(String(time).split(':')[0]);
-    }
-    return time;
-  }
-
   renderHeatmap() {
     const availabilityLength = this.props.availability.filter(av => av).length;
     const saturationDivisions = 100 / availabilityLength;
@@ -514,7 +508,7 @@ class AvailabilityGrid extends React.Component {
                   className={`cell ${disabled}`}
                   onMouseEnter={this.showAvailBox}
                   onMouseLeave={this.hideAvailBox}
-                ></div>
+                />
               );
             })}
           </div>

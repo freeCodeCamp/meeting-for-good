@@ -8,11 +8,12 @@ import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 
+import 'react-day-picker/lib/style.css';
+
 import { checkStatus } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
-import 'react-day-picker/lib/style.css';
 
 class EventCard extends React.Component {
   constructor(props) {
