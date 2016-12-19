@@ -61,13 +61,13 @@ class EventCard extends React.Component {
     });
 
     if (availability.length > 1) {
-      for (let i = 0; i < availability[0].length; i++) {
+      for (let i = 0; i < availability[0].length; i += 1) {
         const current = availability[0][i];
         let count = 0;
         for (let j = 0; j < availability.length; j++) {
-          for (let k = 0; k < availability[j].length; k++) {
+          for (let k = 0; k < availability[j].length; k += 1) {
             if (availability[j][k][0] === current[0]) {
-              count++;
+              count += 1;
             }
           }
         }

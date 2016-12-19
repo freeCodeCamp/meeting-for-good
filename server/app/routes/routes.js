@@ -6,7 +6,6 @@ import sendEmail from '../config/email';
 
 const path = process.cwd();
 
-
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next();
 
