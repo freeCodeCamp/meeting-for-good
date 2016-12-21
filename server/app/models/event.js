@@ -14,6 +14,7 @@ const Schema = mongoose.Schema;
 
 const Event = new Schema({
   name: { type: 'String', required: true },
+
   dates: { type: 'Array', required: true },
   active: { type: 'Boolean', default: true },
   weekDays: { type: 'Object', required: false },
@@ -32,6 +33,10 @@ const Event = new Schema({
   uid: { type: String, required: true },
   selectedTimeRange: Array,
   owner: { type: String, required: true },
+  participants: Array,
+  uid: { type: 'String', required: true },
+  selectedTimeRange: Array,
+  owner: { type: 'String', required: true },
 });
 
 export default mongoose.model('Event', Event);
