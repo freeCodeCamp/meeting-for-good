@@ -7,6 +7,9 @@ import fetch from 'isomorphic-fetch';
 import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
+
+import 'react-day-picker/lib/style.css';
+
 import Notification from '../components/vendor/react-notification';
 
 import AvailabilityGrid from './AvailabilityGrid';
@@ -15,7 +18,7 @@ import { checkStatus, parseJSON } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
-import 'react-day-picker/lib/style.css';
+
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -341,14 +344,14 @@ class EventDetailsComponent extends React.Component {
 
     return (
       <div className="card meeting" styleName="event-details">
-      {
-        isOwner ?
-          <button
-            className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-            styleName="delete-event"
-            onClick={() => document.querySelector('#deleteEventModal').showModal()}
-          ><i className="material-icons">delete</i></button> : null
-      }
+        {
+          isOwner ?
+            <button
+              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+              styleName="delete-event"
+              onClick={() => document.querySelector('#deleteEventModal').showModal()}
+            ><i className="material-icons">delete</i></button> : null
+        }
         <div className="card-content">
           <span styleName="card-title" className="card-title">{event.name}</span>
           <h6 id="best"><strong>All participants so far are available at:</strong></h6>

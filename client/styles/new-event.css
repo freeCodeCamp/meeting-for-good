@@ -4,7 +4,7 @@ h1 {
 }
 
 .new-event-card {
-  width: 500px;
+  width: 700px;
 }
 
 @media (min-width:550px) and (max-width:850px) {

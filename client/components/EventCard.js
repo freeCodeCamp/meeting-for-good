@@ -8,11 +8,12 @@ import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 
+import 'react-day-picker/lib/style.css';
+
 import { checkStatus } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
-import 'react-day-picker/lib/style.css';
 
 class EventCard extends React.Component {
   constructor(props) {
@@ -55,18 +56,18 @@ class EventCard extends React.Component {
     const displayTimes = {};
     const user = await getCurrentUser();
 
-    this.state.participants.forEach(user => {
+    this.state.participants.forEach((user) => {
       if (user.availability !== undefined) availability.push(user.availability);
     });
 
     if (availability.length > 1) {
-      for (let i = 0; i < availability[0].length; i++) {
+      for (let i = 0; i < availability[0].length; i += 1) {
         const current = availability[0][i];
         let count = 0;
         for (let j = 0; j < availability.length; j++) {
-          for (let k = 0; k < availability[j].length; k++) {
+          for (let k = 0; k < availability[j].length; k += 1) {
             if (availability[j][k][0] === current[0]) {
-              count++;
+              count += 1;
             }
           }
         }

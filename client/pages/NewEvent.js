@@ -11,7 +11,7 @@ import { Notification } from 'react-notification';
 
 import { checkStatus } from '../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../util/time-format';
-import { isAuthenticated } from '../util/auth';
+import { isAuthenticated,  getCurrentUser } from '../util/auth';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -32,6 +32,7 @@ class NewEvent extends React.Component {
           .second(0)._d,
       }],
       eventName: '',
+      curUser: '',
       weekDays: {
         mon: false,
         tue: false,
@@ -51,6 +52,8 @@ class NewEvent extends React.Component {
 
   async componentWillMount() {
     if (!await isAuthenticated()) {
+      // fidn the current user aka prossible owner
+      this.state.curUser = await getCurrentUser();
       if (!sessionStorage.getItem('redirectTo')) {
         sessionStorage.setItem('redirectTo', '/event/new');
       }
@@ -100,12 +103,10 @@ class NewEvent extends React.Component {
         this.setState({
           submitClass: submitClass.replace(' disabled', ''),
         });
-      } else {
-        if (submitClass.indexOf('disabled') === -1) {
-          this.setState({
-            submitClass: `${submitClass} disabled`,
-          });
-        }
+      } else if (submitClass.indexOf('disabled') === -1) {
+        this.setState({
+          submitClass: `${submitClass} disabled`,
+        });
       }
     } else { // weekdays
       let numOfWeekdaysSelected = 0;
@@ -118,12 +119,10 @@ class NewEvent extends React.Component {
         this.setState({
           submitClass: submitClass.replace(' disabled', ''),
         });
-      } else {
-        if (submitClass.indexOf('disabled') === -1) {
-          this.setState({
-            submitClass: `${submitClass} disabled`,
-          });
-        }
+      } else if (submitClass.indexOf('disabled') === -1) {
+        this.setState({
+          submitClass: `${submitClass} disabled`,
+        });
       }
     }
   }
@@ -264,7 +263,7 @@ class NewEvent extends React.Component {
       let ID = '';
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 6; i += 1) {
         ID += chars.charAt(Math.floor(Math.random() * chars.length));
       }
 
@@ -313,7 +312,7 @@ class NewEvent extends React.Component {
       });
 
       // ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)
-      for (let i = 0; i < dates.length; i++) {
+      for (let i = 0; i < dates.length; i += 1) {
         for (let x = i + 1; x < dates.length; x++) {
           // `dates[i]` represents every date object starting from index 0.
           //
@@ -359,9 +358,12 @@ class NewEvent extends React.Component {
         }
       }
 
-      sentData = JSON.stringify({ uid, name, dates });
+      // add the possible adicional fields to the Event record
+      // the field active now has a default of true.
+      const owner = this.state.curUser;
+      sentData = JSON.stringify({ uid, name, dates, owner });
     }
-
+    console.log(sentData);
     const response = await fetch('/api/events', {
       headers: {
         Accept: 'application/json',
@@ -441,12 +443,13 @@ class NewEvent extends React.Component {
                   <p className="center">
                     <a
                       className="btn-flat"
-                      href="#"
+                      href="#reset"
                       onClick={this.handleResetClick}
                     >Reset</a>
                   </p>
                 }
                 <DayPicker
+                  numberOfMonths={2}
                   fromMonth={new Date()}
                   disabledDays={DateUtils.isPastDay}
                   modifiers={modifiers}

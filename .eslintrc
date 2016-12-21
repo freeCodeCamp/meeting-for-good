@@ -17,6 +17,8 @@
     "no-nested-ternary": 0,
     "max-len": 0,
     "allowForLoopAfterthoughts": true,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+
   },
   "plugins": [
     "react",

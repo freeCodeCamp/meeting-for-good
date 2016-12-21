@@ -23,29 +23,30 @@ class Home extends React.Component {
           <hr />
           <h6>The best meeting coordination app</h6>
           <img
-            src="https://raw.githubusercontent.com/AkiraLaine/LetsMeet/de22d897aa875ee8aa8d798d27fae0450dc7a0c4/client/assets/dashboard-banner.jpg"
+            src={require('../assets/dashboard-banner.jpg')}
             alt="dashboard"
           />
         </header>
         <div styleName="content">
           <h3>Easy event creation</h3>
           <h6>Creating an event is easy as saying 1, 2, 3.</h6>
-          <img src="https://raw.githubusercontent.com/AkiraLaine/LetsMeet/development/client/assets/main-banner.jpg" alt="new event" />
+          <img src={require('../assets/main-banner.jpg')} alt="new event" />
           <hr styleName="hr" />
           <h3>Entering your availabily is a breeze</h3>
           <h6>Using our simplistic availabily grid, entering your availabily just got easier</h6>
-          <img src="https://raw.githubusercontent.com/AkiraLaine/LetsMeet/development/client/assets/enteravail.gif" styleName="gif" alt="enter availabily" />
+          <img src={require('../assets/enteravail.gif')} styleName="gif" alt="enter availabily" />
           <hr styleName="hr" />
           <h3>Timezones supported</h3>
           <h6>Don't worry about having to get everyone to convert to your timezone. Let us take of it!</h6>
-          <img src="https://raw.githubusercontent.com/AkiraLaine/LetsMeet/development/client/assets/timezones.png" styleName="timezones" alt="timezone" />
+          <img src={require('../assets/timezones.png')} styleName="timezones" alt="timezone" />
           <p><small>Same event. Image on the left: UTC+11. Image on the right UTC-5 (Daylight saving included)</small></p>
         </div>
         <footer>
           <div>
             <p>Made with ❤ by &nbsp;
-              <a href="https://github.com/AkiraLaine" target="_blank">Akira Laine</a> and&nbsp;
-              <a href="https://github.com/awesomeaniruddh/" target="_blank">Aniruddh Agarwal</a>
+              <a href="https://github.com/AkiraLaine" target="_blank">Akira Laine</a>, &nbsp;
+              <a href="https://github.com/awesomeaniruddh/" target="_blank">Aniruddh Agarwal</a>  and&nbsp;
+              <a href="https://github.com/jrogatis/" target="_blank">Jean Philip de Rogatis</a>
             </p>
 
             <p>

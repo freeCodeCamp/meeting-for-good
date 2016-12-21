@@ -35,11 +35,11 @@ class AvailabilityGrid extends React.Component {
 
   componentWillMount() {
     const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
-      this.getDaysBetween(fromDate, toDate)
+      this.getDaysBetween(fromDate, toDate),
     ));
 
     const allTimes = _.flatten([this.props.dates[0]].map(({ fromDate, toDate }) =>
-      this.getTimesBetween(fromDate, toDate)
+      this.getTimesBetween(fromDate, toDate),
     ));
 
     const allDatesRender = allDates.map(date => moment(date).format(this.state.dateFormatStr));
@@ -59,7 +59,7 @@ class AvailabilityGrid extends React.Component {
         .set('h', getHours(lastHourTimeEl))
         .set('m', getMinutes(lastHourTimeEl))
         .add(1, 'h')
-        .format('hh:mm a')
+        .format('hh:mm a'),
       );
     }
 
@@ -70,7 +70,7 @@ class AvailabilityGrid extends React.Component {
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
-    $('.cell').on('click', e => {
+    $('.cell').on('click', (e) => {
       if (!this.props.heatmap) this.addCellToAvail(e);
     });
 
@@ -91,19 +91,19 @@ class AvailabilityGrid extends React.Component {
     // separate 15 minute blocks from 30 minute and 1 hour blocks.
     const cells = document.querySelectorAll('.cell');
 
-    for (const cell of cells) {
+    cells.forEach((cell) => {
       if (getMinutes(cell.getAttribute('data-time')) === 0) {
         cell.style.borderLeft = '1px solid rgb(120, 120, 120)';
       } else if (getMinutes(cell.getAttribute('data-time')) === 30) {
         cell.style.borderLeft = '1px solid #c3bebe';
       }
-    }
+    });
 
     // Check if two adjacent grid hours labels are consecutive or not. If not, then split the grid
     // at this point.
     const hourTime = this.state.hourTime.slice(0);
 
-    for (let i = 0; i < hourTime.length; i++) {
+    for (let i = 0; i < hourTime.length; i += 1) {
       if (hourTime[i + 1]) {
         const date = moment(new Date());
         const nextDate = moment(new Date());
@@ -125,50 +125,6 @@ class AvailabilityGrid extends React.Component {
         }
       }
     }
-  }
-
-  getPosition(el) {
-    let xPosition = 0;
-    let yPosition = 0;
-    let xScrollPos;
-    let yScrollPos;
-
-    while (el) {
-      if (el.tagName === 'BODY') {
-        // deal with browser quirks with body/window/document and page scroll
-        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
-        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
-        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
-        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
-      } else {
-        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
-      }
-      el = el.offsetParent;
-    }
-    return {
-      x: xPosition,
-      y: yPosition,
-    };
-  }
-
-  // Get all days between start and end.
-  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
-  // (all input and output is in javascript Date objects)
-  getDaysBetween(start, end) {
-    const dates = [start];
-    let currentDay = start;
-
-    // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
-    // create an extra row in the grid made up only of disabled cells.
-    if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
-
-    while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
-      currentDay = moment(currentDay).add(1, 'd')._d;
-      dates.push(currentDay);
-    }
-
-    return dates;
   }
 
   getTimesBetween(start, end) {
@@ -219,6 +175,65 @@ class AvailabilityGrid extends React.Component {
     return times;
   }
 
+  getPosition(el) {
+    let xPosition = 0;
+    let yPosition = 0;
+    let xScrollPos;
+    let yScrollPos;
+
+    while (el) {
+      if (el.tagName === 'BODY') {
+        // deal with browser quirks with body/window/document and page scroll
+        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
+        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
+        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
+        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
+      } else {
+        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+      }
+      el = el.offsetParent;
+    }
+    return {
+      x: xPosition,
+      y: yPosition,
+    };
+  }
+
+  // Get all days between start and end.
+  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
+  // (all input and output is in javascript Date objects)
+  getDaysBetween(start, end) {
+    const dates = [start];
+    let currentDay = start;
+
+    // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
+    // create an extra row in the grid made up only of disabled cells.
+    if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
+
+    while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
+      currentDay = moment(currentDay).add(1, 'd')._d;
+      dates.push(currentDay);
+    }
+
+    return dates;
+  }
+
+  addZero(time) {
+    if (Number(String(time).split(':')[0]) < 10) {
+      time = `0${time}`;
+    }
+    return time;
+  }
+
+  removeZero(time) {
+    if (Number(String(time).split(':')[0]) < 10) {
+      time = Number(String(time).split(':')[0]);
+    }
+    return time;
+  }
+
+
   modifyHourTime(hourTime, date, i) {
     // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
     this.setState({
@@ -241,7 +256,7 @@ class AvailabilityGrid extends React.Component {
       if (this.props.weekDays) formatStr = 'ddd hh:mm a';
       const participants = JSON.parse(JSON.stringify(this.props.participants))
         .filter(participant => participant.availability)
-        .map(participant => {
+        .map((participant) => {
           participant.availability = participant.availability
             .map(avail => new Date(avail[0]))
             .map(avail => moment(avail).format(formatStr));
@@ -254,7 +269,7 @@ class AvailabilityGrid extends React.Component {
       const date = moment(allDates[dateIndex]).get('date');
       const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
 
-      participants.forEach(participant => {
+      participants.forEach((participant) => {
         if (participant.availability.indexOf(cellFormatted) > -1) {
           availableOnDate.push(participant.name);
         } else {
@@ -339,7 +354,7 @@ class AvailabilityGrid extends React.Component {
     const { _id } = this.props.user;
     const event = JSON.parse(JSON.stringify(this.props.event));
 
-    event.participants = event.participants.map(user => {
+    event.participants = event.participants.map((user) => {
       if (user._id === _id) user.availability = availability;
       return user;
     });
@@ -356,7 +371,7 @@ class AvailabilityGrid extends React.Component {
         method: 'PUT',
         body: JSON.stringify(event),
         credentials: 'same-origin',
-      }
+      },
     );
 
     try {
@@ -374,20 +389,6 @@ class AvailabilityGrid extends React.Component {
   @autobind
   editAvailability() {
     this.props.editAvail();
-  }
-
-  addZero(time) {
-    if (Number(String(time).split(':')[0]) < 10) {
-      time = `0${time}`;
-    }
-    return time;
-  }
-
-  removeZero(time) {
-    if (Number(String(time).split(':')[0]) < 10) {
-      time = Number(String(time).split(':')[0]);
-    }
-    return time;
   }
 
   renderHeatmap() {
@@ -413,17 +414,17 @@ class AvailabilityGrid extends React.Component {
     let flattenedAvailability = _.flatten(this.props.availability);
 
     flattenedAvailability = flattenedAvailability.filter(avail => avail).map(avail =>
-      new Date(avail[0])
+      new Date(avail[0]),
     ).map(avail =>
-      moment(avail).format(formatStr)
+      moment(avail).format(formatStr),
     );
 
-    flattenedAvailability.forEach(avail => {
+    flattenedAvailability.forEach((avail) => {
       if (availabilityNum[avail]) availabilityNum[avail] += 1;
       else availabilityNum[avail] = 1;
     });
 
-    for (const cell of cells) {
+    cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
@@ -431,7 +432,7 @@ class AvailabilityGrid extends React.Component {
       const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
 
       cell.style.background = colors[availabilityNum[cellFormatted]];
-    }
+    });
   }
 
   renderAvail() {
@@ -442,7 +443,7 @@ class AvailabilityGrid extends React.Component {
                                     .map(avail => new Date(avail[0]))
                                     .map(avail => moment(avail).format(formatStr));
 
-    for (const cell of cells) {
+    cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
@@ -452,7 +453,7 @@ class AvailabilityGrid extends React.Component {
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
         cell.style.background = 'purple';
       }
-    }
+    });
   }
 
   render() {
@@ -463,7 +464,7 @@ class AvailabilityGrid extends React.Component {
         <a styleName="info" onClick={() => document.querySelector('#showAvailHelper').showModal()}>
           <em>How do I use the grid?</em>
         </a>
-        <div styleName="selectbox" id="selectbox"></div>
+        <div styleName="selectbox" id="selectbox" />
         {hourTime.map((time, i) => {
           return (
             <p
@@ -504,7 +505,7 @@ class AvailabilityGrid extends React.Component {
                   className={`cell ${disabled}`}
                   onMouseEnter={this.showAvailBox}
                   onMouseLeave={this.hideAvailBox}
-                ></div>
+                />
               );
             })}
           </div>

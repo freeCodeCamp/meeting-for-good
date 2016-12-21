@@ -16,10 +16,10 @@ class Navbar extends React.Component {
   }
 
   componentWillMount() {
-    $.get('/api/auth/current', user => {
+    $.get('/api/auth/current', (user) => {
       if (user) {
         const userAvatar = user.avatar;
-        this.setState({ userAvatar, user: true });
+        this.setState({ userAvatar, user: true, curUser: user._id });
       }
     });
   }
@@ -54,12 +54,12 @@ class Navbar extends React.Component {
           className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--indigo"
           href="/api/auth/facebook"
           onClick={this.handleAuthClick}
-        ><img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/facebook.png" alt="Facebook Logo" /> Login with Facebook</a>
+        ><img src={require('../assets/facebook.png')} alt="Facebook Logo" /> Login with Facebook</a>
         <a
           className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red"
           href="/api/auth/google"
           onClick={this.handleAuthClick}
-        ><img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/google.png" alt="Google Logo" /> Login with Google</a>
+        ><img src={require('../assets/google.png')} alt="Google Logo" /> Login with Google</a>
       </div>
     );
   }
@@ -69,7 +69,7 @@ class Navbar extends React.Component {
       <header className="mdl-layout__header">
         <div className="mdl-layout__header-row">
           <Link to="/" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
-          <div className="mdl-layout-spacer"></div>
+          <div className="mdl-layout-spacer" />
           {this.renderNav()}
         </div>
       </header>
