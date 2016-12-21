@@ -11,7 +11,7 @@ import { Notification } from 'react-notification';
 
 import { checkStatus } from '../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../util/time-format';
-import { isAuthenticated,  getCurrentUser } from '../util/auth';
+import { isAuthenticated, getCurrentUser } from '../util/auth';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
