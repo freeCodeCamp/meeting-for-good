@@ -2,7 +2,6 @@ import React from 'react';
 import update from 'react-addons-update';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
-import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import _ from 'lodash';
@@ -70,7 +69,7 @@ class EventDetailsComponent extends React.Component {
       let myAvailability = [];
 
       const me = this.state.participants.find(participant =>
-        participant._id === user._id
+        participant._id === user._id,
       );
 
       if (me && me.availability) {
@@ -323,24 +322,6 @@ class EventDetailsComponent extends React.Component {
       isOwner = event.owner === user._id;
     }
 
-    // Determine the months to show in the datepicker via the maximum and minimum date in the time
-    // ranges
-
-    let maxDate;
-    let minDate;
-
-    if (this.state.ranges) {
-      const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
-      maxDate = new Date(Math.max.apply(null, dateInRanges));
-      minDate = new Date(Math.min.apply(null, dateInRanges));
-
-      modifiers = {
-        selected: day =>
-          DateUtils.isDayInRange(day, this.state) ||
-          this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
-      };
-    }
-
     const bestTimes = this.state.displayTimes;
     let isBestTime;
 
@@ -395,29 +376,7 @@ class EventDetailsComponent extends React.Component {
                     </div>
                     <hr />
                   </div>
-                )) : !event.weekDays ?
-                  <DayPicker
-                    className="alt"
-                    initialMonth={minDate}
-                    fromMonth={minDate}
-                    toMonth={maxDate}
-                    modifiers={modifiers}
-                  /> :
-                  Object.keys(event.weekDays).map((day, index) => {
-                    let className = 'btn-flat alt';
-                    if (!event.weekDays[day]) {
-                      className += ' disabled';
-                    }
-
-                    return (
-                      <a
-                        key={index}
-                        className={className}
-                        onClick={this.handleWeekdaySelect}
-                        style={{ cursor: 'default' }}
-                      >{day}</a>
-                    );
-                  })
+                )) : null
               }
             </div>
           </div>
