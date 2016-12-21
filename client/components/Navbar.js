@@ -16,10 +16,10 @@ class Navbar extends React.Component {
   }
 
   componentWillMount() {
-    $.get('/api/auth/current', user => {
+    $.get('/api/auth/current', (user) => {
       if (user) {
         const userAvatar = user.avatar;
-        this.setState({ userAvatar, user: true });
+        this.setState({ userAvatar, user: true, curUser: user._id });
       }
     });
   }

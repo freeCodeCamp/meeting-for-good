@@ -103,9 +103,8 @@ export default (app) => {
       Event.findById(req.params.id, (err, event) => {
         if (err) return res.status(500).send(err);
         if (!event || !event.active) return res.status(404).send('Not found.');
-
         event.active = false;
-        event.save(err => {
+        event.save((err) => {
           if (err) return res.status(500).send(err);
           return res.status(200).json(event);
         });
