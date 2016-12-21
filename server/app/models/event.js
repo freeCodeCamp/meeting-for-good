@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
+
 const Schema = mongoose.Schema;
 
 const Event = new Schema({
-  name: String,
+  name: { type: 'String', required: true },
   dates: Array,
   active: Boolean,
   weekDays: Object,
   participants: Array,
-  uid: String,
+  uid: { type: 'String', required: true },
   selectedTimeRange: Array,
-  owner: String,
+  owner: { type: 'String', required: true },
 });
 
 export default mongoose.model('Event', Event);
