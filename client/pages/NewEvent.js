@@ -100,12 +100,10 @@ class NewEvent extends React.Component {
         this.setState({
           submitClass: submitClass.replace(' disabled', ''),
         });
-      } else {
-        if (submitClass.indexOf('disabled') === -1) {
-          this.setState({
-            submitClass: `${submitClass} disabled`,
-          });
-        }
+      } else if (submitClass.indexOf('disabled') === -1) {
+        this.setState({
+          submitClass: `${submitClass} disabled`,
+        });
       }
     } else { // weekdays
       let numOfWeekdaysSelected = 0;
@@ -118,12 +116,10 @@ class NewEvent extends React.Component {
         this.setState({
           submitClass: submitClass.replace(' disabled', ''),
         });
-      } else {
-        if (submitClass.indexOf('disabled') === -1) {
-          this.setState({
-            submitClass: `${submitClass} disabled`,
-          });
-        }
+      } else if (submitClass.indexOf('disabled') === -1) {
+        this.setState({
+          submitClass: `${submitClass} disabled`,
+        });
       }
     }
   }
@@ -441,12 +437,13 @@ class NewEvent extends React.Component {
                   <p className="center">
                     <a
                       className="btn-flat"
-                      href="#"
+                      href="#reset"
                       onClick={this.handleResetClick}
                     >Reset</a>
                   </p>
                 }
                 <DayPicker
+                  numberOfMonths={2}
                   fromMonth={new Date()}
                   disabledDays={DateUtils.isPastDay}
                   modifiers={modifiers}
