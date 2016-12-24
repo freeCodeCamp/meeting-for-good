@@ -6,7 +6,6 @@ const controller = require('./events.controller');
 const router = express.Router();
 
 const isAuthenticated = (req, res, next) => {
-  console.log(req.isAuthenticated());
   if (req.isAuthenticated()) return next();
   return res.status(403).send('Authentiation required.');
 };

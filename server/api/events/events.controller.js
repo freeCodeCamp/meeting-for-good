@@ -27,8 +27,6 @@ const respondWithResult = (res, statusCode) => {
 
 const patchUpdates = (patches) => {
   return (entity) => {
-    // console.log('entity', entity);
-    console.log('patches', patches);
     try {
       jsonpatch.apply(entity, patches, /* validate */ true);
     } catch (err) {
