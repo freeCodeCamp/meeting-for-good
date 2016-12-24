@@ -9,6 +9,7 @@ import { getHours, getMinutes } from '../util/time-format';
 import colorsys from 'colorsys';
 import nprogress from 'nprogress';
 import styles from '../styles/availability-grid.css';
+import jsonpatch from 'fast-json-patch';
 
 class AvailabilityGrid extends React.Component {
   constructor(props) {
@@ -336,6 +337,7 @@ class AvailabilityGrid extends React.Component {
   async submitAvailability() {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const availability = [];
+   
 
     $('.cell').each((i, el) => {
       if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
@@ -353,14 +355,15 @@ class AvailabilityGrid extends React.Component {
 
     const { _id } = this.props.user;
     const event = JSON.parse(JSON.stringify(this.props.event));
-
+    const observerEvent = jsonpatch.observe(event);
     event.participants = event.participants.map((user) => {
-      if (user._id === _id) user.availability = availability;
+      if (user.userId === _id) user.availability = availability;
       return user;
     });
 
     nprogress.configure({ showSpinner: false });
     nprogress.start();
+    const patches = jsonpatch.generate(observerEvent);
     const response = await fetch(
       `/api/events/${event._id}`,
       {
@@ -368,8 +371,8 @@ class AvailabilityGrid extends React.Component {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        method: 'PUT',
-        body: JSON.stringify(event),
+        method: 'PATCH',
+        body: JSON.stringify(patches),
         credentials: 'same-origin',
       },
     );
@@ -377,7 +380,7 @@ class AvailabilityGrid extends React.Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log(err);
+      console.log('err at PUT AvailabilityGrid', err);
       return;
     } finally {
       nprogress.done();

@@ -32,7 +32,6 @@ class NewEvent extends React.Component {
           .second(0)._d,
       }],
       eventName: '',
-      curUser: '',
       weekDays: {
         mon: false,
         tue: false,
@@ -360,10 +359,9 @@ class NewEvent extends React.Component {
 
       // add the possible adicional fields to the Event record
       // the field active now has a default of true.
-      const owner = this.state.curUser;
-      sentData = JSON.stringify({ uid, name, dates, owner });
+      sentData = JSON.stringify({ uid, name, dates });
     }
-    console.log(sentData);
+
     const response = await fetch('/api/events', {
       headers: {
         Accept: 'application/json',

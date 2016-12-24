@@ -19,14 +19,16 @@ class EventDetails extends React.Component {
   }
 
   async componentWillMount() {
-    const response = await fetch(`/api/events/getbyuid/${this.props.params.uid}`);
+    const response = await fetch(`/api/events/getbyuid/${this.props.params.uid}`, {
+      credentials: 'same-origin',
+    });
     let event;
-
     try {
       checkStatus(response);
       event = await parseJSON(response);
+      event = event[0];
     } catch (err) {
-      console.log(err);
+      console.log('err at componentWillMount EventDetail', err);
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to load event. Please try again later.',

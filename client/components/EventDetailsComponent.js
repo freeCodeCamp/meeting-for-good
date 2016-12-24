@@ -24,7 +24,7 @@ import styles from '../styles/event-card.css';
 class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
-    const eventParticipantsIds = props.event.participants.map(participant => participant._id);
+    const eventParticipantsIds = props.event.participants.map(participant => participant.userId);
     const { event } = props;
 
     let ranges;
@@ -70,7 +70,7 @@ class EventDetailsComponent extends React.Component {
       let myAvailability = [];
 
       const me = this.state.participants.find(participant =>
-        participant._id === user._id
+        participant.userId === user._id,
       );
 
       if (me && me.availability) {
