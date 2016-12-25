@@ -12,6 +12,7 @@ import { Notification } from 'react-notification';
 import { checkStatus } from '../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../util/time-format';
 import { isAuthenticated, getCurrentUser } from '../util/auth';
+import { dateRangeReducer } from '../util/dates.utils';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -51,7 +52,7 @@ class NewEvent extends React.Component {
 
   async componentWillMount() {
     if (!await isAuthenticated()) {
-      // fidn the current user aka prossible owner
+      // fidn the current user aka possible owner
       this.state.curUser = await getCurrentUser();
       if (!sessionStorage.getItem('redirectTo')) {
         sessionStorage.setItem('redirectTo', '/event/new');
@@ -109,10 +110,9 @@ class NewEvent extends React.Component {
       }
     } else { // weekdays
       let numOfWeekdaysSelected = 0;
-
-      for (const weekDay of Object.keys(weekDays)) {
+      Object.keys(weekDays).forEach((weekDay) => {
         if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
-      }
+      });
 
       if (eventName.length > 0 && numOfWeekdaysSelected > 0) {
         this.setState({
@@ -130,8 +130,8 @@ class NewEvent extends React.Component {
   handleDayClick(e, day, { disabled }) {
     if (disabled) return;
 
+    // date ranges manipulation
     let ranges = _.map(this.state.ranges, _.clone); // deep copy this.state.ranges to ranges
-
     function removeRange(ranges, range) {
       const newRange = ranges.filter(r => !_.isEqual(r, range));
       if (newRange.length === 0) {
@@ -142,6 +142,7 @@ class NewEvent extends React.Component {
       }
       return newRange;
     }
+
 
     // Check if day already exists in a range. If yes, remove it from all the
     // ranges that it exists in.
@@ -208,7 +209,7 @@ class NewEvent extends React.Component {
       weekDays,
       selectedTimeRange: [fromTime, toTime],
     } = this.state;
-
+    // validate the form
     if (ev.target.className.indexOf('disabled') > -1) {
       if (!dateOrDay) { // dates
         if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
@@ -277,7 +278,7 @@ class NewEvent extends React.Component {
 
     const fromMinutes = getMinutes(fromTime);
     const toMinutes = getMinutes(toTime);
-
+    // create a date range as date
     if (dateOrDay) {
       const dates = [];
 
@@ -297,7 +298,7 @@ class NewEvent extends React.Component {
 
       sentData = JSON.stringify({ uid, name, weekDays, dates });
     } else {
-      const dates = ranges.map(({ from, to }) => {
+      let dates = ranges.map(({ from, to }) => {
         if (!to) to = from;
 
         if (from > to) {
@@ -309,55 +310,9 @@ class NewEvent extends React.Component {
           toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
         };
       });
-
-      // ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)
-      for (let i = 0; i < dates.length; i += 1) {
-        for (let x = i + 1; x < dates.length; x++) {
-          // `dates[i]` represents every date object starting from index 0.
-          //
-          // `dates[x]` is every date object after dates[i]. Some dates[x] objects may get deleted
-          //            as their values are merged with the current dates[i] object. In such a
-          //            scenario, the dates[x] object in question will not be iterated over later
-          //            as dates[i].
-
-          const iToMoment = moment(dates[i].toDate);
-          const iFromMoment = moment(dates[i].fromDate);
-          const xToMoment = moment(dates[x].toDate);
-          const xFromMoment = moment(dates[x].fromDate);
-
-          // If the current dates[x] object completely overlaps the current dates[x] object, then
-          // set dates[i] to dates[x] and delete the current dates[x] object from the array.
-          if (xToMoment.isAfter(iToMoment) && xFromMoment.isBefore(iFromMoment)) {
-            dates[i].toDate = dates[x].toDate;
-            dates[i].fromDate = dates[x].fromDate;
-            dates.splice(x, 1);
-            x = i; continue;
-          }
-
-          if (iFromMoment.isBefore(xFromMoment) && iToMoment.isAfter(xToMoment)) {
-            dates.splice(x, 1);
-            x = i; continue;
-          }
-
-          // If the current dates[x] object is adjacent the current dates[i] object and
-          // dates[x] > dates[i].
-          if (iToMoment.add(1, 'd').isSame(xFromMoment, 'd')) {
-            dates[i].toDate = dates[x].toDate;
-            dates.splice(x, 1);
-            x = i; continue;
-          }
-
-          // If the current dates[x] object is adjacent the current dates[i] object and
-          // dates[x] < dates[i].
-          if (iFromMoment.subtract(1, 'd').isSame(xToMoment, 'd')) {
-            dates[i].fromDate = dates[x].fromDate;
-            dates.splice(x, 1);
-            x = i; continue;
-          }
-        }
-      }
-
-      // add the possible adicional fields to the Event record
+      console.log('dates antes', dates);
+      dates = dateRangeReducer(dates);
+      console.log('dates depois', dates);
       // the field active now has a default of true.
       sentData = JSON.stringify({ uid, name, dates });
     }

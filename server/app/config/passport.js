@@ -1,9 +1,11 @@
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
-import User from '../models/users';
+import User from '../../api/user/user.model';
 import configAuth from './auth';
 
-module.exports = passport => {
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+
+
+module.exports = (passport) => {
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
@@ -30,7 +32,7 @@ module.exports = passport => {
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
 
-        newUser.save(err => {
+        newUser.save((err) => {
           if (err) throw err;
 
           return done(null, newUser);
@@ -56,7 +58,7 @@ module.exports = passport => {
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
 
-        newUser.save(err => {
+        newUser.save((err) => {
           if (err) throw err;
 
           return done(null, newUser);
