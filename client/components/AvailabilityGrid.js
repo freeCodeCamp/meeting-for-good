@@ -380,7 +380,7 @@ class AvailabilityGrid extends React.Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log('err at PUT AvailabilityGrid', err);
+      console.log('err at PATCH AvailabilityGrid', err);
       return;
     } finally {
       nprogress.done();

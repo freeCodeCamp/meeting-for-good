@@ -7,7 +7,7 @@ import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
-
+import jsonpatch from 'fast-json-patch';
 import 'react-day-picker/lib/style.css';
 
 import { checkStatus } from '../util/fetch.util';
@@ -113,9 +113,22 @@ class EventCard extends React.Component {
 
   @autobind
   async deleteEvent() {
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin', method: 'DELETE',
-    });
+    const event = JSON.parse(JSON.stringify(this.props.event));
+    const observerEvent = jsonpatch.observe(event);
+    event.active = false;
+    const patches = jsonpatch.generate(observerEvent);
+    const response =  await fetch(
+      `/api/events/${event._id}`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify(patches),
+        credentials: 'same-origin',
+      },
+    );
 
     nprogress.configure({ showSpinner: false });
     nprogress.start();

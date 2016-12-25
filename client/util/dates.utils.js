@@ -1,4 +1,4 @@
- import moment from 'moment';
+import moment from 'moment';
 
  /* input - date as dateRanges object
   {from: date, to: date }
