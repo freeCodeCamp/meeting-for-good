@@ -155,9 +155,6 @@ class AvailabilityGrid extends React.Component {
     };
   }
 
-  
-
-
   modifyHourTime(hourTime, date, i) {
     // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
     this.setState({
@@ -260,7 +257,6 @@ class AvailabilityGrid extends React.Component {
   async submitAvailability() {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const availability = [];
-   
 
     $('.cell').each((i, el) => {
       if ($(el).css('background-color') === 'rgb(128, 0, 128)') {

@@ -12,6 +12,8 @@ class Navbar extends React.Component {
     this.state = {
       userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
       user: false,
+      ConditionalHomeLink: '/',
+      
     };
   }
 
@@ -19,7 +21,7 @@ class Navbar extends React.Component {
     $.get('/api/auth/current', (user) => {
       if (user) {
         const userAvatar = user.avatar;
-        this.setState({ userAvatar, user: true, curUser: user._id });
+        this.setState({ userAvatar, user: true, curUser: user._id, ConditionalHomeLink: '/Dashboard' });
       }
     });
   }
@@ -65,10 +67,11 @@ class Navbar extends React.Component {
   }
 
   render() {
+
     return (
       <header className="mdl-layout__header">
         <div className="mdl-layout__header-row">
-          <Link to="/" className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
+          <Link to={this.state.ConditionalHomeLink} className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
           <div className="mdl-layout-spacer" />
           {this.renderNav()}
         </div>

@@ -330,18 +330,7 @@ class NewEvent extends React.Component {
     })
     .then(res => checkStatus(res))
     .then(res => parseJSON(res))
-    .then(data => console.log('data', data))
     .then(browserHistory.push(`/event/${uid}`));
-
-   /* try {
-      checkStatus(response);
-      const postRet =  response.json();
-      console.log(postRet);
-    } catch (err) {
-      console.log(err); return;
-    }
-
-    browserHistory.push(`/event/${uid}`);*/
   }
 
   @autobind
