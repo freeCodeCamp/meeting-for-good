@@ -13,7 +13,6 @@ class Navbar extends React.Component {
       userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
       user: false,
       ConditionalHomeLink: '/',
-      
     };
   }
 
@@ -67,7 +66,6 @@ class Navbar extends React.Component {
   }
 
   render() {
-
     return (
       <header className="mdl-layout__header">
         <div className="mdl-layout__header-row">
