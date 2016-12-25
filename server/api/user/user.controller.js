@@ -6,6 +6,7 @@
  * PUT     /api/users/:id              ->  upsert
  * PATCH   /api/users/:id              ->  patch
  * DELETE  /api/users/:id              ->  destroy
+ * get     /api/users/byName/:name     -> indexByName
  */
 
 import jsonpatch from 'fast-json-patch';
@@ -66,6 +67,14 @@ const handleEntityNotFound = (res) => {
 // Gets a list of all  users
 export const index = (req, res) => {
   return Users.find().exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+};
+
+// Gets a list of all  users filter by name
+export const indexByName = (req, res) => {
+  const name = req.params.name;
+  return Users.find({ name: `/${name}/i` }).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
