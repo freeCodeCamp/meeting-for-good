@@ -9,7 +9,7 @@ import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
 
-import { checkStatus } from '../util/fetch.util';
+import { checkStatus, parseJSON } from '../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../util/time-format';
 import { isAuthenticated, getCurrentUser } from '../util/auth';
 import { dateRangeReducer } from '../util/dates.utils';
@@ -209,8 +209,10 @@ class NewEvent extends React.Component {
       weekDays,
       selectedTimeRange: [fromTime, toTime],
     } = this.state;
+
     // validate the form
     if (ev.target.className.indexOf('disabled') > -1) {
+
       if (!dateOrDay) { // dates
         if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
           this.setState({
@@ -232,12 +234,12 @@ class NewEvent extends React.Component {
         return;
       }
 
-      // weekdays
+      // weekdays form validator
       let numOfWeekdaysSelected = 0;
 
-      for (const weekDay of Object.keys(weekDays)) {
+      Object.keys(weekDays).forEach((weekDay) => {
         if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
-      }
+      });
 
       if (name.length === 0 && numOfWeekdaysSelected === 0) {
         this.setState({
@@ -259,7 +261,7 @@ class NewEvent extends React.Component {
       return;
     }
 
-    function generateID() {
+    const generateID = () => {
       let ID = '';
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -268,7 +270,7 @@ class NewEvent extends React.Component {
       }
 
       return ID;
-    }
+    };
 
     const uid = generateID();
     let sentData;
@@ -282,19 +284,20 @@ class NewEvent extends React.Component {
     if (dateOrDay) {
       const dates = [];
 
-      for (const key of Object.keys(weekDays)) {
-        if (!weekDays[key]) continue;
-        dates.push({
-          fromDate: moment()
+      Object.keys(weekDays).forEach((key) => {
+        if (weekDays[key]) {
+          dates.push({
+            fromDate: moment()
                       .day(key)
                       .set('h', fromHours)
                       .set('m', fromMinutes),
-          toDate: moment()
+            toDate: moment()
                       .day(key)
                       .set('h', toHours)
                       .set('m', toMinutes),
-        });
-      }
+          });
+        }
+      });
 
       sentData = JSON.stringify({ uid, name, weekDays, dates });
     } else {
@@ -310,14 +313,13 @@ class NewEvent extends React.Component {
           toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
         };
       });
-      console.log('dates antes', dates);
+
       dates = dateRangeReducer(dates);
-      console.log('dates depois', dates);
       // the field active now has a default of true.
       sentData = JSON.stringify({ uid, name, dates });
     }
 
-    const response = await fetch('/api/events', {
+    fetch('/api/events', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -325,15 +327,21 @@ class NewEvent extends React.Component {
       method: 'POST',
       body: sentData,
       credentials: 'same-origin',
-    });
+    })
+    .then(res => checkStatus(res))
+    .then(res => parseJSON(res))
+    .then(data => console.log('data', data))
+    .then(browserHistory.push(`/event/${uid}`));
 
-    try {
+   /* try {
       checkStatus(response);
+      const postRet =  response.json();
+      console.log(postRet);
     } catch (err) {
       console.log(err); return;
     }
 
-    browserHistory.push(`/event/${uid}`);
+    browserHistory.push(`/event/${uid}`);*/
   }
 
   @autobind
