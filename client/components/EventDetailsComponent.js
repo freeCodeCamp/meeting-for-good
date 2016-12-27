@@ -7,6 +7,7 @@ import fetch from 'isomorphic-fetch';
 import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
+import jsonpatch from 'fast-json-patch';
 
 import 'react-day-picker/lib/style.css';
 
@@ -112,30 +113,34 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async joinEvent() {
-    const { name, avatar, _id } = this.state.user;
+    const { name, avatar, _id: userId } = this.state.user;
 
-    const participant = { name, avatar, _id };
+    const participant = { name, avatar, userId };
 
-    const event = update(this.state.event, {
-      participants: { $push: [participant] },
-    });
+    const event = update(this.state.event, { $set: this.state.event });
+    const observerEvent = jsonpatch.observe(event);
+
+    event.participants.push(participant);
 
     const eventParticipantsIds = update(this.state.eventParticipantsIds, {
       $push: [this.state.user._id],
     });
 
-    const sentData = JSON.stringify(event);
+    // const sentData = JSON.stringify(event);
 
     nprogress.configure({ showSpinner: false });
     nprogress.start();
+
+    const patches = jsonpatch.generate(observerEvent);
+    console.log('patches', patches);
     const response = await fetch(`/api/events/${event._id}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-      method: 'PUT',
-      body: sentData,
+      method: 'PATCH',
+      body: JSON.stringify(patches),
     });
 
     try {

@@ -33,7 +33,10 @@ export default (app) => {
 
   app.route('/api/auth/google')
     .get(passport.authenticate('google', {
-      scope: ['profile'],
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email',
+      ],
     }));
 
   app.route('/api/auth/google/callback')
