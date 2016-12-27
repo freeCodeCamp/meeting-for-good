@@ -9,6 +9,8 @@ const isAuthenticated = (req, res, next) => {
 
   return res.status(403).send('Authentiation required.');
 };
+const events =  require('../../api/events');
+const users = require('../../api/user');
 
 export default (app) => {
   /*
@@ -54,10 +56,10 @@ export default (app) => {
     });
 
   /* meeetings API*/
-  app.use('/api/events', require('../../api/events'));
+  app.use('/api/events', events);
 
   /* users API */
-  app.use('/api/user', require('../../api/user'));
+  app.use('/api/user', users);
 
   app.route('/api/sendEmail')
     .post(isAuthenticated, (req, res) => {
