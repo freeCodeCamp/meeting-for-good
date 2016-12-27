@@ -150,7 +150,7 @@ class EventCard extends React.Component {
 
   @autobind
   redirectToEvent() {
-    browserHistory.push(`/event/${this.state.event.uid}`);
+    browserHistory.push(`/event/${this.state.event._id}`);
   }
 
   render() {

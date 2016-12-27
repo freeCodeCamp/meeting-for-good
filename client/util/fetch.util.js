@@ -10,4 +10,3 @@ export const checkStatus = (response) => {
 
 export const parseJSON = response => response.json();
 
-// export { checkStatus as checkStatus, parseJSON as parseJSON };

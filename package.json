@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf build && mkdir build",
     "build:server": "babel -d ./build ./server -s",
-    "build:client": "webpack -p --progress --colors --watch  --config ./webpack.production.config.js",
+    "build:client": "webpack -p  --config ./webpack.production.config.js",
     "build": "npm run clean && npm run build:server && npm run build:client",
     "start": "node ./build/app.js",
     "serve": "npm run clean && npm run build:server && npm run start",

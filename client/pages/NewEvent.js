@@ -52,7 +52,7 @@ class NewEvent extends React.Component {
 
   async componentWillMount() {
     if (!await isAuthenticated()) {
-      // fidn the current user aka possible owner
+      // find the current user aka possible owner
       this.state.curUser = await getCurrentUser();
       if (!sessionStorage.getItem('redirectTo')) {
         sessionStorage.setItem('redirectTo', '/event/new');
@@ -261,18 +261,6 @@ class NewEvent extends React.Component {
       return;
     }
 
-    const generateID = () => {
-      let ID = '';
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-      for (let i = 0; i < 6; i += 1) {
-        ID += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-
-      return ID;
-    };
-
-    const uid = generateID();
     let sentData;
 
     const fromHours = getHours(fromTime);
@@ -299,7 +287,7 @@ class NewEvent extends React.Component {
         }
       });
 
-      sentData = JSON.stringify({ uid, name, weekDays, dates });
+      sentData = JSON.stringify({ name, weekDays, dates });
     } else {
       let dates = ranges.map(({ from, to }) => {
         if (!to) to = from;
@@ -316,10 +304,10 @@ class NewEvent extends React.Component {
 
       dates = dateRangeReducer(dates);
       // the field active now has a default of true.
-      sentData = JSON.stringify({ uid, name, dates });
+      sentData = JSON.stringify({ name, dates });
     }
 
-    fetch('/api/events', {
+    const response = await fetch('/api/events', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -327,10 +315,17 @@ class NewEvent extends React.Component {
       method: 'POST',
       body: sentData,
       credentials: 'same-origin',
-    })
-    .then(res => checkStatus(res))
-    .then(res => parseJSON(res))
-    .then(browserHistory.push(`/event/${uid}`));
+    });
+
+    let newEvent;
+    try {
+      checkStatus(response);
+      newEvent = await parseJSON(response);
+    } catch (err) {
+      console.log('err at POST NewEvent', err);
+    } finally {
+      browserHistory.push(`/event/${newEvent._id}`);
+    }
   }
 
   @autobind
