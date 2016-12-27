@@ -31,7 +31,7 @@ module.exports = (passport) => {
         newUser.googleId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
-        newUser.emails = profile.emails;
+        newUser.emails = profile.emails[0].value;
 
         newUser.save((err) => {
           if (err) throw err;
@@ -58,7 +58,7 @@ module.exports = (passport) => {
         newUser.facebookId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
-        newUser.emails = profile.emails;
+        newUser.emails = profile.emails[0].value;
 
         newUser.save((err) => {
           if (err) throw err;

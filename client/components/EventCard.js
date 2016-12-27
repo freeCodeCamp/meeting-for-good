@@ -222,30 +222,15 @@ class EventCard extends React.Component {
                     </div>
                     <hr />
                   </div>
-                )) : !event.weekDays ?
-                  <DayPicker
-                    className="alt"
-                    styleName="day-picker"
-                    initialMonth={minDate}
-                    fromMonth={minDate}
-                    toMonth={maxDate}
-                    modifiers={modifiers}
-                  /> :
-                Object.keys(event.weekDays).map((day, index) => {
-                  let className = 'btn-flat alt';
-                  if (!event.weekDays[day]) {
-                    className += ' disabled';
-                  }
-
-                  return (
-                    <a
-                      id="alt"
-                      key={index}
-                      className={className}
-                      onClick={this.handleWeekdaySelect}
-                    >{day}</a>
-                  );
-                })
+                )) :
+                <DayPicker
+                  className="alt"
+                  styleName="day-picker"
+                  initialMonth={minDate}
+                  fromMonth={minDate}
+                  toMonth={maxDate}
+                  modifiers={modifiers}
+                />
               }
             </div>
           </div>
