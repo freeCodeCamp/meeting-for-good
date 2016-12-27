@@ -27,30 +27,20 @@ class EventDetailsComponent extends React.Component {
     const eventParticipantsIds = props.event.participants.map(participant => participant.userId);
     const { event } = props;
 
-    let ranges;
-    let dates;
+    const ranges = event.dates.map(({ fromDate, toDate }) => ({
+      from: new Date(fromDate),
+      to: new Date(toDate),
+    }));
 
-    if (event.weekDays) {
-      dates = event.dates;
-    } else {
-      delete event.weekDays;
-
-      ranges = event.dates.map(({ fromDate, toDate }) => ({
-        from: new Date(fromDate),
-        to: new Date(toDate),
-      }));
-
-      dates = event.dates.map(({ fromDate, toDate }) => ({
-        fromDate: new Date(fromDate),
-        toDate: new Date(toDate),
-      }));
-    }
+    const dates = event.dates.map(({ fromDate, toDate }) => ({
+      fromDate: new Date(fromDate),
+      toDate: new Date(toDate),
+    }));
 
     this.state = {
       event,
       ranges,
       dates,
-      days: event.weekDays,
       user: {},
       eventParticipantsIds,
       participants: event.participants,
@@ -126,13 +116,10 @@ class EventDetailsComponent extends React.Component {
       $push: [this.state.user._id],
     });
 
-    // const sentData = JSON.stringify(event);
-
     nprogress.configure({ showSpinner: false });
     nprogress.start();
 
     const patches = jsonpatch.generate(observerEvent);
-    console.log('patches', patches);
     const response = await fetch(`/api/events/${event._id}`, {
       headers: {
         Accept: 'application/json',
@@ -279,7 +266,7 @@ class EventDetailsComponent extends React.Component {
       if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
         if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
           displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`
+            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
           );
         } else {
           displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
@@ -290,7 +277,7 @@ class EventDetailsComponent extends React.Component {
       } else if (overlaps[i + 1] === undefined) {
         if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
           displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`
+            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
           );
         } else {
           displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
@@ -387,45 +374,24 @@ class EventDetailsComponent extends React.Component {
           </div>
           {showHeatmap ?
             <div id="heatmap">
-              {event.weekDays ?
-                <AvailabilityGrid
-                  dates={this.state.dates}
-                  availability={availability}
-                  editAvail={this.editAvail}
-                  participants={participants}
-                  heatmap
-                  weekDays
-                /> :
-                <AvailabilityGrid
-                  dates={this.state.dates}
-                  availability={availability}
-                  editAvail={this.editAvail}
-                  participants={participants}
-                  heatmap
-                />
-              }
+              <AvailabilityGrid
+                dates={this.state.dates}
+                availability={availability}
+                editAvail={this.editAvail}
+                participants={participants}
+                heatmap
+              />
             </div> :
             <div id="grid" className="center">
               <div id="availability-grid" className="hide">
-                {event.weekDays ?
-                  <AvailabilityGrid
-                    dates={this.state.dates}
-                    user={this.state.user}
-                    submitAvail={this.submitAvailability}
-                    availability={availability}
-                    myAvailability={myAvailability}
-                    event={event}
-                    weekDays
-                  /> :
-                  <AvailabilityGrid
-                    dates={this.state.dates}
-                    user={this.state.user}
-                    availability={availability}
-                    myAvailability={myAvailability}
-                    submitAvail={this.submitAvailability}
-                    event={event}
-                  />
-                }
+                <AvailabilityGrid
+                  dates={this.state.dates}
+                  user={this.state.user}
+                  availability={availability}
+                  myAvailability={myAvailability}
+                  submitAvail={this.submitAvailability}
+                  event={event}
+                />
               </div>
               {Object.keys(user).length > 0 ?
                 eventParticipantsIds.indexOf(user._id) > -1 ?
@@ -438,7 +404,7 @@ class EventDetailsComponent extends React.Component {
                     className="waves-effect waves-light btn"
                     onClick={this.joinEvent}
                   >Join Event</a> :
-                <p>Login to enter your availability!</p>
+                  <p>Login to enter your availability!</p>
               }
             </div>
           }
@@ -471,7 +437,7 @@ class EventDetailsComponent extends React.Component {
           activeClassName="notification-bar-is-active"
         />
         <dialog
-          onClick={(ev) => ev.stopPropagation()}
+          onClick={ev => ev.stopPropagation()}
           className="mdl-dialog"
           styleName="mdl-dialog"
           id="deleteEventModal"

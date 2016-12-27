@@ -20,7 +20,6 @@ module.exports = (passport) => {
     clientID: configAuth.googleAuth.clientID,
     clientSecret: configAuth.googleAuth.clientSecret,
     callbackURL: configAuth.googleAuth.callbackURL,
-    profileFields: ['id', 'displayName', 'photos', 'emails'],
   }, (token, refreshToken, profile, done) => {
     process.nextTick(() => {
       User.findOne({ googleId: profile.id }, (err, user) => {
@@ -55,7 +54,7 @@ module.exports = (passport) => {
         if (user) return done(null, user);
 
         const newUser = new User();
-       
+
         newUser.facebookId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
