@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 
-export function setup(User, config) {
+export const setup = (User, config) => {
   passport.use(new FacebookStrategy({
     clientID: config.facebookAuth.clientID,
     clientSecret: config.facebookAuth.clientSecret,
@@ -12,24 +12,28 @@ export function setup(User, config) {
       'photos',
       'emails',
     ],
-  },
-  (token, refreshToken, profile, done) => {
-    User.findOne({ facebookId: profile.id }).exec()
-      .then((user) => {
-        if (user) {
-          return done(null, user);
-        }
-
-        const newUser = new User({
-          name: profile.displayName,
-          facebookId: profile.id,
-          email: profile.emails,
-          avatar: profile.photos[0].value,
+  }, (token, refreshToken, profile, done) => {
+    process.nextTick(() => {
+      User.findOne({ facebookId: profile.id }, (err, user) => {
+        if (err) return done(err);
+        if (user) return done(null, user);
+       
+        const newUser = new User();
+        console.log('profile', profile);
+        newUser.facebookId = profile.id;
+        newUser.name = profile.displayName;
+        newUser.avatar = profile.photos[0].value;
+        const emailToAdd = [];
+        profile.emails.forEach((email) => {
+          emailToAdd.push(email.value);
         });
-        newUser.save()
-          .then(savedUser => done(null, savedUser))
-          .catch(err => done(err));
-      })
-      .catch(err => done(err));
+        newUser.emails = emailToAdd;
+        newUser.save((err) => {
+          if (err) throw err;
+          return done(null, newUser);
+        });
+      });
+    });
   }));
-}
+};
+

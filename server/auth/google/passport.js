@@ -1,7 +1,8 @@
 import passport from 'passport';
+
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-export function setup(User, config) {
+export const setup = (User, config) => {
   passport.use(new GoogleStrategy({
     clientID: config.googleAuth.clientID,
     clientSecret: config.googleAuth.clientSecret,
@@ -21,7 +22,6 @@ export function setup(User, config) {
           emailToAdd.push(email.value);
         });
         newUser.emails = emailToAdd;
-
         newUser.save((err) => {
           if (err) throw err;
           return done(null, newUser);
@@ -29,4 +29,4 @@ export function setup(User, config) {
       });
     });
   }));
-}
+};

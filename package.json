@@ -1,6 +1,6 @@
 {
   "name": "letsmeet",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Schedule events with ease!",
   "main": "index.js",
   "scripts": {
@@ -15,12 +15,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/akiralaine/letsmeet.git"
+    "url": "git+https://github.com/FreeCodeCamp/LetsMeet"
   },
   "author": "Aniruddh Agarwal <aaniruddh99@gmail.com>",
+    "contributors": [{
+    "name": "Jean Philip de Rogatis",
+    "email": "jrogatis@rogatis.eti.br"
+  }],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/akiralaine/letsmeet/issues"
+    "url": "https://github.com/FreeCodeCamp/LetsMeet/issues"
   },
   "engines": {
     "node": "7.2.1"
