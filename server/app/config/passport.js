@@ -27,11 +27,14 @@ module.exports = (passport) => {
         if (user) return done(null, user);
 
         const newUser = new User();
-        console.log('google', profile);
         newUser.googleId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
-        newUser.emails = profile.emails[0].value;
+        const emailToAdd = [];
+        profile.emails.forEach((email) => {
+          emailToAdd.push(email.value);
+        });
+        newUser.emails = emailToAdd;
 
         newUser.save((err) => {
           if (err) throw err;
@@ -58,7 +61,7 @@ module.exports = (passport) => {
         newUser.facebookId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
-        newUser.emails = profile.emails[0].value;
+        newUser.emails = profile.emails;
 
         newUser.save((err) => {
           if (err) throw err;
