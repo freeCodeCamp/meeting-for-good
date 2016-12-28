@@ -17,9 +17,8 @@ export const setup = (User, config) => {
       User.findOne({ facebookId: profile.id }, (err, user) => {
         if (err) return done(err);
         if (user) return done(null, user);
-       
+
         const newUser = new User();
-        console.log('profile', profile);
         newUser.facebookId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
