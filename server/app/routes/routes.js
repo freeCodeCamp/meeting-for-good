@@ -1,6 +1,8 @@
 import passport from 'passport';
 import _ from 'lodash';
 import sendEmail from '../config/email';
+import events from '../../api/events';
+import users from '../../api/user';
 
 const path = process.cwd();
 
@@ -9,8 +11,8 @@ const isAuthenticated = (req, res, next) => {
 
   return res.status(403).send('Authentiation required.');
 };
-const events =  require('../../api/events');
-const users = require('../../api/user');
+
+
 
 export default (app) => {
   /*
