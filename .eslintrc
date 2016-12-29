@@ -9,16 +9,21 @@
     "no-console": 0,
     "strict": [0, "global"],
     "react/prefer-stateless-function": 0,
-    "no-multi-spaces": ["error", { "exceptions": { "VariableDeclarator": true } }],
+    "no-multi-spaces": ["error", {
+      "exceptions": {
+        "VariableDeclarator": true
+      }
+    }],
     "no-shadow": 0,
     "no-underscore-dangle": 0,
     "arrow-body-style": 0,
     "consistent-return": 0,
     "no-nested-ternary": 0,
     "max-len": 0,
-    "allowForLoopAfterthoughts": true,
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-
+    "allowForLoopAfterthoughts": 0,
+    "react/jsx-filename-extension": [1, {
+      "extensions": [".js", ".jsx"]
+    }],
   },
   "plugins": [
     "react",

@@ -1,4 +1,4 @@
-const formatTime = timeNum => {
+const formatTime = (timeNum) => {
   let hours = String(timeNum).split('.')[0];
   let minutes = String(timeNum).split('.')[1];
   let suffix = 'AM';
@@ -30,7 +30,7 @@ const formatTime = timeNum => {
   return `${hours}:${minutes} ${suffix}`;
 };
 
-const getHours = timeString => {
+const getHours = (timeString) => {
   const prefix = timeString.split(':')[0];
   let suffix = timeString.split(':')[1].split(' ')[1];
 
@@ -45,4 +45,19 @@ const getHours = timeString => {
 
 const getMinutes = timeString => Number(timeString.split(':')[1].split(' ')[0]);
 
-export { formatTime, getHours, getMinutes };
+const addZero = (time) => {
+  if (Number(String(time).split(':')[0]) < 10) {
+    time = `0${time}`;
+  }
+  return time;
+};
+
+const removeZero = (time) => {
+  if (Number(String(time).split(':')[0]) < 10) {
+    time = Number(String(time).split(':')[0]);
+  }
+  return time;
+};
+
+
+export { formatTime, getHours, getMinutes, addZero, removeZero };
