@@ -422,7 +422,7 @@ class EventDetailsComponent extends React.Component {
                 {participant.name}
               </div>
             ))}
-  
+
           </div>
         </div>
         <div styleName="action" className="card-action">
