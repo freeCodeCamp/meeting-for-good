@@ -7,7 +7,7 @@
  * GET     /api/events/:id              ->  show
  * PUT     /api/events/:id              ->  upsert
  * PATCH   /api/events/:id              ->  patch
- * DELETE  /api/events/:id              ->  destroy
+ * DELETE  /api/events/:id              ->  setFalse
  */
 
 'use strict';
@@ -64,6 +64,20 @@ const handleError = (res, statusCode) => {
   return (err) => {
     res.status(statusCode).send(err);
   };
+};
+
+
+// Make a false delete setting the active to false
+export const setFalse =  (req, res) => {
+  Events.findById(req.params.id, (err, event) => {
+    if (err) return res.status(500).send(err);
+    if (!event || !event.active) return res.status(404).send('Not found.');
+    event.active = false;
+    event.save((err) => {
+      if (err) return res.status(500).send(err);
+      return res.status(200).json(event);
+    });
+  });
 };
 
 // Gets a list of all active events

@@ -113,19 +113,14 @@ class EventCard extends React.Component {
 
   @autobind
   async deleteEvent() {
-    const event = JSON.parse(JSON.stringify(this.props.event));
-    const observerEvent = jsonpatch.observe(event);
-    event.active = false;
-    const patches = jsonpatch.generate(observerEvent);
     const response =  await fetch(
-      `/api/events/${event._id}`,
+      `/api/events/${this.props.event._id}`,
       {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        method: 'PATCH',
-        body: JSON.stringify(patches),
+        method: 'DELETE',
         credentials: 'same-origin',
       },
     );
