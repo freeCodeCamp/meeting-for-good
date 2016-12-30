@@ -5,10 +5,8 @@ import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
-import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 import 'react-day-picker/lib/style.css';
-import { checkStatus } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 import styles from '../styles/event-card.css';
 
@@ -106,38 +104,6 @@ class EventCard extends React.Component {
           .remove();
       });
     }, 100);
-  }
-
-  @autobind
-  async deleteEvent() {
-    const response =  await fetch(
-      `/api/events/${this.props.event._id}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-        credentials: 'same-origin',
-      },
-    );
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to delete event. Please try again later.',
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.props.removeEventFromDashboard(this.state.event._id);
   }
 
   @autobind
