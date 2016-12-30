@@ -3,43 +3,16 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
-import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
 import 'react-day-picker/lib/style.css';
-import { getCurrentUser } from '../util/auth';
 import styles from '../styles/event-card.css';
 
 class EventCard extends React.Component {
   constructor(props) {
     super(props);
 
-    const { event } = props;
-    let ranges;
-    let dates;
-
-    if (event.weekDays) {
-      dates = event.dates;
-    } else {
-      delete event.weekDays;
-
-      ranges = event.dates.map(({ fromDate, toDate }) => ({
-        from: new Date(fromDate),
-        to: new Date(toDate),
-      }));
-
-      dates = event.dates.map(({ fromDate, toDate }) => ({
-        fromDate: new Date(fromDate),
-        toDate: new Date(toDate),
-      }));
-    }
-
     this.state = {
-      participants: props.event.participants,
-      ranges,
-      dates,
-      event,
-      user: {},
       notificationMessage: '',
       notificationIsActive: false,
     };
@@ -56,11 +29,11 @@ class EventCard extends React.Component {
 
   @autobind
   redirectToEvent() {
-    browserHistory.push(`/event/${this.state.event._id}`);
+    browserHistory.push(`/event/${event._id}`);
   }
 
   render() {
-    const { event, user } = this.state;
+    const { event, user, ranges, isBestTime, bestTimes } = this.props;
     let isOwner;
     let modifiers;
 
@@ -68,45 +41,45 @@ class EventCard extends React.Component {
       isOwner = event.owner === user._id;
     }
 
-    // Get maximum and minimum month from the selected dates to limit the daypicker to those months
+    // Get maximum and minimum month from the selected dates to limit the
+    // daypicker to those months
     let maxDate;
     let minDate;
 
-    if (this.state.ranges) {
+    if (ranges) {
       modifiers = {
         selected: day =>
           DateUtils.isDayInRange(day, this.state) ||
-          this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
+          ranges.some(v => DateUtils.isDayInRange(day, v)),
       };
-      const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
+      const dateInRanges = _.flatten(ranges.map(range =>
+        [range.from, range.to]
+      ));
       maxDate = new Date(Math.max.apply(null, dateInRanges));
       minDate = new Date(Math.min.apply(null, dateInRanges));
     }
-
-    const bestTimes = this.state.displayTimes;
-    let isBestTime;
-
-    if (bestTimes !== undefined) {
-      if (Object.keys(bestTimes).length > 0) isBestTime = true;
-      else isBestTime = false;
-    } else isBestTime = false;
 
     return (
       <div onClick={this.redirectToEvent} className="card" styleName="event">
         {
           isOwner ?
             <button
-              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+              className="mdl-button mdl-js-button mdl-button--fab\
+                         mdl-button--colored"
               styleName="delete-event"
               onClick={(ev) => {
                 ev.stopPropagation();
-                document.querySelector(`#deleteEventModal${this.state.event._id}`).showModal();
+                document.querySelector(
+                  `#deleteEventModal${this.props.event._id}`
+                ).showModal();
               }}
             ><i className="material-icons">delete</i></button> : null
         }
         <div className="card-content">
           <span styleName="card-title" className="card-title">{event.name}</span>
-          <h6 id="best"><strong>All participants so far are available at:</strong></h6>
+          <h6 id="best">
+            <strong>All participants so far are available at:</strong>
+        </h6>
           <div className="row">
             <div className="col s12">
               {isBestTime ?
@@ -157,7 +130,9 @@ class EventCard extends React.Component {
           </div>
         </div>
         <div className="card-action">
-          <Link styleName="details-link" to={`/event/${event.uid}`}>View Details</Link>
+          <Link styleName="details-link" to={`/event/${event.uid}`}>
+            View Details
+        </Link>
         </div>
         <Notification
           isActive={this.state.notificationIsActive}
@@ -169,23 +144,27 @@ class EventCard extends React.Component {
           activeClassName="notification-bar-is-active"
         />
         <dialog
-          onClick={(ev) => ev.stopPropagation()}
+          onClick={ev => ev.stopPropagation()}
           className="mdl-dialog"
           styleName="mdl-dialog"
-          id={`deleteEventModal${this.state.event._id}`}
+          id={`deleteEventModal${event._id}`}
         >
-          <h6 styleName="modal-title" className="mdl-dialog__title">Are you sure you want to delete the event?</h6>
+          <h6 styleName="modal-title" className="mdl-dialog__title">
+            Are you sure you want to delete the event?
+          </h6>
           <div className="mdl-dialog__actions">
             <button
               type="button"
               className="mdl-button close"
-              onClick={() => document.querySelector(`#deleteEventModal${this.state.event._id}`).close()}
+              onClick={() =>
+                document.querySelector(`#deleteEventModal${event._id}`).close(),
+              }
             >Cancel</button>
             <button
               type="button"
               className="mdl-button"
               style={{ color: '#f44336' }}
-              onClick={this.deleteEvent}
+              onClick={this.props.deleteEvent}
             >Yes</button>
           </div>
         </dialog>
@@ -196,7 +175,10 @@ class EventCard extends React.Component {
 
 EventCard.propTypes = {
   event: React.PropTypes.object,
-  removeEventFromDashboard: React.PropTypes.func,
+  isBestTime: React.PropTypes.bool,
+  deleteEvent: React.PropTypes.func,
+  user: React.PropTypes.object,
+  ranges: React.PropTypes.array,
 };
 
 export default cssModules(EventCard, styles);
