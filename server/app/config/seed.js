@@ -15,7 +15,7 @@ Event.find({}).remove(() => {
       {
         name: 'Akira Laine',
         avatar: 'https://avatars0.githubusercontent.com/u/11958359?v=3&s=460',
-        availibility : [
+        availibility: [
           {
             "date" : "19 Apr",
             "hours" : [
