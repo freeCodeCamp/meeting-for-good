@@ -33,31 +33,17 @@ class EventCard extends React.Component {
   }
 
   render() {
-    const { event, user, ranges, isBestTime, bestTimes } = this.props;
-    let isOwner;
-    let modifiers;
-
-    if (user !== undefined) {
-      isOwner = event.owner === user._id;
-    }
-
-    // Get maximum and minimum month from the selected dates to limit the
-    // daypicker to those months
-    let maxDate;
-    let minDate;
-
-    if (ranges) {
-      modifiers = {
-        selected: day =>
-          DateUtils.isDayInRange(day, this.state) ||
-          ranges.some(v => DateUtils.isDayInRange(day, v)),
-      };
-      const dateInRanges = _.flatten(ranges.map(range =>
-        [range.from, range.to]
-      ));
-      maxDate = new Date(Math.max.apply(null, dateInRanges));
-      minDate = new Date(Math.min.apply(null, dateInRanges));
-    }
+    const {
+      event,
+      isOwner,
+      user,
+      ranges,
+      isBestTime,
+      bestTimes,
+      modifiers,
+      maxDate,
+      minDate
+    } = this.props;
 
     return (
       <div onClick={this.redirectToEvent} className="card" styleName="event">
