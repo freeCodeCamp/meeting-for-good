@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
-import styles from '../styles/navbar.css';
 import autobind from 'autobind-decorator';
+import styles from '../styles/navbar.css';
 
 import '../styles/no-css-modules/mdl.css';
+import facebookLogo from '../assets/facebook.png';
+import googleLogo from '../assets/google.png';
 
 class Navbar extends React.Component {
   constructor(props) {
@@ -38,7 +40,7 @@ class Navbar extends React.Component {
         <div className="mdl-navigation">
           <Link className="mdl-navigation__link" to="/dashboard">Dashboard</Link>
           <a className="mdl-navigation__link" href="/api/auth/logout">Logout</a>
-          <a className="mdl-navigation__link" href="#">
+          <a className="mdl-navigation__link" href="#avatar">
             <img
               alt="avatar"
               styleName="nav-img"
@@ -55,12 +57,12 @@ class Navbar extends React.Component {
           className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--indigo"
           href="/api/auth/facebook"
           onClick={this.handleAuthClick}
-        ><img src={require('../assets/facebook.png')} alt="Facebook Logo" /> Login with Facebook</a>
+        ><img src={facebookLogo} alt="Facebook Logo" /> Login with Facebook</a>
         <a
           className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red"
           href="/api/auth/google"
           onClick={this.handleAuthClick}
-        ><img src={require('../assets/google.png')} alt="Google Logo" /> Login with Google</a>
+        ><img src={googleLogo} alt="Google Logo" /> Login with Google</a>
       </div>
     );
   }

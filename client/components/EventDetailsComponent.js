@@ -4,7 +4,6 @@ import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
-import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
@@ -248,7 +247,7 @@ class EventDetailsComponent extends React.Component {
       for (let j = 0; j < availability.length; j++) {
         for (let k = 0; k < availability[j].length; k++) {
           if (availability[j][k][0] === current[0]) {
-            count++;
+            count += 1;
           }
         }
       }
@@ -304,8 +303,6 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    let modifiers;
-
     const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;

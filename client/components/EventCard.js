@@ -7,7 +7,6 @@ import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
-import jsonpatch from 'fast-json-patch';
 import 'react-day-picker/lib/style.css';
 
 import { checkStatus } from '../util/fetch.util';

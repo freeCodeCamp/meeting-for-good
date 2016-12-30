@@ -123,7 +123,7 @@ class AvailabilityGrid extends React.Component {
     // then split the grid  at this point.
     const hourTime = this.state.hourTime.slice(0);
 
-    for (let i = 0; i < hourTime.length; i += 1) {
+    for (let i = 0; i < hourTime.length; i++ {
       if (hourTime[i + 1]) {
         const date = moment(new Date());
         const nextDate = moment(new Date());

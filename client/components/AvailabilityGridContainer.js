@@ -1,21 +1,16 @@
 import React from 'react';
-import cssModules from 'react-css-modules';
-import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
-import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes } from '../util/time-format';
-import colorsys from 'colorsys';
 import nprogress from 'nprogress';
-import styles from '../styles/availability-grid.css';
+import { checkStatus } from '../util/fetch.util';
 import AvailabilityGrid from './AvailabilityGrid';
 
 export default class AvailabilityGridContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    let dateFormatStr = 'Do MMM';
+    const dateFormatStr = 'Do MMM';
 
     this.state = {
       availability: [],
@@ -178,7 +173,7 @@ export default class AvailabilityGridContainer extends React.Component {
     return (
       <AvailabilityGrid
         allDatesRender={allDatesRender}
-        allTimeRender={allTimeRender}
+        allTimeRender={allTimesRender}
         hourTime={hourTime}
         dates={dates}
       />
@@ -186,7 +181,7 @@ export default class AvailabilityGridContainer extends React.Component {
   }
 }
 
-AvailabilityGrid.propTypes = {
+AvailabilityGridContainer.propTypes = {
   dates: React.PropTypes.array.isRequired,
   heatmap: React.PropTypes.bool,
   weekDays: React.PropTypes.bool,
