@@ -3,3 +3,4 @@ node_modules
 build
 out.log
 jsconfig.json
+.DS_Store
