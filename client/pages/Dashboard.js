@@ -39,9 +39,8 @@ class Dashboard extends React.Component {
 
     nprogress.configure({ showSpinner: false });
     nprogress.start();
-    const response = await fetch('/api/users/current/events', { credentials: 'same-origin' });
+    const response = await fetch('/api/events/getByUser', { credentials: 'same-origin' });
     let events;
-
     try {
       checkStatus(response);
       events = await parseJSON(response);

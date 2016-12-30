@@ -5,10 +5,13 @@ import moment from 'moment';
 import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
 import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes } from '../util/time-format';
+import { getHours, getMinutes, addZero, removeZero  } from '../util/time-format';
+import { getDaysBetween } from '../util/dates.utils';
+import { getTimesBetween } from '../util/times.utils';
 import colorsys from 'colorsys';
 import nprogress from 'nprogress';
 import styles from '../styles/availability-grid.css';
+import jsonpatch from 'fast-json-patch';
 
 class AvailabilityGrid extends React.Component {
   constructor(props) {
@@ -40,11 +43,11 @@ class AvailabilityGrid extends React.Component {
     } = this.props;
 
     const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
-      this.getDaysBetween(fromDate, toDate),
+      getDaysBetween(fromDate, toDate),
     ));
 
     const allTimes = _.flatten([dates[0]].map(({ fromDate, toDate }) =>
-      this.getTimesBetween(fromDate, toDate),
+      getTimesBetween(fromDate, toDate),
     ));
 
     const allDatesRender = allDates.map(date => moment(date).format(dateFormatStr));
@@ -133,80 +136,30 @@ class AvailabilityGrid extends React.Component {
     }
   }
 
-  getTimesBetween(start, end) {
-    let times = [start];
-    let currentTime = start;
+  getPosition(el) {
+    let xPosition = 0;
+    let yPosition = 0;
+    let xScrollPos;
+    let yScrollPos;
 
-    if (moment(end).hour() === 0) {
-      end = moment(end)
-        .subtract(1, 'd')
-        .hour(23)
-        .minute(59)._d;
-    }
-
-    if (moment(end).hour() < moment(start).hour()) {
-      // days are split
-      currentTime = moment(start)
-        .set('hour', 0)
-        .set('minute', 0)._d;
-      times = [currentTime];
-
-      if (moment(end).hour() === 0) times = [];
-
-      while (moment(end).hour() > moment(times.slice(-1)[0]).hour()) {
-        currentTime = moment(currentTime).add(15, 'm')._d;
-        times.push(currentTime);
+    while (el) {
+      if (el.tagName === 'BODY') {
+        // deal with browser quirks with body/window/document and page scroll
+        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
+        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
+        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
+        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
+      } else {
+        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
       }
-
-      currentTime = moment(currentTime)
-        .set('hour', moment(start).get('hour'))
-        .set('minute', moment(start).get('minute'))._d;
-
-      times.pop();
-      times.push(currentTime);
-
-      while (moment(times.slice(-1)[0]).hour() > 0) {
-        currentTime = moment(currentTime).add(15, 'm')._d;
-        times.push(currentTime);
-      }
-    } else {
-      end = moment(end).set('date', moment(start).get('date'));
-
-      while (moment(end).isAfter(moment(times.slice(-1)[0]))) {
-        currentTime = moment(currentTime).add(15, 'm')._d;
-        times.push(currentTime);
-      }
+      el = el.offsetParent;
     }
-
-    return times;
+    return {
+      x: xPosition,
+      y: yPosition,
+    };
   }
-
-  // Get all days between start and end.
-  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
-  // (all input and output is in javascript Date objects)
-  getDaysBetween(start, end) {
-    const dates = [start];
-    let currentDay = start;
-
-    // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
-    // create an extra row in the grid made up only of disabled cells.
-    if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
-
-    while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
-      currentDay = moment(currentDay).add(1, 'd')._d;
-      dates.push(currentDay);
-    }
-
-    return dates;
-  }
-
-  removeZero(time) {
-    if (Number(String(time).split(':')[0]) < 10) {
-      time = Number(String(time).split(':')[0]);
-    }
-    return time;
-  }
-
 
   modifyHourTime(hourTime, date, i) {
     // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
@@ -327,14 +280,15 @@ class AvailabilityGrid extends React.Component {
 
     const { _id } = this.props.user;
     const event = JSON.parse(JSON.stringify(this.props.event));
-
+    const observerEvent = jsonpatch.observe(event);
     event.participants = event.participants.map((user) => {
-      if (user._id === _id) user.availability = availability;
+      if (user.userId === _id) user.availability = availability;
       return user;
     });
 
     nprogress.configure({ showSpinner: false });
     nprogress.start();
+    const patches = jsonpatch.generate(observerEvent);
     const response = await fetch(
       `/api/events/${event._id}`,
       {
@@ -342,8 +296,8 @@ class AvailabilityGrid extends React.Component {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        method: 'PUT',
-        body: JSON.stringify(event),
+        method: 'PATCH',
+        body: JSON.stringify(patches),
         credentials: 'same-origin',
       },
     );
@@ -351,7 +305,7 @@ class AvailabilityGrid extends React.Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log(err);
+      console.log('err at PATCH AvailabilityGrid', err);
       return;
     } finally {
       nprogress.done();
@@ -454,9 +408,7 @@ class AvailabilityGrid extends React.Component {
               key={i}
               className="grid-hour"
               styleName="grid-hour"
-            >
-              {`${this.removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}
-            </p>
+            >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
           );
         })}
         {allDatesRender.map((date, i) => (
