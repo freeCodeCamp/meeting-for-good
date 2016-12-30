@@ -4,14 +4,14 @@ import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
-import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes, addZero, removeZero  } from '../util/time-format';
-import { getDaysBetween } from '../util/dates.utils';
-import { getTimesBetween } from '../util/times.utils';
 import colorsys from 'colorsys';
 import nprogress from 'nprogress';
-import styles from '../styles/availability-grid.css';
 import jsonpatch from 'fast-json-patch';
+import { checkStatus } from '../util/fetch.util';
+import { getHours, getMinutes, removeZero } from '../util/time-format';
+import { getDaysBetween } from '../util/dates.utils';
+import { getTimesBetween } from '../util/times.utils';
+import styles from '../styles/availability-grid.css';
 
 class AvailabilityGrid extends React.Component {
   constructor(props) {
