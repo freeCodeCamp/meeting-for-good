@@ -3,29 +3,29 @@ import Event from '../models/event.js';
 Event.find({}).remove(() => {
   Event.create([{
     name: 'Event 1',
-      dates: [{
-        from: new Date('19 April 2016'),
-        to: new Date('2 May 2016'),
-      }],
-      participants: [
-        {
-          name: 'Aniruddh Agarwal',
-          avatar: 'https://avatars1.githubusercontent.com/u/5279150?v=3&s=460',
-        },
-        {
-          name: 'Akira Laine',
-          avatar: 'https://avatars0.githubusercontent.com/u/11958359?v=3&s=460',
-          "availibility" : [
-            {
-              "date" : "19 Apr",
-              "hours" : [
-                "02",
-                "03",
-                "04",
-                "08",
-                "09",
-              ]
-            },
+    dates: [{
+      from: new Date('19 April 2016'),
+      to: new Date('2 May 2016'),
+    }],
+    participants: [
+      {
+        name: 'Aniruddh Agarwal',
+        avatar: 'https://avatars1.githubusercontent.com/u/5279150?v=3&s=460',
+      },
+      {
+        name: 'Akira Laine',
+        avatar: 'https://avatars0.githubusercontent.com/u/11958359?v=3&s=460',
+        availibility : [
+          {
+            "date" : "19 Apr",
+            "hours" : [
+              "02",
+              "03",
+              "04",
+              "08",
+              "09",
+            ]
+          },
             {
               "date" : "20 Apr",
               "hours" : [
