@@ -1,9 +1,11 @@
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
-import User from '../models/users';
+import User from '../../api/user/user.model';
 import configAuth from './auth';
 
-module.exports = passport => {
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+
+
+module.exports = (passport) => {
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
@@ -25,12 +27,16 @@ module.exports = passport => {
         if (user) return done(null, user);
 
         const newUser = new User();
-
         newUser.googleId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
+        const emailToAdd = [];
+        profile.emails.forEach((email) => {
+          emailToAdd.push(email.value);
+        });
+        newUser.emails = emailToAdd;
 
-        newUser.save(err => {
+        newUser.save((err) => {
           if (err) throw err;
 
           return done(null, newUser);
@@ -43,7 +49,7 @@ module.exports = passport => {
     clientID: configAuth.facebookAuth.clientID,
     clientSecret: configAuth.facebookAuth.clientSecret,
     callbackURL: configAuth.facebookAuth.callbackURL,
-    profileFields: ['id', 'displayName', 'photos'],
+    profileFields: ['id', 'displayName', 'photos', 'emails'],
   }, (token, refreshToken, profile, done) => {
     process.nextTick(() => {
       User.findOne({ facebookId: profile.id }, (err, user) => {
@@ -55,8 +61,9 @@ module.exports = passport => {
         newUser.facebookId = profile.id;
         newUser.name = profile.displayName;
         newUser.avatar = profile.photos[0].value;
+        newUser.emails = profile.emails;
 
-        newUser.save(err => {
+        newUser.save((err) => {
           if (err) throw err;
 
           return done(null, newUser);

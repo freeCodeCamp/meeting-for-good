@@ -1,23 +1,22 @@
 import fetch from 'isomorphic-fetch';
 import { checkStatus, parseJSON } from './fetch.util';
 
-function isAuthenticated() {
-  return new Promise(resolve => {
+export const isAuthenticated = () => {
+  return new Promise((resolve) => {
     fetch('/api/auth/current', { credentials: 'same-origin' })
       .then(checkStatus)
       .then(() => resolve(true))
       .catch(() => resolve(false));
   });
-}
+};
 
-function getCurrentUser() {
-  return new Promise(resolve => {
+export const getCurrentUser = () => {
+  return new Promise((resolve) => {
     fetch('/api/auth/current', { credentials: 'same-origin' })
       .then(checkStatus)
       .then(parseJSON)
       .then(user => resolve(user))
       .catch(() => resolve(false));
   });
-}
+};
 
-export { isAuthenticated, getCurrentUser };

@@ -1,4 +1,4 @@
-const checkStatus = response => {
+export const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
@@ -8,6 +8,5 @@ const checkStatus = response => {
   throw error;
 };
 
-const parseJSON = response => response.json();
+export const parseJSON = response => response.json();
 
-export { checkStatus as checkStatus, parseJSON as parseJSON };

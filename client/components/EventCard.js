@@ -7,7 +7,7 @@ import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
-
+import jsonpatch from 'fast-json-patch';
 import 'react-day-picker/lib/style.css';
 
 import { checkStatus } from '../util/fetch.util';
@@ -113,9 +113,17 @@ class EventCard extends React.Component {
 
   @autobind
   async deleteEvent() {
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin', method: 'DELETE',
-    });
+    const response =  await fetch(
+      `/api/events/${this.props.event._id}`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+        credentials: 'same-origin',
+      },
+    );
 
     nprogress.configure({ showSpinner: false });
     nprogress.start();
@@ -137,7 +145,7 @@ class EventCard extends React.Component {
 
   @autobind
   redirectToEvent() {
-    browserHistory.push(`/event/${this.state.event.uid}`);
+    browserHistory.push(`/event/${this.state.event._id}`);
   }
 
   render() {
@@ -209,30 +217,15 @@ class EventCard extends React.Component {
                     </div>
                     <hr />
                   </div>
-                )) : !event.weekDays ?
-                  <DayPicker
-                    className="alt"
-                    styleName="day-picker"
-                    initialMonth={minDate}
-                    fromMonth={minDate}
-                    toMonth={maxDate}
-                    modifiers={modifiers}
-                  /> :
-                Object.keys(event.weekDays).map((day, index) => {
-                  let className = 'btn-flat alt';
-                  if (!event.weekDays[day]) {
-                    className += ' disabled';
-                  }
-
-                  return (
-                    <a
-                      id="alt"
-                      key={index}
-                      className={className}
-                      onClick={this.handleWeekdaySelect}
-                    >{day}</a>
-                  );
-                })
+                )) :
+                <DayPicker
+                  className="alt"
+                  styleName="day-picker"
+                  initialMonth={minDate}
+                  fromMonth={minDate}
+                  toMonth={maxDate}
+                  modifiers={modifiers}
+                />
               }
             </div>
           </div>
