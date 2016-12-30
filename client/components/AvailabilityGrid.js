@@ -16,72 +16,6 @@ import styles from '../styles/availability-grid.css';
 class AvailabilityGrid extends React.Component {
   constructor(props) {
     super(props);
-
-    let dateFormatStr = 'Do MMM';
-
-    if (props.weekDays) dateFormatStr = 'ddd';
-
-    this.state = {
-      availability: [],
-      allTimes: [],
-      allTimesRender: [],
-      allDates: [],
-      allDatesRender: [],
-      dateFormatStr,
-      availableOnDate: [],
-      notAvailableOnDate: [],
-      hourTime: [],
-      startCell: null,
-      endCell: null,
-    };
-  }
-
-  componentWillMount() {
-    const {
-      dates,
-      dateFormatStr,
-    } = this.props;
-
-    const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
-      getDaysBetween(fromDate, toDate),
-    ));
-
-    const allTimes = _.flatten([dates[0]].map(({ fromDate, toDate }) =>
-      getTimesBetween(fromDate, toDate),
-    ));
-
-    const allDatesRender = allDates.map(date =>
-      moment(date).format(dateFormatStr),
-    );
-
-    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
-
-    allTimesRender.pop();
-
-    const hourTime = allTimesRender
-      .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
-
-    const lastHourTimeEl = hourTime.slice(-1)[0];
-    const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
-
-    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) ||
-        getMinutes(lastAllTimesRenderEl) === 45) {
-      hourTime.push(
-        moment(new Date())
-        .set('h', getHours(lastHourTimeEl))
-        .set('m', getMinutes(lastHourTimeEl))
-        .add(1, 'h')
-        .format('hh:mm a'),
-      );
-    }
-
-    this.setState({
-      allDates,
-      allTimes,
-      allDatesRender,
-      allTimesRender,
-      hourTime,
-    });
   }
 
   componentDidMount() {
@@ -121,7 +55,7 @@ class AvailabilityGrid extends React.Component {
 
     // Check if two adjacent grid hours labels are consecutive or not. If not,
     // then split the grid  at this point.
-    const hourTime = this.state.hourTime.slice(0);
+    const hourTime = this.props.hourTime.slice(0);
 
     for (let i = 0; i < hourTime.length; i++ {
       if (hourTime[i + 1]) {
@@ -196,7 +130,6 @@ class AvailabilityGrid extends React.Component {
       const availableOnDate = [];
       const notAvailableOnDate = [];
 
-      if (this.props.weekDays) formatStr = 'ddd hh:mm a';
       const participants = JSON.parse(JSON.stringify(this.props.participants))
         .filter(participant => participant.availability)
         .map((participant) => {
@@ -279,61 +212,6 @@ class AvailabilityGrid extends React.Component {
       this.setState({ startCell: null });
       this.setState({ endCell: null });
     }
-  }
-
-  @autobind
-  async submitAvailability() {
-    const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
-    const availability = [];
-
-    $('.cell').each((i, el) => {
-      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
-        const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
-        const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
-
-        const date = moment(allDates[dateIndex]).get('date');
-
-        const from = moment(allTimes[timeIndex]).set('date', date)._d;
-        const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
-
-        availability.push([from, to]);
-      }
-    });
-
-    const { _id } = this.props.user;
-    const event = JSON.parse(JSON.stringify(this.props.event));
-    const observerEvent = jsonpatch.observe(event);
-    event.participants = event.participants.map((user) => {
-      if (user.userId === _id) user.availability = availability;
-      return user;
-    });
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const patches = jsonpatch.generate(observerEvent);
-    const response = await fetch(
-      `/api/events/${event._id}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'PATCH',
-        body: JSON.stringify(patches),
-        credentials: 'same-origin',
-      },
-    );
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('err at PATCH AvailabilityGrid', err);
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.props.submitAvail(availability);
   }
 
   @autobind
@@ -539,9 +417,7 @@ class AvailabilityGrid extends React.Component {
 
 AvailabilityGrid.propTypes = {
   dates: React.PropTypes.array.isRequired,
-  dateFormatStr: React.PropTypes.string,
   heatmap: React.PropTypes.bool,
-  weekDays: React.PropTypes.bool,
   user: React.PropTypes.object,
   availability: React.PropTypes.array,
   submitAvail: React.PropTypes.func,
