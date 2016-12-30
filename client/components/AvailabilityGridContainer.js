@@ -32,100 +32,6 @@ export default class AvailabilityGridContainer extends React.Component {
     };
   }
 
-  componentWillMount() {
-    const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
-      this.getDaysBetween(fromDate, toDate),
-    ));
-
-    const allTimes = _.flatten([this.props.dates[0]].map(({ fromDate, toDate }) =>
-      this.getTimesBetween(fromDate, toDate),
-    ));
-
-    const allDatesRender = allDates.map(date => moment(date).format(this.state.dateFormatStr));
-    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
-
-    allTimesRender.pop();
-
-    const hourTime = allTimesRender
-      .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
-
-    const lastHourTimeEl = hourTime.slice(-1)[0];
-    const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
-
-    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
-      hourTime.push(
-        moment(new Date())
-        .set('h', getHours(lastHourTimeEl))
-        .set('m', getMinutes(lastHourTimeEl))
-        .add(1, 'h')
-        .format('hh:mm a'),
-      );
-    }
-
-    this.setState({ allDates, allTimes, allDatesRender, allTimesRender, hourTime });
-  }
-
-  componentDidMount() {
-    if (this.props.heatmap) this.renderHeatmap();
-    if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
-
-    $('.cell').on('click', (e) => {
-      if (!this.props.heatmap) this.addCellToAvail(e);
-    });
-
-    // Offset the grid-hour row if the event starts with a date that's offset by
-    // 15/30/45 minutes.
-    const gridHour = document.querySelector('.grid-hour');
-    const { allTimesRender } = this.state;
-
-    if (getMinutes(allTimesRender[0]) === 15) {
-      gridHour.setAttribute('style', 'margin-left: 50.6px !important');
-    } else if (getMinutes(allTimesRender[0]) === 30) {
-      gridHour.setAttribute('style', 'margin-left: 38px !important');
-    } else if (getMinutes(allTimesRender[0]) === 45) {
-      gridHour.setAttribute('style', 'margin-left: 25.2px !important');
-    }
-
-    // Change the border of the cell if it's minutes = 0 or 30 to help visually
-    // separate 15 minute blocks from 30 minute and 1 hour blocks.
-    const cells = document.querySelectorAll('.cell');
-
-    cells.forEach((cell) => {
-      if (getMinutes(cell.getAttribute('data-time')) === 0) {
-        cell.style.borderLeft = '1px solid rgb(120, 120, 120)';
-      } else if (getMinutes(cell.getAttribute('data-time')) === 30) {
-        cell.style.borderLeft = '1px solid #c3bebe';
-      }
-    });
-
-    // Check if two adjacent grid hours labels are consecutive or not. If not, then split the grid
-    // at this point.
-    const hourTime = this.state.hourTime.slice(0);
-
-    for (let i = 0; i < hourTime.length; i += 1) {
-      if (hourTime[i + 1]) {
-        const date = moment(new Date());
-        const nextDate = moment(new Date());
-
-        date.set('h', getHours(hourTime[i]));
-        date.set('m', getMinutes(hourTime[i]));
-
-        nextDate.set('h', getHours(hourTime[i + 1]));
-        nextDate.set('m', getMinutes(hourTime[i + 1]));
-
-        // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
-        // to the object again when it's inserted into this.state.hourTime.
-        if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
-          $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
-
-          // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
-          // eslint. Using setState in componentDidMount couldn't be avoided in this case.
-          this.modifyHourTime(hourTime, date, i);
-        }
-      }
-    }
-  }
-
   getTimesBetween(start, end) {
     let times = [start];
     let currentTime = start;
@@ -175,14 +81,16 @@ export default class AvailabilityGridContainer extends React.Component {
   }
 
   // Get all days between start and end.
-  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
+  // eg. getDaysBetween(25th June 2016, 30th June 2016) =>
+  // [25th, 26th, 27th, 28th, 29th, 30th]
   // (all input and output is in javascript Date objects)
   getDaysBetween(start, end) {
     const dates = [start];
     let currentDay = start;
 
-    // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
-    // create an extra row in the grid made up only of disabled cells.
+    // If the end variable's hour is 12am, then we don't want it in the allDates
+    // array, or it will create an extra row in the grid made up only of disabled
+    // cells.
     if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
 
     while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
@@ -194,7 +102,8 @@ export default class AvailabilityGridContainer extends React.Component {
   }
 
   modifyHourTime(hourTime, date, i) {
-    // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
+    // inserts the formatted date object at the 'i+1'th index in
+    // this.state.hourTime.
     this.setState({
       hourTime: [
         ...hourTime.slice(0, i + 1),
@@ -261,71 +170,6 @@ export default class AvailabilityGridContainer extends React.Component {
   @autobind
   editAvailability() {
     this.props.editAvail();
-  }
-
-  renderHeatmap() {
-    const availabilityLength = this.props.availability.filter(av => av).length;
-    const saturationDivisions = 100 / availabilityLength;
-    const saturations = [];
-
-    for (let i = 0; i <= 100; i += saturationDivisions) {
-      saturations.push(i);
-    }
-
-    const colors = saturations.map(saturation => colorsys.hsvToHex({
-      h: 271,
-      s: saturation,
-      v: 100,
-    }));
-
-    const formatStr = 'Do MMMM YYYY hh:mm a';
-    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
-    const availabilityNum = {};
-    const cells = document.querySelectorAll('.cell');
-
-    let flattenedAvailability = _.flatten(this.props.availability);
-
-    flattenedAvailability = flattenedAvailability.filter(avail => avail).map(avail =>
-      new Date(avail[0]),
-    ).map(avail =>
-      moment(avail).format(formatStr),
-    );
-
-    flattenedAvailability.forEach((avail) => {
-      if (availabilityNum[avail]) availabilityNum[avail] += 1;
-      else availabilityNum[avail] = 1;
-    });
-
-    cells.forEach((cell) => {
-      const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
-      const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
-
-      const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
-
-      cell.style.background = colors[availabilityNum[cellFormatted]];
-    });
-  }
-
-  renderAvail() {
-    const cells = document.querySelectorAll('.cell');
-    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
-    const formatStr = 'Do MMMM YYYY hh:mm a';
-    const myAvailabilityFrom = this.props.myAvailability
-                                    .map(avail => new Date(avail[0]))
-                                    .map(avail => moment(avail).format(formatStr));
-
-    cells.forEach((cell) => {
-      const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
-      const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
-
-      const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
-
-      if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        cell.style.background = 'purple';
-      }
-    });
   }
 
   render() {

@@ -50,7 +50,10 @@ class AvailabilityGrid extends React.Component {
       getTimesBetween(fromDate, toDate),
     ));
 
-    const allDatesRender = allDates.map(date => moment(date).format(dateFormatStr));
+    const allDatesRender = allDates.map(date =>
+      moment(date).format(dateFormatStr),
+    );
+
     const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
 
     allTimesRender.pop();
@@ -61,7 +64,8 @@ class AvailabilityGrid extends React.Component {
     const lastHourTimeEl = hourTime.slice(-1)[0];
     const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
 
-    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
+    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) ||
+        getMinutes(lastAllTimesRenderEl) === 45) {
       hourTime.push(
         moment(new Date())
         .set('h', getHours(lastHourTimeEl))
@@ -71,12 +75,20 @@ class AvailabilityGrid extends React.Component {
       );
     }
 
-    this.setState({ allDates, allTimes, allDatesRender, allTimesRender, hourTime });
+    this.setState({
+      allDates,
+      allTimes,
+      allDatesRender,
+      allTimesRender,
+      hourTime,
+    });
   }
 
   componentDidMount() {
     if (this.props.heatmap) this.renderHeatmap();
-    if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
+    if (this.props.myAvailability && this.props.myAvailability.length > 0) {
+      this.renderAvail();
+    }
 
     $('.cell').on('click', (e) => {
       if (!this.props.heatmap) this.addCellToAvail(e);
@@ -126,10 +138,12 @@ class AvailabilityGrid extends React.Component {
         // don't add an hour to the object again when it's inserted into
         // this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
-          $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
+          $(`.cell[data-time='${nextDate.format('hh:mm a')}']`)
+            .css('margin-left', '50px');
 
-          // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
-          // eslint. Using setState in componentDidMount couldn't be avoided in this case.
+          // 'hack' (the modifyHourTime function) to use setState in
+          // componentDidMount and bypass eslint. Using setState in
+          // componentDidMount couldn't be avoided in this case.
           this.modifyHourTime(hourTime, date, i);
         }
       }
@@ -162,7 +176,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   modifyHourTime(hourTime, date, i) {
-    // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
+    // inserts the formatted date object at the 'i+1'th index in
+    // this.state.hourTime.
     this.setState({
       hourTime: [
         ...hourTime.slice(0, i + 1),
@@ -174,7 +189,8 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   showAvailBox(ev) {
-    if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
+    if (this.props.heatmap &&
+        $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
       let formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
@@ -190,11 +206,14 @@ class AvailabilityGrid extends React.Component {
           return participant;
         });
 
-      const timeIndex = allTimesRender.indexOf(ev.target.getAttribute('data-time'));
-      const dateIndex = allDatesRender.indexOf(ev.target.getAttribute('data-date'));
+      const timeIndex = allTimesRender
+            .indexOf(ev.target.getAttribute('data-time'));
+      const dateIndex = allDatesRender
+            .indexOf(ev.target.getAttribute('data-date'));
 
       const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+      const cellFormatted = moment(allTimes[timeIndex])
+                              .set('date', date).format(formatStr);
 
       participants.forEach((participant) => {
         if (participant.availability.indexOf(cellFormatted) > -1) {
@@ -221,14 +240,16 @@ class AvailabilityGrid extends React.Component {
       $(e.target).css('background-color', 'white');
     }
 
-    if (this.state.startCell === null) this.setState({ startCell: $(e.target) });
-    else {
+    if (this.state.startCell === null) {
+      this.setState({ startCell: $(e.target) });
+    } else {
       this.setState({ endCell: $(e.target) });
 
       let startCell = this.state.startCell;
       const endCell = this.state.endCell;
 
-      if (startCell.css('background-color') === 'rgb(128, 0, 128)' && endCell.css('background-color') === 'rgb(128, 0, 128)') {
+      if (startCell.css('background-color') === 'rgb(128, 0, 128)' &&
+          endCell.css('background-color') === 'rgb(128, 0, 128)') {
         if (startCell.index() < endCell.index()) {
           while (startCell.attr('data-time') !== endCell.attr('data-time')) {
             startCell.next().css('background-color', 'rgb(128, 0, 128)');
@@ -240,7 +261,8 @@ class AvailabilityGrid extends React.Component {
             startCell = startCell.prev();
           }
         }
-      } else if (startCell.css('background-color') === 'rgb(255, 255, 255)' && endCell.css('background-color') === 'rgb(255, 255, 255)') {
+      } else if (startCell.css('background-color') === 'rgb(255, 255, 255)' &&
+                 endCell.css('background-color') === 'rgb(255, 255, 255)') {
         if (startCell.index() < endCell.index()) {
           while (startCell.attr('data-time') !== endCell.attr('data-time')) {
             startCell.next().css('background-color', 'rgb(255, 255, 255)');
@@ -499,7 +521,8 @@ class AvailabilityGrid extends React.Component {
           >This is how you can enter and remove your availablity:</p>
           <div className="mdl-dialog__actions">
             <img
-              src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/enteravail.gif"
+              src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/\
+                   client/assets/enteravail.gif"
               alt="entering availablity gif"
             />
             <button
@@ -516,6 +539,7 @@ class AvailabilityGrid extends React.Component {
 
 AvailabilityGrid.propTypes = {
   dates: React.PropTypes.array.isRequired,
+  dateFormatStr: React.PropTypes.string,
   heatmap: React.PropTypes.bool,
   weekDays: React.PropTypes.bool,
   user: React.PropTypes.object,
@@ -525,6 +549,8 @@ AvailabilityGrid.propTypes = {
   myAvailability: React.PropTypes.array,
   participants: React.PropTypes.array,
   event: React.PropTypes.object,
+  allDatesRender: React.PropTypes.array,
+  allTimesRender: React.PropTypes.array,
 };
 
 export default cssModules(AvailabilityGrid, styles);
