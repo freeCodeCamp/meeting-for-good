@@ -8,19 +8,23 @@
     "build:server": "babel -d ./build ./server -s",
     "build:client": "webpack -p  --config ./webpack.production.config.js",
     "build": "npm run clean && npm run build:server && npm run build:client",
-    "start": "node ./build/app.js",
+    "start": "node -r dotenv/config ./build/app.js",
     "serve": "npm run clean && npm run build:server && npm run start",
     "postinstall": "npm run build",
     "deploy": "git push heroku development:master"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/akiralaine/letsmeet.git"
+     "url": "git+https://github.com/FreeCodeCamp/LetsMeet"
   },
   "author": "Aniruddh Agarwal <aaniruddh99@gmail.com>",
+  "contributors": [{
+    "name": "Jean Philip de Rogatis",
+    "email": "jrogatis@rogatis.eti.br"
+  }],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/akiralaine/letsmeet/issues"
+     "url": "https://github.com/FreeCodeCamp/LetsMeet/issues"
   },
   "engines": {
     "node": "7.2.1"
