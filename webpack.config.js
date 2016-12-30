@@ -30,6 +30,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoErrorsPlugin(),
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
   ],
   module: {
     loaders: [
