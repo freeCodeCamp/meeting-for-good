@@ -14,24 +14,17 @@ export default class EventCardContainer extends React.Component {
     super(props);
 
     const { event } = props;
-    let ranges;
-    let dates;
+    delete event.weekDays;
 
-    if (event.weekDays) {
-      dates = event.dates;
-    } else {
-      delete event.weekDays;
+    const ranges = event.dates.map(({ fromDate, toDate }) => ({
+      from: new Date(fromDate),
+      to: new Date(toDate),
+    }));
 
-      ranges = event.dates.map(({ fromDate, toDate }) => ({
-        from: new Date(fromDate),
-        to: new Date(toDate),
-      }));
-
-      dates = event.dates.map(({ fromDate, toDate }) => ({
-        fromDate: new Date(fromDate),
-        toDate: new Date(toDate),
-      }));
-    }
+    const dates = event.dates.map(({ fromDate, toDate }) => ({
+      fromDate: new Date(fromDate),
+      toDate: new Date(toDate),
+    }));
 
     this.state = {
       participants: event.participants,
