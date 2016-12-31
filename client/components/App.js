@@ -1,13 +1,11 @@
 import React from 'react';
-
 import NavbarContainer from './NavbarContainer';
-
 import '../styles/main.css';
 
 const App = props => (
   <div>
     <NavbarContainer location={props.location} />
-    <main styleName="main">
+    <main className="main">
       {props.children}
     </main>
   </div>
@@ -21,4 +19,3 @@ App.propTypes = {
 };
 
 export default App;
-
