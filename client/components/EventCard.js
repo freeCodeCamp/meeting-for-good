@@ -165,7 +165,7 @@ EventCard.propTypes = {
   isBestTime: React.PropTypes.bool.isRequired,
   deleteEvent: React.PropTypes.func.isRequired,
   isOwner: React.PropTypes.bool.isRequired,
-  bestTimes: React.PropTypes.object.isRequired,
+  bestTimes: React.PropTypes.object,
   modifiers: React.PropTypes.shape({
     selected: React.PropTypes.func.isRequired,
   }),
