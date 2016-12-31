@@ -45,7 +45,7 @@ export default class NavbarContainer extends React.Component {
 
 NavbarContainer.propTypes = {
   location: React.PropTypes.shape({
-    pathname: React.Proptypes.string,
+    pathname: React.PropTypes.string,
   }),
 };
 
