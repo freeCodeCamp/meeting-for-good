@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bluebird from 'bluebird';
 import path from 'path';
 import passport from 'passport';
 import session from 'express-session';
@@ -17,6 +18,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
 app.use(compression({ threshold: 0 }));
+mongoose.Promise = bluebird;
 mongoose.connect(process.env.MONGO_URI);
 
 if (process.env.NODE_ENV === 'development') {
