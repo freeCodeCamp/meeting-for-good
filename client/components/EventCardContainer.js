@@ -1,18 +1,15 @@
 import React from 'react';
-import DayPicker, { DateUtils } from 'react-day-picker';
-import cssModules from 'react-css-modules';
+import { DateUtils } from 'react-day-picker';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import moment from 'moment';
-import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
-import { Notification } from 'react-notification';
 import 'react-day-picker/lib/style.css';
 import { checkStatus } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
-import styles from '../styles/event-card.css';
+import EventCard from './EventCard';
 
-class EventCard extends React.Component {
+export default class EventCardContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -37,7 +34,7 @@ class EventCard extends React.Component {
     }
 
     this.state = {
-      participants: props.event.participants,
+      participants: event.participants,
       ranges,
       dates,
       event,
@@ -99,15 +96,6 @@ class EventCard extends React.Component {
     this.setState({ displayTimes, user });
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      $('.alt').each((i, el) => {
-        $(el).parents('.card').find('#best')
-          .remove();
-      });
-    }, 100);
-  }
-
   @autobind
   async deleteEvent() {
     const response = await fetch(`/api/events/${this.state.event._id}`, {
@@ -132,13 +120,8 @@ class EventCard extends React.Component {
     this.props.removeEventFromDashboard(this.state.event._id);
   }
 
-  @autobind
-  redirectToEvent() {
-    browserHistory.push(`/event/${this.state.event.uid}`);
-  }
-
   render() {
-    const { event, user } = this.state;
+    const { event, user, ranges } = this.state;
     let isOwner;
     let modifiers;
 
@@ -146,17 +129,22 @@ class EventCard extends React.Component {
       isOwner = event.owner === user._id;
     }
 
-    // Get maximum and minimum month from the selected dates to limit the daypicker to those months
+  // Get maximum and minimum month from the selected dates to limit the
+  // daypicker to those months
     let maxDate;
     let minDate;
 
-    if (this.state.ranges) {
+    if (ranges) {
       modifiers = {
         selected: day =>
           DateUtils.isDayInRange(day, this.state) ||
-          this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
+          ranges.some(v => DateUtils.isDayInRange(day, v)),
       };
-      const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
+
+      const dateInRanges = _.flatten(ranges.map(range =>
+        [range.from, range.to],
+      ));
+
       maxDate = new Date(Math.max.apply(null, dateInRanges));
       minDate = new Date(Math.min.apply(null, dateInRanges));
     }
@@ -170,126 +158,24 @@ class EventCard extends React.Component {
     } else isBestTime = false;
 
     return (
-      <div onClick={this.redirectToEvent} className="card" styleName="event">
-        {
-          isOwner ?
-            <button
-              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-              styleName="delete-event"
-              onClick={(ev) => {
-                ev.stopPropagation();
-                document.querySelector(`#deleteEventModal${this.state.event._id}`).showModal();
-              }}
-            ><i className="material-icons">delete</i></button> : null
-        }
-        <div className="card-content">
-          <span styleName="card-title" className="card-title">{event.name}</span>
-          <h6 id="best"><strong>All participants so far are available at:</strong></h6>
-          <div className="row">
-            <div className="col s12">
-              {isBestTime ?
-                Object.keys(bestTimes).map(date => (
-                  <div>
-                    <div styleName="bestTimeDate">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >date_range</i>
-                      {date}
-                    </div>
-                    <div styleName="bestTime">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >alarm</i>
-                      {bestTimes[date].hours.join(', ')}
-                    </div>
-                    <hr />
-                  </div>
-                )) : !event.weekDays ?
-                  <DayPicker
-                    className="alt"
-                    styleName="day-picker"
-                    initialMonth={minDate}
-                    fromMonth={minDate}
-                    toMonth={maxDate}
-                    modifiers={modifiers}
-                  /> :
-                Object.keys(event.weekDays).map((day, index) => {
-                  let className = 'btn-flat alt';
-                  if (!event.weekDays[day]) {
-                    className += ' disabled';
-                  }
-
-                  return (
-                    <a
-                      id="alt"
-                      key={index}
-                      className={className}
-                      onClick={this.handleWeekdaySelect}
-                    >{day}</a>
-                  );
-                })
-              }
-            </div>
-          </div>
-          <br />
-          <div className="participant-list">
-            <h6><strong>Participants</strong></h6>
-            {event.participants.map((participant, index) => (
-              <div className="participant" styleName="participant" key={index}>
-                <img
-                  alt="participant-avatar"
-                  className="circle"
-                  styleName="participant-img"
-                  src={participant.avatar}
-                />
-                {participant.name}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="card-action">
-          <Link styleName="details-link" to={`/event/${event.uid}`}>View Details</Link>
-        </div>
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          action="Dismiss"
-          title="Error!"
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
-        />
-        <dialog
-          onClick={(ev) => ev.stopPropagation()}
-          className="mdl-dialog"
-          styleName="mdl-dialog"
-          id={`deleteEventModal${this.state.event._id}`}
-        >
-          <h6 styleName="modal-title" className="mdl-dialog__title">Are you sure you want to delete the event?</h6>
-          <div className="mdl-dialog__actions">
-            <button
-              type="button"
-              className="mdl-button close"
-              onClick={() => document.querySelector(`#deleteEventModal${this.state.event._id}`).close()}
-            >Cancel</button>
-            <button
-              type="button"
-              className="mdl-button"
-              style={{ color: '#f44336' }}
-              onClick={this.deleteEvent}
-            >Yes</button>
-          </div>
-        </dialog>
-      </div>
+      <EventCard
+        event={event}
+        isOwner={isOwner}
+        user={user}
+        ranges={ranges}
+        isBestTime={isBestTime}
+        bestTimes={bestTimes}
+        modifiers={modifiers}
+        maxDate={maxDate}
+        minDate={minDate}
+        deleteEvent={this.deleteEvent}
+      />
     );
   }
 }
 
-EventCard.propTypes = {
+EventCardContainer.propTypes = {
   event: React.PropTypes.object,
   removeEventFromDashboard: React.PropTypes.func,
 };
 
-export default cssModules(EventCard, styles);

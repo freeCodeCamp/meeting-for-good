@@ -9,7 +9,7 @@ import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 
 /* external components */
-import EventCard from '../components/EventCard';
+import EventCardContainer from '../components/EventCardContainer';
 
 /* styles */
 import styles from '../styles/dashboard.css';
@@ -79,7 +79,7 @@ class Dashboard extends React.Component {
         {this.state.events.length !== 0 ?
           <Masonry>
             {this.state.events.map(event => (
-              <EventCard
+              <EventCardContainer
                 key={event._id}
                 event={event}
                 removeEventFromDashboard={this.removeEventFromDashboard}
