@@ -114,7 +114,7 @@ export default class EventCardContainer extends React.Component {
   }
 
   render() {
-    const { event, user, ranges } = this.state;
+    const { event, user, ranges, displayTimes } = this.state;
     let isOwner;
     let modifiers;
 
@@ -142,12 +142,11 @@ export default class EventCardContainer extends React.Component {
       minDate = new Date(Math.min.apply(null, dateInRanges));
     }
 
-    const bestTimes = this.state.displayTimes;
+    const bestTimes = displayTimes;
     let isBestTime;
 
-    if (bestTimes !== undefined) {
-      if (Object.keys(bestTimes).length > 0) isBestTime = true;
-      else isBestTime = false;
+    if (bestTimes !== undefined && Object.keys(bestTimes).length > 0) {
+      isBestTime = true;
     } else isBestTime = false;
 
     return (
