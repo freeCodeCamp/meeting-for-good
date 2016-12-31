@@ -1,41 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
-import autobind from 'autobind-decorator';
 import styles from '../styles/navbar.css';
-
 import '../styles/no-css-modules/mdl.css';
 import facebookLogo from '../assets/facebook.png';
 import googleLogo from '../assets/google.png';
 
 class Navbar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
-      user: false,
-      conditionalHomeLink: '/',
-    };
-  }
-
-  componentWillMount() {
-    $.get('/api/auth/current', (user) => {
-      if (user) {
-        const userAvatar = user.avatar;
-        this.setState({ userAvatar, user: true, curUser: user._id, conditionalHomeLink: '/Dashboard' });
-      }
-    });
-  }
-
-  @autobind
-  handleAuthClick() {
-    if (!sessionStorage.getItem('redirectTo')) {
-      sessionStorage.setItem('redirectTo', this.props.location.pathname);
-    }
-  }
-
   renderNav() {
-    if (this.state.user) {
+    if (this.props.user) {
       return (
         <div className="mdl-navigation">
           <Link className="mdl-navigation__link" to="/dashboard">Dashboard</Link>
@@ -44,7 +17,7 @@ class Navbar extends React.Component {
             <img
               alt="avatar"
               styleName="nav-img"
-              src={this.state.userAvatar}
+              src={this.props.userAvatar}
             />
           </a>
         </div>
@@ -54,14 +27,16 @@ class Navbar extends React.Component {
     return (
       <div className="mdl-navigation" styleName="login-btn">
         <a
-          className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--indigo"
+          className="mdl-button mdl-js-button mdl-button--raised\
+                     mdl-js-ripple-effect mdl-color--indigo"
           href="/api/auth/facebook"
-          onClick={this.handleAuthClick}
+          onClick={this.props.handleAuthClick}
         ><img src={facebookLogo} alt="Facebook Logo" /> Login with Facebook</a>
         <a
-          className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red"
+          className="mdl-button mdl-js-button mdl-button--raised\
+                     mdl-js-ripple-effect mdl-color--red"
           href="/api/auth/google"
-          onClick={this.handleAuthClick}
+          onClick={this.props.handleAuthClick}
         ><img src={googleLogo} alt="Google Logo" /> Login with Google</a>
       </div>
     );
@@ -71,7 +46,10 @@ class Navbar extends React.Component {
     return (
       <header className="mdl-layout__header">
         <div className="mdl-layout__header-row">
-          <Link to={this.state.conditionalHomeLink} className="mdl-layout-title mdl-navigation__link">Lets Meet</Link>
+          <Link
+            to={this.props.conditionalHomeLink}
+            className="mdl-layout-title mdl-navigation__link"
+          >Lets Meet</Link>
           <div className="mdl-layout-spacer" />
           {this.renderNav()}
         </div>
@@ -81,7 +59,10 @@ class Navbar extends React.Component {
 }
 
 Navbar.propTypes = {
-  location: React.PropTypes.object,
+  user: React.PropTypes.bool,
+  userAvatar: React.PropTypes.string,
+  handleAuthClick: React.PropTypes.func,
+  conditionalHomeLink: React.PropTypes.string,
 };
 
 export default cssModules(Navbar, styles);
