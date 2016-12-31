@@ -1,8 +1,7 @@
 import React from 'react';
-import DayPicker, { DateUtils } from 'react-day-picker';
+import DayPicker from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
-import _ from 'lodash';
 import { Link, browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
 import 'react-day-picker/lib/style.css';
@@ -36,8 +35,6 @@ class EventCard extends React.Component {
     const {
       event,
       isOwner,
-      user,
-      ranges,
       isBestTime,
       bestTimes,
       modifiers,
@@ -143,7 +140,7 @@ class EventCard extends React.Component {
               type="button"
               className="mdl-button close"
               onClick={() =>
-                document.querySelector(`#deleteEventModal${event._id}`).close(),
+                document.querySelector(`#deleteEventModal${event._id}`).close()
               }
             >Cancel</button>
             <button
@@ -163,8 +160,6 @@ EventCard.propTypes = {
   event: React.PropTypes.object,
   isBestTime: React.PropTypes.bool,
   deleteEvent: React.PropTypes.func,
-  user: React.PropTypes.object,
-  ranges: React.PropTypes.array,
 };
 
 export default cssModules(EventCard, styles);
