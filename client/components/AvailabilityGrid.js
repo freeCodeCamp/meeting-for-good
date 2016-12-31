@@ -3,19 +3,34 @@ import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
-import fetch from 'isomorphic-fetch';
 import colorsys from 'colorsys';
-import nprogress from 'nprogress';
-import jsonpatch from 'fast-json-patch';
-import { checkStatus } from '../util/fetch.util';
 import { getHours, getMinutes, removeZero } from '../util/time-format';
-import { getDaysBetween } from '../util/dates.utils';
-import { getTimesBetween } from '../util/times.utils';
 import styles from '../styles/availability-grid.css';
 
 class AvailabilityGrid extends React.Component {
-  constructor(props) {
-    super(props);
+  static getPosition(el) {
+    let xPosition = 0;
+    let yPosition = 0;
+    let xScrollPos;
+    let yScrollPos;
+
+    while (el) {
+      if (el.tagName === 'BODY') {
+        // deal with browser quirks with body/window/document and page scroll
+        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
+        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
+        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
+        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
+      } else {
+        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+      }
+      el = el.offsetParent;
+    }
+    return {
+      x: xPosition,
+      y: yPosition,
+    };
   }
 
   componentDidMount() {
@@ -31,7 +46,7 @@ class AvailabilityGrid extends React.Component {
     // Offset the grid-hour row if the event starts with a date that's offset by
     // 15/30/45 minutes.
     const gridHour = document.querySelector('.grid-hour');
-    const { allTimesRender } = this.state;
+    const { allTimesRender } = this.props;
 
     if (getMinutes(allTimesRender[0]) === 15) {
       gridHour.setAttribute('style', 'margin-left: 50.6px !important');
@@ -54,7 +69,7 @@ class AvailabilityGrid extends React.Component {
     });
 
     // Check if two adjacent grid hours labels are consecutive or not. If not,
-    // then split the grid  at this point.
+    // then split the grid at this point.
     const hourTime = this.props.hourTime.slice(0);
 
     for (let i = 0; i < hourTime.length; i++) {
@@ -84,31 +99,6 @@ class AvailabilityGrid extends React.Component {
     }
   }
 
-  getPosition(el) {
-    let xPosition = 0;
-    let yPosition = 0;
-    let xScrollPos;
-    let yScrollPos;
-
-    while (el) {
-      if (el.tagName === 'BODY') {
-        // deal with browser quirks with body/window/document and page scroll
-        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
-        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
-        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
-        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
-      } else {
-        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
-      }
-      el = el.offsetParent;
-    }
-    return {
-      x: xPosition,
-      y: yPosition,
-    };
-  }
-
   modifyHourTime(hourTime, date, i) {
     // inserts the formatted date object at the 'i+1'th index in
     // this.state.hourTime.
@@ -125,8 +115,8 @@ class AvailabilityGrid extends React.Component {
   showAvailBox(ev) {
     if (this.props.heatmap &&
         $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
-      const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
-      let formatStr = 'Do MMMM YYYY hh:mm a';
+      const { allTimesRender, allDatesRender, allDates, allTimes } = this.props;
+      const formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
       const notAvailableOnDate = [];
 
@@ -214,11 +204,6 @@ class AvailabilityGrid extends React.Component {
     }
   }
 
-  @autobind
-  editAvailability() {
-    this.props.editAvail();
-  }
-
   renderHeatmap() {
     const availabilityLength = this.props.availability.filter(av => av).length;
     const saturationDivisions = 100 / availabilityLength;
@@ -235,7 +220,7 @@ class AvailabilityGrid extends React.Component {
     }));
 
     const formatStr = 'Do MMMM YYYY hh:mm a';
-    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+    const { allTimesRender, allDatesRender, allDates, allTimes } = this.props;
     const availabilityNum = {};
     const cells = document.querySelectorAll('.cell');
 
@@ -265,7 +250,7 @@ class AvailabilityGrid extends React.Component {
 
   renderAvail() {
     const cells = document.querySelectorAll('.cell');
-    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+    const { allTimesRender, allDatesRender, allDates, allTimes } = this.props;
     const formatStr = 'Do MMMM YYYY hh:mm a';
     const myAvailabilityFrom = this.props.myAvailability
       .map(avail => new Date(avail[0]))
@@ -290,11 +275,11 @@ class AvailabilityGrid extends React.Component {
       dateFormatStr,
       allDatesRender,
       allTimesRender,
-      hourTime,
       dates,
       heatmap,
     } = this.props;
 
+    const { hourTime } = this.state;
     return (
       <div>
         <a
@@ -358,13 +343,13 @@ class AvailabilityGrid extends React.Component {
             <div>
               <a
                 className="waves-effect waves-light btn grey darken-3"
-                onClick={this.editAvailability}
+                onClick={this.props.editAvail()}
               >Edit Availability</a>
               <br />
             </div> :
             <a
               className="waves-effect waves-light btn grey darken-3"
-              onClick={this.submitAvailability}
+              onClick={this.props.submitAvail()}
             >Submit</a>
           }
         </div>
@@ -373,7 +358,7 @@ class AvailabilityGrid extends React.Component {
             <div styleName="hover-available">
               <h5>Available</h5>
               {this.state.availableOnDate.map((participant, i) =>
-                <h6 key={i}>{participant}</h6>
+                <h6 key={i}>{participant}</h6>,
               )}
             </div> :
             null
@@ -382,14 +367,14 @@ class AvailabilityGrid extends React.Component {
             <div styleName="hover-available">
               <h5>Unavailable</h5>
               {this.state.notAvailableOnDate.map((participant, i) =>
-                <h6 key={i}>{participant}</h6>
+                <h6 key={i}>{participant}</h6>,
               )}
             </div> :
             null
           }
         </div>
         <dialog
-          onClick={(ev) => ev.stopPropagation()}
+          onClick={ev => ev.stopPropagation()}
           className="mdl-dialog"
           styleName="mdl-dialog"
           id="showAvailHelper"
@@ -427,6 +412,9 @@ AvailabilityGrid.propTypes = {
   event: React.PropTypes.object,
   allDatesRender: React.PropTypes.array,
   allTimesRender: React.PropTypes.array,
+  allDates: React.PropTypes.array,
+  allTimes: React.PropTypes.array,
+  dateFormatStr: React.PropTypes.string,
 };
 
 export default cssModules(AvailabilityGrid, styles);
