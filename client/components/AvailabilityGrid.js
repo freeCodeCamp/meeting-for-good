@@ -4,14 +4,14 @@ import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
-import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes, addZero, removeZero  } from '../util/time-format';
-import { getDaysBetween } from '../util/dates.utils';
-import { getTimesBetween } from '../util/times.utils';
 import colorsys from 'colorsys';
 import nprogress from 'nprogress';
-import styles from '../styles/availability-grid.css';
 import jsonpatch from 'fast-json-patch';
+import { checkStatus } from '../util/fetch.util';
+import { getHours, getMinutes, removeZero } from '../util/time-format';
+import { getDaysBetween } from '../util/dates.utils';
+import { getTimesBetween } from '../util/times.utils';
+import styles from '../styles/availability-grid.css';
 
 class AvailabilityGrid extends React.Component {
   constructor(props) {
@@ -37,16 +37,23 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentWillMount() {
-    const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+    const { dates } = this.props;
+
+    const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
       getDaysBetween(fromDate, toDate),
     ));
 
-    const allTimes = _.flatten([this.props.dates[0]].map(({ fromDate, toDate }) =>
+    const allTimes = _.flatten([dates[0]].map(({ fromDate, toDate }) =>
       getTimesBetween(fromDate, toDate),
     ));
 
-    const allDatesRender = allDates.map(date => moment(date).format(this.state.dateFormatStr));
-    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
+    const allDatesRender = allDates.map(date =>
+      moment(date).format(this.state.dateFormatStr),
+    );
+
+    const allTimesRender = allTimes.map(time =>
+      moment(time).format('hh:mm a'),
+    );
 
     allTimesRender.pop();
 
@@ -56,7 +63,8 @@ class AvailabilityGrid extends React.Component {
     const lastHourTimeEl = hourTime.slice(-1)[0];
     const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
 
-    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
+    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) ||
+        getMinutes(lastAllTimesRenderEl) === 45) {
       hourTime.push(
         moment(new Date())
         .set('h', getHours(lastHourTimeEl))
@@ -66,12 +74,20 @@ class AvailabilityGrid extends React.Component {
       );
     }
 
-    this.setState({ allDates, allTimes, allDatesRender, allTimesRender, hourTime });
+    this.setState({
+      allDates,
+      allTimes,
+      allDatesRender,
+      allTimesRender,
+      hourTime,
+    });
   }
 
   componentDidMount() {
     if (this.props.heatmap) this.renderHeatmap();
-    if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
+    if (this.props.myAvailability && this.props.myAvailability.length > 0) {
+      this.renderAvail();
+    }
 
     $('.cell').on('click', (e) => {
       if (!this.props.heatmap) this.addCellToAvail(e);
@@ -102,8 +118,8 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
-    // Check if two adjacent grid hours labels are consecutive or not. If not, then split the grid
-    // at this point.
+    // Check if two adjacent grid hours labels are consecutive or not. If not,
+    // then split the grid at this point.
     const hourTime = this.state.hourTime.slice(0);
 
     for (let i = 0; i < hourTime.length; i += 1) {
@@ -117,13 +133,15 @@ class AvailabilityGrid extends React.Component {
         nextDate.set('h', getHours(hourTime[i + 1]));
         nextDate.set('m', getMinutes(hourTime[i + 1]));
 
-        // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
-        // to the object again when it's inserted into this.state.hourTime.
+        // date.add (unfortunately) mutates the original moment object. Hence
+        // we don't add an hour to the object again when it's inserted into
+        // this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
           $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
 
-          // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
-          // eslint. Using setState in componentDidMount couldn't be avoided in this case.
+          // 'hack' (the modifyHourTime function) to use setState in
+          // componentDidMount and bypass eslint. Using setState in
+          // componentDidMount couldn't be avoided in this case.
           this.modifyHourTime(hourTime, date, i);
         }
       }
@@ -156,7 +174,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   modifyHourTime(hourTime, date, i) {
-    // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
+    // inserts the formatted date object at the 'i+1'th index in
+    // this.state.hourTime.
     this.setState({
       hourTime: [
         ...hourTime.slice(0, i + 1),
@@ -466,7 +485,7 @@ class AvailabilityGrid extends React.Component {
           }
         </div>
         <dialog
-          onClick={(ev) => ev.stopPropagation()}
+          onClick={ev => ev.stopPropagation()}
           className="mdl-dialog"
           styleName="mdl-dialog"
           id="showAvailHelper"
