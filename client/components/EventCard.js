@@ -8,6 +8,11 @@ import 'react-day-picker/lib/style.css';
 import styles from '../styles/event-card.css';
 
 class EventCard extends React.Component {
+  @autobind
+  static redirectToEvent() {
+    browserHistory.push(`/event/${event._id}`);
+  }
+
   constructor(props) {
     super(props);
 
@@ -26,11 +31,6 @@ class EventCard extends React.Component {
     }, 100);
   }
 
-  @autobind
-  redirectToEvent() {
-    browserHistory.push(`/event/${event._id}`);
-  }
-
   render() {
     const {
       event,
@@ -39,7 +39,7 @@ class EventCard extends React.Component {
       bestTimes,
       modifiers,
       maxDate,
-      minDate
+      minDate,
     } = this.props;
 
     return (
@@ -53,7 +53,7 @@ class EventCard extends React.Component {
               onClick={(ev) => {
                 ev.stopPropagation();
                 document.querySelector(
-                  `#deleteEventModal${this.props.event._id}`
+                  `#deleteEventModal${this.props.event._id}`,
                 ).showModal();
               }}
             ><i className="material-icons">delete</i></button> : null
@@ -62,7 +62,7 @@ class EventCard extends React.Component {
           <span styleName="card-title" className="card-title">{event.name}</span>
           <h6 id="best">
             <strong>All participants so far are available at:</strong>
-        </h6>
+          </h6>
           <div className="row">
             <div className="col s12">
               {isBestTime ?
@@ -113,7 +113,7 @@ class EventCard extends React.Component {
           </div>
         </div>
         <div className="card-action">
-          <Link styleName="details-link" to={`/event/${event.uid}`}>
+          <Link styleName="details-link" to={`/event/${event._id}`}>
             View Details
         </Link>
         </div>
@@ -157,9 +157,20 @@ class EventCard extends React.Component {
 }
 
 EventCard.propTypes = {
-  event: React.PropTypes.object,
-  isBestTime: React.PropTypes.bool,
-  deleteEvent: React.PropTypes.func,
+  event: React.PropTypes.shape({
+    _id: React.PropTypes.string.isRequired,
+    name: React.PropTypes.string.isRequired,
+    participants: React.PropTypes.array.isRequired,
+  }),
+  isBestTime: React.PropTypes.bool.isRequired,
+  deleteEvent: React.PropTypes.func.isRequired,
+  isOwner: React.PropTypes.bool.isRequired,
+  bestTimes: React.PropTypes.object.isRequired,
+  modifiers: React.PropTypes.shape({
+    selected: React.PropTypes.func.isRequired,
+  }),
+  minDate: React.PropTypes.instanceOf(Date).isRequired,
+  maxDate: React.PropTypes.instanceOf(Date).isRequired,
 };
 
 export default cssModules(EventCard, styles);
