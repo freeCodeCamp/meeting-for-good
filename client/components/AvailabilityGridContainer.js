@@ -4,30 +4,11 @@ import autobind from 'autobind-decorator';
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
 import { checkStatus } from '../util/fetch.util';
+import { getCurrentUser } from '../util/auth';
 import AvailabilityGrid from './AvailabilityGrid';
 
 export default class AvailabilityGridContainer extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const dateFormatStr = 'Do MMM';
-
-    this.state = {
-      availability: [],
-      allTimes: [],
-      allTimesRender: [],
-      allDates: [],
-      allDatesRender: [],
-      dateFormatStr,
-      availableOnDate: [],
-      notAvailableOnDate: [],
-      hourTime: [],
-      startCell: null,
-      endCell: null,
-    };
-  }
-
-  getTimesBetween(start, end) {
+  static getTimesBetween(start, end) {
     let times = [start];
     let currentTime = start;
 
@@ -79,7 +60,7 @@ export default class AvailabilityGridContainer extends React.Component {
   // eg. getDaysBetween(25th June 2016, 30th June 2016) =>
   // [25th, 26th, 27th, 28th, 29th, 30th]
   // (all input and output is in javascript Date objects)
-  getDaysBetween(start, end) {
+  static getDaysBetween(start, end) {
     const dates = [start];
     let currentDay = start;
 
@@ -94,6 +75,78 @@ export default class AvailabilityGridContainer extends React.Component {
     }
 
     return dates;
+  }
+
+  constructor(props) {
+    super(props);
+
+    const dateFormatStr = 'Do MMM';
+
+    this.state = {
+      availability: [],
+      allTimes: [],
+      allTimesRender: [],
+      allDates: [],
+      allDatesRender: [],
+      dateFormatStr,
+      availableOnDate: [],
+      notAvailableOnDate: [],
+      hourTime: [],
+      startCell: null,
+      endCell: null,
+    };
+  }
+
+  async componentWillMount() {
+    const availability = [];
+    const overlaps = [];
+    const displayTimes = {};
+    const user = await getCurrentUser();
+
+    this.state.participants.forEach((user) => {
+      if (user.availability !== undefined) availability.push(user.availability);
+    });
+
+    if (availability.length > 1) {
+      for (let i = 0; i < availability[0].length; i += 1) {
+        const current = availability[0][i];
+        let count = 0;
+        for (let j = 0; j < availability.length; j++) {
+          for (let k = 0; k < availability[j].length; k += 1) {
+            if (availability[j][k][0] === current[0]) {
+              count += 1;
+            }
+          }
+        }
+        if (count === availability.length) overlaps.push(current);
+      }
+
+      if (overlaps.length !== 0) {
+        let index = 0;
+        for (let i = 0; i < overlaps.length; i++) {
+          if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
+            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
+            } else {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
+            }
+            index = i + 1;
+          } else if (overlaps[i + 1] === undefined) {
+            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
+            } else {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
+            }
+          }
+        }
+      }
+    }
+
+    this.setState({ displayTimes, user });
   }
 
   modifyHourTime(hourTime, date, i) {
@@ -162,20 +215,29 @@ export default class AvailabilityGridContainer extends React.Component {
     this.props.submitAvail(availability);
   }
 
-  @autobind
-  editAvailability() {
-    this.props.editAvail();
-  }
-
   render() {
     const { allDatesRender, allTimesRender, hourTime } = this.state;
     const { dates } = this.props;
+
+    const bestTimes = this.state.displayTimes;
+
+    let isBestTime;
+
+    if (bestTimes !== undefined) {
+      if (Object.keys(bestTimes).length > 0) isBestTime = true;
+      else isBestTime = false;
+    } else isBestTime = false;
+
     return (
       <AvailabilityGrid
         allDatesRender={allDatesRender}
         allTimeRender={allTimesRender}
         hourTime={hourTime}
         dates={dates}
+        submitAvail={this.submitAvailability}
+        editAvail={this.props.editAvail()}
+        bestTimes={bestTimes}
+        isBestTime={isBestTime}
       />
     );
   }
@@ -183,10 +245,6 @@ export default class AvailabilityGridContainer extends React.Component {
 
 AvailabilityGridContainer.propTypes = {
   dates: React.PropTypes.array.isRequired,
-  heatmap: React.PropTypes.bool,
-  weekDays: React.PropTypes.bool,
-  user: React.PropTypes.object,
-  availability: React.PropTypes.array,
   submitAvail: React.PropTypes.func,
   editAvail: React.PropTypes.func,
   myAvailability: React.PropTypes.array,
