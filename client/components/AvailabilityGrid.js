@@ -78,6 +78,7 @@ class AvailabilityGrid extends React.Component {
       dates,
       dateFormatStr,
     } = this.props;
+
     return (
       <div>
         <a
@@ -194,7 +195,7 @@ class AvailabilityGrid extends React.Component {
 }
 
 AvailabilityGrid.propTypes = {
-  dates: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Date)).isRequired,
+  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
   heatmap: React.PropTypes.bool,
   user: React.PropTypes.object,
   availability: React.PropTypes.array,
