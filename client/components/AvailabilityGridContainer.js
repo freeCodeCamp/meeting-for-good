@@ -375,7 +375,7 @@ export default class AvailabilityGridContainer extends React.Component {
         hideAvailBox={this.hideAvailBox}
         editAvailability={this.editAvail}
         submitAvailability={this.submitAvailability}
-        ...childProps
+        {...childProps}
       />
     );
   }
