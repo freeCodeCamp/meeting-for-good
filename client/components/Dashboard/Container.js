@@ -1,24 +1,13 @@
-/* vendor dependencies */
 import React from 'react';
-import { browserHistory, Link } from 'react-router';
+import { browserHistory } from 'react-router';
 import fetch from 'isomorphic-fetch';
-import cssModules from 'react-css-modules';
-import Masonry from 'react-masonry-component';
 import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
-import { Notification } from 'react-notification';
-
-/* external components */
-import EventCardContainer from '../EventCard/Container';
-
-/* styles */
-import styles from '../../styles/dashboard.css';
-
-/* utilities */
+import Dashboard from './Presentation';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
 
-class Dashboard extends React.Component {
+export default class DashboardContainer extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -67,46 +56,15 @@ class Dashboard extends React.Component {
   }
 
   render() {
+    const { showNoScheduledMessage, events } = this.state;
+    const childProps = { showNoScheduledMessage, events };
+
     return (
-      <div styleName="wrapper">
-        {/* New Event Icon */}
-        <div className="fixed-action-btn" styleName="new-event-icon">
-          <Link to="/event/new" className="btn-floating btn-large red">
-            <i className="large material-icons">add</i>
-          </Link>
-        </div>
-        {/* Card Template */}
-        {this.state.events.length !== 0 ?
-          <Masonry>
-            {this.state.events.map(event => (
-              <EventCardContainer
-                key={event._id}
-                event={event}
-                removeEventFromDashboard={this.removeEventFromDashboard}
-              />
-            ))}
-          </Masonry> :
-            this.state.showNoScheduledMessage ?
-              <em>
-                <h4 styleName="no-select" className="card-title center-align white-text">
-                  You have no scheduled events yet.
-                </h4>
-              </em> :
-              null
-        }
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          action="Dismiss"
-          title="Error!"
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
-          dismissAfter={10000}
-        />
-      </div>
+      <Dashboard
+        removeEventFromDashboard={this.removeEventFromDashboard}
+        {...childProps}
+      />
     );
   }
 }
 
-export default cssModules(Dashboard, styles);
