@@ -330,36 +330,60 @@ export default class AvailabilityGridContainer extends React.Component {
   }
 
   render() {
+    const {
+      dates,
+      heatmap,
+      user,
+      availability,
+      myAvailability,
+      participants,
+      event,
+    } = this.props;
+
+    const {
+      allTimesRender,
+      hourTime,
+      allDatesRender,
+      dateFormatStr,
+      availableOnDate,
+      notAvailableOnDate,
+    } = this.state;
+
+    const childProps = {
+      dates,
+      heatmap,
+      user,
+      availability,
+      myAvailability,
+      participants,
+      event,
+      allTimesRender,
+      hourTime,
+      allDatesRender,
+      dateFormatStr,
+      availableOnDate,
+      notAvailableOnDate,
+    };
+
     return (
       <AvailabilityGrid
-        dates={this.props.dates}
-        heatmap={this.rops.heatmap}
-        user={this.props.user}
-        availability={this.props.availability}
-        myAvailability={this.props..myAvailability}
-        participants={this.props.participants}
-        event={this.props.event}
         renderHeatmap={this.renderHeatmap}
         renderAvail={this.renderAvail}
         addCellToAvail={this.addCellToAvail}
-        allTimesRender={this.state.allTimesRender}
-        hourTime={this.state.hourTime}
+        allTimesRender={allTimesRender}
         modifyHourTime={this.modifyHourTime}
-        allDatesRender={this.state.allDatesRender}
-        dateFormatStr={this.state.dateFormatStr}
         showAvailBox={this.showAvailBox}
         hideAvailBox={this.hideAvailBox}
         editAvailability={this.editAvail}
         submitAvailability={this.submitAvailability}
-        availableOnDate={this.state.availableOnDate}
-        notAvailableOnDate={this.state.notAvailableOnDate}
+        ...childProps
       />
     );
   }
 }
 
 AvailabilityGridContainer.propTypes = {
-  dates: React.PropTypes.array.isRequired,
+  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
   heatmap: React.PropTypes.bool,
   weekDays: React.PropTypes.bool,
   user: React.PropTypes.object,
