@@ -12,7 +12,7 @@ import 'react-day-picker/lib/style.css';
 
 import Notification from '../components/vendor/react-notification';
 
-import AvailabilityGrid from './AvailabilityGrid';
+import AvailabilityGridContainer from './AvailabilityGridContainer';
 
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
@@ -371,7 +371,7 @@ class EventDetailsComponent extends React.Component {
           </div>
           {showHeatmap ?
             <div id="heatmap">
-              <AvailabilityGrid
+              <AvailabilityGridContainer
                 dates={this.state.dates}
                 availability={availability}
                 editAvail={this.editAvail}
@@ -381,7 +381,7 @@ class EventDetailsComponent extends React.Component {
             </div> :
             <div id="grid" className="center">
               <div id="availability-grid" className="hide">
-                <AvailabilityGrid
+                <AvailabilityGridContainer
                   dates={this.state.dates}
                   user={this.state.user}
                   availability={availability}
