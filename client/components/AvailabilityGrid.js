@@ -205,7 +205,7 @@ AvailabilityGrid.propTypes = {
   renderHeatmap: React.PropTypes.func,
   renderAvail: React.PropTypes.func,
   addCellToAvail: React.PropTypes.func,
-  allTimesRender: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Date)),
+  allTimesRender: React.PropTypes.arrayOf(React.PropTypes.string),
   hourTime: React.PropTypes.array,
   modifyHourTime: React.PropTypes.func,
   allDatesRender: React.PropTypes.array,
