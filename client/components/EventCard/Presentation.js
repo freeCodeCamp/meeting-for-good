@@ -47,8 +47,7 @@ class EventCard extends React.Component {
         {
           isOwner ?
             <button
-              className="mdl-button mdl-js-button mdl-button--fab\
-                         mdl-button--colored"
+              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
               styleName="delete-event"
               onClick={(ev) => {
                 ev.stopPropagation();
