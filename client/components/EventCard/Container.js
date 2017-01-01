@@ -5,9 +5,9 @@ import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
 import 'react-day-picker/lib/style.css';
-import { checkStatus } from '../util/fetch.util';
-import { getCurrentUser } from '../util/auth';
-import EventCard from './EventCard';
+import { checkStatus } from '../../util/fetch.util';
+import { getCurrentUser } from '../../util/auth';
+import EventCard from './Presentation';
 
 export default class EventCardContainer extends React.Component {
   constructor(props) {

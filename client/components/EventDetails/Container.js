@@ -3,10 +3,10 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Notification } from 'react-notification';
 
-import EventDetailsComponent from '../components/EventDetailsComponent';
-import { checkStatus, parseJSON } from '../util/fetch.util';
+import EventDetailsComponent from './Presentation';
+import { checkStatus, parseJSON } from '../../util/fetch.util';
 
-import styles from '../styles/event-card.css';
+import styles from '../../styles/event-card.css';
 
 class EventDetails extends React.Component {
   constructor(props) {

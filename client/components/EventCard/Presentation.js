@@ -5,7 +5,7 @@ import autobind from 'autobind-decorator';
 import { Link, browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
 import 'react-day-picker/lib/style.css';
-import styles from '../styles/event-card.css';
+import styles from '../../styles/event-card.css';
 
 class EventCard extends React.Component {
   @autobind

@@ -1,5 +1,5 @@
 import React from 'react';
-import NavbarContainer from './NavbarContainer';
+import NavbarContainer from './Navbar/Container';
 import '../styles/main.css';
 
 const App = props => (

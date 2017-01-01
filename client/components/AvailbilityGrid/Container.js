@@ -6,13 +6,38 @@ import fetch from 'isomorphic-fetch';
 import colorsys from 'colorsys';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
-import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes, removeZero } from '../util/time-format';
-import { getDaysBetween } from '../util/dates.utils';
-import { getTimesBetween } from '../util/times.utils';
-import AvailabilityGrid from './AvailabilityGrid';
+import { checkStatus } from '../../util/fetch.util';
+import { getHours, getMinutes } from '../../util/time-format';
+import { getDaysBetween } from '../../util/dates.utils';
+import { getTimesBetween } from '../../util/times.utils';
+import AvailabilityGrid from './Presentation';
 
 export default class AvailabilityGridContainer extends React.Component {
+  static getPosition(el) {
+    let xPosition = 0;
+    let yPosition = 0;
+    let xScrollPos;
+    let yScrollPos;
+
+    while (el) {
+      if (el.tagName === 'BODY') {
+        // deal with browser quirks with body/window/document and page scroll
+        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
+        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
+        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
+        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
+      } else {
+        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+      }
+      el = el.offsetParent;
+    }
+    return {
+      x: xPosition,
+      y: yPosition,
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -80,31 +105,6 @@ export default class AvailabilityGridContainer extends React.Component {
       allTimesRender,
       hourTime,
     });
-  }
-
-  getPosition(el) {
-    let xPosition = 0;
-    let yPosition = 0;
-    let xScrollPos;
-    let yScrollPos;
-
-    while (el) {
-      if (el.tagName === 'BODY') {
-        // deal with browser quirks with body/window/document and page scroll
-        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
-        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
-        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
-        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
-      } else {
-        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
-      }
-      el = el.offsetParent;
-    }
-    return {
-      x: xPosition,
-      y: yPosition,
-    };
   }
 
   @autobind
@@ -373,7 +373,7 @@ export default class AvailabilityGridContainer extends React.Component {
         modifyHourTime={this.modifyHourTime}
         showAvailBox={this.showAvailBox}
         hideAvailBox={this.hideAvailBox}
-        editAvailability={this.editAvail}
+        editAvailability={this.props.editAvail}
         submitAvailability={this.submitAvailability}
         {...childProps}
       />

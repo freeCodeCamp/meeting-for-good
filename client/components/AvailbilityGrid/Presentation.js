@@ -1,8 +1,8 @@
 import React from 'react';
 import cssModules from 'react-css-modules';
 import moment from 'moment';
-import { getHours, getMinutes, removeZero } from '../util/time-format';
-import styles from '../styles/availability-grid.css';
+import { getHours, getMinutes, removeZero } from '../../util/time-format';
+import styles from '../../styles/availability-grid.css';
 
 class AvailabilityGrid extends React.Component {
   componentDidMount() {

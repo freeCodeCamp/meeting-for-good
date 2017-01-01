@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
-import styles from '../styles/navbar.css';
-import '../styles/no-css-modules/mdl.css';
-import facebookLogo from '../assets/facebook.png';
-import googleLogo from '../assets/google.png';
+import styles from '../../styles/navbar.css';
+import '../../styles/no-css-modules/mdl.css';
+import facebookLogo from '../../assets/facebook.png';
+import googleLogo from '../../assets/google.png';
 
 const renderNav = (user, handleAuthClick, userAvatar) => {
   if (user) {

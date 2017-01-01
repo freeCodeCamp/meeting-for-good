@@ -10,14 +10,14 @@ import jsonpatch from 'fast-json-patch';
 
 import 'react-day-picker/lib/style.css';
 
-import Notification from '../components/vendor/react-notification';
+import Notification from '../vendor/react-notification';
 
-import AvailabilityGridContainer from './AvailabilityGridContainer';
+import AvailabilityGridContainer from '../AvailbilityGrid/Container';
 
-import { checkStatus, parseJSON } from '../util/fetch.util';
-import { getCurrentUser } from '../util/auth';
+import { checkStatus, parseJSON } from '../../util/fetch.util';
+import { getCurrentUser } from '../../util/auth';
 
-import styles from '../styles/event-card.css';
+import styles from '../../styles/event-card.css';
 
 
 class EventDetailsComponent extends React.Component {

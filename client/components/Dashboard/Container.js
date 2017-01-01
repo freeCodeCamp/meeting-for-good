@@ -9,14 +9,14 @@ import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 
 /* external components */
-import EventCardContainer from '../components/EventCardContainer';
+import EventCardContainer from '../EventCard/Container';
 
 /* styles */
-import styles from '../styles/dashboard.css';
+import styles from '../../styles/dashboard.css';
 
 /* utilities */
-import { checkStatus, parseJSON } from '../util/fetch.util';
-import { isAuthenticated } from '../util/auth';
+import { checkStatus, parseJSON } from '../../util/fetch.util';
+import { isAuthenticated } from '../../util/auth';
 
 class Dashboard extends React.Component {
   constructor() {
