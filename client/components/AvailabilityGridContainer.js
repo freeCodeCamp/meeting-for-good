@@ -370,7 +370,6 @@ export default class AvailabilityGridContainer extends React.Component {
         renderHeatmap={this.renderHeatmap}
         renderAvail={this.renderAvail}
         addCellToAvail={this.addCellToAvail}
-        allTimesRender={allTimesRender}
         modifyHourTime={this.modifyHourTime}
         showAvailBox={this.showAvailBox}
         hideAvailBox={this.hideAvailBox}
