@@ -74,7 +74,7 @@ export const index = (req, res) => {
 // Gets a list of all  users filter by name
 export const indexByName = (req, res) => {
   const name = req.params.name;
-  return Users.find({ name: `/${name}/i` }).exec()
+  return Users.find({ name: new RegExp(name, 'i') }).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -134,8 +134,7 @@ export const create = (req, res) => {
  * Get my info
  */
 export const me = (req, res, next) => {
-  console.log(req);
-  const userId = req.params.id;
+  const userId = req.user._id;
   return Users.findOne({ _id: userId }).exec()
     .then((user) => {
       if (!user) {
