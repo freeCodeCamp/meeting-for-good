@@ -13,5 +13,4 @@ const isAuthenticated = (req, res, next) => {
 router.post('/ownerNotification', isAuthenticated, ownerNotification);
 router.post('/sendInvite', isAuthenticated, sendInvite);
 
-
 module.exports = router;

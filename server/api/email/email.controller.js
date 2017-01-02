@@ -1,7 +1,7 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
  * POST    /api/ownerNotification   ->  ownerNotification
-  * POST   /api/sendInvite          ->  sendInvite
+ * POST   /api/sendInvite           ->  sendInvite
  */
 import nodemailer from 'nodemailer';
 import path from 'path';
@@ -72,10 +72,10 @@ export const sendInvite = (req, res) => {
     message.text = result.text;
     message.html = result.html;
     return sendEmail(message)
-    .then(respondWithResult(res))
-    .catch((err) => {
-      console.log('err at ownerNotification', err);
-      handleError(err);
-    });
+      .then(respondWithResult(res))
+      .catch((err) => {
+        console.log('err at ownerNotification', err);
+        handleError(err);
+      });
   });
 };
