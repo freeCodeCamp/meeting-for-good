@@ -12,7 +12,7 @@ import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
 import { isAuthenticated, getCurrentUser } from '../../util/auth';
 import { dateRangeReducer } from '../../util/dates.utils';
-import NewEvent from './Presentation';
+import NewEvent from './NewEventPresentation';
 
 export default class NewEventContainer extends React.Component {
   constructor() {

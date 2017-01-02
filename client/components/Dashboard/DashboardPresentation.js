@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import { Notification } from 'react-notification';
-import EventCardContainer from '../EventCard/Container';
+import EventCardContainer from '../EventCard/EventCardContainer';
 import styles from '../../styles/dashboard.css';
 
 class Dashboard extends React.PureComponent {

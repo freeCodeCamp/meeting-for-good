@@ -10,7 +10,7 @@ import { checkStatus } from '../../util/fetch.util';
 import { getHours, getMinutes } from '../../util/time-format';
 import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
-import AvailabilityGrid from './Presentation';
+import AvailabilityGrid from './AvailabilityGridPresentation';
 
 export default class AvailabilityGridContainer extends React.Component {
   static getPosition(el) {

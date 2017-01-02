@@ -12,7 +12,6 @@ import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
-import { isAuthenticated, getCurrentUser } from '../../util/auth';
 import { dateRangeReducer } from '../../util/dates.utils';
 import styles from '../../styles/new-event.css';
 

@@ -7,7 +7,7 @@ import nprogress from 'nprogress';
 import 'react-day-picker/lib/style.css';
 import { checkStatus } from '../../util/fetch.util';
 import { getCurrentUser } from '../../util/auth';
-import EventCard from './Presentation';
+import EventCard from './EventCardPresentation';
 
 export default class EventCardContainer extends React.Component {
   constructor(props) {

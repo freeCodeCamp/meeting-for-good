@@ -1,6 +1,6 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
-import Navbar from './Presentation';
+import Navbar from './NavbarPresentation';
 import { getCurrentUser } from '../../util/auth';
 
 export default class NavbarContainer extends React.Component {

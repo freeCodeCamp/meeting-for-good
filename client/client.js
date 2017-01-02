@@ -12,9 +12,9 @@ require('es6-promise').polyfill();
 // Import App
 import App from './components/App';
 import Home from './components/Home';
-import DashboardContainer from './components/Dashboard/Container';
-import EventDetailsContainer from './components/EventDetails/Container';
-import NewEventContainer from './components/NewEvent/Container';
+import DashboardContainer from './components/Dashboard/DashboardContainer';
+import EventDetailsContainer from './components/EventDetails/EventDetailsContainer';
+import NewEventContainer from './components/NewEvent/NewEventContainer';
 
 render((
   <Router history={browserHistory}>

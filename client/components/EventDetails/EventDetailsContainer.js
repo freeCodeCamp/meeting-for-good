@@ -7,7 +7,7 @@ import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import update from 'react-addons-update';
-import EventDetails from './Presentation';
+import EventDetails from './EventDetailsPresentation';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { getCurrentUser } from '../../util/auth';
 

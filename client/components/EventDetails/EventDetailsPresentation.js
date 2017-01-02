@@ -3,7 +3,7 @@ import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
 import Notification from '../vendor/react-notification';
-import AvailabilityGridContainer from '../AvailbilityGrid/Container';
+import AvailabilityGridContainer from '../AvailbilityGrid/AvailabilityGridContainer';
 import styles from '../../styles/event-card.css';
 
 class EventDetails extends React.Component {

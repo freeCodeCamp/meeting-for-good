@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router';
 import fetch from 'isomorphic-fetch';
 import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
-import Dashboard from './Presentation';
+import Dashboard from './DashboardPresentation';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
 
