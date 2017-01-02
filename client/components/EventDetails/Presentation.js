@@ -1,75 +1,26 @@
 import React from 'react';
-import update from 'react-addons-update';
 import autobind from 'autobind-decorator';
-import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
-import fetch from 'isomorphic-fetch';
-import moment from 'moment';
-import nprogress from 'nprogress';
-import jsonpatch from 'fast-json-patch';
-
 import 'react-day-picker/lib/style.css';
-
 import Notification from '../vendor/react-notification';
-
 import AvailabilityGridContainer from '../AvailbilityGrid/Container';
-
-import { checkStatus, parseJSON } from '../../util/fetch.util';
-import { getCurrentUser } from '../../util/auth';
-
 import styles from '../../styles/event-card.css';
 
+class EventDetails extends React.Component {
+  @autobind
+  static showAvailability(ev) {
+    document.getElementById('availability-grid').className = '';
+    ev.target.className += ' hide';
+  }
 
-class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
-    const eventParticipantsIds = props.event.participants.map(participant => participant.userId);
-    const { event } = props;
-
-    const ranges = event.dates.map(({ fromDate, toDate }) => ({
-      from: new Date(fromDate),
-      to: new Date(toDate),
-    }));
-
-    const dates = event.dates.map(({ fromDate, toDate }) => ({
-      fromDate: new Date(fromDate),
-      toDate: new Date(toDate),
-    }));
-
     this.state = {
-      event,
-      ranges,
-      dates,
-      user: {},
-      eventParticipantsIds,
-      participants: event.participants,
-      showHeatmap: false,
-      myAvailability: [],
       notificationIsActive: false,
       notificationMessage: '',
       notificationTitle: '',
       showEmail: false,
     };
-  }
-
-  async componentWillMount() {
-    const user = await getCurrentUser();
-    if (user) {
-      let showHeatmap = false;
-      let myAvailability = [];
-
-      const me = this.state.participants.find(participant =>
-        participant.userId === user._id,
-      );
-
-      if (me && me.availability) {
-        showHeatmap = true;
-        myAvailability = me.availability;
-      }
-
-      this.setState({ user, showHeatmap, myAvailability });
-    }
-    this.generateBestDatesAndTimes(this.state.event);
   }
 
   componentDidMount() {
@@ -83,210 +34,6 @@ class EventDetailsComponent extends React.Component {
     $('.notification-bar-action').on('click', () => {
       this.setState({ notificationIsActive: false, showEmail: false });
     });
-  }
-
-  selectElementContents(el) {
-    let range;
-    if (window.getSelection && document.createRange) {
-      range = document.createRange();
-      const sel = window.getSelection();
-      range.selectNodeContents(el);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } else if (document.body && document.body.createTextRange) {
-      range = document.body.createTextRange();
-      range.moveToElementText(el);
-      range.select();
-    }
-  }
-
-  @autobind
-  async joinEvent() {
-    const { name, avatar, _id: userId } = this.state.user;
-
-    const participant = { name, avatar, userId };
-
-    const event = update(this.state.event, { $set: this.state.event });
-    const observerEvent = jsonpatch.observe(event);
-
-    event.participants.push(participant);
-
-    const eventParticipantsIds = update(this.state.eventParticipantsIds, {
-      $push: [this.state.user._id],
-    });
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-
-    const patches = jsonpatch.generate(observerEvent);
-    const response = await fetch(`/api/events/${event._id}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'PATCH',
-      body: JSON.stringify(patches),
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to join event. Please try again later.',
-        notificationTitle: 'Error!',
-        showEmail: false,
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.setState({ event, eventParticipantsIds });
-  }
-
-  @autobind
-  showAvailability(ev) {
-    document.getElementById('availability-grid').className = '';
-    ev.target.className += ' hide';
-  }
-
-  @autobind
-  editAvail() {
-    this.setState({ showHeatmap: false }, () => {
-      document.getElementById('enterAvailButton').click();
-    });
-  }
-
-  @autobind
-  async submitAvailability(myAvailability) {
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin',
-    });
-    let event;
-
-    try {
-      checkStatus(response);
-      event = await parseJSON(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to update availability. Please try again later.',
-        notificationTitle: 'Error!',
-        showEmail: false,
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: 'Saved availability successfully.',
-      notificationTitle: 'Success!',
-      showEmail: false,
-    });
-
-    this.generateBestDatesAndTimes(event);
-    this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
-  }
-
-  @autobind
-  async deleteEvent() {
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin', method: 'DELETE',
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to delete event. Please try again later.',
-        notificationTitle: 'Error!',
-        showEmail: false,
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: 'Event successfully deleted!',
-      notificationTitle: '',
-      showEmail: false,
-    });
-
-    browserHistory.push('/dashboard');
-  }
-
-  generateBestDatesAndTimes(event) {
-    const availability = [];
-    const overlaps = [];
-    const displayTimes = {};
-    const formatStr = this.state.days ? 'dddd' : 'DD MMM';
-
-    event.participants.forEach((user) => {
-      if (user.availability !== undefined) availability.push(user.availability);
-    });
-
-    if (availability.length <= 1) return;
-
-    for (let i = 0; i < availability[0].length; i++) {
-      const current = availability[0][i];
-      let count = 0;
-      for (let j = 0; j < availability.length; j++) {
-        for (let k = 0; k < availability[j].length; k++) {
-          if (availability[j][k][0] === current[0]) {
-            count += 1;
-          }
-        }
-      }
-      if (count === availability.length) overlaps.push(current);
-    }
-
-
-    if (overlaps.length === 0) {
-      this.setState({ displayTimes });
-      return;
-    }
-
-    let index = 0;
-    for (let i = 0; i < overlaps.length; i++) {
-      if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
-        if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
-          );
-        } else {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`],
-          };
-        }
-        index = i + 1;
-      } else if (overlaps[i + 1] === undefined) {
-        if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
-          );
-        } else {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`],
-          };
-        }
-      }
-    }
-
-    this.setState({ displayTimes });
   }
 
   @autobind
@@ -303,22 +50,27 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds } = this.state;
-    const availability = participants.map(participant => participant.availability);
     let isOwner;
+
+    const {
+      bestTimes,
+      isBestTime,
+      event,
+      user,
+      participants,
+      myAvailability,
+      eventParticipantsIds,
+      showHeatmap,
+      dates,
+    } = this.props;
+
+    const availability = participants.map(participant => participant.availability);
 
     if (user !== undefined) {
       isOwner = event.owner === user._id;
     }
 
-    const bestTimes = this.state.displayTimes;
-    let isBestTime;
-
-    if (bestTimes !== undefined) {
-      if (Object.keys(bestTimes).length > 0) isBestTime = true;
-      else isBestTime = false;
-    } else isBestTime = false;
-
+    console.log(event);
     const notifActions = [{
       text: 'Dismiss',
       handleClick: () => { this.setState({ notificationIsActive: false }); },
@@ -372,9 +124,9 @@ class EventDetailsComponent extends React.Component {
           {showHeatmap ?
             <div id="heatmap">
               <AvailabilityGridContainer
-                dates={this.state.dates}
+                dates={dates}
                 availability={availability}
-                editAvail={this.editAvail}
+                editAvail={this.props.editAvail}
                 participants={participants}
                 heatmap
               />
@@ -382,11 +134,11 @@ class EventDetailsComponent extends React.Component {
             <div id="grid" className="center">
               <div id="availability-grid" className="hide">
                 <AvailabilityGridContainer
-                  dates={this.state.dates}
-                  user={this.state.user}
+                  dates={dates}
+                  user={user}
                   availability={availability}
                   myAvailability={myAvailability}
-                  submitAvail={this.submitAvailability}
+                  submitAvail={this.props.submitAvailability}
                   event={event}
                 />
               </div>
@@ -399,7 +151,7 @@ class EventDetailsComponent extends React.Component {
                   >Enter my availability</a> :
                   <a
                     className="waves-effect waves-light btn"
-                    onClick={this.joinEvent}
+                    onClick={this.props.joinEvent}
                   >Join Event</a> :
                   <p>Login to enter your availability!</p>
               }
@@ -451,7 +203,7 @@ class EventDetailsComponent extends React.Component {
               type="button"
               className="mdl-button"
               style={{ color: '#f44336' }}
-              onClick={this.deleteEvent}
+              onClick={this.props.deleteEvent}
             >Yes</button>
           </div>
         </dialog>
@@ -460,8 +212,20 @@ class EventDetailsComponent extends React.Component {
   }
 }
 
-EventDetailsComponent.propTypes = {
+EventDetails.propTypes = {
   event: React.PropTypes.object,
+  bestTimes: React.PropTypes.object,
+  user: React.PropTypes.object,
+  participants: React.PropTypes.arrayOf(React.PropTypes.object),
+  eventParticipantsIds: React.PropTypes.array,
+  deleteEvent: React.PropTypes.func,
+  joinEvent: React.PropTypes.func,
+  submitAvailability: React.PropTypes.func,
+  editAvail: React.PropTypes.func,
+  isBestTime: React.PropTypes.bool,
+  showHeatmap: React.PropTypes.bool,
+  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  myAvailability: React.PropTypes.array,
 };
 
-export default cssModules(EventDetailsComponent, styles);
+export default cssModules(EventDetails, styles);
