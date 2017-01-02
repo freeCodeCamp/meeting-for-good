@@ -1,22 +1,20 @@
 import _ from 'lodash';
 import autobind from 'autobind-decorator';
-import cssModules from 'react-css-modules';
-import DayPicker, { DateUtils } from 'react-day-picker';
+import { DateUtils } from 'react-day-picker';
 import moment from 'moment';
 import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min';
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
-import { Notification } from 'react-notification';
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
 import { isAuthenticated, getCurrentUser } from '../../util/auth';
 import { dateRangeReducer } from '../../util/dates.utils';
-import styles from '../../styles/new-event.css';
+import NewEvent from './Presentation';
 
-class NewEvent extends React.Component {
+export default class NewEventContainer extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -31,16 +29,6 @@ class NewEvent extends React.Component {
           .second(0)._d,
       }],
       eventName: '',
-      weekDays: {
-        mon: false,
-        tue: false,
-        wed: false,
-        thu: false,
-        fri: false,
-        sat: false,
-        sun: false,
-      },
-      dateOrDay: false,
       selectedTimeRange: [0, 23],
       submitClass: 'waves-effect waves-light btn purple disabled',
       notificationIsActive: false,
@@ -91,36 +79,20 @@ class NewEvent extends React.Component {
 
   @autobind
   toggleSubmitDisabled() {
-    // Checks whether the event name and dates/weekDays have been entered. If so, un-disable the
-    // submit button. Otherwise, disable the submit button (if it isn't already');
+    // Checks whether the event name and dates have been entered. If so,
+    // un-disable the submit button. Otherwise, disable the submit button (if
+    // it isn't already');
 
-    const { submitClass, ranges, eventName, dateOrDay, weekDays } = this.state;
+    const { submitClass, ranges, eventName } = this.state;
 
-    if (!dateOrDay) { // dates
-      if (ranges.length > 0 && ranges[0].from && eventName.length > 0) {
-        this.setState({
-          submitClass: submitClass.replace(' disabled', ''),
-        });
-      } else if (submitClass.indexOf('disabled') === -1) {
-        this.setState({
-          submitClass: `${submitClass} disabled`,
-        });
-      }
-    } else { // weekdays
-      let numOfWeekdaysSelected = 0;
-      Object.keys(weekDays).forEach((weekDay) => {
-        if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
+    if (ranges.length > 0 && ranges[0].from && eventName.length > 0) {
+      this.setState({
+        submitClass: submitClass.replace(' disabled', ''),
       });
-
-      if (eventName.length > 0 && numOfWeekdaysSelected > 0) {
-        this.setState({
-          submitClass: submitClass.replace(' disabled', ''),
-        });
-      } else if (submitClass.indexOf('disabled') === -1) {
-        this.setState({
-          submitClass: `${submitClass} disabled`,
-        });
-      }
+    } else if (submitClass.indexOf('disabled') === -1) {
+      this.setState({
+        submitClass: `${submitClass} disabled`,
+      });
     }
   }
 
@@ -203,53 +175,22 @@ class NewEvent extends React.Component {
     const {
       eventName: name,
       ranges,
-      dateOrDay,
-      weekDays,
       selectedTimeRange: [fromTime, toTime],
     } = this.state;
 
     // validate the form
     if (ev.target.className.indexOf('disabled') > -1) {
-
-      if (!dateOrDay) { // dates
-        if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
-          this.setState({
-            notificationIsActive: true,
-            notificationMessage: 'Please select a date and enter an event name.',
-          });
-        } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
-          this.setState({
-            notificationIsActive: true,
-            notificationMessage: 'Please select a date.',
-          });
-        } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
-          this.setState({
-            notificationIsActive: true,
-            notificationMessage: 'Please enter an event name.',
-          });
-        }
-
-        return;
-      }
-
-      // weekdays form validator
-      let numOfWeekdaysSelected = 0;
-
-      Object.keys(weekDays).forEach((weekDay) => {
-        if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
-      });
-
-      if (name.length === 0 && numOfWeekdaysSelected === 0) {
+      if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
         this.setState({
           notificationIsActive: true,
-          notificationMessage: 'Please select a weekday and enter an event name.',
+          notificationMessage: 'Please select a date and enter an event name.',
         });
-      } else if (name.length !== 0 && numOfWeekdaysSelected === 0) {
+      } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
         this.setState({
           notificationIsActive: true,
-          notificationMessage: 'Please select a weekday.',
+          notificationMessage: 'Please select a date.',
         });
-      } else if (name.length === 0 && numOfWeekdaysSelected !== 0) {
+      } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
         this.setState({
           notificationIsActive: true,
           notificationMessage: 'Please enter an event name.',
@@ -259,51 +200,28 @@ class NewEvent extends React.Component {
       return;
     }
 
-    let sentData;
-
     const fromHours = getHours(fromTime);
     const toHours = getHours(toTime);
 
     const fromMinutes = getMinutes(fromTime);
     const toMinutes = getMinutes(toTime);
-    // create a date range as date
-    if (dateOrDay) {
-      const dates = [];
 
-      Object.keys(weekDays).forEach((key) => {
-        if (weekDays[key]) {
-          dates.push({
-            fromDate: moment()
-                      .day(key)
-                      .set('h', fromHours)
-                      .set('m', fromMinutes),
-            toDate: moment()
-                      .day(key)
-                      .set('h', toHours)
-                      .set('m', toMinutes),
-          });
-        }
-      });
+    let dates = ranges.map(({ from, to }) => {
+      if (!to) to = from;
 
-      sentData = JSON.stringify({ name, weekDays, dates });
-    } else {
-      let dates = ranges.map(({ from, to }) => {
-        if (!to) to = from;
+      if (from > to) {
+        [from, to] = [to, from];
+      }
 
-        if (from > to) {
-          [from, to] = [to, from];
-        }
+      return {
+        fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
+        toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
+      };
+    });
 
-        return {
-          fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
-          toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
-        };
-      });
-
-      dates = dateRangeReducer(dates);
-      // the field active now has a default of true.
-      sentData = JSON.stringify({ name, dates });
-    }
+    dates = dateRangeReducer(dates);
+    // the field active now has a default of true.
+    const sentData = JSON.stringify({ name, dates });
 
     const response = await fetch('/api/events', {
       headers: {
@@ -330,24 +248,6 @@ class NewEvent extends React.Component {
   handleEventNameChange(ev) {
     this.setState({ eventName: ev.target.value }, () => this.toggleSubmitDisabled());
   }
-  @autobind
-  handleWeekdaySelect(ev) {
-    if (ev.target.className.indexOf('disabled') > -1) {
-      ev.target.className = ev.target.className.replace('disabled', '');
-    } else {
-      ev.target.className += 'disabled';
-    }
-
-    const { weekDays } = this.state;
-    const weekDay = ev.target.text.toLowerCase();
-    weekDays[weekDay] = !weekDays[weekDay];
-    this.setState({ weekDays }, () => this.toggleSubmitDisabled());
-  }
-
-  @autobind
-  handleDateOrDay() {
-    this.setState({ dateOrDay: !this.state.dateOrDay }, () => this.toggleSubmitDisabled());
-  }
 
   render() {
     const modifiers = {
@@ -356,92 +256,11 @@ class NewEvent extends React.Component {
         this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
     };
 
-    const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
     const { from, to } = this.state.ranges[0];
 
     return (
-      <div className="card" styleName="new-event-card">
-        <div className="card-content">
-          <h1 className="card-title">Create a New Event</h1>
-          <form>
-            <div className="row">
-              <div className="input-field col s12">
-                <input
-                  id="event_name"
-                  type="text"
-                  value={this.state.eventName}
-                  onChange={this.handleEventNameChange}
-                  className="validate"
-                  placeholder="Enter an event name..."
-                  autoFocus
-                />
-                <label htmlFor="event_name">Event Name</label>
-              </div>
-            </div>
-            {!this.state.dateOrDay ?
-              <div>
-                <h6 styleName="heading-dates">What dates might work for you?</h6>
-                {from && to &&
-                  <p className="center">
-                    <a
-                      className="btn-flat"
-                      href="#reset"
-                      onClick={this.handleResetClick}
-                    >Reset</a>
-                  </p>
-                }
-                <DayPicker
-                  numberOfMonths={2}
-                  fromMonth={new Date()}
-                  disabledDays={DateUtils.isPastDay}
-                  modifiers={modifiers}
-                  onDayClick={this.handleDayClick}
-                  styleName="daypicker"
-                />
-              </div> :
-              <div>
-                <h6 styleName="heading">What days might work for you?</h6>
-                <div styleName="weekdayList">
-                  {
-                    weekDays.map((day, index) => (
-                      <a
-                        key={index}
-                        className="btn-flat disabled"
-                        onClick={this.handleWeekdaySelect}
-                        style={{ cursor: 'pointer' }}
-                      >{day}</a>
-                    ))
-                  }
-                </div>
-              </div>
-            }
-            <h6 styleName="heading">What times might work?</h6>
-            <div id="timeSlider" />
-            <br />
-            <p className="center">
-              From {this.state.selectedTimeRange[0]} to {this.state.selectedTimeRange[1]}
-            </p>
-            <br />
-            <p className="center">
-              <a className={this.state.submitClass} onClick={this.createEvent}>
-                Create Event
-              </a>
-            </p>
-          </form>
-        </div>
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          action="Dismiss"
-          title=" "
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={10000}
-          activeClassName="notification-bar-is-active"
-        />
-      </div>
+      <NewEvent />
     );
   }
 }
 
-export default cssModules(NewEvent, styles);
