@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 
-const shelljs = require('shelljs');
-const addCheckMark = require('./checkmark');
-const path = require('path');
+var shelljs = require('shelljs');
+var addCheckMark = require('./checkmark');
+var path = require('path');
+
+var cpy = path.join(__dirname, '../node_modules/cpy-cli/cli.js');
+shelljs.exec(cpy + ' server/api/email/templates/ownerNotification/* build/api/email/templates/ownerNotification/', addCheckMark.bind(null, callback));
 
 function callback() {
   process.stdout.write(' Copied server/api/email/templates/**/ to the /build//api/email/templates/ directory\n\n');
 }
-
-const cpy = path.join(__dirname, '../node_modules/cpy-cli/cli.js');
-shelljs.exec(`${cpy} server/api/email/templates/ownerNotification/* build/api/email/templates/ownerNotification/`, addCheckMark.bind(null, callback));
-shelljs.exec(`${cpy} server/api/email/templates/inviteGuests/* build/api/email/templates/inviteGuests/`, addCheckMark.bind(null, callback));
-
