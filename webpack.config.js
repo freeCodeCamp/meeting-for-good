@@ -30,9 +30,6 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoErrorsPlugin(),
-    new webpack.DefinePlugin({
-      __DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || 'false')),
-    }),
   ],
   module: {
     loaders: [
