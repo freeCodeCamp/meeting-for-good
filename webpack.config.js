@@ -1,18 +1,38 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const WriteFilePlugin   = require('write-file-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const WriteFilePlugin   = require('write-file-webpack-plugin');
 const webpack           = require('webpack');
-const path              = require('path');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
+const VENDOR_LIBS = [
+  'moment',
+  'lodash',
+  'react',
+  'react-dom',
+  'react-router',
+  'react-css-modules',
+  'isomorphic-fetch',
+  'es6-promise',
+  'react-day-picker',
+  'autobind-decorator',
+  'materialize-css',
+  'react-masonry-component',
+  'colorsys',
+  'react-addons-update',
+];
+
+
+module.exports = [{
   context: __dirname,
-  entry: [
-    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
-    './client/client.js',
-  ],
+  entry: {
+    bundle: [
+      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
+      './client/client.js'],
+    vendor: VENDOR_LIBS,
+  },
   output: {
-    path: path.resolve('./build/client'),
-    filename: 'bundle.js',
-    publicPath: '/client/',
+    path: path.join(__dirname, 'build'),
+    filename: '[name].[hash].js',
   },
   module: {
     rules: [
@@ -44,15 +64,21 @@ module.exports = {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin([
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendor', 'manifest'],
+    }),
+    /*new CopyWebpackPlugin([
       {
         from: path.join(__dirname, 'client/index.dev.html'),
         to: path.join(__dirname, 'build/index.html'),
       },
-    ]),
-    new WriteFilePlugin({
-      test: /\.html$/,
+    ]),*/
+    new HtmlWebpackPlugin({
+      template: './client/index.html',
     }),
+    /* new WriteFilePlugin({
+      test: /\.html$/,
+    }), */
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
@@ -62,4 +88,4 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.css'],
   },
-};
+}];

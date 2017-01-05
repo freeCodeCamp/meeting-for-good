@@ -29,10 +29,6 @@ if (process.env.NODE_ENV === 'development') {
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, {
     compress: true,
-    contentBase: path.join(__dirname, '/build'),
-    filename: 'bundle.js',
-    hot: true,
-    publicPath: '/assets/',
     historyApiFallback: true,
     stats: {
       colors: true,
