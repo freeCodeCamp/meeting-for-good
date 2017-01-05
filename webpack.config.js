@@ -16,26 +16,11 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/client/',
   },
-  plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, 'client/index.dev.html'),
-        to: path.join(__dirname, 'build/index.html'),
-      },
-    ]),
-    new WriteFilePlugin({
-      test: /\.html$/,
-    }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new webpack.NoErrorsPlugin(),
-  ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        use: 'babel-loader',
         exclude: /node_modules/,
       },
       {
@@ -60,6 +45,21 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, 'client/index.dev.html'),
+        to: path.join(__dirname, 'build/index.html'),
+      },
+    ]),
+    new WriteFilePlugin({
+      test: /\.html$/,
+    }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new webpack.NoErrorsPlugin(),
+  ],
   devtool: 'source-map',
   resolve: {
     extensions: ['.js', '.css'],
