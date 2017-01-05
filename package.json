@@ -4,7 +4,7 @@
   "description": "Schedule events with ease!",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf build && mkdir build",
+    "clean": "rimraf build",
     "build:server": "babel -d ./build ./server -s",
     "build:client": "webpack -p  --config ./webpack.production.config.js",
     "build": "npm run clean && npm run build:server && npm run build:client",
@@ -98,6 +98,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
+    "rimraf": "^2.5.4",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-dev-server": "beta",
     "write-file-webpack-plugin": "^3.4.2"
