@@ -5,7 +5,6 @@ import passport from 'passport';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import compression from 'compression';
-import dotenv from 'dotenv';
 import express from 'express';
 import connectMongo from 'connect-mongo';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -14,7 +13,6 @@ import webpack from 'webpack';
 import routes from './app/routes/routes';
 import webpackConfig from './../webpack.config';
 
-dotenv.load();
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
