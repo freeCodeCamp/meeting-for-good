@@ -6,9 +6,7 @@ const path              = require('path');
 module.exports = {
   context: __dirname,
   entry: [
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
+    'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
     './client/client.js',
   ],
   output: {

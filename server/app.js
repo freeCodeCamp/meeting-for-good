@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import connectMongo from 'connect-mongo';
 import webpackDevMiddleware from 'webpack-dev-middleware';
+import wbpackHotMiddleware from 'webpack-hot-middleware';
 import webpack from 'webpack';
 import routes from './app/routes/routes';
 import webpackConfig from './../webpack.config';
@@ -36,6 +37,10 @@ if (process.env.NODE_ENV === 'development') {
     stats: {
       colors: true,
     },
+  }));
+
+  app.use(wbpackHotMiddleware(compiler, {
+    log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000,
   }));
 
   app.use(session({

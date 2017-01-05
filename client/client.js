@@ -8,7 +8,6 @@ import 'dialog-polyfill/dialog-polyfill.js';
 import 'dialog-polyfill/dialog-polyfill.css';
 
 require('es6-promise').polyfill();
-
 // Import App
 import App from './components/App';
 import Home from './pages/Home';
