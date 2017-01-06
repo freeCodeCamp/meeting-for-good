@@ -1,17 +1,12 @@
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
-import path from 'path';
 import passport from 'passport';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import wbpackHotMiddleware from 'webpack-hot-middleware';
-import webpack from 'webpack';
 import routes from './app/routes/routes';
-import webpackConfig from './../webpack.config';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -23,6 +18,11 @@ mongoose.connect(process.env.MONGO_URI);
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const wbpackHotMiddleware = require('webpack-hot-middleware');
+  const webpack = require('webpack');
+  const webpackConfig = require('./../webpack.config');
+
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, {
     compress: true,
