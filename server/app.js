@@ -18,6 +18,7 @@ mongoose.connect(process.env.MONGO_URI);
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
+  // only load webpack stuff at dev.
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const wbpackHotMiddleware = require('webpack-hot-middleware');
   const webpack = require('webpack');
@@ -61,9 +62,9 @@ require('./app/config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 app.use('/', express.static(`${__dirname}/`, { maxAge: 31557600000 }));
 app.use('/client/', express.static(`${__dirname}/client/`, { maxAge: 31557600000 }));
-
 routes(app);
 
 const port = process.env.PORT || 8080;

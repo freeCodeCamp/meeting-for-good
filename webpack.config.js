@@ -70,7 +70,10 @@ module.exports = [{
       names: ['vendor', 'manifest'],
     }),
     new HtmlWebpackPlugin({
-      template: './client/index.html',
+      title: 'Lets Meet',
+      template: 'html-loader!./client/index.html',
+      inject: 'body',
+      
     }),
     new WriteFilePlugin({
       test: /\.html$/,
