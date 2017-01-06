@@ -1,17 +1,13 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
-import fetch from 'isomorphic-fetch';
-import autobind from 'autobind-decorator';
-import nprogress from 'nprogress';
+import { connect } from 'react-redux';
 import Dashboard from './DashboardPresentation';
-import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
 
-export default class DashboardContainer extends React.Component {
+class DashboardContainer extends React.PureComponent {
   constructor() {
     super();
     this.state = {
-      events: [],
       showNoScheduledMessage: false,
       notificationIsActive: false,
       notificationMessage: '',
@@ -25,38 +21,11 @@ export default class DashboardContainer extends React.Component {
     }
 
     if (!await isAuthenticated()) browserHistory.push('/');
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch('/api/events/getByUser', { credentials: 'same-origin' });
-    let events;
-    try {
-      checkStatus(response);
-      events = await parseJSON(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load events. Please try again later.',
-      });
-      return;
-    } finally {
-      nprogress.done();
-      this.setState({ showNoScheduledMessage: true });
-    }
-
-    this.setState({ events });
-  }
-
-  @autobind
-  removeEventFromDashboard(eventId) {
-    this.setState({
-      events: this.state.events.filter(event => event._id !== eventId),
-    });
   }
 
   render() {
-    const { showNoScheduledMessage, events } = this.state;
+    const { showNoScheduledMessage } = this.state;
+    const { events } = this.props;
     const childProps = { showNoScheduledMessage, events };
 
     return (
@@ -68,3 +37,8 @@ export default class DashboardContainer extends React.Component {
   }
 }
 
+DashboardContainer.propTypes = {
+  events: React.PropTypes.arrayOf(React.PropTypes.object),
+};
+
+export default connect(state => ({ events: state.events }))(DashboardContainer);

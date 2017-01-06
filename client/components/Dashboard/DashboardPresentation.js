@@ -3,17 +3,26 @@ import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import { Notification } from 'react-notification';
+import { autobind } from 'autobind-decorator';
 import EventCardContainer from '../EventCard/EventCardContainer';
 import styles from '../../styles/dashboard.css';
 
-class Dashboard extends React.PureComponent {
+class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       notificationIsActive: false,
       notificationMessage: '',
+      events: this.props.events,
     };
+  }
+
+  @autobind
+  removeEventFromDashboard(eventId) {
+    this.setState({
+      events: this.state.events.filter(event => event._id !== eventId),
+    });
   }
 
   render() {
@@ -26,13 +35,13 @@ class Dashboard extends React.PureComponent {
           </Link>
         </div>
         {/* Card Template */}
-        {this.props.events.length !== 0 ?
+        {this.state.events.length !== 0 ?
           <Masonry>
-            {this.props.events.map(event => (
+            {this.state.events.map(event => (
               <EventCardContainer
                 key={event._id}
                 event={event}
-                removeEventFromDashboard={this.props.removeEventFromDashboard}
+                removeEventFromDashboard={this.removeEventFromDashboard}
               />
             ))}
           </Masonry> :
@@ -64,7 +73,6 @@ class Dashboard extends React.PureComponent {
 
 Dashboard.propTypes = {
   events: React.PropTypes.arrayOf(React.PropTypes.object),
-  removeEventFromDashboard: React.PropTypes.func,
   showNoScheduledMessage: React.PropTypes.bool,
 };
 
