@@ -23,7 +23,6 @@ mongoose.connect(process.env.MONGO_URI);
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
-  // - Start web-dev-server
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, {
     compress: true,

@@ -1,5 +1,5 @@
 // const CopyWebpackPlugin = require('copy-webpack-plugin');
-// const WriteFilePlugin   = require('write-file-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const webpack           = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -67,18 +67,12 @@ module.exports = [{
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor', 'manifest'],
     }),
-    /*new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, 'client/index.dev.html'),
-        to: path.join(__dirname, 'build/index.html'),
-      },
-    ]),*/
     new HtmlWebpackPlugin({
       template: './client/index.html',
     }),
-    /* new WriteFilePlugin({
+    new WriteFilePlugin({
       test: /\.html$/,
-    }), */
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
