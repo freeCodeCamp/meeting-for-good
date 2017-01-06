@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'development') {
   // - Use MemoryStore for the session
   // only load webpack stuff at dev.
   const webpackDevMiddleware = require('webpack-dev-middleware');
-  const wbpackHotMiddleware = require('webpack-hot-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
   const webpack = require('webpack');
   const webpackConfig = require('./../webpack.config');
 
@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'development') {
     },
   }));
 
-  app.use(wbpackHotMiddleware(compiler, {
+  app.use(webpackHotMiddleware(compiler, {
     log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000,
   }));
 
