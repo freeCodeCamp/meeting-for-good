@@ -14,7 +14,6 @@ export default class EventCardContainer extends React.Component {
     super(props);
 
     const { event } = props;
-    delete event.weekDays;
 
     const ranges = event.dates.map(({ fromDate, toDate }) => ({
       from: new Date(fromDate),
