@@ -6,10 +6,11 @@
   "scripts": {
     "clean": "rimraf build",
     "build:server": "babel -d ./build ./server -s",
-    "build:client": "webpack -p  --config ./webpack.production.config.js",
+    "build:client": "webpack -p  --config ./webpack.config.js",
     "build": "npm run clean && npm run build:server && npm run build:client",
-    "start": "node -r dotenv/config ./build/app.js",
-    "serve": "npm run clean && npm run build:server && npm run start",
+    "start": "node ./build/app.js",
+    "startDev": "node -r dotenv/config ./build/app.js",
+    "serve": "npm run clean && npm run build:server && npm run startDev",
     "postinstall": "npm run build",
     "deploy": "git push heroku development:master"
   },
