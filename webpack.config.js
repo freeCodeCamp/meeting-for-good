@@ -25,19 +25,22 @@ module.exports = [{
   context: __dirname,
   entry: {
     bundle: [
-      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
-      './client/client.js'],
+      'webpack-dev-server/client?http://0.0.0.0:3000',
+      'webpack/hot/only-dev-server',
+      './client/client.js',
+    ],
     vendor: VENDOR_LIBS,
   },
   output: {
     path: path.join(__dirname, 'build'),
+    publicPath: '/',
     filename: '[name].[hash].js',
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        use: 'babel-loader',
+        use: ['babel-loader'],
         exclude: /node_modules/,
       },
       {
