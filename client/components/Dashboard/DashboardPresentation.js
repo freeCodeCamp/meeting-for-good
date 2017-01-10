@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import { Notification } from 'react-notification';
-import { autobind } from 'autobind-decorator';
+import autobind from 'autobind-decorator';
 import EventCardContainer from '../EventCard/EventCardContainer';
 import styles from '../../styles/dashboard.css';
 
