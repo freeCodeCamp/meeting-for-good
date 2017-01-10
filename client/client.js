@@ -17,10 +17,10 @@ import Home from './components/Home';
 import DashboardContainer from './components/Dashboard/DashboardContainer';
 import EventDetailsContainer from './components/EventDetails/EventDetailsContainer';
 import NewEventContainer from './components/NewEvent/NewEventContainer';
-import rootSaga from './actions/sagas';
+import root from './sagas';
 
 const store = configureStore({});
-store.runSaga(rootSaga);
+store.runSaga(root);
 
 render((
   <Provider store={store}>
