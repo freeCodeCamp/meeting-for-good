@@ -1,16 +1,20 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
  * GET     /api/users                  ->  index
+ * GET     /api/users/me               ->  me
  * POST    /api/users                  ->  create
  * GET     /api/users/:id              ->  show
  * PUT     /api/users/:id              ->  upsert
  * PATCH   /api/users/:id              ->  patch
  * DELETE  /api/users/:id              ->  destroy
- * get     /api/users/byName/:name     -> indexByName
+ * GET     /api/users/byName/:name     -> indexByName
+ *GET     /api/users/relatedUsers/     -> relatedUsers
  */
 
 import jsonpatch from 'fast-json-patch';
 import Users from './user.model';
+import Events from '../events/events.model';
+
 
 
 const respondWithResult = (res, statusCode) => {
@@ -144,5 +148,32 @@ export const me = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+// find all users that i alredy meet.
+export const relatedUsers = (req, res) => {
+  // find all events that this user partipated
+  const userId = req.user._id.toString();
+  return Events.find({ 'participants.userId': userId }).exec()
+    .then((events) => {
+      if (!events) {
+        return res.status(401).end();
+      }
+      const response = [];
+      for (const ev of events) {
+        for (const participant of ev.participants) {
+          const participantId = participant.userId.toString();
+          if (participantId !== userId) {
+              // check if exists at array.
+            if (response.indexOf(participantId) === -1) {
+              response.push(participantId);
+            }
+          }
+        }
+      }
+      res.json(response);
+    })
+    .catch(err => next(err));
+};
+
 
 
