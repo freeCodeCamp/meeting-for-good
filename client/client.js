@@ -2,10 +2,12 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
+import { AppContainer } from 'react-hot-loader';
 import './styles/no-css-modules/nprogress.css';
 import './styles/no-css-modules/react-notifications.css';
 import 'dialog-polyfill/dialog-polyfill.js';
 import 'dialog-polyfill/dialog-polyfill.css';
+
 
 require('es6-promise').polyfill();
 // Import App
@@ -16,15 +18,17 @@ import EventDetails from './pages/EventDetails';
 import NewEvent from './pages/NewEvent';
 
 render((
-  <Router history={browserHistory}>
-    <Route path="/" component={App}>
-      <IndexRoute component={Home} />
-      <Route path="dashboard" component={Dashboard} />
-      <Route path="event">
-        <Route path="new" component={NewEvent} />
-        <Route path=":uid" component={EventDetails} />
+  <AppContainer key={Math.random()}>
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Home} />
+        <Route path="dashboard" component={Dashboard} />
+        <Route path="event">
+          <Route path="new" component={NewEvent} />
+          <Route path=":uid" component={EventDetails} />
+        </Route>
       </Route>
-    </Route>
-    <Redirect from="*" to="/" />
-  </Router>
+      <Redirect from="*" to="/" />
+    </Router>
+  </AppContainer>
 ), document.getElementById('app'));
