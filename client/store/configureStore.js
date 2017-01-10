@@ -1,11 +1,15 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import rootReducer from '../reducers/index';
+
+const sagaMiddleware = createSagaMiddleware();
 
 export default function configureStore(initialState) {
   const store = createStore(
     rootReducer,
     initialState,
     window.devToolsExtension ? window.devToolsExtension() : undefined,
+    applyMiddleware(sagaMiddleware()),
   );
 
   if (module.hot) {
@@ -14,5 +18,8 @@ export default function configureStore(initialState) {
     });
   }
 
-  return store;
+  return {
+    ...store,
+    runSaga: sagaMiddleware.run,
+  };
 }
