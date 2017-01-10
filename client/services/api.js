@@ -10,5 +10,5 @@ const callApi = (endpoint, schema) => {
     .then(
       response => ({ response }),
       error => ({ error: error.message || 'Something bad happened.' }),
-  );
+    );
 };
