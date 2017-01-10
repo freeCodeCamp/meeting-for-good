@@ -14,8 +14,12 @@ class Dashboard extends React.Component {
     this.state = {
       notificationIsActive: false,
       notificationMessage: '',
-      events: this.props.events,
+      events: [],
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ events: nextProps.events });
   }
 
   @autobind

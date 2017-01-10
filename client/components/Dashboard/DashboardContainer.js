@@ -24,7 +24,7 @@ class DashboardContainer extends React.PureComponent {
 
     if (!await isAuthenticated()) browserHistory.push('/');
 
-    this.props.actions.requestEvents();
+    this.props.actions.loadEvents();
   }
 
   render() {
@@ -49,7 +49,7 @@ DashboardContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  events: state.events,
+  events: state.entities.events,
 });
 
 const mapDispatchToProps = dispatch => ({
