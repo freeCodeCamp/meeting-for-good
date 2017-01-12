@@ -92,6 +92,7 @@
   "homepage": "https://github.com/akiralaine/letsmeet#readme",
   "devDependencies": {
     "babel-eslint": "^7.1.1",
+    "babel-preset-react-hmre": "^1.1.1",
     "eslint": "^3.12.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-friendly-formatter": "^2.0.6",

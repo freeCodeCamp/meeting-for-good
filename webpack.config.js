@@ -26,7 +26,7 @@ module.exports = {
   entry: {
     bundle: [
       'react-hot-loader/patch',
-      'webpack-hot-middleware/client',
+      'webpack-hot-middleware/client?reload=true',
       './client/main.js',
     ],
     vendor: VENDOR_LIBS,

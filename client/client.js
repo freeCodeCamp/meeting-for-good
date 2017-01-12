@@ -1,6 +1,6 @@
 // Vendor Dependencies
-import React from 'react';
-import { render } from 'react-dom';
+import React, { Component } from 'react';
+// import { render } from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 import './styles/no-css-modules/nprogress.css';
 import './styles/no-css-modules/react-notifications.css';
@@ -16,7 +16,7 @@ import Dashboard from './pages/Dashboard';
 import EventDetails from './pages/EventDetails';
 import NewEvent from './pages/NewEvent';
 
-export default class Client extends React.Component {
+export default class Client extends Component {
 
   render() {
     return (
