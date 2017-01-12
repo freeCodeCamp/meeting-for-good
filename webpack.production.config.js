@@ -6,7 +6,7 @@ const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: './client/client.js',
+    app: './client/main.js',
     vendor: [
       'moment',
       'lodash',
@@ -79,7 +79,7 @@ module.exports = {
         include: [/node_modules/, /no-css-modules/],
         loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
-          loader: 'css-loader', 
+          loader: 'css-loader',
         }),
       },
       {
