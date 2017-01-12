@@ -25,8 +25,10 @@ module.exports = [{
   context: __dirname,
   entry: {
     bundle: [
-      'webpack-dev-server/client?http://0.0.0.0:3000',
+      'webpack-hot-middleware/client?http://0.0.0.0:8080',
+      // 'webpack-dev-server/client?http://0.0.0.0:8080',
       'webpack/hot/only-dev-server',
+      'react-hot-loader/patch',
       './client/client.js',
     ],
     vendor: VENDOR_LIBS,

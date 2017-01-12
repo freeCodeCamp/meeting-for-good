@@ -30,13 +30,17 @@ if (process.env.NODE_ENV === 'development') {
     compress: true,
     historyApiFallback: true,
     hot: true,
+    publicPath: '/',
     stats: {
       colors: true,
+      reasons: false,
     },
   }));
 
   app.use(webpackHotMiddleware(compiler, {
-    log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000,
+    log: console.log,
+    path: '/__webpack_hmr',
+    heartbeat: 10 * 1000,
   }));
 
   app.use(session({
