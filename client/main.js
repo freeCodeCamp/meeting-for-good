@@ -6,14 +6,18 @@ import Client from './client'; // App
 const mountApp = document.getElementById('app');
 
 ReactDOM.render(
-  <AppContainer component={Client} />,
+  <AppContainer>
+    <Client />
+  </AppContainer>,
   mountApp,
 );
 
 if (module.hot) {
   module.hot.accept('./client', () => {
     ReactDOM.render(
-      <AppContainer component={require('./client').default} />,
+      <AppContainer>
+        <Client />
+      </AppContainer>,
       mountApp,
     );
   });
