@@ -2,7 +2,6 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
-import { AppContainer } from 'react-hot-loader';
 import './styles/no-css-modules/nprogress.css';
 import './styles/no-css-modules/react-notifications.css';
 import 'dialog-polyfill/dialog-polyfill.js';
@@ -17,18 +16,22 @@ import Dashboard from './pages/Dashboard';
 import EventDetails from './pages/EventDetails';
 import NewEvent from './pages/NewEvent';
 
-render((
-  <AppContainer key={Math.random()}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home} />
-        <Route path="dashboard" component={Dashboard} />
-        <Route path="event">
-          <Route path="new" component={NewEvent} />
-          <Route path=":uid" component={EventDetails} />
+export default class Client extends React.Component {
+
+  render() {
+    return (
+      <Router history={browserHistory}>
+        <Route path="/" component={App}>
+          <IndexRoute component={Home} />
+          <Route path="dashboard" component={Dashboard} />
+          <Route path="event">
+            <Route path="new" component={NewEvent} />
+            <Route path=":uid" component={EventDetails} />
+          </Route>
         </Route>
-      </Route>
-      <Redirect from="*" to="/" />
-    </Router>
-  </AppContainer>
-), document.getElementById('app'));
+        <Redirect from="*" to="/" />
+      </Router>
+    );
+  }
+
+}

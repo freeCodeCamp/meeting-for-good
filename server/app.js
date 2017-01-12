@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
   const webpackConfig = require('./../webpack.config');
 
+
   const compiler = webpack(webpackConfig);
 
   app.use(webpackDevMiddleware(compiler, {
@@ -40,8 +41,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(webpackHotMiddleware(compiler, {
     log: console.log,
     path: '/__webpack_hmr',
-    heartbeat: 10 * 1000,
+    heartbeat: 2000,
   }));
+
 
   app.use(session({
     secret: 'secretClementine',
