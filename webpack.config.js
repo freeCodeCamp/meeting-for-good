@@ -21,7 +21,7 @@ const VENDOR_LIBS = [
 ];
 
 
-module.exports = [{
+module.exports = {
   context: __dirname,
   entry: {
     bundle: [
@@ -78,7 +78,6 @@ module.exports = [{
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',
       inject: 'body',
-      
     }),
     new WriteFilePlugin({
       test: /\.html$/,
@@ -92,4 +91,4 @@ module.exports = [{
   resolve: {
     extensions: ['.js', '.css'],
   },
-}];
+};

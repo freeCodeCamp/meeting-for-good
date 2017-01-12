@@ -24,13 +24,13 @@ if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
   const webpackConfig = require('./../webpack.config');
 
-
   const compiler = webpack(webpackConfig);
+
   app.use(webpackDevMiddleware(compiler, {
     compress: true,
     historyApiFallback: true,
     hot: true,
-    publicPath: '/',
+    publicPath: webpackConfig.output.publicPath,
     stats: {
       colors: true,
       reasons: false,
