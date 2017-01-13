@@ -13,7 +13,6 @@ ReactDOM.render(
 );
 
 if (module.hot) {
-  console.log('hot');
   module.hot.accept('./client', () => {
     ReactDOM.render(
       <AppContainer>
