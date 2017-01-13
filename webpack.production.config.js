@@ -3,6 +3,7 @@ const webpack             = require('webpack');
 const ExtractTextPlugin   = require('extract-text-webpack-plugin');
 const OptimizeCSS         = require('optimize-css-assets-webpack-plugin');
 const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const path = require('path');
 
 module.exports = {
   entry: {
@@ -25,7 +26,7 @@ module.exports = {
     ],
   },
   output: {
-    path: require('path').resolve('./build/client'),
+    path: path.resolve('./build/client'),
     filename: 'app.[chunkhash].js',
     publicPath: '/client/',
   },
@@ -58,13 +59,6 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        query: {
-          presets: ['es2015', 'react'],
-          plugins: [
-            'transform-decorators-legacy',
-            ['transform-runtime', { polyfill: false, regenerator: true }],
-          ],
-        },
       },
       {
         test: /\.css$/,
