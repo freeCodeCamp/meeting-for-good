@@ -1,18 +1,23 @@
-const HtmlWebpackPlugin   = require('html-webpack-plugin');
-const webpack             = require('webpack');
-const ExtractTextPlugin   = require('extract-text-webpack-plugin');
-const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const wbpkcnf = require('webpack-config');
 
 module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
+  context: __dirname,
   entry: {
-    app: './client/main.js',
+    bundle: [
+      'react-hot-loader/patch',
+      'webpack-hot-middleware/client?reload=true',
+      './client/main.js',
+    ],
   },
   output: {
-    path: path.resolve('./build/client'),
-    filename: 'app.[chunkhash].js',
-    publicPath: '/client/',
+    path: path.join(__dirname, 'build'),
+    publicPath: '/',
+    filename: '[name].[hash].js',
   },
   module: {
     rules: [
@@ -20,7 +25,7 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
         test: /\.css$/,
         exclude: [/node_modules/, /no-css-modules/],
         loaders: [
-          'style-loader',
+          'style-loader?sourceMap',
           'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
         ],
       },
@@ -28,7 +33,7 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
         test: /\.css$/,
         include: [/node_modules/, /no-css-modules/],
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
+          fallbackLoader: 'style-loader?sourceMap',
           loader: 'css-loader',
         }),
       },
@@ -36,18 +41,19 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.[chunkhash].js',
-    }),
-    new ChunkManifestPlugin({
-      filename: 'manifest.json',
-      manifestVariable: 'webpackManifest',
+      names: ['vendor', 'manifest'],
     }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',
-      filename: '../index.html',
       inject: 'body',
     }),
+    new WriteFilePlugin({
+      test: /\.html$/,
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new webpack.NoErrorsPlugin(),
   ],
+  devtool: 'source-map',
 });
