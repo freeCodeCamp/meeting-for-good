@@ -1,5 +1,6 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
+import { bindActionCreators } from 'redux';
 import fetch from 'isomorphic-fetch';
 import { Notification } from 'react-notification';
 import moment from 'moment';
@@ -7,11 +8,13 @@ import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import update from 'react-addons-update';
+import { connect } from 'react-redux';
 import EventDetails from './EventDetailsPresentation';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { getCurrentUser } from '../../util/auth';
+import * as Actions from '../../actions';
 
-export default class EventDetailsContainer extends React.Component {
+class EventDetailsContainer extends React.Component {
   @autobind
   static selectElementContents(el) {
     let range;
@@ -46,22 +49,8 @@ export default class EventDetailsContainer extends React.Component {
 
   async componentWillMount() {
     const { params } = this.props;
-    const response = await fetch(`/api/events/${params.uid}`, {
-      credentials: 'same-origin',
-    });
-    let event;
-    try {
-      checkStatus(response);
-      event = await parseJSON(response);
-    } catch (err) {
-      console.log('err at componentWillMount EventDetail', err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load event. Please try again later.',
-      });
-      window.location.href = '/';
-      return;
-    }
+    this.props.actions.loadEvent(params.uid);
+    const event = this.props.events;
 
     const eventParticipantsIds = event.participants.map(participant =>
       participant.userId,
@@ -357,3 +346,13 @@ EventDetailsContainer.propTypes = {
     uid: React.PropTypes.string,
   }),
 };
+
+const mapStateToProps = state => ({
+  events: state.entities.events,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(Actions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EventDetailsContainer);
