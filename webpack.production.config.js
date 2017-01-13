@@ -34,7 +34,6 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
     ],
   },
   plugins: [
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.[chunkhash].js',
