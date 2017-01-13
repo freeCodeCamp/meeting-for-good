@@ -1,4 +1,3 @@
-const HtmlWebpackPlugin   = require('html-webpack-plugin');
 const webpack             = require('webpack');
 const ExtractTextPlugin   = require('extract-text-webpack-plugin');
 const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
@@ -11,7 +10,7 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
   },
   output: {
     path: path.resolve('./build/client'),
-    filename: 'app.[chunkhash].js',
+    filename: '[name].[hash].js',
     publicPath: '/client/',
   },
   module: {
@@ -35,6 +34,7 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
     ],
   },
   plugins: [
+    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.[chunkhash].js',
@@ -42,12 +42,6 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
     new ChunkManifestPlugin({
       filename: 'manifest.json',
       manifestVariable: 'webpackManifest',
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Lets Meet',
-      template: 'html-loader!./client/index.html',
-      filename: '../index.html',
-      inject: 'body',
     }),
   ],
 });

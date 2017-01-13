@@ -1,5 +1,4 @@
 const WriteFilePlugin = require('write-file-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
@@ -15,8 +14,8 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
     ],
   },
   output: {
-    path: path.join(__dirname, 'build'),
-    publicPath: '/',
+    path: path.resolve('./build/client'),
+    publicPath: '/client/',
     filename: '[name].[hash].js',
   },
   module: {
@@ -42,11 +41,6 @@ module.exports = new wbpkcnf.Config().extend('./webpack.base.config.js').merge({
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor', 'manifest'],
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Lets Meet',
-      template: 'html-loader!./client/index.html',
-      inject: 'body',
     }),
     new WriteFilePlugin({
       test: /\.html$/,

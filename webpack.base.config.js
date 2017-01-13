@@ -3,6 +3,7 @@ const wbpkcnf = require('webpack-config');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
+const HtmlWebpackPlugin   = require('html-webpack-plugin');
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -57,6 +58,12 @@ module.exports = new wbpkcnf.Config().merge({
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'Lets Meet',
+      template: 'html-loader!./client/index.html',
+      filename: '../index.html',
+      inject: 'body',
+    }),
   ],
   resolve: {
     extensions: ['.js', '.css'],
