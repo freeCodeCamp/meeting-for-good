@@ -81,7 +81,8 @@
     "react-transform-hmr": "^1.0.4",
     "webpack": "2.2.0-rc.4",
     "webpack-config": "^6.2.1",
-    "yargs": "^6.6.0"
+    "yargs": "^6.6.0",
+    "html-webpack-plugin": "^2.24.1"
   },
   "devDependencies": {
     "chunk-manifest-webpack-plugin": "^1.0.0",
@@ -97,7 +98,6 @@
     "extract-text-webpack-plugin": "beta",
     "file-loader": "^0.9.0",
     "html-loader": "^0.4.4",
-    "html-webpack-plugin": "^2.24.1",
     "optimize-css-assets-webpack-plugin": "^1.3.0",
     "rimraf": "^2.5.4",
     "style-loader": "^0.13.1",
