@@ -5,25 +5,27 @@ const OptimizeCSS         = require('optimize-css-assets-webpack-plugin');
 const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
 const path = require('path');
 
+const VENDOR_LIBS = [
+  'moment',
+  'lodash',
+  'react',
+  'react-dom',
+  'react-router',
+  'react-css-modules',
+  'isomorphic-fetch',
+  'es6-promise',
+  'react-day-picker',
+  'autobind-decorator',
+  'materialize-css',
+  'react-masonry-component',
+  'colorsys',
+  'react-addons-update',
+];
+
 module.exports = {
   entry: {
     app: './client/main.js',
-    vendor: [
-      'moment',
-      'lodash',
-      'react',
-      'react-dom',
-      'react-router',
-      'react-css-modules',
-      'isomorphic-fetch',
-      'es6-promise',
-      'react-day-picker',
-      'autobind-decorator',
-      'materialize-css',
-      'react-masonry-component',
-      'colorsys',
-      'react-addons-update',
-    ],
+    vendor: VENDOR_LIBS,
   },
   output: {
     path: path.resolve('./build/client'),
