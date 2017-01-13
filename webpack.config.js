@@ -1,6 +1,8 @@
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeCSS         = require('optimize-css-assets-webpack-plugin');
 const path = require('path');
 
 const VENDOR_LIBS = [
@@ -54,7 +56,10 @@ module.exports = {
       {
         test: /\.css$/,
         include: [/node_modules/, /no-css-modules/],
-        loaders: ['style-loader?sourceMap', 'css-loader'],
+        loader: ExtractTextPlugin.extract({
+          fallbackLoader: 'style-loader?sourceMap',
+          loader: 'css-loader',
+        }),
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -68,6 +73,10 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+    new ExtractTextPlugin('vendor.css'),
+    new OptimizeCSS({
+      cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor', 'manifest'],
