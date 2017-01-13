@@ -1,7 +1,7 @@
 const wbpkcnf = require('webpack-config');
 
 function setting() {
-  if (process.env.NODE_ENV === '') {
+  if (!process.env.NODE_ENV) {
     process.env.NODE_ENV = 'production';
   }
   return process.env.NODE_ENV;
