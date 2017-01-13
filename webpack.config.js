@@ -2,7 +2,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSS         = require('optimize-css-assets-webpack-plugin');
+const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const path = require('path');
 
 const VENDOR_LIBS = [
@@ -20,8 +20,11 @@ const VENDOR_LIBS = [
   'react-masonry-component',
   'colorsys',
   'react-addons-update',
+  'bluebird',
+  'passport',
+  'passport=facebook',
+  'passport-google-oauth',
 ];
-
 
 module.exports = {
   context: __dirname,
