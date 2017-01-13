@@ -30,31 +30,8 @@ module.exports = {
     filename: 'app.[chunkhash].js',
     publicPath: '/client/',
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"',
-    }),
-    new ExtractTextPlugin('vendor.css'),
-    new OptimizeCSS({
-      cssProcessorOptions: { discardComments: { removeAll: true } },
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor', 
-      filename: 'vendor.[chunkhash].js',
-    }),
-    new ChunkManifestPlugin({
-      filename: 'manifest.json',
-      manifestVariable: 'webpackManifest',
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Lets Meet',
-      template: 'html-loader!./client/index.html',
-      filename: '../index.html',
-      inject: 'body',
-    }),
-  ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -85,6 +62,29 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"',
+    }),
+    new ExtractTextPlugin('vendor.css'),
+    new OptimizeCSS({
+      cssProcessorOptions: { discardComments: { removeAll: true } },
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor', 
+      filename: 'vendor.[chunkhash].js',
+    }),
+    new ChunkManifestPlugin({
+      filename: 'manifest.json',
+      manifestVariable: 'webpackManifest',
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Lets Meet',
+      template: 'html-loader!./client/index.html',
+      filename: '../index.html',
+      inject: 'body',
+    }),
+  ],
   resolve: {
     extensions: ['.js', '.css'],
   },
