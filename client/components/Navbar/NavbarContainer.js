@@ -1,9 +1,11 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Navbar from './NavbarPresentation';
-import { getCurrentUser } from '../../util/auth';
+import * as Actions from '../../actions';
 
-export default class NavbarContainer extends React.Component {
+class NavbarContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,8 +15,12 @@ export default class NavbarContainer extends React.Component {
     };
   }
 
-  async componentWillMount() {
-    const user = await getCurrentUser();
+  componentWillMount() {
+    this.props.actions.fetchCurrentUser();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const user = nextProps.currentUser;
     if (user) {
       this.setState({
         userAvatar: user.avatar,
@@ -47,5 +53,17 @@ NavbarContainer.propTypes = {
   location: React.PropTypes.shape({
     pathname: React.PropTypes.string,
   }),
+  actions: React.PropTypes.shape({
+    fetchCurrentUser: React.PropTypes.func,
+  }),
 };
 
+const mapStateToProps = state => ({
+  currentUser: state.entities.currentUser,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(Actions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavbarContainer);

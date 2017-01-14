@@ -11,7 +11,6 @@ import update from 'react-addons-update';
 import { connect } from 'react-redux';
 import EventDetails from './EventDetailsPresentation';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import { getCurrentUser } from '../../util/auth';
 import * as Actions from '../../actions';
 
 class EventDetailsContainer extends React.Component {
