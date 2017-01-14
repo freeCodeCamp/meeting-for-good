@@ -47,10 +47,16 @@ class EventDetailsContainer extends React.Component {
     };
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     const { params } = this.props;
     this.props.actions.loadEvent(params.uid);
-    const event = this.props.events;
+    this.props.actions.fetchCurrentUser();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { params } = this.props;
+    const event = nextProps.events.find(ev => ev._id === params.uid);
+    const user = nextProps.currentUser;
 
     const eventParticipantsIds = event.participants.map(participant =>
       participant.userId,
@@ -66,7 +72,6 @@ class EventDetailsContainer extends React.Component {
       toDate: new Date(toDate),
     }));
 
-    console.log(event);
     this.setState({
       event,
       eventParticipantsIds,
@@ -75,7 +80,6 @@ class EventDetailsContainer extends React.Component {
       participants: event.participants,
     });
 
-    const user = await getCurrentUser();
     if (user) {
       let showHeatmap = false;
       let myAvailability = [];
@@ -91,7 +95,8 @@ class EventDetailsContainer extends React.Component {
 
       this.setState({ user, showHeatmap, myAvailability });
     }
-    this.generateBestDatesAndTimes(this.state.event);
+
+    if (event.participants) this.generateBestDatesAndTimes(event);
   }
 
   @autobind
@@ -349,6 +354,7 @@ EventDetailsContainer.propTypes = {
 
 const mapStateToProps = state => ({
   events: state.entities.events,
+  currentUser: state.entities.currentUser,
 });
 
 const mapDispatchToProps = dispatch => ({
