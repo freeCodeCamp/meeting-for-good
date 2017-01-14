@@ -1,9 +1,11 @@
-
-const wbpkcnf = require('webpack-config');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin   = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -28,9 +30,15 @@ const VENDOR_LIBS = [
   'react-router',
 ];
 
-module.exports = new wbpkcnf.Config().merge({
+module.exports = {
   entry: {
+    bundle: './client/main.js',
     vendor: VENDOR_LIBS,
+  },
+  output: {
+    path: path.resolve('./build/client'),
+    filename: 'app.[chunkhash].js',
+    publicPath: '/client/',
   },
   module: {
     rules: [
@@ -47,6 +55,22 @@ module.exports = new wbpkcnf.Config().merge({
         test: /\.(png|jpg|gif)$/,
         loader: 'url-loader',
       },
+      {
+        test: /\.css$/,
+        exclude: [/node_modules/, /no-css-modules/],
+        loaders: [
+          'style-loader',
+          'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+        ],
+      },
+      {
+        test: /\.css$/,
+        include: [/node_modules/, /no-css-modules/],
+        loader: ExtractTextPlugin.extract({
+          fallbackLoader: 'style-loader',
+          loader: 'css-loader',
+        }),
+      },
     ],
   },
   plugins: [
@@ -58,14 +82,16 @@ module.exports = new wbpkcnf.Config().merge({
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Lets Meet',
-      template: 'html-loader!./client/index.html',
-      filename: '../index.html',
-      inject: 'body',
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.[chunkhash].js',
+    }),
+    new ChunkManifestPlugin({
+      filename: 'manifest.json',
+      manifestVariable: 'webpackManifest',
     }),
   ],
   resolve: {
     extensions: ['.js', '.css'],
   },
-});
+};
