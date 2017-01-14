@@ -89,6 +89,12 @@ module.exports = {
       filename: 'manifest.json',
       manifestVariable: 'webpackManifest',
     }),
+    new HtmlWebpackPlugin({
+      title: 'Lets Meet',
+      template: 'html-loader!./client/index.html',
+      filename: '../index.html',
+      inject: 'body',
+    }),
   ],
   resolve: {
     extensions: ['.js', '.css'],
