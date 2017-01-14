@@ -91,6 +91,12 @@ module.exports = {
     new WriteFilePlugin({
       test: /\.html$/,
     }),
+    new HtmlWebpackPlugin({
+      title: 'Lets Meet',
+      template: 'html-loader!./client/index.html',
+      filename: '../index.html',
+      inject: 'body',
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoErrorsPlugin(),
