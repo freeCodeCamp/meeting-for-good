@@ -13,6 +13,13 @@ const fetchData = (endpoint, schema) => {
           json.entities.events[key],
         );
       }
+
+      if (json.entities.currentUser) {
+        json.entities.currentUser = json.entities.currentUser[
+          Object.keys(json.entities.currentUser)[0]
+        ];
+      }
+
       return json;
     })
     .then(
