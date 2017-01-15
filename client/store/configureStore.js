@@ -10,7 +10,7 @@ export default function configureStore(initialState) {
     initialState,
     compose(
       applyMiddleware(sagaMiddleware),
-      window.devToolsExtension ? window.devToolsExtension() : undefined,
+      window.devToolsExtension ? window.devToolsExtension() : f => f,
     ),
   );
 
