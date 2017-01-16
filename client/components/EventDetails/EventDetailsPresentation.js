@@ -147,7 +147,7 @@ class EventDetails extends React.Component {
                   <a
                     id="enterAvailButton"
                     className="waves-effect waves-light btn"
-                    onClick={this.showAvailability}
+                    onClick={this.constructor.showAvailability}
                   >Enter my availability</a> :
                   <a
                     className="waves-effect waves-light btn"
