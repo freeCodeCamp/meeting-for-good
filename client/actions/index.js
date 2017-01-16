@@ -40,5 +40,9 @@ export const user = {
 export const loadEvents = () => action(LOAD_EVENTS);
 export const loadEvent = id => action(LOAD_EVENT, { id });
 export const fetchCurrentUser = () => action(FETCH_CURRENT_USER);
-export const newEvent = () => action(NEW_EVENT);
-export const updateEvent = id => action(UPDATE_EVENT, { id });
+export const newEvent = body => action(NEW_EVENT, { body });
+export const updateEvent = (id, method, body) => action(UPDATE_EVENT, {
+  id,
+  method,
+  body,
+});
