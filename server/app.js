@@ -23,8 +23,6 @@ if (process.env.NODE_ENV === 'development') {
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const webpack = require('webpack');
   const webpackConfig = require('../webpack.config.dev');
-
-
   const compiler = webpack(webpackConfig);
 
   app.use(webpackDevMiddleware(compiler, {
@@ -43,7 +41,6 @@ if (process.env.NODE_ENV === 'development') {
     path: '/__webpack_hmr',
     heartbeat: 2000,
   }));
-
 
   app.use(session({
     secret: 'secretClementine',
@@ -69,7 +66,6 @@ require('./app/config/passport')(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 app.use('/', express.static(`${__dirname}/`, { maxAge: 31557600000 }));
 app.use('/client/', express.static(`${__dirname}/client/`, { maxAge: 31557600000 }));
