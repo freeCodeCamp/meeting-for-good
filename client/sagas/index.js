@@ -11,6 +11,13 @@ function* fetchEntity(entity, apiFn, id) {
   else yield put(entity.failure(error));
 }
 
+function* newEvent(entity, apiFn, body) {
+  yield put(entity.request('NEW_EVENT'));
+  const { response, error } = yield call(api.newEvent, body);
+  if (response) yield put(entity.success(response));
+  else yield put(entity.failure(error));
+}
+
 export const fetchEvents = fetchEntity.bind(null, events, api.fetchEvents);
 export const fetchEvent  = fetchEntity.bind(null, event, api.fetchEvent);
 export const fetchUser   = fetchEntity.bind(null, user, api.fetchUser);
@@ -50,10 +57,18 @@ function* watchLoadUser() {
   }
 }
 
+function* watchNewEvent() {
+  while (true) {
+    yield take(actions.NEW_EVENT);
+    yield fork(newEvent);
+  }
+}
+
 export default function* root() {
   yield [
     fork(watchLoadEvents),
     fork(watchLoadEvent),
     fork(watchLoadUser),
+    fork(watchNewEvent),
   ];
 }
