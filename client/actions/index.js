@@ -18,6 +18,8 @@ export const LOAD_EVENT = 'LOAD_EVENT';
 export const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
 export const NEW_EVENT = 'NEW_EVENT';
 export const UPDATE_EVENT = 'UPDATE_EVENT';
+export const NEW_EVENT_SUCCESS = 'NEW_EVENT_SUCCESS';
+export const UPDATE_EVENT_SUCCESS = 'UPDATE_EVENT_SUCCESS';
 
 export const events = {
   request: () => action(EVENTS.REQUEST),
