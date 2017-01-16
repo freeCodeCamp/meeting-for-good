@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
-import styles from '../styles/navbar.css';
 import autobind from 'autobind-decorator';
+import styles from '../styles/navbar.css';
 
 import '../styles/no-css-modules/mdl.css';
 

@@ -20,7 +20,7 @@ GOOGLE_SECRET=[YOUR_GOOGLE_SECRET]
 FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
 FACEBOOK_SECRET=[YOUR_FACEBOOK_SECRET]
 APP_URL= http://localhost:8080/
-seedDB=true
+NODE_ENV = 'development'
 ```
 - Open a new terminal session and run `mongod`
 - Run `npm run serve` from the app's root directory. This will start the app at port 8080 (unless overridden)

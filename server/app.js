@@ -1,19 +1,13 @@
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
-import path from 'path';
 import passport from 'passport';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import compression from 'compression';
-import dotenv from 'dotenv';
 import express from 'express';
 import connectMongo from 'connect-mongo';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpack from 'webpack';
 import routes from './app/routes/routes';
-import webpackConfig from './../webpack.config';
 
-dotenv.load();
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
@@ -24,18 +18,28 @@ mongoose.connect(process.env.MONGO_URI);
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
-  // - Start web-dev-server
+  // only load webpack stuff at dev.
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const webpack = require('webpack');
+  const webpackConfig = require('../webpack.config.dev');
   const compiler = webpack(webpackConfig);
+
   app.use(webpackDevMiddleware(compiler, {
     compress: true,
-    contentBase: path.join(__dirname, '/build'),
-    filename: 'bundle.js',
-    hot: true,
-    publicPath: '/assets/',
     historyApiFallback: true,
+    hot: true,
+    publicPath: webpackConfig.output.publicPath,
     stats: {
       colors: true,
+      reasons: false,
     },
+  }));
+
+  app.use(webpackHotMiddleware(compiler, {
+    log: console.log,
+    path: '/__webpack_hmr',
+    heartbeat: 2000,
   }));
 
   app.use(session({
@@ -65,7 +69,6 @@ app.use(passport.session());
 
 app.use('/', express.static(`${__dirname}/`, { maxAge: 31557600000 }));
 app.use('/client/', express.static(`${__dirname}/client/`, { maxAge: 31557600000 }));
-
 routes(app);
 
 const port = process.env.PORT || 8080;
