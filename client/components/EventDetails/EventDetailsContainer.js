@@ -57,6 +57,10 @@ class EventDetailsContainer extends React.Component {
     const event = nextProps.events.find(ev => ev._id === params.uid);
     const user = nextProps.currentUser;
 
+    if (!event || event.constructor !== Object || Object.keys(event).length === 0) {
+      return;
+    }
+
     const eventParticipantsIds = event.participants.map(participant =>
       participant.userId,
     );
