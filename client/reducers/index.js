@@ -6,6 +6,10 @@ const entities = (state = { events: [], currentUser: {} }, action) => {
     return _.merge({}, state, action.response.entities);
   }
 
+  if (action.type === 'NEW_EVENT_SUCCESS') {
+    console.log('HYPE');
+  }
+
   return state;
 };
 
