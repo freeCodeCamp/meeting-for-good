@@ -14,18 +14,23 @@ class Dashboard extends React.Component {
     this.state = {
       notificationIsActive: false,
       notificationMessage: '',
+      showNoScheduledMessage: false,
       events: [],
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ events: nextProps.events });
+    this.setState({
+      events: nextProps.events,
+      showNoScheduledMessage: this.state.events.length < 1,
+    });
   }
 
   @autobind
   removeEventFromDashboard(eventId) {
     this.setState({
       events: this.state.events.filter(event => event._id !== eventId),
+      showNoScheduledMessage: this.state.events.length < 1,
     });
   }
 
@@ -49,7 +54,7 @@ class Dashboard extends React.Component {
               />
             ))}
           </Masonry> :
-            this.props.showNoScheduledMessage ?
+            this.state.showNoScheduledMessage ?
               <em>
                 <h4
                   styleName="no-select"
@@ -77,7 +82,6 @@ class Dashboard extends React.Component {
 
 Dashboard.propTypes = {
   events: React.PropTypes.arrayOf(React.PropTypes.object),
-  showNoScheduledMessage: React.PropTypes.bool,
 };
 
 export default cssModules(Dashboard, styles);
