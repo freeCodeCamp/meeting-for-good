@@ -7,15 +7,6 @@ import Dashboard from './DashboardPresentation';
 import { isAuthenticated } from '../../util/auth';
 
 class DashboardContainer extends React.PureComponent {
-  constructor() {
-    super();
-    this.state = {
-      showNoScheduledMessage: false,
-      notificationIsActive: false,
-      notificationMessage: '',
-    };
-  }
-
   async componentWillMount() {
     if (sessionStorage.getItem('redirectTo')) {
       browserHistory.push(sessionStorage.getItem('redirectTo'));
@@ -28,9 +19,8 @@ class DashboardContainer extends React.PureComponent {
   }
 
   render() {
-    const { showNoScheduledMessage } = this.state;
     const { events } = this.props;
-    const childProps = { showNoScheduledMessage, events };
+    const childProps = { events };
 
     return (
       <Dashboard
