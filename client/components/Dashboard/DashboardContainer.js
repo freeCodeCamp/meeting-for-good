@@ -44,7 +44,7 @@ class DashboardContainer extends React.PureComponent {
 DashboardContainer.propTypes = {
   events: React.PropTypes.arrayOf(React.PropTypes.object),
   actions: React.PropTypes.shape({
-    requestEvents: React.PropTypes.func,
+    loadEvents: React.PropTypes.func,
   }),
 };
 
