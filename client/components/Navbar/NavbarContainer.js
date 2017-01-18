@@ -20,8 +20,9 @@ class NavbarContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const user = nextProps.currentUser;
-    if (user) {
+    const userAuth = nextProps.userAuth;
+    if (userAuth !== undefined && userAuth) {
+      const user = nextProps.currentUser;
       this.setState({
         userAvatar: user.avatar,
         user: true,
@@ -60,6 +61,7 @@ NavbarContainer.propTypes = {
 
 const mapStateToProps = state => ({
   currentUser: state.entities.currentUser,
+  userAuth: state.entities.userAuth,
 });
 
 const mapDispatchToProps = dispatch => ({

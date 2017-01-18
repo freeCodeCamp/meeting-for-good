@@ -4,18 +4,24 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../../actions';
 import Dashboard from './DashboardPresentation';
-import { isAuthenticated } from '../../util/auth';
 
 class DashboardContainer extends React.PureComponent {
-  async componentWillMount() {
+  componentWillMount() {
     if (sessionStorage.getItem('redirectTo')) {
       browserHistory.push(sessionStorage.getItem('redirectTo'));
       sessionStorage.removeItem('redirectTo');
     }
 
-    if (!await isAuthenticated()) browserHistory.push('/');
-
     this.props.actions.loadEvents();
+    this.props.actions.fetchCurrentUser();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const userAuth = nextProps.userAuth;
+
+    if (userAuth !== undefined && !userAuth) {
+      browserHistory.push('/');
+    }
   }
 
   render() {
@@ -35,11 +41,13 @@ DashboardContainer.propTypes = {
   events: React.PropTypes.arrayOf(React.PropTypes.object),
   actions: React.PropTypes.shape({
     loadEvents: React.PropTypes.func,
+    fetchCurrentUser: React.PropTypes.func,
   }),
 };
 
 const mapStateToProps = state => ({
   events: state.entities.events,
+  userAuth: state.entities.userAuth,
 });
 
 const mapDispatchToProps = dispatch => ({
