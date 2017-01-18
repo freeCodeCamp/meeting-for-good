@@ -1,13 +1,34 @@
 import { combineReducers } from 'redux';
 import _ from 'lodash';
+import * as actions from '../actions';
 
-const entities = (state = { events: [], currentUser: {} }, action) => {
+const initialState = {
+  events: [],
+  currentUser: {},
+  userAuth: undefined,
+};
+
+const entities = (state = initialState, action) => {
   if (action.response && action.response.entities) {
-    return _.merge({}, state, action.response.entities);
+    let newState = _.merge({}, state, action.response.entities);
+
+    if (action.type === actions.USER.SUCCESS) {
+      newState = _.merge(newState, {
+        userAuth: true,
+      });
+    }
+
+    if (action.type === actions.NEW_EVENT_SUCCESS) {
+      console.log('HYPE');
+    }
+
+    return newState;
   }
 
-  if (action.type === 'NEW_EVENT_SUCCESS') {
-    console.log('HYPE');
+  if (action.type === actions.USER.FAILURE) {
+    return _.merge(state, {
+      userAuth: false,
+    });
   }
 
   return state;
