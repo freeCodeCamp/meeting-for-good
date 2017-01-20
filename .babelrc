@@ -1,3 +1,15 @@
 {
-  "presets": ["react", "es2015", "stage-1"]
+  "presets": ["react", "es2015", "stage-1"],
+  "plugins": [
+    "transform-decorators-legacy",
+    "react-hot-loader/babel",
+    ["transform-runtime", { "polyfill": false, "regenerator": true }]
+  ],
+  "env": {
+    "development": {
+      "presets": [
+        "react-hmre"
+      ]
+    }
+  }  
 }

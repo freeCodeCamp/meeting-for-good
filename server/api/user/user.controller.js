@@ -1,16 +1,20 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
  * GET     /api/users                  ->  index
+ * GET     /api/users/me               ->  me
  * POST    /api/users                  ->  create
  * GET     /api/users/:id              ->  show
  * PUT     /api/users/:id              ->  upsert
  * PATCH   /api/users/:id              ->  patch
  * DELETE  /api/users/:id              ->  destroy
- * get     /api/users/byName/:name     -> indexByName
+ * GET     /api/users/byName/:name     -> indexByName
+ *GET     /api/users/relatedUsers/     -> relatedUsers
  */
 
 import jsonpatch from 'fast-json-patch';
 import Users from './user.model';
+import Events from '../events/events.model';
+
 
 
 const respondWithResult = (res, statusCode) => {
@@ -74,7 +78,7 @@ export const index = (req, res) => {
 // Gets a list of all  users filter by name
 export const indexByName = (req, res) => {
   const name = req.params.name;
-  return Users.find({ name: `/${name}/i` }).exec()
+  return Users.find({ name: new RegExp(name, 'i') }).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -134,8 +138,7 @@ export const create = (req, res) => {
  * Get my info
  */
 export const me = (req, res, next) => {
-  console.log(req);
-  const userId = req.params.id;
+  const userId = req.user._id;
   return Users.findOne({ _id: userId }).exec()
     .then((user) => {
       if (!user) {
@@ -145,5 +148,32 @@ export const me = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+// find all users that i alredy meet.
+export const relatedUsers = (req, res) => {
+  // find all events that this user partipated
+  const userId = req.user._id.toString();
+  return Events.find({ 'participants.userId': userId }).exec()
+    .then((events) => {
+      if (!events) {
+        return res.status(401).end();
+      }
+      const response = [];
+      for (const ev of events) {
+        for (const participant of ev.participants) {
+          const participantId = participant.userId.toString();
+          if (participantId !== userId) {
+              // check if exists at array.
+            if (response.indexOf(participantId) === -1) {
+              response.push(participantId);
+            }
+          }
+        }
+      }
+      res.json(response);
+    })
+    .catch(err => next(err));
+};
+
 
 

@@ -1,6 +1,4 @@
-// Vendor Dependencies
-import React from 'react';
-import { render } from 'react-dom';
+import React, { Component } from 'react';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 import { Provider } from 'react-redux';
 import 'dialog-polyfill/dialog-polyfill';
@@ -22,18 +20,22 @@ import root from './sagas';
 const store = configureStore({});
 store.runSaga(root);
 
-render((
-  <Provider store={store}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home} />
-        <Route path="dashboard" component={DashboardContainer} />
-        <Route path="event">
-          <Route path="new" component={NewEventContainer} />
-          <Route path=":uid" component={EventDetailsContainer} />
-        </Route>
-      </Route>
-      <Redirect from="*" to="/" />
-    </Router>
-  </Provider>
-), document.getElementById('app'));
+export default class Client extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <Router history={browserHistory}>
+          <Route path="/" component={App}>
+            <IndexRoute component={Home} />
+            <Route path="dashboard" component={DashboardContainer} />
+            <Route path="event">
+              <Route path="new" component={NewEventContainer} />
+              <Route path=":uid" component={EventDetailsContainer} />
+            </Route>
+          </Route>
+          <Redirect from="*" to="/" />
+        </Router>
+      </Provider>
+    );
+  }
+}
