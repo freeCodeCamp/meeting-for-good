@@ -5,12 +5,9 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import moment from 'moment';
 import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min';
 import React from 'react';
-import fetch from 'isomorphic-fetch';
-import { browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
-import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
 import { dateRangeReducer } from '../../util/dates.utils';
 import styles from '../../styles/new-event.css';
@@ -65,6 +62,64 @@ class NewEvent extends React.Component {
     });
 
     $('input[type="text"]+label').addClass('active');
+  }
+
+  @autobind
+  createEvent(ev) {
+    const {
+      eventName: name,
+      ranges,
+      selectedTimeRange: [fromTime, toTime],
+    } = this.state;
+
+    // validate the form
+    if (ev.target.className.indexOf('disabled') > -1) {
+      if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please select a date and enter an event name.',
+        });
+      } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please select a date.',
+        });
+      } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please enter an event name.',
+        });
+      }
+
+      return;
+    }
+
+    console.log('yo');
+
+    const fromHours = getHours(fromTime);
+    const toHours = getHours(toTime);
+
+    const fromMinutes = getMinutes(fromTime);
+    const toMinutes = getMinutes(toTime);
+
+    let dates = ranges.map(({ from, to }) => {
+      if (!to) to = from;
+
+      if (from > to) {
+        [from, to] = [to, from];
+      }
+
+      return {
+        fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
+        toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
+      };
+    });
+
+    dates = dateRangeReducer(dates);
+    // the field active now has a default of true.
+    const sentData = JSON.stringify({ name, dates });
+    console.log(sentData);
+    this.props.createEvent(sentData);
   }
 
   @autobind
@@ -161,80 +216,6 @@ class NewEvent extends React.Component {
   }
 
   @autobind
-  async createEvent(ev) {
-    const {
-      eventName: name,
-      ranges,
-      selectedTimeRange: [fromTime, toTime],
-    } = this.state;
-
-    // validate the form
-    if (ev.target.className.indexOf('disabled') > -1) {
-      if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please select a date and enter an event name.',
-        });
-      } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please select a date.',
-        });
-      } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please enter an event name.',
-        });
-      }
-
-      return;
-    }
-
-    const fromHours = getHours(fromTime);
-    const toHours = getHours(toTime);
-
-    const fromMinutes = getMinutes(fromTime);
-    const toMinutes = getMinutes(toTime);
-
-    let dates = ranges.map(({ from, to }) => {
-      if (!to) to = from;
-
-      if (from > to) {
-        [from, to] = [to, from];
-      }
-
-      return {
-        fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
-        toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
-      };
-    });
-
-    dates = dateRangeReducer(dates);
-    // the field active now has a default of true.
-    const sentData = JSON.stringify({ name, dates });
-
-    const response = await fetch('/api/events', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: sentData,
-      credentials: 'same-origin',
-    });
-
-    let newEvent;
-    try {
-      checkStatus(response);
-      newEvent = await parseJSON(response);
-    } catch (err) {
-      console.log('err at POST NewEvent', err);
-    } finally {
-      browserHistory.push(`/event/${newEvent._id}`);
-    }
-  }
-
-  @autobind
   handleEventNameChange(ev) {
     this.setState({ eventName: ev.target.value }, () => this.toggleSubmitDisabled());
   }
@@ -295,7 +276,10 @@ class NewEvent extends React.Component {
             </p>
             <br />
             <p className="center">
-              <a className={this.state.submitClass} onClick={this.createEvent}>
+              <a
+                className={this.state.submitClass}
+                onClick={this.createEvent}
+              >
                 Create Event
               </a>
             </p>
@@ -314,5 +298,9 @@ class NewEvent extends React.Component {
     );
   }
 }
+
+NewEvent.propTypes = {
+  createEvent: React.PropTypes.func.isRequired,
+};
 
 export default cssModules(NewEvent, styles);
