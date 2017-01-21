@@ -16,10 +16,10 @@ export const USER = createRequestTypes('USER');
 export const LOAD_EVENTS = 'LOAD_EVENTS';
 export const LOAD_EVENT = 'LOAD_EVENT';
 export const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
-export const NEW_EVENT = 'NEW_EVENT';
+export const NEW_EVENT_SENT = 'NEW_EVENT_SENT';
 export const UPDATE_EVENT = 'UPDATE_EVENT';
 
-export const NEW_EVENT_FAILUURE = 'NEW_EVENT_FAILURE';
+export const NEW_EVENT_FAILURE = 'NEW_EVENT_FAILURE';
 export const NEW_EVENT_REQUEST = 'NEW_EVENT_REQUEST';
 export const NEW_EVENT_SUCCESS = 'NEW_EVENT_SUCCESS';
 export const UPDATE_EVENT_SUCCESS = 'UPDATE_EVENT_SUCCESS';
@@ -34,7 +34,7 @@ export const event = {
   request: id => action(EVENT.REQUEST, { id }),
   success: response => action(EVENT.SUCCESS, { response }),
   failure: error => action(EVENT.FAILURE, { error }),
-  newEventRequest: body => action(NEW_EVENT_REQUEST, { body }),
+  newEventRequest: body => action(NEW_EVENT_SENT, { body }),
   newEventSuccess: response => action(NEW_EVENT_SUCCESS, { response }),
 };
 

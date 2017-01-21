@@ -59,7 +59,7 @@ function* watchLoadUser() {
 
 function* watchNewEvent() {
   while (true) {
-    const { body } = yield take(actions.NEW_EVENT);
+    const { body } = yield take(actions.NEW_EVENT_REQUEST);
     yield fork(newEvent, event, body);
   }
 }
