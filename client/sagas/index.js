@@ -1,4 +1,5 @@
 import { take, put, call, fork } from 'redux-saga/effects';
+import { browserHistory } from 'react-router';
 import api from '../services';
 import * as actions from '../actions';
 
@@ -14,8 +15,10 @@ function* fetchEntity(entity, apiFn, id) {
 function* newEvent(entity, body) {
   yield put(event.newEventRequest(body));
   const { response, error } = yield call(api.newEvent, body);
-  if (response) yield put(event.newEventSuccess({ response }));
-  else yield put(event.failure(error));
+  if (response) {
+    browserHistory.push(`/event/${response.result}`);
+    yield put(event.newEventSuccess(response));
+  } else yield put(event.failure(error));
 }
 
 export const fetchEvents = fetchEntity.bind(null, events, api.fetchEvents);

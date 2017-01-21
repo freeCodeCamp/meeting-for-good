@@ -18,10 +18,6 @@ const entities = (state = initialState, action) => {
       });
     }
 
-    if (action.type === actions.NEW_EVENT_SUCCESS) {
-      console.log('HYPE');
-    }
-
     return newState;
   }
 

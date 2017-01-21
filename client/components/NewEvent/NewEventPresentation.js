@@ -94,8 +94,6 @@ class NewEvent extends React.Component {
       return;
     }
 
-    console.log('yo');
-
     const fromHours = getHours(fromTime);
     const toHours = getHours(toTime);
 
@@ -118,7 +116,6 @@ class NewEvent extends React.Component {
     dates = dateRangeReducer(dates);
     // the field active now has a default of true.
     const sentData = JSON.stringify({ name, dates });
-    console.log(sentData);
     this.props.createEvent(sentData);
   }
 

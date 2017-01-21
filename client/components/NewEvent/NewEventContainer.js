@@ -23,7 +23,6 @@ class NewEventContainer extends React.PureComponent {
 
   @autobind
   createEvent(sentData) {
-    console.log(sentData);
     this.props.actions.newEvent(sentData);
   }
 

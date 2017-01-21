@@ -70,7 +70,6 @@ class EventDetails extends React.Component {
       isOwner = event.owner === user._id;
     }
 
-    console.log(event);
     const notifActions = [{
       text: 'Dismiss',
       handleClick: () => { this.setState({ notificationIsActive: false }); },
