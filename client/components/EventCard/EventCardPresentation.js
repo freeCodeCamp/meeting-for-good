@@ -43,7 +43,11 @@ class EventCard extends React.Component {
     } = this.props;
 
     return (
-      <div onClick={this.redirectToEvent} className="card" styleName="event">
+      <div
+        onClick={this.constructor.redirectToEvent}
+        className="card"
+        styleName="event"
+      >
         {
           isOwner ?
             <button
