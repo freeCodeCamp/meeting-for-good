@@ -13,6 +13,22 @@ class EventDetails extends React.Component {
     ev.target.className += ' hide';
   }
 
+  @autobind
+  static selectElementContents(el) {
+    let range;
+    if (window.getSelection && document.createRange) {
+      range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(el);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (document.body && document.body.createTextRange) {
+      range = document.body.createTextRange();
+      range.moveToElementText(el);
+      range.select();
+    }
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +61,9 @@ class EventDetails extends React.Component {
       showEmail: true,
     });
     setTimeout(() => {
-      this.selectElementContents(document.getElementsByClassName('notification-bar-message')[0]);
+      this.constructor.selectElementContents(
+        document.getElementsByClassName('notification-bar-message')[0],
+      );
     }, 100);
   }
 
