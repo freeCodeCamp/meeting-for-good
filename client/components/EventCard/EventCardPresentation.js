@@ -8,11 +8,6 @@ import 'react-day-picker/lib/style.css';
 import styles from '../../styles/event-card.css';
 
 class EventCard extends React.Component {
-  @autobind
-  static redirectToEvent() {
-    browserHistory.push(`/event/${event._id}`);
-  }
-
   constructor(props) {
     super(props);
 
@@ -31,6 +26,11 @@ class EventCard extends React.Component {
     }, 100);
   }
 
+  @autobind
+  redirectToEvent() {
+    browserHistory.push(`/event/${this.props.event._id}`);
+  }
+
   render() {
     const {
       event,
@@ -44,7 +44,7 @@ class EventCard extends React.Component {
 
     return (
       <div
-        onClick={this.constructor.redirectToEvent}
+        onClick={this.redirectToEvent}
         className="card"
         styleName="event"
       >
