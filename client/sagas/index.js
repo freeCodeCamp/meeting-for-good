@@ -12,12 +12,20 @@ function* fetchEntity(entity, apiFn, id) {
   else yield put(entity.failure(error));
 }
 
-function* newEvent(entity, body) {
+function* newEvent(body) {
   yield put(event.newEventRequest(body));
   const { response, error } = yield call(api.newEvent, body);
   if (response) {
     browserHistory.push(`/event/${response.result}`);
     yield put(event.newEventSuccess(response));
+  } else yield put(event.failure(error));
+}
+
+function* updateEvent(id, method, body) {
+  yield put(event.updateEventRequest(id, method, body));
+  const { response, error } = yield call(api.updateEvent, id, method, body);
+  if (response) {
+    yield put(event.updateEventSuccess(response));
   } else yield put(event.failure(error));
 }
 
@@ -63,7 +71,14 @@ function* watchLoadUser() {
 function* watchNewEvent() {
   while (true) {
     const { body } = yield take(actions.NEW_EVENT_REQUEST);
-    yield fork(newEvent, event, body);
+    yield fork(newEvent, body);
+  }
+}
+
+function* watchUpdateEvent() {
+  while (true) {
+    const { id, method, body } = yield take(actions.UPDATE_EVENT_REQUEST);
+    yield fork(updateEvent, id, method, body);
   }
 }
 
@@ -73,5 +88,6 @@ export default function* root() {
     fork(watchLoadEvent),
     fork(watchLoadUser),
     fork(watchNewEvent),
+    fork(watchUpdateEvent),
   ];
 }
