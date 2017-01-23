@@ -10,7 +10,6 @@ import jsonpatch from 'fast-json-patch';
 import update from 'react-addons-update';
 import { connect } from 'react-redux';
 import EventDetails from './EventDetailsPresentation';
-import { checkStatus, parseJSON } from '../../util/fetch.util';
 import * as Actions from '../../actions';
 
 class EventDetailsContainer extends React.Component {
@@ -94,7 +93,7 @@ class EventDetailsContainer extends React.Component {
   }
 
   @autobind
-  async joinEvent() {
+  joinEvent() {
     const { name, avatar, _id: userId } = this.state.user;
 
     const participant = { name, avatar, userId };
@@ -111,59 +110,22 @@ class EventDetailsContainer extends React.Component {
     nprogress.configure({ showSpinner: false });
     nprogress.start();
 
-    const patches = jsonpatch.generate(observerEvent);
-    const response = await fetch(`/api/events/${event._id}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'PATCH',
-      body: JSON.stringify(patches),
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to join event. Please try again later.',
-        notificationTitle: 'Error!',
-        showEmail: false,
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
+    const patches = JSON.stringify(jsonpatch.generate(observerEvent));
+    this.props.actions.updateEvent(event._id, 'PATCH', patches);
     this.setState({ event, eventParticipantsIds });
   }
 
   @autobind
-  async submitAvailability(myAvailability) {
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin',
-    });
-    let event;
+  submitAvailability(myAvailability) {
+    const event = JSON.parse(JSON.stringify(this.state.event));
+    const { _id } = this.props.currentUser;
 
-    try {
-      checkStatus(response);
-      event = await parseJSON(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to update availability. Please try again later.',
-        notificationTitle: 'Error!',
-        showEmail: false,
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
+    event.participants = event.participants.map((user) => {
+      if (user.userId === _id) user.availability = myAvailability;
+      return user;
+    });
+
+    this.props.actions.updateEvent(event._id, 'PATCH', event);
 
     this.setState({
       notificationIsActive: true,
@@ -336,6 +298,10 @@ class EventDetailsContainer extends React.Component {
 EventDetailsContainer.propTypes = {
   params: React.PropTypes.shape({
     uid: React.PropTypes.string,
+  }),
+  actions: React.PropTypes.shape({
+    fetchCurrentUser: React.PropTypes.func,
+    loadEvent: React.PropTypes.func,
   }),
 };
 

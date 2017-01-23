@@ -183,7 +183,7 @@ export default class AvailabilityGridContainer extends React.Component {
   }
 
   @autobind
-  async submitAvailability() {
+  submitAvailability() {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const availability = [];
 
@@ -200,39 +200,6 @@ export default class AvailabilityGridContainer extends React.Component {
         availability.push([from, to]);
       }
     });
-
-    const { _id } = this.props.user;
-    const event = JSON.parse(JSON.stringify(this.props.event));
-    const observerEvent = jsonpatch.observe(event);
-    event.participants = event.participants.map((user) => {
-      if (user.userId === _id) user.availability = availability;
-      return user;
-    });
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const patches = jsonpatch.generate(observerEvent);
-    const response = await fetch(
-      `/api/events/${event._id}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'PATCH',
-        body: JSON.stringify(patches),
-        credentials: 'same-origin',
-      },
-    );
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('err at PATCH AvailabilityGrid', err);
-      return;
-    } finally {
-      nprogress.done();
-    }
 
     this.props.submitAvail(availability);
   }
