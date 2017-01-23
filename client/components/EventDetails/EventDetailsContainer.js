@@ -1,7 +1,6 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
-import fetch from 'isomorphic-fetch';
 import { Notification } from 'react-notification';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
@@ -204,35 +203,8 @@ class EventDetailsContainer extends React.Component {
   }
 
   @autobind
-  async deleteEvent() {
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin', method: 'DELETE',
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to delete event. Please try again later.',
-        notificationTitle: 'Error!',
-        showEmail: false,
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: 'Event successfully deleted!',
-      notificationTitle: '',
-      showEmail: false,
-    });
-
+  deleteEvent() {
+    this.props.actions.updateEvent(this.state.event._id, 'DELETE', {});
     browserHistory.push('/dashboard');
   }
 
@@ -302,6 +274,10 @@ EventDetailsContainer.propTypes = {
   actions: React.PropTypes.shape({
     fetchCurrentUser: React.PropTypes.func,
     loadEvent: React.PropTypes.func,
+    updateEvent: React.PropTypes.func,
+  }),
+  currentUser: React.PropTypes.shape({
+    _id: React.PropTypes.string,
   }),
 };
 
