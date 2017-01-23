@@ -1,15 +1,17 @@
 import React from 'react';
 import { DateUtils } from 'react-day-picker';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
 import 'react-day-picker/lib/style.css';
 import { checkStatus } from '../../util/fetch.util';
-import { getCurrentUser } from '../../util/auth';
+import * as Actions from '../../actions/';
 import EventCard from './EventCardPresentation';
 
-export default class EventCardContainer extends React.Component {
+class EventCardContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -36,11 +38,16 @@ export default class EventCardContainer extends React.Component {
     };
   }
 
-  async componentWillMount() {
+  componentWillMount() {
+    this.props.actions.fetchCurrentUser();
+  }
+
+  componentWillReceiveProps(nextProps) {
     const availability = [];
     const overlaps = [];
     const displayTimes = {};
-    const user = await getCurrentUser();
+    const { currentUser: user, userAuth } = nextProps;
+    if (!userAuth || !Object.keys(user).length) return;
 
     this.state.participants.forEach((user) => {
       if (user.availability !== undefined) availability.push(user.availability);
@@ -170,3 +177,12 @@ EventCardContainer.propTypes = {
   removeEventFromDashboard: React.PropTypes.func,
 };
 
+const mapStateToProps = state => ({
+  currentUser: state.entities.currentUser,
+  userAuth: state.entities.userAuth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(Actions, dispatch),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(EventCardContainer);

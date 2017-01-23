@@ -1,21 +1,25 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as Actions from '../actions/';
 import styles from '../styles/home.css';
-import { isAuthenticated } from '../util/auth';
 import dashboardBanner from '../assets/dashboard-banner.jpg';
 import mainBanner from '../assets/main-banner.jpg';
 import enterAvail from '../assets/enteravail.gif';
 import timezones from '../assets/timezones.png';
 
-class Home extends React.Component {
-  async componentWillMount() {
-    if (sessionStorage.getItem('redirectTo')) {
-      browserHistory.push(sessionStorage.getItem('redirectTo'));
-      sessionStorage.removeItem('redirectTo');
-    }
+class Home extends React.PureComponent {
+  componentWillMount() {
+    this.props.actions.fetchCurrentUser();
+  }
 
-    if (await isAuthenticated()) browserHistory.push('/dashboard');
+  componentWillReceiveProps(nextProps) {
+    const { userAuth } = nextProps;
+    if (userAuth !== undefined && userAuth) {
+      browserHistory.push('/dashboard');
+    }
   }
 
   render() {
@@ -78,4 +82,18 @@ class Home extends React.Component {
   }
 }
 
-export default cssModules(Home, styles);
+const mapStateToProps = state => ({
+  userAuth: state.entities.userAuth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(Actions, dispatch),
+});
+
+Home.propTypes = {
+  actions: React.PropTypes.shape({
+    fetchCurrentUser: React.PropTypes.func.isRequired,
+  }),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(cssModules(Home, styles));
