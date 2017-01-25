@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { Notification } from 'react-notification';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
-import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import update from 'react-addons-update';
 import { connect } from 'react-redux';
