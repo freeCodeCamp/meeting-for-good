@@ -60,3 +60,4 @@ export const fetchEvent = uid => fetchData(`/events/${uid}`, eventSchema);
 export const fetchUser = () => fetchData('/auth/current', userSchema);
 export const newEvent = body => sendData('/events', 'POST', body, eventSchema);
 export const updateEvent = (id, method, body) => sendData(`/events/${id}`, method, body, eventSchema);
+export const deleteEvent = id => sendData(`/events/${id}`, 'DELETE', {}, eventSchema);

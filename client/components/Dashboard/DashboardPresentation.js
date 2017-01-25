@@ -22,7 +22,7 @@ class Dashboard extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       events: nextProps.events,
-      showNoScheduledMessage: this.state.events.length < 1,
+      showNoScheduledMessage: nextProps.events.length < 1,
     });
   }
 

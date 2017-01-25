@@ -5,9 +5,7 @@ import { bindActionCreators } from 'redux';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import moment from 'moment';
-import nprogress from 'nprogress';
 import 'react-day-picker/lib/style.css';
-import { checkStatus } from '../../util/fetch.util';
 import * as Actions from '../../actions/';
 import EventCard from './EventCardPresentation';
 
@@ -96,27 +94,9 @@ class EventCardContainer extends React.Component {
   }
 
   @autobind
-  async deleteEvent() {
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin', method: 'DELETE',
-    });
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to delete event. Please try again later.',
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.props.removeEventFromDashboard(this.state.event._id);
+  deleteEvent() {
+    this.props.actions.deleteEvent(this.state.event._id);
+    // this.props.removeEventFromDashboard(this.state.event._id);
   }
 
   render() {
@@ -175,6 +155,11 @@ class EventCardContainer extends React.Component {
 EventCardContainer.propTypes = {
   event: React.PropTypes.object,
   removeEventFromDashboard: React.PropTypes.func,
+  actions: React.PropTypes.shape({
+    updateEvent: React.PropTypes.func,
+    fetchCurrentUser: React.PropTypes.func,
+    deleteEvent: React.PropTypes.func,
+  }),
 };
 
 const mapStateToProps = state => ({

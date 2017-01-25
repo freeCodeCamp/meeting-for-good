@@ -29,6 +29,14 @@ function* updateEvent(id, method, body) {
   } else yield put(event.failure(error));
 }
 
+function* deleteEvent(id) {
+  yield put(event.deleteEventRequest(id));
+  const { response, error } = yield call(api.deleteEvent, id);
+  if (response) {
+    yield put(event.deleteEventSuccess(response));
+  } else yield put(event.failure(error));
+}
+
 export const fetchEvents = fetchEntity.bind(null, events, api.fetchEvents);
 export const fetchEvent  = fetchEntity.bind(null, event, api.fetchEvent);
 export const fetchUser   = fetchEntity.bind(null, user, api.fetchUser);
@@ -82,6 +90,13 @@ function* watchUpdateEvent() {
   }
 }
 
+function* watchDeleteEvent() {
+  while (true) {
+    const { id } = yield take(actions.DELETE_EVENT_REQUEST);
+    yield fork(deleteEvent, id);
+  }
+}
+
 export default function* root() {
   yield [
     fork(watchLoadEvents),
@@ -89,5 +104,6 @@ export default function* root() {
     fork(watchLoadUser),
     fork(watchNewEvent),
     fork(watchUpdateEvent),
+    fork(watchDeleteEvent),
   ];
 }

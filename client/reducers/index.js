@@ -10,7 +10,16 @@ const initialState = {
 
 const entities = (state = initialState, action) => {
   if (action.response && action.response.entities) {
-    let newState = _.merge({}, state, action.response.entities);
+    let newState = {};
+    newState = _.merge({}, state);
+
+    if (action.type === actions.DELETE_EVENT_SUCCESS) {
+      newState.events = newState.events.filter(ev =>
+        ev._id !== action.response.result,
+      );
+    } else {
+      newState = _.merge(newState, action.response.entities);
+    }
 
     if (action.type === actions.USER.SUCCESS) {
       newState = _.merge(newState, {

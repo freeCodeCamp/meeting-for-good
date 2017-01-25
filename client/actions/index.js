@@ -18,12 +18,17 @@ export const LOAD_EVENT = 'LOAD_EVENT';
 export const FETCH_CURRENT_USER = 'FETCH_CURRENT_USER';
 
 export const NEW_EVENT_SENT = 'NEW_EVENT_SENT';
-export const UPDATE_EVENT_SENT = 'UPDATE_EVENT_SENT';
 export const NEW_EVENT_FAILURE = 'NEW_EVENT_FAILURE';
 export const NEW_EVENT_REQUEST = 'NEW_EVENT_REQUEST';
 export const NEW_EVENT_SUCCESS = 'NEW_EVENT_SUCCESS';
+
+export const UPDATE_EVENT_SENT = 'UPDATE_EVENT_SENT';
 export const UPDATE_EVENT_REQUEST = 'UPDATE_EVENT_REQUEST';
 export const UPDATE_EVENT_SUCCESS = 'UPDATE_EVENT_SUCCESS';
+
+export const DELETE_EVENT_SENT = 'DELETE_EVENT_SENT';
+export const DELETE_EVENT_REQUEST = 'DELETE_EVENT_REQUEST';
+export const DELETE_EVENT_SUCCESS = 'DELETE_EVENT_SUCCESS';
 
 export const events = {
   request: () => action(EVENTS.REQUEST),
@@ -37,6 +42,8 @@ export const event = {
   failure: error => action(EVENT.FAILURE, { error }),
   newEventRequest: body => action(NEW_EVENT_SENT, { body }),
   newEventSuccess: response => action(NEW_EVENT_SUCCESS, { response }),
+  deleteEventRequest: body => action(DELETE_EVENT_SENT, { body }),
+  deleteEventSuccess: response => action(DELETE_EVENT_SUCCESS, { response }),
   updateEventRequest: (id, method, body) => action(UPDATE_EVENT_SENT, {
     id,
     method,
@@ -62,3 +69,4 @@ export const updateEvent = (id, method, body) => action(UPDATE_EVENT_REQUEST, {
   method,
   body,
 });
+export const deleteEvent = id => action(DELETE_EVENT_REQUEST, { id });

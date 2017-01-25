@@ -202,7 +202,7 @@ class EventDetailsContainer extends React.Component {
 
   @autobind
   deleteEvent() {
-    this.props.actions.updateEvent(this.state.event._id, 'DELETE', {});
+    this.props.actions.deleteEvent(this.state.event._id);
     browserHistory.push('/dashboard');
   }
 
@@ -273,6 +273,7 @@ EventDetailsContainer.propTypes = {
     fetchCurrentUser: React.PropTypes.func,
     loadEvent: React.PropTypes.func,
     updateEvent: React.PropTypes.func,
+    deleteEvent: React.PropTypes.func,
   }),
   currentUser: React.PropTypes.shape({
     _id: React.PropTypes.string,
