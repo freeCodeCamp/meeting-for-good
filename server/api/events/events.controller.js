@@ -140,7 +140,7 @@ export const upsert = (req, res) => {
     req.body,
     { upsert: true, setDefaultsOnInsert: true, runValidators: true }).exec()
     .then(respondWithResult(res))
-    .catch((err) => { 
+    .catch((err) => {
       console.log('err no put', err);
       handleError(res);
     });
