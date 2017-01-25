@@ -106,9 +106,6 @@ class EventDetailsContainer extends React.Component {
       $push: [this.state.user._id],
     });
 
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-
     const patches = JSON.stringify(jsonpatch.generate(observerEvent));
     this.props.actions.updateEvent(event._id, 'PATCH', patches);
     this.setState({ event, eventParticipantsIds });
@@ -118,13 +115,15 @@ class EventDetailsContainer extends React.Component {
   submitAvailability(myAvailability) {
     const event = JSON.parse(JSON.stringify(this.state.event));
     const { _id } = this.props.currentUser;
+    const observerEvent = jsonpatch.observe(event);
 
     event.participants = event.participants.map((user) => {
       if (user.userId === _id) user.availability = myAvailability;
       return user;
     });
 
-    this.props.actions.updateEvent(event._id, 'PATCH', event);
+    const patches = JSON.stringify(jsonpatch.generate(observerEvent));
+    this.props.actions.updateEvent(event._id, 'PATCH', patches);
 
     this.setState({
       notificationIsActive: true,
