@@ -90,9 +90,10 @@
     "react-transform-hmr": "^1.0.4",
     "redux": "^3.6.0",
     "redux-saga": "^0.14.2",
+    "saga": "^0.0.1",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^2.2.0",
+    "webpack": "^2.2.1",
     "webpack-config": "^6.2.1",
     "write-file-webpack-plugin": "^3.4.2",
     "yargs": "^6.6.0"
@@ -107,8 +108,8 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
     "rimraf": "^2.5.4",
-    "webpack-dev-middleware": "^1.8.4",
+    "webpack-dev-middleware": "^1.10.0",
     "webpack-dev-server": "beta",
-    "webpack-hot-middleware": "^2.15.0"
+    "webpack-hot-middleware": "^2.16.1"
   }
 }
