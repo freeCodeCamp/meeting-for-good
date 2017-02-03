@@ -1,35 +1,41 @@
 import React, { Component } from 'react';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
+import { Provider } from 'react-redux';
 import 'dialog-polyfill/dialog-polyfill';
 import 'dialog-polyfill/dialog-polyfill.css';
-// Import App
-import App from './components/App';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import EventDetails from './pages/EventDetails';
-import NewEvent from './pages/NewEvent';
-
-// Vendor Dependencies
 import './styles/no-css-modules/nprogress.css';
 import './styles/no-css-modules/react-notifications.css';
+import configureStore from './store/configureStore';
 
 require('es6-promise').polyfill();
 
-export default class Client extends Component {
+// Import App
+import App from './components/App';
+import Home from './components/Home';
+import DashboardContainer from './components/Dashboard/DashboardContainer';
+import EventDetailsContainer from './components/EventDetails/EventDetailsContainer';
+import NewEventContainer from './components/NewEvent/NewEventContainer';
+import root from './sagas';
 
+const store = configureStore({});
+store.runSaga(root);
+
+export default class Client extends Component {
   render() {
     return (
-      <Router history={browserHistory}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Home} />
-          <Route path="dashboard" component={Dashboard} />
-          <Route path="event">
-            <Route path="new" component={NewEvent} />
-            <Route path=":uid" component={EventDetails} />
+      <Provider store={store}>
+        <Router history={browserHistory}>
+          <Route path="/" component={App}>
+            <IndexRoute component={Home} />
+            <Route path="dashboard" component={DashboardContainer} />
+            <Route path="event">
+              <Route path="new" component={NewEventContainer} />
+              <Route path=":uid" component={EventDetailsContainer} />
+            </Route>
           </Route>
-        </Route>
-        <Redirect from="*" to="/" />
-      </Router>
+          <Redirect from="*" to="/" />
+        </Router>
+      </Provider>
     );
   }
 }

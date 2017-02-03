@@ -1,13 +1,11 @@
 import React from 'react';
-
-import Navbar from './Navbar';
-
+import NavbarContainer from './Navbar/NavbarContainer';
 import '../styles/main.css';
 
-const App = (props) => (
+const App = props => (
   <div>
-    <Navbar location={props.location} />
-    <main styleName="main">
+    <NavbarContainer location={props.location} />
+    <main className="main">
       {props.children}
     </main>
   </div>
@@ -15,7 +13,9 @@ const App = (props) => (
 
 App.propTypes = {
   children: React.PropTypes.element,
-  location: React.PropTypes.object.isRequired,
+  location: React.PropTypes.shape({
+    pathname: React.PropTypes.string.isRequired,
+  }),
 };
 
 export default App;

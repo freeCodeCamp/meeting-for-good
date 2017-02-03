@@ -1,68 +1,36 @@
-/* vendor dependencies */
 import React from 'react';
-import { browserHistory, Link } from 'react-router';
-import fetch from 'isomorphic-fetch';
+import { Link } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
-import autobind from 'autobind-decorator';
-import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
-
-/* external components */
-import EventCard from '../components/EventCard';
-
-/* styles */
-import styles from '../styles/dashboard.css';
-
-/* utilities */
-import { checkStatus, parseJSON } from '../util/fetch.util';
-import { isAuthenticated } from '../util/auth';
+import autobind from 'autobind-decorator';
+import EventCardContainer from '../EventCard/EventCardContainer';
+import styles from '../../styles/dashboard.css';
 
 class Dashboard extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.state = {
-      events: [],
-      showNoScheduledMessage: false,
       notificationIsActive: false,
       notificationMessage: '',
+      showNoScheduledMessage: false,
+      events: [],
     };
   }
 
-  async componentWillMount() {
-    if (sessionStorage.getItem('redirectTo')) {
-      browserHistory.push(sessionStorage.getItem('redirectTo'));
-      sessionStorage.removeItem('redirectTo');
-    }
-
-    if (!await isAuthenticated()) browserHistory.push('/');
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch('/api/events/getByUser', { credentials: 'same-origin' });
-    let events;
-    try {
-      checkStatus(response);
-      events = await parseJSON(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load events. Please try again later.',
-      });
-      return;
-    } finally {
-      nprogress.done();
-      this.setState({ showNoScheduledMessage: true });
-    }
-
-    this.setState({ events });
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      events: nextProps.events,
+      showNoScheduledMessage: nextProps.events.length < 1,
+    });
   }
 
   @autobind
   removeEventFromDashboard(eventId) {
     this.setState({
       events: this.state.events.filter(event => event._id !== eventId),
+      showNoScheduledMessage: this.state.events.length < 1,
     });
   }
 
@@ -79,7 +47,7 @@ class Dashboard extends React.Component {
         {this.state.events.length !== 0 ?
           <Masonry>
             {this.state.events.map(event => (
-              <EventCard
+              <EventCardContainer
                 key={event._id}
                 event={event}
                 removeEventFromDashboard={this.removeEventFromDashboard}
@@ -88,7 +56,10 @@ class Dashboard extends React.Component {
           </Masonry> :
             this.state.showNoScheduledMessage ?
               <em>
-                <h4 styleName="no-select" className="card-title center-align white-text">
+                <h4
+                  styleName="no-select"
+                  className="card-title center-align white-text"
+                >
                   You have no scheduled events yet.
                 </h4>
               </em> :
@@ -108,5 +79,9 @@ class Dashboard extends React.Component {
     );
   }
 }
+
+Dashboard.propTypes = {
+  events: React.PropTypes.arrayOf(React.PropTypes.object),
+};
 
 export default cssModules(Dashboard, styles);
