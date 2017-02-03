@@ -3,7 +3,9 @@ import { schema, normalize } from 'normalizr';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 
 const fixJSON = (json) => {
+  // console.log('json at fixJSON', json);
   if (json.entities.events) {
+    // console.log('json at fixJSON event', json);
     json.entities.events = Object.keys(json.entities.events).map(key =>
       json.entities.events[key],
     );
@@ -14,7 +16,7 @@ const fixJSON = (json) => {
       Object.keys(json.entities.currentUser)[0]
     ];
   }
-
+  console.log('json fxed', json);
   return json;
 };
 

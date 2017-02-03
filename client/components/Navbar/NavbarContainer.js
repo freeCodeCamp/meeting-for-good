@@ -16,6 +16,7 @@ class NavbarContainer extends React.Component {
   }
 
   componentWillMount() {
+    // console.log('NAvBarContainer componentWillMount', this.props.actions);
     this.props.actions.fetchCurrentUser();
   }
 

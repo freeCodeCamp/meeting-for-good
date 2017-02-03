@@ -29,15 +29,18 @@ class EventDetailsContainer extends React.Component {
 
   componentWillMount() {
     const { params } = this.props;
+    console.log('componentWillMount eventDetails uid', params.uid);
     this.props.actions.loadEvent(params.uid);
     this.props.actions.fetchCurrentUser();
   }
 
   componentWillReceiveProps(nextProps) {
     const { params } = this.props;
+    console.log('componentWillReceiveProps props', this.props);
     const event = nextProps.events.find(ev => ev._id === params.uid);
     const user = nextProps.currentUser;
 
+    console.log('componentWillReceiveProps event', event);
     if (!event || event.constructor !== Object || Object.keys(event).length === 0) {
       return;
     }
@@ -64,6 +67,7 @@ class EventDetailsContainer extends React.Component {
       participants: event.participants,
     });
 
+    console.log('after set state', this.state);
     if (user) {
       let showHeatmap = false;
       let myAvailability = [];
@@ -72,6 +76,8 @@ class EventDetailsContainer extends React.Component {
         participant.userId === user._id,
       );
 
+      console.log('me', me);
+      
       if (me && me.availability) {
         showHeatmap = true;
         myAvailability = me.availability;

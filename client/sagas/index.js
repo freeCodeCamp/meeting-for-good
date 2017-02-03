@@ -16,7 +16,9 @@ function* newEvent(body) {
   yield put(event.newEventRequest(body));
   const { response, error } = yield call(api.newEvent, body);
   if (response) {
-    browserHistory.push(`/event/${response.result}`);
+    // console.log('index saga newEvent', response);
+    yield call(fetchEntity.bind(null, events, api.fetchEvents));
+    yield browserHistory.push(`/event/${response.result}`);
     yield put(event.newEventSuccess(response));
   } else yield put(event.failure(error));
 }
@@ -57,6 +59,7 @@ function* loadUser() {
 
 function* watchLoadEvents() {
   while (true) {
+    // console.log('saga index watchLoadEvents');
     yield take(actions.LOAD_EVENTS);
     yield fork(loadEvents);
   }
@@ -79,6 +82,7 @@ function* watchLoadUser() {
 function* watchNewEvent() {
   while (true) {
     const { body } = yield take(actions.NEW_EVENT_REQUEST);
+    console.log('watchNewEvent', body);
     yield fork(newEvent, body);
   }
 }

@@ -9,6 +9,7 @@ const initialState = {
 };
 
 const entities = (state = initialState, action) => {
+  // console.log('entities at reducers', state);
   if (action.response && action.response.entities) {
     let newState = {};
     newState = _.merge({}, state);

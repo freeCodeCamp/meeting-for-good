@@ -14,7 +14,9 @@ router.use('/facebook', require('./facebook'));
 router.use('/google', require('./google'));
 
 router.get('/current', ((req, res) => {
-  if (req.user) return res.status(200).send(req.user);
+  if (req.user) {
+    return res.status(200).send(req.user);
+  }
   return res.status(500).send('User not found');
 }));
 
