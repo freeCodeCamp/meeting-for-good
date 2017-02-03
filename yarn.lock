@@ -4382,9 +4382,9 @@ react-hot-loader@^3.0.0-beta.1:
     redbox-react "^1.2.5"
     source-map "^0.4.4"
 
-react-masonry-component@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/react-masonry-component/-/react-masonry-component-4.4.0.tgz#e0c09d0f8c2d70cde4f2416c90b5890a87b24a9f"
+react-masonry-component@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/react-masonry-component/-/react-masonry-component-5.0.3.tgz#a02a289ae5daa3f63a679c26cc6c43705b40ca43"
   dependencies:
     element-resize-detector "^1.1.9"
     imagesloaded "^4.0.0"
