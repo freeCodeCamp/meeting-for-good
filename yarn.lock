@@ -1094,7 +1094,7 @@ browserslist@^1.0.1, browserslist@^1.5.2, browserslist@~1.5.1:
   dependencies:
     caniuse-db "^1.0.30000604"
 
-bson@~1.0.1, bson@~1.0.4:
+bson@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.4.tgz#93c10d39eaa5b58415cbc4052f3e53e562b0b72c"
 
@@ -3378,13 +3378,6 @@ moment@^2.11.2, moment@^2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
-mongodb-core@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.2.tgz#a11db773d34819cbeb97751241827137ab535aab"
-  dependencies:
-    bson "~1.0.1"
-    require_optional "~1.0.0"
-
 mongodb-core@2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.5.tgz#bad12e90d5e1a895214e9bc3375ea3a1cd539ec0"
@@ -3392,12 +3385,19 @@ mongodb-core@2.1.5:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
-mongodb@2.2.16:
-  version "2.2.16"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.16.tgz#e32ba91cf9e29f371fb38ba0c4a71c3b1f5fae77"
+mongodb-core@2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.7.tgz#6a27909b98142ef2508d924c274969008954fa29"
+  dependencies:
+    bson "~1.0.4"
+    require_optional "~1.0.0"
+
+mongodb@2.2.22:
+  version "2.2.22"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.22.tgz#d67c588fc08f922db19754b1d2e03e2d7d1319fb"
   dependencies:
     es6-promise "3.2.1"
-    mongodb-core "2.1.2"
+    mongodb-core "2.1.7"
     readable-stream "2.1.5"
 
 "mongodb@>= 1.2.0 <3.0.0":
@@ -3408,20 +3408,20 @@ mongodb@2.2.16:
     mongodb-core "2.1.5"
     readable-stream "2.1.5"
 
-mongoose@^4.7.2:
-  version "4.7.6"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.7.6.tgz#704cc710efb98b74aeb8a3386d073c835498bd46"
+mongoose@^4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.8.1.tgz#1dbd3014fb39e9344271a53ec5dd741205864aae"
   dependencies:
     async "2.1.4"
-    bson "~1.0.1"
+    bson "~1.0.4"
     hooks-fixed "1.2.0"
     kareem "1.2.0"
-    mongodb "2.2.16"
+    mongodb "2.2.22"
     mpath "0.2.1"
     mpromise "0.5.5"
-    mquery "2.0.0"
+    mquery "2.2.1"
     ms "0.7.2"
-    muri "1.1.1"
+    muri "1.2.0"
     regexp-clone "0.0.1"
     sliced "1.0.1"
 
@@ -3433,9 +3433,9 @@ mpromise@0.5.5:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mpromise/-/mpromise-0.5.5.tgz#f5b24259d763acc2257b0a0c8c6d866fd51732e6"
 
-mquery@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/mquery/-/mquery-2.0.0.tgz#b5abc850b90dffc3e10ae49b4b6e7a479752df22"
+mquery@2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/mquery/-/mquery-2.2.1.tgz#aa31076419adce2b06e9757f4cfc5d7f371b47ce"
   dependencies:
     bluebird "2.10.2"
     debug "2.2.0"
@@ -3450,9 +3450,9 @@ ms@0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
 
-muri@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/muri/-/muri-1.1.1.tgz#64bd904eaf8ff89600c994441fad3c5195905ac2"
+muri@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/muri/-/muri-1.2.0.tgz#b86383c902920b09ebe62af0e75c94de5f33cd3d"
 
 mute-stream@0.0.5:
   version "0.0.5"
