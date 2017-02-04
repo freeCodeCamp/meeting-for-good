@@ -6,5 +6,4 @@ jsconfig.json
 .DS_Store
 .vscode
 npm-debug.log
-antigen.zsh
 launch.json
