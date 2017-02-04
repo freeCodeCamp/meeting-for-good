@@ -31,6 +31,7 @@ class EventDetailsContainer extends React.Component {
     const { params } = this.props;
     console.log('componentWillMount eventDetails uid', params.uid);
     this.props.actions.loadEvent(params.uid);
+    console.log('this.props at componentWillMount', this.props);
     this.props.actions.fetchCurrentUser();
   }
 
