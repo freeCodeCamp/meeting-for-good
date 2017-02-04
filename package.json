@@ -60,7 +60,7 @@
     "es6-promise": "^4.0.5",
     "express": "^4.14.0",
     "express-session": "^1.14.2",
-    "extract-text-webpack-plugin": "beta",
+    "extract-text-webpack-plugin": "2.0.0-rc.3",
     "fast-json-patch": "^1.1.3",
     "file-loader": "^0.9.0",
     "html-loader": "^0.4.4",
