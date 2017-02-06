@@ -4,22 +4,15 @@ import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
-import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
-
 import 'react-day-picker/lib/style.css';
-
 import Notification from '../components/vendor/react-notification';
-
 import AvailabilityGrid from './AvailabilityGrid';
-
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
-
 import styles from '../styles/event-card.css';
-
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
