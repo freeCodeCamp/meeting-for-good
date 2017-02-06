@@ -88,7 +88,7 @@ class Dashboard extends React.Component {
           </Masonry> :
             this.state.showNoScheduledMessage ?
               <em>
-                <h4 styleName="no-select" className="card-title center-align white-text">
+                <h4 styleName="no-select" className="card-title center-align black-text">
                   You have no scheduled events yet.
                 </h4>
               </em> :
