@@ -7,6 +7,7 @@ const participantsSchema = new Schema({
   avatar: { type: String, required: true },
   availability: Array,
   userId: { type: String, required: true },
+  ownerNotified: { type: Boolean, required: true, default: false },
 });
 
 const dates =  new Schema({
