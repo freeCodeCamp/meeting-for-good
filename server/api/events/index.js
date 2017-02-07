@@ -12,6 +12,7 @@ const isAuthenticated = (req, res, next) => {
 
 router.get('/', isAuthenticated, controller.index);
 router.get('/getByUser', isAuthenticated, controller.indexByUser);
+router.get('/getGuestNotifications', isAuthenticated, controller.GuestNotifications);
 router.get('/getbyuid/:uid', isAuthenticated, controller.indexById);
 router.get('/:id', isAuthenticated, controller.show);
 router.post('/', isAuthenticated, controller.create);
