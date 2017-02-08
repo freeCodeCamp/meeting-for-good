@@ -26,9 +26,6 @@ class Dashboard extends Component {
       events: [],
       notifications: OrderedSet(),
       count: 0,
-      //showNoScheduledMessage: false,
-      //notificationIsActive: false,
-      //notificationMessage: '',
     };
   }
 
@@ -51,24 +48,8 @@ class Dashboard extends Component {
       events = await parseJSON(response);
     } catch (err) {
       console.log(err);
-      const newCount = count + 1;
-      this.setState({
-        count: newCount,
-        notifications: notifications.add({
-          message: 'Failed to load events. Please try again later.',
-          title: 'Error!!',
-          key: count,
-          action: 'Dismiss',
-          dismissAfter: 2000,
-          onClick: () => this.removeNotification(newCount),
-        }),
-      });
+      this.addNotification('Error!!', 'Failed to load events. Please try again later.');
       return;
-      /* this.setState({
-        /*notificationTitle: 'error!!',
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load events. Please try again later.',
-      });*/
     } finally {
       nprogress.done();
       this.setState({ showNoScheduledMessage: true });
@@ -86,13 +67,14 @@ class Dashboard extends Component {
     });
   }
 
-  addNotification(msg) {
+  addNotification(msgTitle, msg) {
     const { notifications, count } = this.state;
     const newCount = count + 1;
     return this.setState({
       count: newCount,
       notifications: notifications.add({
         message: msg,
+        title: msgTitle,
         key: newCount,
         action: 'Dismiss',
         dismissAfter: 3400,
@@ -118,7 +100,7 @@ class Dashboard extends Component {
           if (participant.ownerNotified === false && participant.userId !== event.owner) {
             newCount = count + 1;
             console.log('new notification', newCount, event.name);
-            this.addNotification(`${participant.name} accept your invite for ${event.name}.`);
+            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`);
           }
         });
     });
