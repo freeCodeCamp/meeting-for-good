@@ -8,6 +8,7 @@ import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
 import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
+import jsonpatch from 'fast-json-patch';
 
 /* external components */
 import EventCard from '../components/EventCard';
@@ -30,8 +31,6 @@ class Dashboard extends Component {
   }
 
   async componentWillMount() {
-    const { notifications, count } = this.state;
-
     if (sessionStorage.getItem('redirectTo')) {
       browserHistory.push(sessionStorage.getItem('redirectTo'));
       sessionStorage.removeItem('redirectTo');
@@ -59,27 +58,56 @@ class Dashboard extends Component {
     this.loadEventsNotifications();
   }
 
-
-  removeNotification(count) {
-    const { notifications } = this.state;
+  removeNotification(key) {
+    const { notifications, count} = this.state;
+    console.log('removeNotification', key);
+    this.setOwnerNotified(key);
     this.setState({
-      notifications: notifications.filter(n => n.key !== count),
+      notifications: notifications.filter(n => n.key !== key),
     });
   }
 
-  addNotification(msgTitle, msg) {
+  addNotification(msgTitle, msg, participantId = 0) {
     const { notifications, count } = this.state;
     const newCount = count + 1;
+    let msgKey = count + 1;
+    if (participantId !== 0) {
+      msgKey = participantId;
+    }
     return this.setState({
       count: newCount,
       notifications: notifications.add({
         message: msg,
         title: msgTitle,
-        key: newCount,
+        key: msgKey,
         action: 'Dismiss',
-        dismissAfter: 3400,
-        onClick: () => this.removeNotification(newCount),
+        dismissAfter: 3000400,
+        onClick: () => this.removeNotification(msgKey),
       }),
+    });
+  }
+
+  async setOwnerNotified(participantId) {
+    const { events } = this.state;
+    // find the event to change
+    events.forEach((event) => {
+      // console.log(event.participants);
+      event.participants.forEach((participant, index) => {
+        if (participant._id === participantId) {
+          const observerEvent = jsonpatch.observe(event);
+          event.participants[index].ownerNotified = true;
+          const patches = jsonpatch.generate(observerEvent);
+          fetch(`/api/events/${event._id}`, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+            method: 'PATCH',
+            body: JSON.stringify(patches),
+          });
+        }
+      });
     });
   }
 
@@ -89,18 +117,14 @@ class Dashboard extends Component {
       events: this.state.events.filter(event => event._id !== eventId),
     });
   }
+
   @autobind
   loadEventsNotifications() {
-    const { notifications, count } = this.state;
-    console.log(count);
-    let newCount = count;
     this.state.events.forEach((event) => {
       event.participants.forEach(
         (participant) => {
           if (participant.ownerNotified === false && participant.userId !== event.owner) {
-            newCount = count + 1;
-            console.log('new notification', newCount, event.name);
-            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`);
+            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id);
           }
         });
     });
