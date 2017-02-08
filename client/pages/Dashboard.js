@@ -1,12 +1,13 @@
 /* vendor dependencies */
-import React from 'react';
+import React, { Component } from 'react';
 import { browserHistory, Link } from 'react-router';
 import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
-import { Notification } from 'react-notification';
+import { NotificationStack } from 'react-notification';
+import { OrderedSet } from 'immutable';
 
 /* external components */
 import EventCard from '../components/EventCard';
@@ -18,18 +19,22 @@ import styles from '../styles/dashboard.css';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { isAuthenticated } from '../util/auth';
 
-class Dashboard extends React.Component {
+class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
       events: [],
-      showNoScheduledMessage: false,
-      notificationIsActive: false,
-      notificationMessage: '',
+      notifications: OrderedSet(),
+      count: 0,
+      //showNoScheduledMessage: false,
+      //notificationIsActive: false,
+      //notificationMessage: '',
     };
   }
 
   async componentWillMount() {
+    const { notifications, count } = this.state;
+
     if (sessionStorage.getItem('redirectTo')) {
       browserHistory.push(sessionStorage.getItem('redirectTo'));
       sessionStorage.removeItem('redirectTo');
@@ -46,23 +51,76 @@ class Dashboard extends React.Component {
       events = await parseJSON(response);
     } catch (err) {
       console.log(err);
+      const newCount = count + 1;
       this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load events. Please try again later.',
+        count: newCount,
+        notifications: notifications.add({
+          message: 'Failed to load events. Please try again later.',
+          title: 'Error!!',
+          key: count,
+          action: 'Dismiss',
+          dismissAfter: 2000,
+          onClick: () => this.removeNotification(newCount),
+        }),
       });
       return;
+      /* this.setState({
+        /*notificationTitle: 'error!!',
+        notificationIsActive: true,
+        notificationMessage: 'Failed to load events. Please try again later.',
+      });*/
     } finally {
       nprogress.done();
       this.setState({ showNoScheduledMessage: true });
     }
 
     this.setState({ events });
+    this.loadEventsNotifications();
+  }
+
+
+  removeNotification(count) {
+    const { notifications } = this.state;
+    this.setState({
+      notifications: notifications.filter(n => n.key !== count),
+    });
+  }
+
+  addNotification(msg) {
+    const { notifications, count } = this.state;
+    const newCount = count + 1;
+    return this.setState({
+      count: newCount,
+      notifications: notifications.add({
+        message: msg,
+        key: newCount,
+        action: 'Dismiss',
+        dismissAfter: 3400,
+        onClick: () => this.removeNotification(newCount),
+      }),
+    });
   }
 
   @autobind
   removeEventFromDashboard(eventId) {
     this.setState({
       events: this.state.events.filter(event => event._id !== eventId),
+    });
+  }
+  @autobind
+  loadEventsNotifications() {
+    const { notifications, count } = this.state;
+    console.log(count);
+    let newCount = count;
+    this.state.events.forEach((event) => {
+      event.participants.forEach(
+        (participant) => {
+          if (participant.ownerNotified === false && participant.userId !== event.owner) {
+            newCount = count + 1;
+            console.log('new notification', newCount, event.name);
+            this.addNotification(`${participant.name} accept your invite for ${event.name}.`);
+          }
+        });
     });
   }
 
@@ -94,15 +152,11 @@ class Dashboard extends React.Component {
               </em> :
               null
         }
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          action="Dismiss"
-          title="Error!"
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
-          dismissAfter={10000}
+        <NotificationStack
+          notifications={this.state.notifications.toArray()}
+          onDismiss={notification => this.setState({
+            notifications: this.state.notifications.delete(notification),
+          })}
         />
       </div>
     );
@@ -110,3 +164,4 @@ class Dashboard extends React.Component {
 }
 
 export default cssModules(Dashboard, styles);
+
