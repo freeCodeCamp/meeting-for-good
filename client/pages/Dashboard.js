@@ -89,9 +89,7 @@ class Dashboard extends Component {
 
   async setOwnerNotified(participantId) {
     const { events } = this.state;
-    // find the event to change
     events.forEach((event) => {
-      // console.log(event.participants);
       event.participants.forEach((participant, index) => {
         if (participant._id === participantId) {
           const observerEvent = jsonpatch.observe(event);
