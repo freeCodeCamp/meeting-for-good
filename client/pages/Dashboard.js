@@ -81,7 +81,7 @@ class Dashboard extends Component {
         title: msgTitle,
         key: msgKey,
         action: 'Dismiss',
-        dismissAfter: 3000400,
+        dismissAfter: 3400,
         onClick: () => this.removeNotification(msgKey),
       }),
     });
