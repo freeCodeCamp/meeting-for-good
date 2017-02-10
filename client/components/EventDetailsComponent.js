@@ -113,6 +113,7 @@ class EventDetailsComponent extends React.Component {
     nprogress.start();
 
     const patches = jsonpatch.generate(observerEvent);
+    console.log('patches', patches);
     const response = await fetch(`/api/events/${event._id}`, {
       headers: {
         Accept: 'application/json',

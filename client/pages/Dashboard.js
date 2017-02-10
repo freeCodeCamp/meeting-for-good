@@ -58,14 +58,6 @@ class Dashboard extends Component {
     this.loadEventsNotifications();
   }
 
-  removeNotification(key) {
-    const { notifications, count} = this.state;
-    console.log('removeNotification', key);
-    this.setOwnerNotified(key);
-    this.setState({
-      notifications: notifications.filter(n => n.key !== key),
-    });
-  }
 
   addNotification(msgTitle, msg, participantId = 0) {
     const { notifications, count } = this.state;
@@ -95,7 +87,7 @@ class Dashboard extends Component {
           const observerEvent = jsonpatch.observe(event);
           event.participants[index].ownerNotified = true;
           const patches = jsonpatch.generate(observerEvent);
-          fetch(`/api/events/${event._id}`, {
+          const response = fetch(`/api/events/${event._id}`, {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
@@ -104,8 +96,22 @@ class Dashboard extends Component {
             method: 'PATCH',
             body: JSON.stringify(patches),
           });
+          try {
+            checkStatus(response);
+          } catch (err) {
+            console.log(err);
+            this.addNotification('Error!!', 'Failed to aknolege messages. Please try again later.');
+          }
         }
       });
+    });
+  }
+
+  removeNotification(key) {
+    const { notifications } = this.state;
+    this.setOwnerNotified(key);
+    this.setState({
+      notifications: notifications.filter(n => n.key !== key),
     });
   }
 
