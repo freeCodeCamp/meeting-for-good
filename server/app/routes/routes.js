@@ -32,7 +32,6 @@ export default (app) => {
 
   app.route('/api/sendEmail')
     .post(isAuthenticated, (req, res) => {
-      console.log('na api', req.body);
       sendEmail(req.body, (err, info) => {
         if (err) {
           console.log('err at route sendMail', err);
