@@ -113,7 +113,6 @@ class EventDetailsComponent extends React.Component {
     nprogress.start();
 
     const patches = jsonpatch.generate(observerEvent);
-    console.log('patches', patches);
     const response = await fetch(`/api/events/${event._id}`, {
       headers: {
         Accept: 'application/json',
@@ -137,10 +136,42 @@ class EventDetailsComponent extends React.Component {
       return;
     } finally {
       nprogress.done();
+      this.sendEmailOwner(event);
     }
 
     this.setState({ event, eventParticipantsIds });
   }
+
+  async sendEmailOwner(event) {
+    const { name, emails } = this.state.user;
+    const msg = {
+      text: `${name} accept your invite for ${event.name}`,
+      from: 'jrogatis@rogatis.eti.br',
+      to: emails[0],
+      subject: 'Invite Accepted!!',
+    };
+    const response = await fetch('/api/SendEmail/', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      method: 'POST',
+      body: JSON.stringify(msg),
+    });
+
+    try {
+      checkStatus(response);
+    } catch (err) {
+      console.log('sendEmailOwner', err);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to send email for event Owner.',
+        notificationTitle: 'Error!',
+        showEmail: false,
+      });
+    }
+  }  
 
   @autobind
   showAvailability(ev) {
