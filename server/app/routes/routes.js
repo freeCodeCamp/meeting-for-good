@@ -32,8 +32,11 @@ export default (app) => {
 
   app.route('/api/sendEmail')
     .post(isAuthenticated, (req, res) => {
-      sendEmail(req.body.message, (err, info) => {
-        if (err) return res.status(500).send(err);
+      sendEmail(req.body, (err, info) => {
+        if (err) {
+          console.log('err at route sendMail', err);
+          return res.status(500).send(err);
+        }
         return res.status(200).json(info);
       });
     });

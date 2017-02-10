@@ -1,13 +1,14 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/events                  ->  index
- * GET     /api/events/getbyuid/:uid'   ->  indexById
- * GET    /api/events/getbyUser         ->  indexByUser
- * POST    /api/events                  ->  create
- * GET     /api/events/:id              ->  show
- * PUT     /api/events/:id              ->  upsert
- * PATCH   /api/events/:id              ->  patch
- * DELETE  /api/events/:id              ->  setFalse
+ * GET     /api/events                        ->  index
+ * GET     /api/events/getbyuid/:uid'         ->  indexById
+ * GET    /api/events/getGhestsNotifications  ->  GuestNotifications
+ * GET    /api/events/getbyUser               ->  indexByUser
+ * POST    /api/events                        ->  create
+ * GET     /api/events/:id                    ->  show
+ * PUT     /api/events/:id                    ->  upsert
+ * PATCH   /api/events/:id                    ->  patch
+ * DELETE  /api/events/:id                    ->  setFalse
  */
 
 'use strict';
@@ -159,3 +160,24 @@ export const create = (req, res) => {
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 };
+
+
+// get all new guests that dont have notification
+// for that event owner
+export const GuestNotifications = (req, res) => {
+  const { _id } = req.user;
+  console.log('GuestNotifications', _id);
+  return Events.find({
+    owner: _id.toString(),
+    active: true,
+    'participants.ownerNotified': false,
+  })
+    .select('name participants.userId')
+    .exec()
+    .then(respondWithResult(res))
+    .catch((err) => {
+      console.log('err no GuestNotifications', err);
+      handleError(res);
+    });
+};
+

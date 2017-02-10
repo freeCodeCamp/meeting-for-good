@@ -200,7 +200,7 @@ class EventCard extends React.Component {
             <div className="col s12">
               {isBestTime ?
                 Object.keys(bestTimes).map(date => (
-                  <div>
+                  <div key={date}>
                     <div styleName="bestTimeDate">
                       <i
                         className="material-icons"
@@ -232,8 +232,8 @@ class EventCard extends React.Component {
           <br />
           <div className="participant-list">
             <h6><strong>Participants</strong></h6>
-            {event.participants.map((participant, index) => (
-              <div className="participant" styleName="participant" key={index}>
+            {event.participants.map( participant => (
+              <div className="participant" styleName="participant" key={participant._id}>
                 <img
                   alt="participant-avatar"
                   className="circle"

@@ -1,12 +1,14 @@
 /* vendor dependencies */
-import React from 'react';
+import React, { Component } from 'react';
 import { browserHistory, Link } from 'react-router';
 import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
-import { Notification } from 'react-notification';
+import { NotificationStack } from 'react-notification';
+import { OrderedSet } from 'immutable';
+import jsonpatch from 'fast-json-patch';
 
 /* external components */
 import EventCard from '../components/EventCard';
@@ -18,14 +20,13 @@ import styles from '../styles/dashboard.css';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { isAuthenticated } from '../util/auth';
 
-class Dashboard extends React.Component {
+class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
       events: [],
-      showNoScheduledMessage: false,
-      notificationIsActive: false,
-      notificationMessage: '',
+      notifications: OrderedSet(),
+      count: 0,
     };
   }
 
@@ -46,10 +47,7 @@ class Dashboard extends React.Component {
       events = await parseJSON(response);
     } catch (err) {
       console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load events. Please try again later.',
-      });
+      this.addNotification('Error!!', 'Failed to load events. Please try again later.');
       return;
     } finally {
       nprogress.done();
@@ -57,12 +55,82 @@ class Dashboard extends React.Component {
     }
 
     this.setState({ events });
+    this.loadEventsNotifications();
+  }
+
+
+  addNotification(msgTitle, msg, participantId = 0) {
+    const { notifications, count } = this.state;
+    const newCount = count + 1;
+    let msgKey = count + 1;
+    if (participantId !== 0) {
+      msgKey = participantId;
+    }
+    return this.setState({
+      count: newCount,
+      notifications: notifications.add({
+        message: msg,
+        title: msgTitle,
+        key: msgKey,
+        action: 'Dismiss',
+        dismissAfter: 3400,
+        onClick: () => this.removeNotification(msgKey),
+      }),
+    });
+  }
+
+  async setOwnerNotified(participantId) {
+    const { events } = this.state;
+    events.forEach((event) => {
+      event.participants.forEach((participant, index) => {
+        if (participant._id === participantId) {
+          const observerEvent = jsonpatch.observe(event);
+          event.participants[index].ownerNotified = true;
+          const patches = jsonpatch.generate(observerEvent);
+          const response = fetch(`/api/events/${event._id}`, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+            method: 'PATCH',
+            body: JSON.stringify(patches),
+          });
+          try {
+            checkStatus(response);
+          } catch (err) {
+            console.log(err);
+            this.addNotification('Error!!', 'Failed to aknolege messages. Please try again later.');
+          }
+        }
+      });
+    });
+  }
+
+  removeNotification(key) {
+    const { notifications } = this.state;
+    this.setOwnerNotified(key);
+    this.setState({
+      notifications: notifications.filter(n => n.key !== key),
+    });
   }
 
   @autobind
   removeEventFromDashboard(eventId) {
     this.setState({
       events: this.state.events.filter(event => event._id !== eventId),
+    });
+  }
+
+  @autobind
+  loadEventsNotifications() {
+    this.state.events.forEach((event) => {
+      event.participants.forEach(
+        (participant) => {
+          if (participant.ownerNotified === false && participant.userId !== event.owner) {
+            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id);
+          }
+        });
     });
   }
 
@@ -94,15 +162,11 @@ class Dashboard extends React.Component {
               </em> :
               null
         }
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          action="Dismiss"
-          title="Error!"
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
-          dismissAfter={10000}
+        <NotificationStack
+          notifications={this.state.notifications.toArray()}
+          onDismiss={notification => this.setState({
+            notifications: this.state.notifications.delete(notification),
+          })}
         />
       </div>
     );
@@ -110,3 +174,4 @@ class Dashboard extends React.Component {
 }
 
 export default cssModules(Dashboard, styles);
+
