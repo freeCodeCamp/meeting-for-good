@@ -345,7 +345,7 @@ class EventDetailsComponent extends React.Component {
             <div className="col s12">
               {isBestTime ?
                 Object.keys(bestTimes).map(date => (
-                  <div>
+                  <div key={date}>
                     <div styleName="bestTimeDate">
                       <i
                         className="material-icons"
