@@ -150,7 +150,7 @@ class EventDetailsComponent extends React.Component {
       to: emails[0],
       subject: 'Invite Accepted!!',
     };
-    const response = await fetch('/api/SendEmail/', {
+    const response = await fetch('/api/email/ownerNotification', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
