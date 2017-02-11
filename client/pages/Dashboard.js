@@ -59,10 +59,23 @@ class Dashboard extends Component {
   }
 
 
-  addNotification(msgTitle, msg, participantId = 0) {
+ @autobind
+  loadEventsNotifications() {
+    this.state.events.forEach((event) => {
+      event.participants.forEach(
+        (participant) => {
+          if (participant.ownerNotified === false && participant.userId !== event.owner) {
+            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id, false);
+          }
+        });
+    });
+  }
+
+  addNotification(msgTitle, msg, participantId = 0, dismissTime = 3400) {
     const { notifications, count } = this.state;
     const newCount = count + 1;
     let msgKey = count + 1;
+    // if was not a new event(now partipants yet)
     if (participantId !== 0) {
       msgKey = participantId;
     }
@@ -73,7 +86,7 @@ class Dashboard extends Component {
         title: msgTitle,
         key: msgKey,
         action: 'Dismiss',
-        dismissAfter: 3400,
+        dismissAfter: dismissTime,
         onClick: () => this.removeNotification(msgKey),
       }),
     });
@@ -119,18 +132,6 @@ class Dashboard extends Component {
   removeEventFromDashboard(eventId) {
     this.setState({
       events: this.state.events.filter(event => event._id !== eventId),
-    });
-  }
-
-  @autobind
-  loadEventsNotifications() {
-    this.state.events.forEach((event) => {
-      event.participants.forEach(
-        (participant) => {
-          if (participant.ownerNotified === false && participant.userId !== event.owner) {
-            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id);
-          }
-        });
     });
   }
 
