@@ -1,5 +1,4 @@
 
-// import sendEmail from '../config/email';
 import events from '../../api/events';
 import users from '../../api/user';
 import auth from '../../auth';
