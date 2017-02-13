@@ -10,7 +10,6 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import jsonpatch from 'fast-json-patch';
 
-
 /* external components */
 import EventCard from '../components/EventCard';
 
