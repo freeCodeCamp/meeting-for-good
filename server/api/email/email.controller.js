@@ -3,6 +3,10 @@
  * POST    /api/ownerNotification  ->  ownerNotification
  */
 import nodemailer from 'nodemailer';
+import path from 'path';
+
+const EmailTemplate = require('email-templates').EmailTemplate;
+
 
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
@@ -34,10 +38,19 @@ const sendEmail = (message) => {
 
 export const ownerNotification = (req, res) => {
   const message = req.body;
-  return sendEmail(message)
+  message.from = process.env.emailFrom;
+  const templateDir = path.join(__dirname, 'templates', 'ownerNotification');
+  const template = new EmailTemplate(templateDir);
+  template.render(message, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    message.html = result.html;
+    return sendEmail(message)
     .then(respondWithResult(res))
     .catch((err) => {
       console.log('err no ownerNotification', err);
       handleError(res);
     });
+  });
 };

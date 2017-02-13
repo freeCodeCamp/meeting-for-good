@@ -13,6 +13,7 @@ import AvailabilityGrid from './AvailabilityGrid';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 import styles from '../styles/event-card.css';
+import path from 'path';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -145,8 +146,12 @@ class EventDetailsComponent extends React.Component {
   async sendEmailOwner(event) {
     const { name, emails } = this.state.user;
     const msg = {
+      guestName: name,
+      eventName: event.name,
+      eventId: event._id,
+      eventOwner: event.owner,
+      url: `${window.location.hostname}\event\${event._id}`,
       text: `${name} accept your invite for ${event.name}`,
-      from: 'jrogatis@rogatis.eti.br',
       to: emails[0],
       subject: 'Invite Accepted!!',
     };

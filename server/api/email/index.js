@@ -10,6 +10,8 @@ const isAuthenticated = (req, res, next) => {
   return res.status(403).send('Authentiation required.');
 };
 
-router.post('/ownerNotification', isAuthenticated, controller.ownerNotification);
+// router.post('/ownerNotification', isAuthenticated, controller.ownerNotification);
+router.post('/ownerNotification', controller.ownerNotification);
+
 
 module.exports = router;

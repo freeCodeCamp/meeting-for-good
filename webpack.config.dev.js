@@ -89,7 +89,7 @@ module.exports = {
       names: ['vendor', 'manifest'],
     }),
     new WriteFilePlugin({
-      test: /\.html$/,
+      test: /\.(html|ejs)$/,
     }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
