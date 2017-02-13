@@ -45,7 +45,10 @@ export const ownerNotification = (req, res) => {
     if (err) {
       console.log(err);
     }
+    message.subject = 'Lets Meet Invite Accepeted';
+    message.text = result.text;
     message.html = result.html;
+    console.log(message);
     return sendEmail(message)
     .then(respondWithResult(res))
     .catch((err) => {

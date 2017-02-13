@@ -13,7 +13,6 @@ import AvailabilityGrid from './AvailabilityGrid';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 import styles from '../styles/event-card.css';
-import path from 'path';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -48,6 +47,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   async componentWillMount() {
+    const { event } = this.state;
     const user = await getCurrentUser();
     if (user) {
       let showHeatmap = false;
@@ -64,7 +64,7 @@ class EventDetailsComponent extends React.Component {
 
       this.setState({ user, showHeatmap, myAvailability });
     }
-    this.generateBestDatesAndTimes(this.state.event);
+    this.generateBestDatesAndTimes(event);
   }
 
   componentDidMount() {
@@ -145,13 +145,13 @@ class EventDetailsComponent extends React.Component {
 
   async sendEmailOwner(event) {
     const { name, emails } = this.state.user;
+    const full = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const msg = {
       guestName: name,
       eventName: event.name,
       eventId: event._id,
       eventOwner: event.owner,
-      url: `${window.location.hostname}\event\${event._id}`,
-      text: `${name} accept your invite for ${event.name}`,
+      url: `${full}/event/${event._id}`,
       to: emails[0],
       subject: 'Invite Accepted!!',
     };
@@ -334,9 +334,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    let modifiers;
-
-    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, showEmail } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
 
@@ -357,7 +355,7 @@ class EventDetailsComponent extends React.Component {
       handleClick: () => { this.setState({ notificationIsActive: false }); },
     }];
 
-    if (this.state.showEmail) {
+    if (showEmail) {
       notifActions.push({
         text: 'Email Event',
         handleClick: () => { window.location.href = `mailto:?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:%0D%0A%0D%0A${window.location.href} %0D%0A%0D%0A All times will automatically be converted to your local timezone.`; },
