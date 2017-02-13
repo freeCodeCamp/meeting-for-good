@@ -75,7 +75,7 @@ class Dashboard extends Component {
     const { notifications, count } = this.state;
     const newCount = count + 1;
     let msgKey = count + 1;
-    // if was not a new event(now partipants yet)
+    // if was not a new event(no partipants yet)
     if (participantId !== 0) {
       msgKey = participantId;
     }
