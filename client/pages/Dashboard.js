@@ -10,6 +10,7 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import jsonpatch from 'fast-json-patch';
 
+
 /* external components */
 import EventCard from '../components/EventCard';
 
@@ -18,7 +19,7 @@ import styles from '../styles/dashboard.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../util/fetch.util';
-import { isAuthenticated } from '../util/auth';
+import { isAuthenticated, getCurrentUser } from '../util/auth';
 
 class Dashboard extends Component {
   constructor() {
@@ -36,8 +37,12 @@ class Dashboard extends Component {
       sessionStorage.removeItem('redirectTo');
     }
 
-    if (!await isAuthenticated()) browserHistory.push('/');
-
+    if (!await isAuthenticated()) {
+      browserHistory.push('/');
+    }
+    const user = await getCurrentUser();
+    console.log(user);
+    this.setState({ curUser: user });
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     const response = await fetch('/api/events/getByUser', { credentials: 'same-origin' });
@@ -59,12 +64,15 @@ class Dashboard extends Component {
   }
 
 
- @autobind
+  @autobind
   loadEventsNotifications() {
-    this.state.events.forEach((event) => {
+    const { events, curUser } = this.state;
+    events.forEach((event) => {
       event.participants.forEach(
         (participant) => {
-          if (participant.ownerNotified === false && participant.userId !== event.owner) {
+          if (participant.ownerNotified === false &&
+            participant.userId !== event.owner &&
+            event.owner === curUser._id) {
             this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id, false);
           }
         });
