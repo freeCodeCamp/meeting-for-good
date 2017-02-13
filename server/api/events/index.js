@@ -10,6 +10,11 @@ const isAuthenticated = (req, res, next) => {
   return res.status(403).send('Authentiation required.');
 };
 
+/*const isAuthenticatedEvent = (req, res, next) => {
+  if (req.isAuthenticated()) return next();
+  return res.status(403).send('Authentiation required.');
+};*/
+
 router.get('/', isAuthenticated, controller.index);
 router.get('/getByUser', isAuthenticated, controller.indexByUser);
 router.get('/getGuestNotifications', isAuthenticated, controller.GuestNotifications);
