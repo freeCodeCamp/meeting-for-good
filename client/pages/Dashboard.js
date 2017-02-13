@@ -41,7 +41,6 @@ class Dashboard extends Component {
       browserHistory.push('/');
     }
     const user = await getCurrentUser();
-    console.log(user);
     this.setState({ curUser: user });
     nprogress.configure({ showSpinner: false });
     nprogress.start();
