@@ -18,7 +18,7 @@ import styles from '../styles/dashboard.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../util/fetch.util';
-import { isAuthenticated } from '../util/auth';
+import { isAuthenticated, getCurrentUser } from '../util/auth';
 
 class Dashboard extends Component {
   constructor() {
@@ -36,8 +36,11 @@ class Dashboard extends Component {
       sessionStorage.removeItem('redirectTo');
     }
 
-    if (!await isAuthenticated()) browserHistory.push('/');
-
+    if (!await isAuthenticated()) {
+      browserHistory.push('/');
+    }
+    const user = await getCurrentUser();
+    this.setState({ curUser: user });
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     const response = await fetch('/api/events/getByUser', { credentials: 'same-origin' });
@@ -58,11 +61,25 @@ class Dashboard extends Component {
     this.loadEventsNotifications();
   }
 
+  @autobind
+  loadEventsNotifications() {
+    const { events, curUser } = this.state;
+    events.forEach((event) => {
+      event.participants.forEach((participant) => {
+        if (participant.ownerNotified === false &&
+          participant.userId !== event.owner &&
+          event.owner === curUser._id) {
+          this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id, false);
+        }
+      });
+    });
+  }
 
-  addNotification(msgTitle, msg, participantId = 0) {
+  addNotification(msgTitle, msg, participantId = 0, dismissTime = 3400) {
     const { notifications, count } = this.state;
     const newCount = count + 1;
     let msgKey = count + 1;
+    // if was not a new event(no partipants yet)
     if (participantId !== 0) {
       msgKey = participantId;
     }
@@ -73,7 +90,7 @@ class Dashboard extends Component {
         title: msgTitle,
         key: msgKey,
         action: 'Dismiss',
-        dismissAfter: 3400,
+        dismissAfter: dismissTime,
         onClick: () => this.removeNotification(msgKey),
       }),
     });
@@ -119,18 +136,6 @@ class Dashboard extends Component {
   removeEventFromDashboard(eventId) {
     this.setState({
       events: this.state.events.filter(event => event._id !== eventId),
-    });
-  }
-
-  @autobind
-  loadEventsNotifications() {
-    this.state.events.forEach((event) => {
-      event.participants.forEach(
-        (participant) => {
-          if (participant.ownerNotified === false && participant.userId !== event.owner) {
-            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id);
-          }
-        });
     });
   }
 

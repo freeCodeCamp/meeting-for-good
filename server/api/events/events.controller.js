@@ -166,7 +166,6 @@ export const create = (req, res) => {
 // for that event owner
 export const GuestNotifications = (req, res) => {
   const { _id } = req.user;
-  console.log('GuestNotifications', _id);
   return Events.find({
     owner: _id.toString(),
     active: true,
