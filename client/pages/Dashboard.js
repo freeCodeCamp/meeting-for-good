@@ -66,14 +66,13 @@ class Dashboard extends Component {
   loadEventsNotifications() {
     const { events, curUser } = this.state;
     events.forEach((event) => {
-      event.participants.forEach(
-        (participant) => {
-          if (participant.ownerNotified === false &&
-            participant.userId !== event.owner &&
-            event.owner === curUser._id) {
-            this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id, false);
-          }
-        });
+      event.participants.forEach((participant) => {
+        if (participant.ownerNotified === false &&
+          participant.userId !== event.owner &&
+          event.owner === curUser._id) {
+          this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id, false);
+        }
+      });
     });
   }
 
