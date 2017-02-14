@@ -61,7 +61,6 @@ class Dashboard extends Component {
     this.loadEventsNotifications();
   }
 
-
   @autobind
   loadEventsNotifications() {
     const { events, curUser } = this.state;
