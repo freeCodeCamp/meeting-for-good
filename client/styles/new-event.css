@@ -40,3 +40,7 @@ h1 {
   composes: heading;
   margin-top: 15px;
 }
+
+.reset-button {
+  min-height: 36px;
+}
