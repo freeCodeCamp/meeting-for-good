@@ -384,15 +384,15 @@ class NewEvent extends React.Component {
             {!this.state.dateOrDay ?
               <div>
                 <h6 styleName="heading-dates">What dates might work for you?</h6>
-                {from && to &&
-                  <p className="center">
-                    <a
-                      className="btn-flat"
-                      href="#reset"
-                      onClick={this.handleResetClick}
-                    >Reset</a>
-                  </p>
-                }
+                <p className="center" styleName="reset-button">
+                  {from && to &&
+                      <a
+                        className="btn-flat"
+                        href="#reset"
+                        onClick={this.handleResetClick}
+                      >Reset</a>
+                  }
+                </p>
                 <DayPicker
                   numberOfMonths={2}
                   fromMonth={new Date()}
@@ -422,7 +422,7 @@ class NewEvent extends React.Component {
             <div id="timeSlider" />
             <br />
             <p className="center">
-              From {this.state.selectedTimeRange[0]} to {this.state.selectedTimeRange[1]}
+              No earlier than {this.state.selectedTimeRange[0]} and no later than {this.state.selectedTimeRange[1]}
             </p>
             <br />
             <p className="center">
