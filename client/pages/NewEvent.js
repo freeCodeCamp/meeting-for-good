@@ -422,7 +422,7 @@ class NewEvent extends React.Component {
             <div id="timeSlider" />
             <br />
             <p className="center">
-              From {this.state.selectedTimeRange[0]} to {this.state.selectedTimeRange[1]}
+              No earlier than {this.state.selectedTimeRange[0]} and no later than {this.state.selectedTimeRange[1]}
             </p>
             <br />
             <p className="center">
