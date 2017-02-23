@@ -171,7 +171,7 @@ export const GuestNotifications = (req, res) => {
     active: true,
     'participants.ownerNotified': false,
   })
-    .select('name participants.userId')
+    .select('name participants.userId participants.name participants._id')
     .exec()
     .then(respondWithResult(res))
     .catch((err) => {
