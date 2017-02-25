@@ -17,6 +17,7 @@ router.get('/getbyuid/:uid', isAuthenticated, controller.indexById);
 router.get('/:id', isAuthenticated, controller.show);
 router.post('/', isAuthenticated, controller.create);
 router.put('/:id', isAuthenticated, controller.upsert);
+router.patch('/GuestNotificationDismiss/:id', isAuthenticated, controller.GuestNotificationDismiss);
 router.patch('/:id', isAuthenticated, controller.patch);
 router.delete('/:id', isAuthenticated, controller.setFalse);
 

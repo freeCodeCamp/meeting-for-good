@@ -26,7 +26,7 @@ class Navbar extends Component {
   }
 
   async componentDidMount() {
-    await this.loadNotifications();
+    const notifications = await this.loadNotifications();
   }
 
   @autobind
@@ -67,9 +67,28 @@ class Navbar extends Component {
     }
   }
 
+  @autobind  
+  async handleDismiss(participantId) {
+    const response =  await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      method: 'PATCH',
+    });
+    try {
+      checkStatus(response);
+    } catch (err) {
+      console.log('handleDismiss', err);
+    } finally {
+      await this.loadNotifications();
+    }
+  }
+
   renderNotifications() {
     const { notifications } = this.state;
-    console.log(notifications);
+    // console.log(notifications);
     return (
       <div>
         <button
@@ -86,12 +105,17 @@ class Navbar extends Component {
               // console.log(participant.userId.toString(), this.state.curUser.toString());
               if (participant.userId.toString() !== this.state.curUser.toString() && participant.ownerNotified === false) {
                 return (
-                  <li className="mdl-menu__item mdl-menu__item--full-bleed-divider" key={participant._id} >
+                  <li className="mdl-menu__item mdl-menu__item--full-bleed-divider" id={participant._id} key={participant._id} >
                     <span>
                       {participant.name} accept your invite for
                       <Link to={`/event/${event._id}`} > {event.name} </Link>
                     </span>
-                    <button className="mdl-button"> Dismiss </button>
+                    <button
+                      className="mdl-button"
+                      onClick={() => this.handleDismiss(participant._id)}
+                    >
+                      Dismiss
+                    </button>
                   </li>
                 );
               }
