@@ -69,6 +69,7 @@ class Navbar extends Component {
 
   renderNotifications() {
     const { notifications } = this.state;
+    console.log(notifications);
     return (
       <div>
         <button
@@ -82,17 +83,17 @@ class Navbar extends Component {
           {notifications.map((event) => {
             const participants = event.participants;
             return participants.map((participant) => {
-              console.log(participant.userId.toString(), this.state.curUser.toString());
-              if (participant.userId.toString() !== this.state.curUser.toString()) {
+              // console.log(participant.userId.toString(), this.state.curUser.toString());
+              if (participant.userId.toString() !== this.state.curUser.toString() && participant.ownerNotified === false) {
                 return (
                   <li className="mdl-menu__item mdl-menu__item--full-bleed-divider" key={participant._id} >
-                    <div>
-                      <span> {participant.name} accept your invite for </span>
-                      <Link to={`/event/${event._id}`} >{event.name}
-                      </Link>
-                      <button className="mdl-button"> Dismiss </button>
-                    </div>
-                  </li>);
+                    <span>
+                      {participant.name} accept your invite for
+                      <Link to={`/event/${event._id}`} > {event.name} </Link>
+                    </span>
+                    <button className="mdl-button"> Dismiss </button>
+                  </li>
+                );
               }
             });
           })
