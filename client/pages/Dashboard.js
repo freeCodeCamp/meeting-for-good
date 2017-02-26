@@ -58,7 +58,7 @@ class Dashboard extends Component {
     }
 
     this.setState({ events });
-    this.loadEventsNotifications();
+    // this.loadEventsNotifications();
   }
 
   @autobind

@@ -18,6 +18,7 @@ class Navbar extends Component {
       notifications: [],
       isMenuOpen: false,
       isOPen: false,
+      notificationPending: false,
     };
   }
 
@@ -26,7 +27,7 @@ class Navbar extends Component {
   }
 
   async componentDidMount() {
-    const notifications = await this.loadNotifications();
+    await this.loadNotifications();
   }
 
   @autobind
@@ -87,12 +88,22 @@ class Navbar extends Component {
   }
 
   renderNotifications() {
-    const { notifications } = this.state;
-    // console.log(notifications);
+    const { notifications, curUser } = this.state;
+    let notificationPending = false;
+    if (notifications) {
+      notifications.forEach((notice) => {
+        notice.participants.forEach((participant) => {
+          if (participant.userId !== curUser && participant.ownerNotified === false) {
+            notificationPending = true;
+          }
+        });
+      });
+    }
+    console.log(notificationPending);
     return (
       <div>
         <button
-          style={(notifications) ? { color: 'red' } : { color: 'white' }}
+          style={(notificationPending) ? { color: 'red' } : { color: 'white' }}
           id="menu-notifications"
           className="mdl-button mdl-js-button mdl-button--icon"
         >
@@ -102,20 +113,23 @@ class Navbar extends Component {
           {notifications.map((event) => {
             const participants = event.participants;
             return participants.map((participant) => {
-              // console.log(participant.userId.toString(), this.state.curUser.toString());
-              if (participant.userId.toString() !== this.state.curUser.toString() && participant.ownerNotified === false) {
+              if (participant.userId.toString() !== curUser) {
                 return (
                   <li className="mdl-menu__item mdl-menu__item--full-bleed-divider" id={participant._id} key={participant._id} >
                     <span>
                       {participant.name} accept your invite for
                       <Link to={`/event/${event._id}`} > {event.name} </Link>
                     </span>
-                    <button
-                      className="mdl-button"
-                      onClick={() => this.handleDismiss(participant._id)}
-                    >
-                      Dismiss
-                    </button>
+                    { participant.ownerNotified === false ?
+                      <button
+                        className="mdl-button"
+                        onClick={() => this.handleDismiss(participant._id)}
+                      >
+                        Dismiss
+                      </button>
+                      :
+                      null
+                    }
                   </li>
                 );
               }
