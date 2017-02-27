@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 
 import '../styles/main.css';
 
-const App = (props) => (
+const App = props => (
   <div>
     <Navbar location={props.location} />
     <main styleName="main">
