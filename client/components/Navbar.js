@@ -98,7 +98,6 @@ class Navbar extends Component {
         });
       });
     }
-    console.log(notificationPending);
     return (
       <div>
         <button
