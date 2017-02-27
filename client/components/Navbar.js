@@ -7,7 +7,6 @@ import { checkStatus, parseJSON } from '../util/fetch.util';
 import styles from '../styles/navbar.css';
 import '../styles/no-css-modules/mdl.css';
 
-
 class Navbar extends Component {
   constructor(props) {
     super(props);
