@@ -175,5 +175,10 @@ export const relatedUsers = (req, res) => {
     .catch(err => next(err));
 };
 
+export const isAuthenticated = (req, res) => {
+  if (req.user) return res.status(200).json({ isAuthenticated: true });
+  return res.status(200).json({ isAuthenticated: false });
+};
+
 
 

@@ -3,9 +3,16 @@ import { checkStatus, parseJSON } from './fetch.util';
 
 export const isAuthenticated = () => {
   return new Promise((resolve) => {
-    fetch('/api/auth/current', { credentials: 'same-origin' })
-      .then(checkStatus)
-      .then(() => resolve(true))
+    fetch('/api/user/isAuthenticated', { credentials: 'same-origin' })
+      .then(res => checkStatus(res))
+      .then(res => parseJSON(res))
+      .then((res) => {
+        if (res.isAuthenticated === true) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
       .catch(() => resolve(false));
   });
 };
