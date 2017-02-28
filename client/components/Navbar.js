@@ -58,8 +58,7 @@ class Navbar extends Component {
       notices = await parseJSON(response);
       return notices;
     } catch (err) {
-      console.log(err);
-      return null;
+      console.log('loadNotifications', err);
     }
   }
 
@@ -152,7 +151,7 @@ class Navbar extends Component {
         </div>
       );
     }
-    
+
     return (
       <div className="mdl-navigation" styleName="login-btn">
         <a
