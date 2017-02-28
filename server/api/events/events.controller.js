@@ -1,14 +1,15 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/events                        ->  index
- * GET     /api/events/getbyuid/:uid'         ->  indexById
- * GET    /api/events/getGhestsNotifications  ->  GuestNotifications
- * GET    /api/events/getbyUser               ->  indexByUser
- * POST    /api/events                        ->  create
- * GET     /api/events/:id                    ->  show
- * PUT     /api/events/:id                    ->  upsert
- * PATCH   /api/events/:id                    ->  patch
- * DELETE  /api/events/:id                    ->  setFalse
+ * GET     /api/events                                ->  index
+ * GET     /api/events/getbyuid/:uid'                 ->  indexById
+ * GET    /api/events/getGhestsNotifications          ->  GuestNotifications
+ * GET    /api/events/getbyUser                       ->  indexByUser
+ * POST    /api/events                                ->  create
+ * GET     /api/events/:id                            ->  show
+ * PUT     /api/events/:id                            ->  upsert
+ * PATCH   /api/events/:id                            ->  patch
+ * PATCH   /api/events/GuestNotificationDismiss/:id   ->  GuestNotificationDismiss
+ * DELETE  /api/events/:id                            ->  setFalse
  */
 
 'use strict';
@@ -161,7 +162,6 @@ export const create = (req, res) => {
     .catch(handleError(res));
 };
 
-
 // get all new guests that dont have notification
 // for that event owner
 export const GuestNotifications = (req, res) => {
@@ -171,12 +171,32 @@ export const GuestNotifications = (req, res) => {
     active: true,
     'participants.ownerNotified': false,
   })
-    .select('name participants.userId')
+    .select('name participants.userId participants.name participants._id participants.ownerNotified')
     .exec()
     .then(respondWithResult(res))
     .catch((err) => {
       console.log('err no GuestNotifications', err);
       handleError(res);
+    });
+};
+
+// set the owner notification for that particpants._id as true
+export const GuestNotificationDismiss = (req, res) => {
+  return Events.findOne({
+    'participants._id': req.params.id,
+  })
+    .exec()
+    .then(handleEntityNotFound(res))
+    .then((event) => {
+      event.participants.forEach((participant) => {
+        if (participant._id.toString() === req.params.id) {
+          participant.ownerNotified = true;
+          event.save((err) => {
+            if (err) return res.status(500).send(err);
+            return res.status(200).json(event);
+          });
+        }
+      });
     });
 };
 

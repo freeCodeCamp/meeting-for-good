@@ -56,9 +56,7 @@ class Dashboard extends Component {
       nprogress.done();
       this.setState({ showNoScheduledMessage: true });
     }
-
     this.setState({ events });
-    this.loadEventsNotifications();
   }
 
   @autobind
