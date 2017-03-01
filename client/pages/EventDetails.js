@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Notification } from 'react-notification';
@@ -8,7 +8,7 @@ import { checkStatus, parseJSON } from '../util/fetch.util';
 
 import styles from '../styles/event-card.css';
 
-class EventDetails extends React.Component {
+class EventDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,7 +35,6 @@ class EventDetails extends React.Component {
       window.location.href = '/';
       return;
     }
-
     this.setState({ event });
   }
 

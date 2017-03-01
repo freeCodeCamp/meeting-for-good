@@ -246,7 +246,7 @@ class EventCard extends React.Component {
           </div>
         </div>
         <div className="card-action">
-          <Link styleName="details-link" to={`/event/${event.uid}`}>View Details</Link>
+          <Link styleName="details-link" to={`/event/${event._id}`}>View Details</Link>
         </div>
         <Notification
           isActive={this.state.notificationIsActive}

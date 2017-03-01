@@ -11,6 +11,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 router.get('/', isAuthenticated, controller.index);
+router.get('/isAuthenticated', controller.isAuthenticated);
 router.get('/byName/:name', isAuthenticated, controller.indexByName);
 router.get('/relatedUsers', isAuthenticated, controller.relatedUsers);
 router.get('/me', isAuthenticated, controller.me);

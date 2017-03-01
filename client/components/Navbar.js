@@ -6,6 +6,7 @@ import fetch from 'isomorphic-fetch';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import styles from '../styles/navbar.css';
 import '../styles/no-css-modules/mdl.css';
+import { isAuthenticated } from '../util/auth';
 
 class Navbar extends Component {
   constructor(props) {
@@ -25,10 +26,6 @@ class Navbar extends Component {
     await this.loadUser();
   }
 
-  async componentDidMount() {
-    await this.loadNotifications();
-  }
-
   @autobind
   handleAuthClick() {
     if (!sessionStorage.getItem('redirectTo')) {
@@ -37,18 +34,19 @@ class Navbar extends Component {
   }
 
   async loadUser() {
-    const response = await fetch('/api/auth/current', { credentials: 'same-origin' });
-    let user;
-    try {
-      checkStatus(response);
-      user = await parseJSON(response);
-      return user;
-    } catch (err) {
-      console.log(err);
-      return;
-    } finally {
-      const userAvatar = user.avatar;
-      this.setState({ userAvatar, user: true, curUser: user._id, conditionalHomeLink: '/Dashboard' });
+    if (await isAuthenticated()) {
+      const response = await fetch('/api/auth/current', { credentials: 'same-origin' });
+      let user;
+      try {
+        checkStatus(response);
+        user = await parseJSON(response);
+        const notices = await this.loadNotifications();
+        const userAvatar = user.avatar;
+        this.setState({ userAvatar, user: true, curUser: user._id, conditionalHomeLink: '/Dashboard', notifications: notices });
+      } catch (err) {
+        console.log('loadUser', err);
+        return null;
+      }
     }
   }
 
@@ -60,10 +58,7 @@ class Navbar extends Component {
       notices = await parseJSON(response);
       return notices;
     } catch (err) {
-      console.log(err);
-      return;
-    } finally {
-      this.setState({ notifications: notices });
+      console.log('loadNotifications', err);
     }
   }
 
@@ -98,7 +93,6 @@ class Navbar extends Component {
         });
       });
     }
-    console.log(notificationPending);
     return (
       <div>
         <button
