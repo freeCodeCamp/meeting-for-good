@@ -30,6 +30,7 @@ class EventDetails extends Component {
       checkStatus(response);
       event = await parseJSON(response);
       user = await isAuthenticated();
+      this.setState({ event, user });
     } catch (err) {
       console.log('err at componentWillMount EventDetail', err);
       this.setState({
@@ -38,7 +39,7 @@ class EventDetails extends Component {
       });
       return;
     }
-    this.setState({ event, user });
+   
   }
 
   render() {
