@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
@@ -7,7 +7,6 @@ import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
 import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
-import jsonpatch from 'fast-json-patch';
 import 'react-day-picker/lib/style.css';
 
 import { checkStatus } from '../util/fetch.util';
@@ -15,7 +14,7 @@ import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
 
-class EventCard extends React.Component {
+class EventCard extends Component {
   constructor(props) {
     super(props);
 
@@ -130,7 +129,7 @@ class EventCard extends React.Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log(err);
+      console.log('deleteEvent EvdentCard', err);
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
@@ -232,7 +231,7 @@ class EventCard extends React.Component {
           <br />
           <div className="participant-list">
             <h6><strong>Participants</strong></h6>
-            {event.participants.map( participant => (
+            {event.participants.map(participant => (
               <div className="participant" styleName="participant" key={participant._id}>
                 <img
                   alt="participant-avatar"
@@ -258,7 +257,7 @@ class EventCard extends React.Component {
           activeClassName="notification-bar-is-active"
         />
         <dialog
-          onClick={(ev) => ev.stopPropagation()}
+          onClick={ev => ev.stopPropagation()}
           className="mdl-dialog"
           styleName="mdl-dialog"
           id={`deleteEventModal${this.state.event._id}`}

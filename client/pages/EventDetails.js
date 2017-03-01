@@ -5,8 +5,9 @@ import { Notification } from 'react-notification';
 
 import EventDetailsComponent from '../components/EventDetailsComponent';
 import { checkStatus, parseJSON } from '../util/fetch.util';
-
+import LoginModal from '../components/login';
 import styles from '../styles/event-card.css';
+import { isAuthenticated } from '../util/auth';
 
 class EventDetails extends Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class EventDetails extends Component {
       event: null,
       notificationMessage: '',
       notificationIsActive: false,
+      user: null,
     };
   }
 
@@ -23,24 +25,27 @@ class EventDetails extends Component {
       credentials: 'same-origin',
     });
     let event;
+    let user;
     try {
       checkStatus(response);
       event = await parseJSON(response);
+      user = await isAuthenticated();
     } catch (err) {
       console.log('err at componentWillMount EventDetail', err);
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to load event. Please try again later.',
       });
-      window.location.href = '/';
       return;
     }
-    this.setState({ event });
+    this.setState({ event, user });
   }
 
   render() {
     if (this.state.event) {
       return <EventDetailsComponent event={this.state.event} />;
+    } else if (!this.state.user) {
+      return <LoginModal />
     }
     return (
       <Notification

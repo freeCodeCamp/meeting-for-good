@@ -154,6 +154,7 @@ class Dashboard extends Component {
                 key={event._id}
                 event={event}
                 removeEventFromDashboard={this.removeEventFromDashboard}
+                user={this.state.curUser}
               />
             ))}
           </Masonry> :
