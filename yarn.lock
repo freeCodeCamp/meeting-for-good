@@ -1266,6 +1266,12 @@ chunk-manifest-webpack-plugin@^1.0.0:
   dependencies:
     webpack-core "^0.6.9"
 
+chunk-manifest-webpack2-plugin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/chunk-manifest-webpack2-plugin/-/chunk-manifest-webpack2-plugin-1.0.1.tgz#35762d242600ad6404c8e90283340608676f498e"
+  dependencies:
+    webpack-core "^0.6.8"
+
 cipher-base@^1.0.0, cipher-base@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/cipher-base/-/cipher-base-1.0.3.tgz#eeabf194419ce900da3018c207d212f2a6df0a07"
@@ -4665,9 +4671,9 @@ react-css-modules@^4.1.0:
     lodash "^4.16.6"
     object-unfreeze "^1.1.0"
 
-react-day-picker@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-5.0.0.tgz#fb46f6e579da4389e925141c83066e8c03cb1c09"
+react-day-picker@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-3.1.1.tgz#7fa385dc7b424cee3eb09696e1918e6b18abafdb"
 
 react-deep-force-update@^1.0.0:
   version "1.0.1"
@@ -5722,7 +5728,7 @@ webpack-config@^7.0.0:
     recursive-iterator "^2.0.3"
     yargs "^6.6.0"
 
-webpack-core@^0.6.9:
+webpack-core@^0.6.8, webpack-core@^0.6.9:
   version "0.6.9"
   resolved "https://registry.yarnpkg.com/webpack-core/-/webpack-core-0.6.9.tgz#fc571588c8558da77be9efb6debdc5a3b172bdc2"
   dependencies:
