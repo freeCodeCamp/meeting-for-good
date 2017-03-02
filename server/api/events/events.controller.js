@@ -172,6 +172,7 @@ export const GuestNotifications = (req, res) => {
     'participants.ownerNotified': false,
   })
     .select('name participants.userId participants.name participants._id participants.ownerNotified')
+    .sort({ _id: 'descending' })
     .exec()
     .then(respondWithResult(res))
     .catch((err) => {
