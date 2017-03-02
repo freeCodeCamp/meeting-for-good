@@ -89,7 +89,7 @@
     "react": "^15.4.1",
     "react-addons-update": "^15.4.1",
     "react-css-modules": "^4.1.0",
-    "react-day-picker": "^5.0.0",
+    "react-day-picker": "^3.1.1",
     "react-dom": "^15.4.1",
     "react-hot-loader": "^3.0.0-beta.1",
     "react-masonry-component": "^5.0.3",
