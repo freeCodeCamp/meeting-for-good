@@ -106,14 +106,15 @@ class Navbar extends Component {
           {notifications.map((event) => {
             const participants = event.participants;
             return participants.map((participant) => {
+              let row = null;
               if (participant.userId.toString() !== curUser) {
-                return (
-                  <li className="mdl-menu__item mdl-menu__item--full-bleed-divider" id={participant._id} key={participant._id} >
+                row =
+                  (<li className="mdl-menu__item mdl-menu__item--full-bleed-divider" id={participant._id} key={participant._id} >
                     <span>
                       {participant.name} accept your invite for
                       <Link to={`/event/${event._id}`} > {event.name} </Link>
                     </span>
-                    { participant.ownerNotified === false ?
+                    {participant.ownerNotified === false ?
                       <button
                         className="mdl-button"
                         onClick={() => this.handleDismiss(participant._id)}
@@ -123,9 +124,9 @@ class Navbar extends Component {
                       :
                       null
                     }
-                  </li>
-                );
+                  </li>);
               }
+              return row;
             });
           })
           }
