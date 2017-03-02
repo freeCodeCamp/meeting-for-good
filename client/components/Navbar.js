@@ -50,6 +50,12 @@ class Navbar extends Component {
     }
   }
 
+  @autobind   
+  async handleNotificationsClick() {
+    const notices = await this.loadNotifications();
+    this.setState({ notifications: notices });
+  }
+
   async loadNotifications() {
     const response = await fetch('/api/events/getGuestNotifications', { credentials: 'same-origin' });
     let notices;
@@ -84,6 +90,7 @@ class Navbar extends Component {
   renderNotifications() {
     const { notifications, curUser } = this.state;
     let notificationPending = false;
+    console.log(notifications);
     if (notifications) {
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
@@ -99,6 +106,7 @@ class Navbar extends Component {
           style={(notificationPending) ? { color: 'red' } : { color: 'white' }}
           id="menu-notifications"
           className="mdl-button mdl-js-button mdl-button--icon"
+          onClick={this.handleNotificationsClick}
         >
           <i className="material-icons">priority_high</i>
         </button>
