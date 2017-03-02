@@ -4665,9 +4665,9 @@ react-css-modules@^4.1.0:
     lodash "^4.16.6"
     object-unfreeze "^1.1.0"
 
-react-day-picker@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-3.1.1.tgz#7fa385dc7b424cee3eb09696e1918e6b18abafdb"
+react-day-picker@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-5.0.0.tgz#fb46f6e579da4389e925141c83066e8c03cb1c09"
 
 react-deep-force-update@^1.0.0:
   version "1.0.1"
