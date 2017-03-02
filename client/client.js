@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+/*import React, { Component } from 'react';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 import 'dialog-polyfill/dialog-polyfill';
 import 'dialog-polyfill/dialog-polyfill.css';
@@ -33,8 +33,8 @@ export default class Client extends Component {
     );
   }
 }
-
-/* import React, { Component } from 'react';
+*/
+import React, { Component } from 'react';
 import { Router, browserHistory, Redirect } from 'react-router';
 import 'dialog-polyfill/dialog-polyfill';
 import 'dialog-polyfill/dialog-polyfill.css';
@@ -90,4 +90,4 @@ export default class Client extends Component {
       </Router>
     );
   }
-}*/
+}
