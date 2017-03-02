@@ -5,7 +5,6 @@ const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 
-
 const VENDOR_LIBS = [
   'autobind-decorator',
   'bluebird',
@@ -19,14 +18,14 @@ const VENDOR_LIBS = [
   'passport',
   'passport-facebook',
   'passport-google-oauth',
-  'react',
+ /* 'react',
   'react-addons-update',
   'react-day-picker',
   'react-dom',
   'react-css-modules',
   'react-masonry-component',
   'react-notification',
-  'react-router',
+  'react-router',*/
 ];
 
 module.exports = {
