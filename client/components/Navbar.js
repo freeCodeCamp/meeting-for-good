@@ -91,7 +91,6 @@ class Navbar extends Component {
   renderNotifications() {
     const { notifications, curUser } = this.state;
     let notificationPending = false;
-    console.log(notifications);
     if (notifications) {
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
