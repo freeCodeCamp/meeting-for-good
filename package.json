@@ -56,7 +56,7 @@
     "connect-flash": "^0.1.1",
     "connect-mongo": "^1.3.2",
     "cookie-parser": "^1.4.3",
-    "copy-webpack-plugin": "^2.1.6",
+    "copy-webpack-plugin": "^4.0.1",
     "cpy-cli": "^1.0.1",
     "css-loader": "^0.26.1",
     "dialog-polyfill": "^0.4.6",
