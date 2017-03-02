@@ -48,6 +48,15 @@ import './styles/no-css-modules/react-notifications.css';
 
 require('es6-promise').polyfill();
 
+const loadRoute = (cb) => {
+  return module => cb(null, module.default);
+};
+
+const errorLoading = (err) => {
+  console.error('Dynamic page loading failed', err);
+};
+
+
 const componentRoutes = {
   component: App,
   path: '/',
@@ -57,7 +66,7 @@ const componentRoutes = {
       path: 'dashboard',
       getComponent(location, cb) {
         System.import('./pages/Dashboard')
-          .then(module => cb(null, module.default));
+         .then(loadRoute(cb)).catch(errorLoading);
       },
     },
     {
@@ -67,14 +76,14 @@ const componentRoutes = {
           path: 'new',
           getComponent(location, cb) {
             System.import('./pages/NewEvent')
-              .then(module => cb(null, module.default));
+               .then(loadRoute(cb)).catch(errorLoading);
           },
         },
         {
           path: ':uid',
           getComponent(location, cb) {
             System.import('./pages/EventDetails')
-              .then(module => cb(null, module.default));
+               .then(loadRoute(cb)).catch(errorLoading);
           },
         },
       ],
