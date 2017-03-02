@@ -18,14 +18,14 @@ const VENDOR_LIBS = [
   'passport',
   'passport-facebook',
   'passport-google-oauth',
- /* 'react',
+  'react',
   'react-addons-update',
   'react-day-picker',
   'react-dom',
   'react-css-modules',
   'react-masonry-component',
   'react-notification',
-  'react-router',*/
+  'react-router',
 ];
 
 module.exports = {
@@ -81,8 +81,7 @@ module.exports = {
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.[chunkhash].js',
+      names: ['vendor', 'manifest'],
     }),
     new ChunkManifestPlugin({
       filename: 'manifest.json',
@@ -99,3 +98,8 @@ module.exports = {
     extensions: ['.js', '.css'],
   },
 };
+
+/* new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.[chunkhash].js',
+    }), */
