@@ -16,42 +16,45 @@ class EventDetails extends Component {
       event: null,
       notificationMessage: '',
       notificationIsActive: false,
-      user: null,
+      showModal: false,
     };
   }
 
   async componentWillMount() {
-    const response = await fetch(`/api/events/${this.props.params.uid}`, {
-      credentials: 'same-origin',
-    });
-    let event;
-    let user;
-    try {
-      checkStatus(response);
-      event = await parseJSON(response);
-      user = await isAuthenticated();
-      this.setState({ event, user });
-    } catch (err) {
-      console.log('err at componentWillMount EventDetail', err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load event. Please try again later.',
+    if (await isAuthenticated()) {
+      const response = await fetch(`/api/events/${this.props.params.uid}`, {
+        credentials: 'same-origin',
       });
-      return;
+      let event;
+      try {
+        checkStatus(response);
+        event = await parseJSON(response);
+        this.setState({ event });
+      } catch (err) {
+        console.log('err at componentWillMount EventDetail', err);
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Failed to load event. Please try again later.',
+        });
+        return;
+      }
+    } else {
+      this.setState({ showModal: true });
     }
-   
   }
 
   render() {
-    if (this.state.event) {
-      return <EventDetailsComponent event={this.state.event} />;
-    } else if (!this.state.user) {
+    const { event, showModal, notificationIsActive, notificationMessage } = this.state;
+    if (event) {
+      return <EventDetailsComponent event={event} />;
+    }
+    if (showModal) {
       return <LoginModal />
     }
     return (
       <Notification
-        isActive={this.state.notificationIsActive}
-        message={this.state.notificationMessage}
+        isActive={notificationIsActive}
+        message={notificationMessage}
         action="Dismiss"
         title="Error!"
         onDismiss={() => this.setState({ notificationIsActive: false })}
