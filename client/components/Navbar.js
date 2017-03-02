@@ -77,7 +77,7 @@ class Navbar extends Component {
     } catch (err) {
       console.log('handleDismiss', err);
     } finally {
-      await this.loadNotifications();
+      this.loadUser();
     }
   }
 
