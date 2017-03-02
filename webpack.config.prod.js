@@ -81,7 +81,8 @@ module.exports = {
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
+      name: 'vendor',
+      filename: 'vendor.[chunkhash].js',
     }),
     new ChunkManifestPlugin({
       filename: 'manifest.json',
@@ -99,7 +100,3 @@ module.exports = {
   },
 };
 
-/* new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.[chunkhash].js',
-    }), */
