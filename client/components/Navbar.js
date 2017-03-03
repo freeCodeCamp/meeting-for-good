@@ -50,6 +50,12 @@ class Navbar extends Component {
     }
   }
 
+  @autobind   
+  async handleNotificationsClick() {
+    const notices = await this.loadNotifications();
+    this.setState({ notifications: notices });
+  }
+
   async loadNotifications() {
     const response = await fetch('/api/events/getGuestNotifications', { credentials: 'same-origin' });
     let notices;
@@ -59,6 +65,7 @@ class Navbar extends Component {
       return notices;
     } catch (err) {
       console.log('loadNotifications', err);
+      return null;
     }
   }
 
@@ -77,7 +84,7 @@ class Navbar extends Component {
     } catch (err) {
       console.log('handleDismiss', err);
     } finally {
-      await this.loadNotifications();
+      this.loadUser();
     }
   }
 
@@ -99,6 +106,7 @@ class Navbar extends Component {
           style={(notificationPending) ? { color: 'red' } : { color: 'white' }}
           id="menu-notifications"
           className="mdl-button mdl-js-button mdl-button--icon"
+          onClick={this.handleNotificationsClick}
         >
           <i className="material-icons">priority_high</i>
         </button>
@@ -106,14 +114,15 @@ class Navbar extends Component {
           {notifications.map((event) => {
             const participants = event.participants;
             return participants.map((participant) => {
+              let row = null;
               if (participant.userId.toString() !== curUser) {
-                return (
-                  <li className="mdl-menu__item mdl-menu__item--full-bleed-divider" id={participant._id} key={participant._id} >
+                row =
+                  (<li className="mdl-menu__item mdl-menu__item--full-bleed-divider" id={participant._id} key={participant._id} >
                     <span>
                       {participant.name} accept your invite for
                       <Link to={`/event/${event._id}`} > {event.name} </Link>
                     </span>
-                    { participant.ownerNotified === false ?
+                    {participant.ownerNotified === false ?
                       <button
                         className="mdl-button"
                         onClick={() => this.handleDismiss(participant._id)}
@@ -123,9 +132,9 @@ class Navbar extends Component {
                       :
                       null
                     }
-                  </li>
-                );
+                  </li>);
               }
+              return row;
             });
           })
           }

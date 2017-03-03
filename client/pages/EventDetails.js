@@ -5,8 +5,9 @@ import { Notification } from 'react-notification';
 
 import EventDetailsComponent from '../components/EventDetailsComponent';
 import { checkStatus, parseJSON } from '../util/fetch.util';
-
+import LoginModal from '../components/login';
 import styles from '../styles/event-card.css';
+import { isAuthenticated } from '../util/auth';
 
 class EventDetails extends Component {
   constructor(props) {
@@ -15,37 +16,45 @@ class EventDetails extends Component {
       event: null,
       notificationMessage: '',
       notificationIsActive: false,
+      showModal: false,
     };
   }
 
   async componentWillMount() {
-    const response = await fetch(`/api/events/${this.props.params.uid}`, {
-      credentials: 'same-origin',
-    });
-    let event;
-    try {
-      checkStatus(response);
-      event = await parseJSON(response);
-    } catch (err) {
-      console.log('err at componentWillMount EventDetail', err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to load event. Please try again later.',
+    if (await isAuthenticated()) {
+      const response = await fetch(`/api/events/${this.props.params.uid}`, {
+        credentials: 'same-origin',
       });
-      window.location.href = '/';
-      return;
+      let event;
+      try {
+        checkStatus(response);
+        event = await parseJSON(response);
+        this.setState({ event });
+      } catch (err) {
+        console.log('err at componentWillMount EventDetail', err);
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Failed to load event. Please try again later.',
+        });
+        return;
+      }
+    } else {
+      this.setState({ showModal: true });
     }
-    this.setState({ event });
   }
 
   render() {
-    if (this.state.event) {
-      return <EventDetailsComponent event={this.state.event} />;
+    const { event, showModal, notificationIsActive, notificationMessage } = this.state;
+    if (event) {
+      return <EventDetailsComponent event={event} />;
+    }
+    if (showModal) {
+      return <LoginModal />
     }
     return (
       <Notification
-        isActive={this.state.notificationIsActive}
-        message={this.state.notificationMessage}
+        isActive={notificationIsActive}
+        message={notificationMessage}
         action="Dismiss"
         title="Error!"
         onDismiss={() => this.setState({ notificationIsActive: false })}

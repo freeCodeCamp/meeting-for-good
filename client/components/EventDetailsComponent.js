@@ -143,16 +143,29 @@ class EventDetailsComponent extends React.Component {
     this.setState({ event, eventParticipantsIds });
   }
 
+  async loadOwnerData(_id) {
+    const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
+    try {
+      checkStatus(response);
+      return await parseJSON(response);
+    } catch (err) {
+      console.log('loadOwnerData', err);
+      this.addNotification('Error!!', 'Failed to load owner Data. Please try again later.');
+      return null;
+    }
+  }
+
   async sendEmailOwner(event) {
-    const { name, emails } = this.state.user;
-    const full = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
+    const { name } = this.state.user;
+    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
+    const ownerData = await this.loadOwnerData(event.owner);
     const msg = {
       guestName: name,
       eventName: event.name,
       eventId: event._id,
       eventOwner: event.owner,
-      url: `${full}/event/${event._id}`,
-      to: emails[0],
+      url: `${fullUrl}/event/${event._id}`,
+      to: ownerData.emails[0],
       subject: 'Invite Accepted!!',
     };
     const response = await fetch('/api/email/ownerNotification', {
@@ -176,7 +189,7 @@ class EventDetailsComponent extends React.Component {
         showEmail: false,
       });
     }
-  }  
+  }
 
   @autobind
   showAvailability(ev) {
