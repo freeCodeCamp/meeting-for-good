@@ -1,14 +1,14 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/users                  ->  index
- * GET     /api/users/me               ->  me
- * POST    /api/users                  ->  create
- * GET     /api/users/:id              ->  show
- * PUT     /api/users/:id              ->  upsert
- * PATCH   /api/users/:id              ->  patch
- * DELETE  /api/users/:id              ->  destroy
- * GET     /api/users/byName/:name     -> indexByName
- *GET     /api/users/relatedUsers/     -> relatedUsers
+ * GET     /api/user                  ->  index
+ * GET     /api/user/me               ->  me
+ * POST    /api/user                  ->  create
+ * GET     /api/user/:id              ->  show
+ * PUT     /api/user/:id              ->  upsert
+ * PATCH   /api/user/:id              ->  patch
+ * DELETE  /api/user/:id              ->  destroy
+ * GET     /api/user/byName/:name     -> indexByName
+ *GET     /api/user/relatedUsers/     -> relatedUsers
  */
 
 import jsonpatch from 'fast-json-patch';

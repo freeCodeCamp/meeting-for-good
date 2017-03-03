@@ -43,7 +43,8 @@ export const ownerNotification = (req, res) => {
   const template = new EmailTemplate(templateDir);
   template.render(message, (err, result) => {
     if (err) {
-      console.log(err);
+      console.log('err at render of ownerNotification', err);
+      return err;
     }
     message.subject = 'Lets Meet Invite Accepeted';
     message.text = result.text;
@@ -51,7 +52,7 @@ export const ownerNotification = (req, res) => {
     return sendEmail(message)
     .then(respondWithResult(res))
     .catch((err) => {
-      console.log('err no ownerNotification', err);
+      console.log('err at ownerNotification', err);
       handleError(res);
     });
   });
