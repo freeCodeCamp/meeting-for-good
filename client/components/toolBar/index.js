@@ -7,8 +7,8 @@ import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
-import NotificationBar from '../../components/notificationBar';
-import LoginModal from '../login';
+import NotificationBar from '../../components/NotificationBar';
+import LoginModal from '../Login';
 
 
 class ToolBar extends Component {

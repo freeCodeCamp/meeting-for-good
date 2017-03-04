@@ -5,7 +5,7 @@ import { Notification } from 'react-notification';
 
 import EventDetailsComponent from '../components/EventDetailsComponent';
 import { checkStatus, parseJSON } from '../util/fetch.util';
-import LoginModal from '../components/login';
+import LoginModal from '../components/Login';
 import styles from '../styles/event-card.css';
 import { isAuthenticated } from '../util/auth';
 

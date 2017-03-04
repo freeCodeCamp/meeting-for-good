@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ToolBar from '../components/toolBar';
+import ToolBar from '../components/ToolBar';
 import '../styles/main.css';
 
 const App = props => (
