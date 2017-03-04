@@ -5,6 +5,8 @@ import FlatButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
+import { Link, browserHistory } from 'react-router';
+
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
 import NotificationBar from '../../components/NotificationBar';
@@ -27,8 +29,6 @@ class ToolBar extends Component {
 
   @autobind
   handleAuthClick() {
-    console.log('cliquei');
-    this.setState({ open: true });
     this.setState({ open: true });
   }
 
@@ -46,6 +46,10 @@ class ToolBar extends Component {
         return null;
       }
     }
+  }
+  @autobind
+  handleDashboardClick() {
+    browserHistory.push('/dashboard');
   }
 
   renderLastGroup() {
@@ -71,7 +75,10 @@ class ToolBar extends Component {
           style={styles.TollbarGroup}
         >
           <NotificationBar curUser={curUser} />
-          <FlatButton style={styles.button} href={'/dashboard'}>
+          <FlatButton
+            style={styles.button}
+            onTouchTap={this.handleDashboardClick}
+          >
             Dashboard
           </FlatButton>
           <FlatButton style={styles.button} href={'/api/auth/logout'}>
