@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { cyan500 } from 'material-ui/styles/colors';
+import { green900 } from 'material-ui/styles/colors';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Client from './client'; // App
 
@@ -15,7 +15,7 @@ const mountApp = document.getElementById('app');
 
 const muiTheme = getMuiTheme({
   palette: {
-    textColor: cyan500,
+    textColor: green900,
   },
   appBar: {
     height: 50,

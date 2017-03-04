@@ -7,6 +7,7 @@ import { checkStatus, parseJSON } from '../util/fetch.util';
 import styles from '../styles/navbar.css';
 import '../styles/no-css-modules/mdl.css';
 import { isAuthenticated } from '../util/auth';
+import NotificationBar from '../components/notificationBar';
 
 class Navbar extends Component {
   constructor(props) {
@@ -15,10 +16,6 @@ class Navbar extends Component {
       userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
       user: false,
       conditionalHomeLink: '/',
-      notifications: [],
-      isMenuOpen: false,
-      isOPen: false,
-      notificationPending: false,
     };
   }
 
@@ -40,9 +37,8 @@ class Navbar extends Component {
       try {
         checkStatus(response);
         user = await parseJSON(response);
-        const notices = await this.loadNotifications();
         const userAvatar = user.avatar;
-        this.setState({ userAvatar, user: true, curUser: user._id, conditionalHomeLink: '/Dashboard', notifications: notices });
+        this.setState({ userAvatar, user: true, curUser: user._id, conditionalHomeLink: '/Dashboard' });
       } catch (err) {
         console.log('loadUser', err);
         return null;
@@ -50,104 +46,12 @@ class Navbar extends Component {
     }
   }
 
-  @autobind   
-  async handleNotificationsClick() {
-    const notices = await this.loadNotifications();
-    this.setState({ notifications: notices });
-  }
-
-  async loadNotifications() {
-    const response = await fetch('/api/events/getGuestNotifications', { credentials: 'same-origin' });
-    let notices;
-    try {
-      checkStatus(response);
-      notices = await parseJSON(response);
-      return notices;
-    } catch (err) {
-      console.log('loadNotifications', err);
-      return null;
-    }
-  }
-
-  @autobind  
-  async handleDismiss(participantId) {
-    const response =  await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'PATCH',
-    });
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('handleDismiss', err);
-    } finally {
-      this.loadUser();
-    }
-  }
-
-  renderNotifications() {
-    const { notifications, curUser } = this.state;
-    let notificationPending = false;
-    if (notifications) {
-      notifications.forEach((notice) => {
-        notice.participants.forEach((participant) => {
-          if (participant.userId !== curUser && participant.ownerNotified === false) {
-            notificationPending = true;
-          }
-        });
-      });
-    }
-    return (
-      <div>
-        <button
-          style={(notificationPending) ? { color: 'red' } : { color: 'white' }}
-          id="menu-notifications"
-          className="mdl-button mdl-js-button mdl-button--icon"
-          onClick={this.handleNotificationsClick}
-        >
-          <i className="material-icons">priority_high</i>
-        </button>
-        <ul className="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" htmlFor="menu-notifications">
-          {notifications.map((event) => {
-            const participants = event.participants;
-            return participants.map((participant) => {
-              let row = null;
-              if (participant.userId.toString() !== curUser) {
-                row =
-                  (<li className="mdl-menu__item mdl-menu__item--full-bleed-divider" id={participant._id} key={participant._id} >
-                    <span>
-                      {participant.name} accept your invite for
-                      <Link to={`/event/${event._id}`} > {event.name} </Link>
-                    </span>
-                    {participant.ownerNotified === false ?
-                      <button
-                        className="mdl-button"
-                        onClick={() => this.handleDismiss(participant._id)}
-                      >
-                        Dismiss
-                      </button>
-                      :
-                      null
-                    }
-                  </li>);
-              }
-              return row;
-            });
-          })
-          }
-        </ul>
-      </div>
-    );
-  }
-
   renderNav() {
-    if (this.state.user) {
+    const { user, curUser } = this.state;
+    if (user) {
       return (
         <div className="mdl-navigation">
-          {this.renderNotifications()}
+          <NotificationBar curUser={curUser} />
           <Link className="mdl-navigation__link" to="/dashboard">Dashboard</Link>
           <a className="mdl-navigation__link" href="/api/auth/logout">Logout</a>
           <a className="mdl-navigation__link" href="#">

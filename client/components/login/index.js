@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
-import cssModules from 'react-css-modules';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-
-import styles from './login.css';
 
 class LoginModal extends Component {
   constructor(props) {
@@ -88,7 +85,7 @@ class LoginModal extends Component {
   }
 }
 
-export default cssModules(LoginModal, styles);
+export default LoginModal;
 
 LoginModal.propTypes = {
   location: React.PropTypes.object,
