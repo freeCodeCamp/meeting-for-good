@@ -10,7 +10,6 @@ import { isAuthenticated } from '../../util/auth';
 import NotificationBar from '../../components/NotificationBar';
 import LoginModal from '../Login';
 
-
 class ToolBar extends Component {
   constructor(props) {
     super(props);

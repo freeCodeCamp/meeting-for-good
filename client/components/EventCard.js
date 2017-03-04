@@ -5,12 +5,11 @@ import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
-import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 import 'react-day-picker/lib/style.css';
 
 import ParticipantsList from '../components/ParticipantsList';
-import { checkStatus } from '../util/fetch.util';
+import DeleteModal from '../components/DeleteModal';
 import { getCurrentUser } from '../util/auth';
 
 import styles from '../styles/event-card.css';
@@ -47,6 +46,7 @@ class EventCard extends Component {
       user: {},
       notificationMessage: '',
       notificationIsActive: false,
+      open: false,
     };
   }
 
@@ -111,41 +111,23 @@ class EventCard extends Component {
     }, 100);
   }
 
-  @autobind
-  async deleteEvent() {
-    const response =  await fetch(
-      `/api/events/${this.props.event._id}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-        credentials: 'same-origin',
-      },
-    );
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('deleteEvent EvdentCard', err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to delete event. Please try again later.',
-      });
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.props.removeEventFromDashboard(this.state.event._id);
-  }
 
   @autobind
   redirectToEvent() {
     browserHistory.push(`/event/${this.state.event._id}`);
+  }
+
+  @autobind
+  handleDelete(result) {
+    if (result === true) {
+      this.props.removeEventFromDashboard(this.state.event._id);
+    } else {
+      console.log('deleteEvent EvdentCard', result);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to delete event. Please try again later.',
+      });
+    }
   }
 
   render() {
@@ -181,17 +163,12 @@ class EventCard extends Component {
     } else isBestTime = false;
 
     return (
-      <div onClick={this.redirectToEvent} className="card" styleName="event">
+      <div className="card" styleName="event">
         {
           isOwner ?
-            <button
-              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-              styleName="delete-event"
-              onClick={(ev) => {
-                ev.stopPropagation();
-                document.querySelector(`#deleteEventModal${this.state.event._id}`).showModal();
-              }}
-            ><i className="material-icons">delete</i></button> : null
+            <div>
+              <DeleteModal event={this.state.event} cb={this.handleDelete} />
+            </div> : null
         }
         <div className="card-content">
           <span styleName="card-title" className="card-title">{event.name}</span>
@@ -244,27 +221,6 @@ class EventCard extends Component {
           onClick={() => this.setState({ notificationIsActive: false })}
           activeClassName="notification-bar-is-active"
         />
-        <dialog
-          onClick={ev => ev.stopPropagation()}
-          className="mdl-dialog"
-          styleName="mdl-dialog"
-          id={`deleteEventModal${this.state.event._id}`}
-        >
-          <h6 styleName="modal-title" className="mdl-dialog__title">Are you sure you want to delete the event?</h6>
-          <div className="mdl-dialog__actions">
-            <button
-              type="button"
-              className="mdl-button close"
-              onClick={() => document.querySelector(`#deleteEventModal${this.state.event._id}`).close()}
-            >Cancel</button>
-            <button
-              type="button"
-              className="mdl-button"
-              style={{ color: '#f44336' }}
-              onClick={this.deleteEvent}
-            >Yes</button>
-          </div>
-        </dialog>
       </div>
     );
   }

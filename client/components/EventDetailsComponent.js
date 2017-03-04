@@ -7,12 +7,15 @@ import fetch from 'isomorphic-fetch';
 import moment from 'moment';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
+import DeleteModal from '../components/DeleteModal';
 import 'react-day-picker/lib/style.css';
 import Notification from '../components/vendor/react-notification';
 import AvailabilityGrid from './AvailabilityGrid';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 import styles from '../styles/event-card.css';
+import ParticipantsList from '../components/ParticipantsList';
+
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -241,36 +244,24 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  async deleteEvent() {
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin', method: 'DELETE',
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
+  handleDelete(result) {
+    if (result === true) {
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Event successfully deleted!',
+        notificationTitle: '',
+        showEmail: false,
+      });
+      browserHistory.push('/dashboard');
+    } else {
+      console.log('error at handleDelete EventDetailsComponent', result);
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
         notificationTitle: 'Error!',
         showEmail: false,
       });
-      return;
-    } finally {
-      nprogress.done();
     }
-
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: 'Event successfully deleted!',
-      notificationTitle: '',
-      showEmail: false,
-    });
-
-    browserHistory.push('/dashboard');
   }
 
   generateBestDatesAndTimes(event) {
@@ -377,13 +368,11 @@ class EventDetailsComponent extends React.Component {
 
     return (
       <div className="card meeting" styleName="event-details">
-        {
+         {
           isOwner ?
-            <button
-              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-              styleName="delete-event"
-              onClick={() => document.querySelector('#deleteEventModal').showModal()}
-            ><i className="material-icons">delete</i></button> : null
+            <div>
+              <DeleteModal event={this.state.event} cb={this.handleDelete} />
+            </div> : null
         }
         <div className="card-content">
           <span styleName="card-title" className="card-title">{event.name}</span>
@@ -450,21 +439,7 @@ class EventDetailsComponent extends React.Component {
             </div>
           }
           <br />
-          <div>
-            <h6><strong>Participants</strong></h6>
-            {event.participants.map((participant, index) => (
-              <div className="participant" styleName="participant" key={index}>
-                <img
-                  className="circle"
-                  styleName="participant-img"
-                  src={participant.avatar}
-                  alt="participant avatar"
-                />
-                {participant.name}
-              </div>
-            ))}
-
-          </div>
+          <ParticipantsList event={event} />
         </div>
         <div styleName="action" className="card-action">
           <a onClick={this.shareEvent}>Share Event</a>
