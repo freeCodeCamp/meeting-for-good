@@ -85,7 +85,3 @@ class LoginModal extends Component {
 
 export default LoginModal;
 
-LoginModal.propTypes = {
-  location: React.PropTypes.object,
-}
-
