@@ -7,16 +7,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 class LoginModal extends Component {
   constructor(props) {
     super(props);
-    console.log('LoginModal', props);
-    if (this.props.open !== undefined) {
-      this.state = {
-        open: this.props.open,
-      };
-    } else {
-      this.state = {
-        open: false,
-      };
-    }
+    const { open } = this.props;
+    this.state = {
+      open: (this.props.open !== undefined) ? false : open,
+    };
   }
 
 

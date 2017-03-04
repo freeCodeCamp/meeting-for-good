@@ -9,6 +9,7 @@ import nprogress from 'nprogress';
 import { Notification } from 'react-notification';
 import 'react-day-picker/lib/style.css';
 
+import ParticipantsList from '../components/ParticipantsList';
 import { checkStatus } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 
@@ -230,18 +231,7 @@ class EventCard extends Component {
           </div>
           <br />
           <div className="participant-list">
-            <h6><strong>Participants</strong></h6>
-            {event.participants.map(participant => (
-              <div className="participant" styleName="participant" key={participant._id}>
-                <img
-                  alt="participant-avatar"
-                  className="circle"
-                  styleName="participant-img"
-                  src={participant.avatar}
-                />
-                {participant.name}
-              </div>
-            ))}
+            <ParticipantsList event={event} />
           </div>
         </div>
         <div className="card-action">
