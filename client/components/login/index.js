@@ -7,10 +7,24 @@ import RaisedButton from 'material-ui/RaisedButton';
 class LoginModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      open: true,
-    };
+    console.log('LoginModal', props);
+    if (this.props.open !== undefined) {
+      this.state = {
+        open: this.props.open,
+      };
+    } else {
+      this.state = {
+        open: false,
+      };
+    }
   }
+
+
+  componentWillReceiveProps() {
+    const { open } = this.props;
+    this.setState({ open });
+  }
+
   @autobind
   handleClose() {
     this.setState({ open: false });
@@ -23,7 +37,7 @@ class LoginModal extends Component {
       sessionStorage.setItem('redirectTo', window.location.pathname);
     }
   }
-
+  
   render() {
     const actions = [
       <FlatButton
@@ -83,5 +97,8 @@ class LoginModal extends Component {
   }
 }
 
-export default LoginModal;
+LoginModal.propTypes = {
+  open: React.PropTypes.bool,
+};
 
+export default LoginModal;

@@ -1,12 +1,11 @@
 import React from 'react';
 
-import Navbar from './Navbar';
-
+import ToolBar from '../components/toolBar';
 import '../styles/main.css';
 
 const App = props => (
   <div>
-    <Navbar location={props.location} />
+    <ToolBar location={props.location} />
     <main styleName="main">
       {props.children}
     </main>
