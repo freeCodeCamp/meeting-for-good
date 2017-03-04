@@ -230,9 +230,7 @@ class EventCard extends Component {
             </div>
           </div>
           <br />
-          <div className="participant-list">
-            <ParticipantsList event={event} />
-          </div>
+          <ParticipantsList event={event} />
         </div>
         <div className="card-action">
           <Link styleName="details-link" to={`/event/${event._id}`}>View Details</Link>
