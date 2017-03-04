@@ -30,8 +30,7 @@ class LoginModal extends Component {
         label="Cancel"
         primary={true}
         onTouchTap={this.handleClose}
-      >
-      </FlatButton>,
+      />,
     ];
 
     const styles = {
@@ -52,7 +51,6 @@ class LoginModal extends Component {
         marginRight: 24,
       },
     };
-
 
     return (
       <Dialog

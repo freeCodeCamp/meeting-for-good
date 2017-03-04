@@ -11,7 +11,6 @@ import Divider from 'material-ui/Divider';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 
-
 class NotificationBar extends Component {
   constructor(props) {
     super(props);
