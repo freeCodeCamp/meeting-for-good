@@ -169,7 +169,6 @@ export const GuestNotifications = (req, res) => {
   return Events.find({
     owner: _id.toString(),
     active: true,
-    'participants.ownerNotified': false,
   })
     .select('name participants.userId participants.name participants._id participants.ownerNotified')
     .sort({ _id: 'descending' })

@@ -28,6 +28,18 @@ class NotificationBar extends Component {
   }
 
   @autobind
+  async handleDismissAll() { 
+    const { notifications } = this.state;
+    notifications.forEach((notice) => {
+      notice.participants.forEach((participant) => {
+        if (participant.ownerNotified === false) {
+          this.handleDismiss(participant._id);
+        }
+      });
+    });
+    this.loadNotifications();
+  }
+
   async handleDismiss(participantId) {
     const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
       headers: {
@@ -41,8 +53,6 @@ class NotificationBar extends Component {
       checkStatus(response);
     } catch (err) {
       console.log('handleDismiss', err);
-    } finally {
-      this.loadNotifications();
     }
   }
 
@@ -51,6 +61,7 @@ class NotificationBar extends Component {
     try {
       checkStatus(response);
       const notifications = await parseJSON(response);
+      console.log(notifications);
       this.setState({ notifications });
       this.IconButtonColor();
     } catch (err) {
@@ -92,17 +103,20 @@ class NotificationBar extends Component {
                 key={participant._id}
                 value={participant._id}
                 style={{ backgroundColor: bkgColor, color: '#000000' }}
-                primaryText={`${participant.name} accept your invite for ${notice.name}`}
-              />
+              >
+                {`${participant.name} accept your invite for `}
+                <a href={`/event/${notice._id}`}> {notice.name} </a>
+              </MenuItem>
             );
             rows.push(row);
-            rows.push(<Divider />);
+            rows.push(<Divider style={{ width: '100%' }} />);
           }
         });
       });
     }
     return rows;
   }
+
 
   render() {
     const { notificationColor, quantOwnerNotNotified } = this.state;
@@ -116,7 +130,7 @@ class NotificationBar extends Component {
             secondary={true}
             badgeStyle={{ top: 12, right: 12, visibility: visible }}
           >
-            <IconButton tooltip="Notifications">
+            <IconButton tooltip="Notifications" onClick={this.handleDismissAll}>
               <NotificationsIcon color={notificationColor} />
             </IconButton>
           </Badge>}
