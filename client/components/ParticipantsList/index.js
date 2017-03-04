@@ -26,7 +26,7 @@ class ParticipantsList extends Component {
     const rows = [];
     event.participants.forEach((participant) => {
       const row = (
-        <Chip style={styles.chip}>
+        <Chip key={participant._id} style={styles.chip}>
           <Avatar src={participant.avatar} />
           {participant.name}
         </Chip>

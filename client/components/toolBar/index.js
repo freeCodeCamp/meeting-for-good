@@ -29,6 +29,7 @@ class ToolBar extends Component {
   handleAuthClick() {
     console.log('cliquei');
     this.setState({ open: true });
+    this.setState({ open: true });
   }
 
   async loadUser() {
@@ -87,10 +88,10 @@ class ToolBar extends Component {
         lastChild={true}
         style={styles.TollbarGroup}
       >
+        <LoginModal open={open} />
         <RaisedButton style={styles.loginButton} backgroundColor="#3F51B5" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
-        <LoginModal open={open} />
       </ToolbarGroup>
     );
   }
