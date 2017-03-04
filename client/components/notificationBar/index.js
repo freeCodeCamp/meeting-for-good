@@ -120,8 +120,8 @@ class NotificationBar extends Component {
               <NotificationsIcon color={notificationColor} />
             </IconButton>
           </Badge>}
-        anchorOrigin={{ horizontal: 'middle', vertical: 'bottom' }}
-        targetOrigin={{ horizontal: 'middle', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
         {this.renderMenuRows()}
       </IconMenu>
