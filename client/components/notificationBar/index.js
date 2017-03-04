@@ -6,7 +6,6 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Badge from 'material-ui/Badge';
-
 import Divider from 'material-ui/Divider';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -27,7 +26,7 @@ class NotificationBar extends Component {
   }
 
   @autobind
-  async handleDismissAll() { 
+  async handleDismissAll() {
     const { notifications } = this.state;
     notifications.forEach((notice) => {
       notice.participants.forEach((participant) => {
@@ -116,7 +115,6 @@ class NotificationBar extends Component {
     return rows;
   }
 
-
   render() {
     const { notificationColor, quantOwnerNotNotified } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
@@ -140,7 +138,10 @@ class NotificationBar extends Component {
       </IconMenu>
     );
   }
-
 }
+
+NotificationBar.propTypes = {
+  curUser: React.PropTypes.string,
+};
 
 export default NotificationBar;
