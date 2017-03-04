@@ -8,7 +8,6 @@ import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
 import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
-import jsonpatch from 'fast-json-patch';
 
 /* external components */
 import EventCard from '../components/EventCard';
@@ -57,69 +56,6 @@ class Dashboard extends Component {
       this.setState({ showNoScheduledMessage: true });
     }
     this.setState({ events });
-  }
-
-  @autobind
-  loadEventsNotifications() {
-    const { events, curUser } = this.state;
-    events.forEach((event) => {
-      event.participants.forEach((participant) => {
-        if (participant.ownerNotified === false &&
-          participant.userId !== event.owner &&
-          event.owner === curUser._id) {
-          this.addNotification('Info', `${participant.name} accept your invite for ${event.name}.`, participant._id, false);
-        }
-      });
-    });
-  }
-
-  addNotification(msgTitle, msg, participantId = 0, dismissTime = 3400) {
-    const { notifications, count } = this.state;
-    const newCount = count + 1;
-    let msgKey = count + 1;
-    // if was not a new event(no partipants yet)
-    if (participantId !== 0) {
-      msgKey = participantId;
-    }
-    return this.setState({
-      count: newCount,
-      notifications: notifications.add({
-        message: msg,
-        title: msgTitle,
-        key: msgKey,
-        action: 'Dismiss',
-        dismissAfter: dismissTime,
-        onClick: () => this.removeNotification(msgKey),
-      }),
-    });
-  }
-
-  async setOwnerNotified(participantId) {
-    const { events } = this.state;
-    events.forEach((event) => {
-      event.participants.forEach((participant, index) => {
-        if (participant._id === participantId) {
-          const observerEvent = jsonpatch.observe(event);
-          event.participants[index].ownerNotified = true;
-          const patches = jsonpatch.generate(observerEvent);
-          const response = fetch(`/api/events/${event._id}`, {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            credentials: 'same-origin',
-            method: 'PATCH',
-            body: JSON.stringify(patches),
-          });
-          try {
-            checkStatus(response);
-          } catch (err) {
-            console.log(err);
-            this.addNotification('Error!!', 'Failed to aknolege messages. Please try again later.');
-          }
-        }
-      });
-    });
   }
 
   removeNotification(key) {

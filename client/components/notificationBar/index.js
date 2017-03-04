@@ -82,7 +82,6 @@ class NotificationBar extends Component {
     if (notifications) {
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
-          console.log(participant);
           if (participant.userId !== curUser) {
             let bkgColor = '#ffffff';
             if (!participant.ownerNotified) {
