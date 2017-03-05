@@ -4,17 +4,16 @@ import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
-import moment from 'moment';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import DeleteModal from '../components/DeleteModal';
-import 'react-day-picker/lib/style.css';
 import Notification from '../components/vendor/react-notification';
 import AvailabilityGrid from './AvailabilityGrid';
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { getCurrentUser } from '../util/auth';
 import styles from '../styles/event-card.css';
 import ParticipantsList from '../components/ParticipantsList';
+import BestTimesDisplay from '../components/BestTimeDisplay';
 
 
 class EventDetailsComponent extends React.Component {
@@ -67,7 +66,6 @@ class EventDetailsComponent extends React.Component {
 
       this.setState({ user, showHeatmap, myAvailability });
     }
-    this.generateBestDatesAndTimes(event);
   }
 
   componentDidMount() {
@@ -264,66 +262,6 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
-  generateBestDatesAndTimes(event) {
-    const availability = [];
-    const overlaps = [];
-    const displayTimes = {};
-    const formatStr = this.state.days ? 'dddd' : 'DD MMM';
-
-    event.participants.forEach((user) => {
-      if (user.availability !== undefined) availability.push(user.availability);
-    });
-
-    if (availability.length <= 1) return;
-
-    for (let i = 0; i < availability[0].length; i++) {
-      const current = availability[0][i];
-      let count = 0;
-      for (let j = 0; j < availability.length; j++) {
-        for (let k = 0; k < availability[j].length; k++) {
-          if (availability[j][k][0] === current[0]) {
-            count++;
-          }
-        }
-      }
-      if (count === availability.length) overlaps.push(current);
-    }
-
-
-    if (overlaps.length === 0) {
-      this.setState({ displayTimes });
-      return;
-    }
-
-    let index = 0;
-    for (let i = 0; i < overlaps.length; i++) {
-      if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
-        if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
-          );
-        } else {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`],
-          };
-        }
-        index = i + 1;
-      } else if (overlaps[i + 1] === undefined) {
-        if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
-          );
-        } else {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`],
-          };
-        }
-      }
-    }
-
-    this.setState({ displayTimes });
-  }
-
   @autobind
   shareEvent() {
     this.setState({
@@ -346,14 +284,6 @@ class EventDetailsComponent extends React.Component {
       isOwner = event.owner === user._id;
     }
 
-    const bestTimes = this.state.displayTimes;
-    let isBestTime;
-
-    if (bestTimes !== undefined) {
-      if (Object.keys(bestTimes).length > 0) isBestTime = true;
-      else isBestTime = false;
-    } else isBestTime = false;
-
     const notifActions = [{
       text: 'Dismiss',
       handleClick: () => { this.setState({ notificationIsActive: false }); },
@@ -371,37 +301,13 @@ class EventDetailsComponent extends React.Component {
          {
           isOwner ?
             <div>
-              <DeleteModal event={this.state.event} cb={this.handleDelete} />
+              <DeleteModal event={event} cb={this.handleDelete} />
             </div> : null
         }
         <div className="card-content">
           <span styleName="card-title" className="card-title">{event.name}</span>
           <h6 id="best"><strong>All participants so far are available at:</strong></h6>
-          <div className="row">
-            <div className="col s12">
-              {isBestTime ?
-                Object.keys(bestTimes).map(date => (
-                  <div key={date}>
-                    <div styleName="bestTimeDate">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >date_range</i>
-                      {date}
-                    </div>
-                    <div styleName="bestTime">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >alarm</i>
-                      {bestTimes[date].hours.join(', ')}
-                    </div>
-                    <hr />
-                  </div>
-                )) : null
-              }
-            </div>
-          </div>
+          <BestTimesDisplay event={event} curUser={user} disablePicker={true} />
           {showHeatmap ?
             <div id="heatmap">
               <AvailabilityGrid
@@ -453,27 +359,6 @@ class EventDetailsComponent extends React.Component {
           dismissAfter={10000}
           activeClassName="notification-bar-is-active"
         />
-        <dialog
-          onClick={ev => ev.stopPropagation()}
-          className="mdl-dialog"
-          styleName="mdl-dialog"
-          id="deleteEventModal"
-        >
-          <h6 styleName="modal-title" className="mdl-dialog__title">Are you sure you want to delete the event?</h6>
-          <div className="mdl-dialog__actions">
-            <button
-              type="button"
-              className="mdl-button close"
-              onClick={() => document.querySelector('#deleteEventModal').close()}
-            >Cancel</button>
-            <button
-              type="button"
-              className="mdl-button"
-              style={{ color: '#f44336' }}
-              onClick={this.deleteEvent}
-            >Yes</button>
-          </div>
-        </dialog>
       </div>
     );
   }

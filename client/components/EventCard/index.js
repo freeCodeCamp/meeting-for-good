@@ -99,7 +99,7 @@ class EventCard extends Component {
           {event.name}
         </CardTitle>
         <CardText>
-          <BestTimesDisplay event={event} curUser={user} />
+          <BestTimesDisplay event={event} curUser={user} disablePicker={false} />
           <ParticipantsList event={event} />
         </CardText>
         <Divider style={styles.card.divider} />
