@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import autobind from 'autobind-decorator';
 import Avatar from 'material-ui/Avatar';
 import Chip from 'material-ui/Chip';
 
@@ -17,6 +16,8 @@ class ParticipantsList extends Component {
       chip: {
         margin: 4,
         width: '100%',
+        border: '0.5px solid #E0E0E0',
+        backgroundColor: '#ECEFF1',
       },
       wrapper: {
         display: 'flex',

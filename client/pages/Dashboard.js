@@ -10,7 +10,7 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 
 /* external components */
-import EventCard from '../components/EventCard';
+import EventCard from '../components/EventCard/';
 
 /* styles */
 import styles from '../styles/dashboard.css';

@@ -64,6 +64,7 @@ class ToolBar extends Component {
       },
       TollbarGroup: {
         paddingRight: '5%',
+
       },
     };
     const { user, curUser, userAvatar, open } = this.state;
@@ -104,16 +105,27 @@ class ToolBar extends Component {
   }
 
   render() {
+    const styles = {
+      toolBar: {
+        height: '70px',
+        backgroundColor: '#006400',
+      },
+      button: {
+        fontSize: '25px',
+        color: '#ffffff',
+      },
+    };
+
     return (
       <Toolbar
-        style={{ backgroundColor: '#006400' }}
+        style={styles.toolBar}
       >
         <ToolbarGroup
           firstChild={true}
           style={{ paddingLeft: '2%' }}
         >
           <FlatButton
-            style={{ fontSize: '25px', color: '#ffffff' }}
+            style={styles.button}
             href={this.state.conditionalHomeLink}
           >
             Lets Meet

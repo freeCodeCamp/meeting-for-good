@@ -121,23 +121,19 @@ class BestTimeDisplay extends Component {
         paddingLeft: 0,
         paddingTop: 0,
         paddingBottom: 0,
-        color: '#000000',
       },
       list: {
         paddingLeft: 0,
         paddingTop: 0,
         paddingBottom: 0,
-        color: '#000000',
       },
       subHeader: {
         paddingLeft: 0,
         paddingTop: 0,
         paddingBottom: 0,
-        color: '#000000',
         height: '22px',
       },
       icon: {
-        color: '#000000',
         marginRight: 2,
         marginTop: 2,
       },

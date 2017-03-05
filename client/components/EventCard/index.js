@@ -7,12 +7,12 @@ import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
-import BestTimesDisplay from '../components/BestTimeDisplay';
-import ParticipantsList from '../components/ParticipantsList';
-import DeleteModal from '../components/DeleteModal';
-import { getCurrentUser } from '../util/auth';
+import BestTimesDisplay from '../BestTimeDisplay';
+import ParticipantsList from '../ParticipantsList';
+import DeleteModal from '../DeleteModal';
+import { getCurrentUser } from '../../util/auth';
+import styles from './event-card.css';
 
-import styles from '../styles/event-card.css';
 
 class EventCard extends Component {
   constructor(props) {
@@ -71,12 +71,6 @@ class EventCard extends Component {
 
     const styles = {
       card: {
-        margin: '1% 1%',
-        width: '300px',
-        maxWidth: '300px',
-        hover: {
-          boxShadow: '0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3)',
-        },
         cardTitle: {
           paddingBottom: 0,
           fontSize: '24px',
@@ -97,7 +91,7 @@ class EventCard extends Component {
     };
 
     return (
-      <Card style={styles.card}>
+      <Card style={styles.card} styleName="card">
         {
           isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null
         }
