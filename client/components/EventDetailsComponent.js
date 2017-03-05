@@ -6,6 +6,11 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
+import RaisedButton from 'material-ui/RaisedButton';
+
 import DeleteModal from '../components/DeleteModal';
 import Notification from '../components/vendor/react-notification';
 import AvailabilityGrid from './AvailabilityGrid';
@@ -14,7 +19,6 @@ import { getCurrentUser } from '../util/auth';
 import styles from '../styles/event-card.css';
 import ParticipantsList from '../components/ParticipantsList';
 import BestTimesDisplay from '../components/BestTimeDisplay';
-
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -279,6 +283,27 @@ class EventDetailsComponent extends React.Component {
     const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, showEmail } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
+    const styles = {
+      card: {
+        width: '510px',
+        cardTitle: {
+          paddingBottom: 0,
+          fontSize: '24px',
+          paddingTop: 25,
+          fontWeight: 300,
+        },
+        cardActions: {
+          fontSize: '20px',
+          paddingLeft: '5%',
+          button: {
+            color: '#F66036',
+          },
+        },
+        divider: {
+          width: '100%',
+        },
+      },
+    };
 
     if (user !== undefined) {
       isOwner = event.owner === user._id;
@@ -297,18 +322,13 @@ class EventDetailsComponent extends React.Component {
     }
 
     return (
-      <div className="card meeting" styleName="event-details">
-         {
-          isOwner ?
-            <div>
-              <DeleteModal event={event} cb={this.handleDelete} />
-            </div> : null
-        }
-        <div className="card-content">
-          <span styleName="card-title" className="card-title">{event.name}</span>
+      <Card style={styles.card}>
+        {(isOwner) ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
+        <CardTitle style={styles.card.cardTitle}>{event.name}</CardTitle>
+        <CardText>
           <h6 id="best"><strong>All participants so far are available at:</strong></h6>
           <BestTimesDisplay event={event} curUser={user} disablePicker={true} />
-          {showHeatmap ?
+          {(showHeatmap) ?
             <div id="heatmap">
               <AvailabilityGrid
                 dates={this.state.dates}
@@ -329,27 +349,33 @@ class EventDetailsComponent extends React.Component {
                   event={event}
                 />
               </div>
-              {Object.keys(user).length > 0 ?
-                eventParticipantsIds.indexOf(user._id) > -1 ?
-                  <a
+              {(Object.keys(user).length > 0) ?
+                (eventParticipantsIds.indexOf(user._id) > -1) ?
+                  <RaisedButton
                     id="enterAvailButton"
-                    className="waves-effect waves-light btn"
+                    backgroundColor="#28AEA1"
+                    labelColor="#ffffff"
                     onClick={this.showAvailability}
-                  >Enter my availability</a> :
-                  <a
-                    className="waves-effect waves-light btn"
+                    label={'Enter my availability'}
+                  />
+                  :
+                  <RaisedButton
                     onClick={this.joinEvent}
-                  >Join Event</a> :
-                  <p>Login to enter your availability!</p>
+                    label={'Join Event'}
+                    backgroundColor="#28AEA1"
+                    labelColor="#ffffff"
+                  />
+                : null
               }
             </div>
           }
           <br />
           <ParticipantsList event={event} />
-        </div>
-        <div styleName="action" className="card-action">
-          <a onClick={this.shareEvent}>Share Event</a>
-        </div>
+        </CardText>
+        <Divider style={styles.card.divider} />
+        <CardActions style={styles.card.cardActions}>
+          <FlatButton style={styles.card.cardActions.button} onClick={this.shareEvent}>Share Event</FlatButton>
+        </CardActions>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
@@ -359,7 +385,7 @@ class EventDetailsComponent extends React.Component {
           dismissAfter={10000}
           activeClassName="notification-bar-is-active"
         />
-      </div>
+      </Card>
     );
   }
 }
