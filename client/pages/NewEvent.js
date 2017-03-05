@@ -8,14 +8,20 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+
+import 'materialize-css/extras/noUiSlider/nouislider.css';
+import 'react-day-picker/lib/style.css';
 
 import { checkStatus, parseJSON } from '../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../util/time-format';
 import { isAuthenticated, getCurrentUser } from '../util/auth';
 import { dateRangeReducer } from '../util/dates.utils';
 
-import 'materialize-css/extras/noUiSlider/nouislider.css';
-import 'react-day-picker/lib/style.css';
+
 import styles from '../styles/new-event.css';
 
 class NewEvent extends React.Component {
@@ -212,7 +218,6 @@ class NewEvent extends React.Component {
 
     // validate the form
     if (ev.target.className.indexOf('disabled') > -1) {
-
       if (!dateOrDay) { // dates
         if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
           this.setState({
@@ -230,7 +235,6 @@ class NewEvent extends React.Component {
             notificationMessage: 'Please enter an event name.',
           });
         }
-
         return;
       }
 
@@ -332,92 +336,72 @@ class NewEvent extends React.Component {
   handleEventNameChange(ev) {
     this.setState({ eventName: ev.target.value }, () => this.toggleSubmitDisabled());
   }
-  @autobind
-  handleWeekdaySelect(ev) {
-    if (ev.target.className.indexOf('disabled') > -1) {
-      ev.target.className = ev.target.className.replace('disabled', '');
-    } else {
-      ev.target.className += 'disabled';
-    }
-
-    const { weekDays } = this.state;
-    const weekDay = ev.target.text.toLowerCase();
-    weekDays[weekDay] = !weekDays[weekDay];
-    this.setState({ weekDays }, () => this.toggleSubmitDisabled());
-  }
-
-  @autobind
-  handleDateOrDay() {
-    this.setState({ dateOrDay: !this.state.dateOrDay }, () => this.toggleSubmitDisabled());
-  }
 
   render() {
+    const styles = {
+      card: {
+        width: '700px',
+        cardTitle: {
+          textAlign: 'center',
+          paddingBottom: 0,
+          fontSize: '24px',
+          paddingTop: 20,
+          fontWeight: 300,
+        },
+        textField: {
+          width: '100%',
+        },
+        createButton: {
+        
+        },
+      },
+    };
+
     const modifiers = {
       selected: day =>
         DateUtils.isDayInRange(day, this.state) ||
         this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
     };
 
-    const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
     const { from, to } = this.state.ranges[0];
 
     return (
-      <div className="card" styleName="new-event-card">
-        <div className="card-content">
-          <h1 className="card-title">Create a New Event</h1>
+      <Card style={styles.card}>
+        <CardTitle style={styles.card.cardTitle}>Create a New Event</CardTitle>
+        <CardText>
           <form>
-            <div className="row">
-              <div className="input-field col s12">
-                <input
-                  id="event_name"
-                  type="text"
-                  value={this.state.eventName}
-                  onChange={this.handleEventNameChange}
-                  className="validate"
-                  placeholder="Enter an event name..."
-                  autoFocus
-                />
-                <label htmlFor="event_name">Event Name</label>
-              </div>
+            <TextField
+              fullWidth={true}
+              style={styles.card.textField}
+              id="event_name"
+              value={this.state.eventName}
+              onChange={this.handleEventNameChange}
+              floatingLabelText="Event Name"
+              hintText="Enter an event name..."
+              className="validate"
+              autoFocus
+            />
+            <div>
+              <h6 styleName="heading-dates">What dates might work for you?</h6>
+              <p className="center" styleName="reset-button">
+                {from && to &&
+                  <FlatButton
+                    className="btn-flat"
+                    href="#reset"
+                    label="reset"
+                    onClick={this.handleResetClick}
+                  />
+                }
+              </p>
+              <DayPicker
+                numberOfMonths={2}
+                fromMonth={new Date()}
+                disabledDays={DateUtils.isPastDay}
+                modifiers={modifiers}
+                onDayClick={this.handleDayClick}
+                styleName="daypicker"
+              />
             </div>
-            {!this.state.dateOrDay ?
-              <div>
-                <h6 styleName="heading-dates">What dates might work for you?</h6>
-                <p className="center" styleName="reset-button">
-                  {from && to &&
-                      <a
-                        className="btn-flat"
-                        href="#reset"
-                        onClick={this.handleResetClick}
-                      >Reset</a>
-                  }
-                </p>
-                <DayPicker
-                  numberOfMonths={2}
-                  fromMonth={new Date()}
-                  disabledDays={DateUtils.isPastDay}
-                  modifiers={modifiers}
-                  onDayClick={this.handleDayClick}
-                  styleName="daypicker"
-                />
-              </div> :
-              <div>
-                <h6 styleName="heading">What days might work for you?</h6>
-                <div styleName="weekdayList">
-                  {
-                    weekDays.map((day, index) => (
-                      <a
-                        key={index}
-                        className="btn-flat disabled"
-                        onClick={this.handleWeekdaySelect}
-                        style={{ cursor: 'pointer' }}
-                      >{day}</a>
-                    ))
-                  }
-                </div>
-              </div>
-            }
             <h6 styleName="heading">What times might work?</h6>
             <div id="timeSlider" />
             <br />
@@ -426,12 +410,17 @@ class NewEvent extends React.Component {
             </p>
             <br />
             <p className="center">
-              <a className={this.state.submitClass} onClick={this.createEvent}>
-                Create Event
-              </a>
+              <RaisedButton
+                labelColor="#9F9F9F"
+                style={styles.card.createButton}
+                label="Create Event"
+                className={this.state.submitClass}
+                onClick={this.createEvent}
+                backgroundColor="transparent"
+              />
             </p>
           </form>
-        </div>
+        </CardText>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
@@ -441,7 +430,7 @@ class NewEvent extends React.Component {
           dismissAfter={10000}
           activeClassName="notification-bar-is-active"
         />
-      </div>
+      </Card>
     );
   }
 }
