@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Link, browserHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
@@ -67,7 +67,7 @@ class ToolBar extends Component {
       },
     };
     const { user, curUser, userAvatar, open } = this.state;
-  
+
     if (user) {
       return (
         <ToolbarGroup

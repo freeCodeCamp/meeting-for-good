@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
-import _ from 'lodash';
-import moment from 'moment';
 import { Link, browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
-import 'react-day-picker/lib/style.css';
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
 
+import BestTimesDisplay from '../components/BestTimeDisplay';
 import ParticipantsList from '../components/ParticipantsList';
 import DeleteModal from '../components/DeleteModal';
 import { getCurrentUser } from '../util/auth';
@@ -19,29 +19,8 @@ class EventCard extends Component {
     super(props);
 
     const { event } = props;
-    let ranges;
-    let dates;
-
-    if (event.weekDays) {
-      dates = event.dates;
-    } else {
-      delete event.weekDays;
-
-      ranges = event.dates.map(({ fromDate, toDate }) => ({
-        from: new Date(fromDate),
-        to: new Date(toDate),
-      }));
-
-      dates = event.dates.map(({ fromDate, toDate }) => ({
-        fromDate: new Date(fromDate),
-        toDate: new Date(toDate),
-      }));
-    }
-
     this.state = {
       participants: props.event.participants,
-      ranges,
-      dates,
       event,
       user: {},
       notificationMessage: '',
@@ -51,55 +30,8 @@ class EventCard extends Component {
   }
 
   async componentWillMount() {
-    const availability = [];
-    const overlaps = [];
-    const displayTimes = {};
     const user = await getCurrentUser();
-
-    this.state.participants.forEach((user) => {
-      if (user.availability !== undefined) availability.push(user.availability);
-    });
-
-    if (availability.length > 1) {
-      for (let i = 0; i < availability[0].length; i += 1) {
-        const current = availability[0][i];
-        let count = 0;
-        for (let j = 0; j < availability.length; j++) {
-          for (let k = 0; k < availability[j].length; k += 1) {
-            if (availability[j][k][0] === current[0]) {
-              count += 1;
-            }
-          }
-        }
-        if (count === availability.length) overlaps.push(current);
-      }
-
-      if (overlaps.length !== 0) {
-        let index = 0;
-        for (let i = 0; i < overlaps.length; i++) {
-          if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
-            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
-            } else {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
-            }
-            index = i + 1;
-          } else if (overlaps[i + 1] === undefined) {
-            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
-            } else {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
-            }
-          }
-        }
-      }
-    }
-
-    this.setState({ displayTimes, user });
+    this.setState({ user });
   }
 
   componentDidMount() {
@@ -110,7 +42,6 @@ class EventCard extends Component {
       });
     }, 100);
   }
-
 
   @autobind
   redirectToEvent() {
@@ -133,85 +64,54 @@ class EventCard extends Component {
   render() {
     const { event, user } = this.state;
     let isOwner;
-    let modifiers;
 
     if (user !== undefined) {
       isOwner = event.owner === user._id;
     }
 
-    // Get maximum and minimum month from the selected dates to limit the daypicker to those months
-    let maxDate;
-    let minDate;
-
-    if (this.state.ranges) {
-      modifiers = {
-        selected: day =>
-          DateUtils.isDayInRange(day, this.state) ||
-          this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
-      };
-      const dateInRanges = _.flatten(this.state.ranges.map(range => [range.from, range.to]));
-      maxDate = new Date(Math.max.apply(null, dateInRanges));
-      minDate = new Date(Math.min.apply(null, dateInRanges));
-    }
-
-    const bestTimes = this.state.displayTimes;
-    let isBestTime;
-
-    if (bestTimes !== undefined) {
-      if (Object.keys(bestTimes).length > 0) isBestTime = true;
-      else isBestTime = false;
-    } else isBestTime = false;
+    const styles = {
+      card: {
+        margin: '1% 1%',
+        width: '300px',
+        maxWidth: '300px',
+        hover: {
+          boxShadow: '0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3)',
+        },
+        cardTitle: {
+          paddingBottom: 0,
+          fontSize: '24px',
+          paddingTop: 20,
+          fontWeight: 300,
+        },
+        cardActions: {
+          fontSize: '20px',
+          paddingLeft: '5%',
+          button: {
+            color: '#F66036',
+          },
+        },
+        divider: {
+          width: '100%',
+        },
+      },
+    };
 
     return (
-      <div className="card" styleName="event">
+      <Card style={styles.card}>
         {
-          isOwner ?
-            <div>
-              <DeleteModal event={this.state.event} cb={this.handleDelete} />
-            </div> : null
+          isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null
         }
-        <div className="card-content">
-          <span styleName="card-title" className="card-title">{event.name}</span>
-          <h6 id="best"><strong>All participants so far are available at:</strong></h6>
-          <div className="row">
-            <div className="col s12">
-              {isBestTime ?
-                Object.keys(bestTimes).map(date => (
-                  <div key={date}>
-                    <div styleName="bestTimeDate">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >date_range</i>
-                      {date}
-                    </div>
-                    <div styleName="bestTime">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >alarm</i>
-                      {bestTimes[date].hours.join(', ')}
-                    </div>
-                    <hr />
-                  </div>
-                )) :
-                <DayPicker
-                  className="alt"
-                  styleName="day-picker"
-                  initialMonth={minDate}
-                  fromMonth={minDate}
-                  toMonth={maxDate}
-                  modifiers={modifiers}
-                />
-              }
-            </div>
-          </div>
-          <br />
+        <CardTitle style={styles.card.cardTitle}>
+          {event.name}
+        </CardTitle>
+        <CardText>
+          <BestTimesDisplay event={event} curUser={user} />
           <ParticipantsList event={event} />
-        </div>
-        <div className="card-action">
-          <Link styleName="details-link" to={`/event/${event._id}`}>View Details</Link>
-        </div>
+        </CardText>
+        <Divider style={styles.card.divider} />
+        <CardActions style={styles.card.cardActions}>
+          <FlatButton style={styles.card.cardActions.button} onClick={this.redirectToEvent}>View Details</FlatButton>
+        </CardActions>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
@@ -221,7 +121,7 @@ class EventCard extends Component {
           onClick={() => this.setState({ notificationIsActive: false })}
           activeClassName="notification-bar-is-active"
         />
-      </div>
+      </Card>
     );
   }
 }

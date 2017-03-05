@@ -16,10 +16,15 @@ class ParticipantsList extends Component {
     const styles = {
       chip: {
         margin: 4,
+        width: '100%',
       },
       wrapper: {
         display: 'flex',
         flexWrap: 'wrap',
+      },
+      avatar: {
+        width: '40px',
+        height: '40px',
       },
     };
     const { event } = this.state;
@@ -27,7 +32,7 @@ class ParticipantsList extends Component {
     event.participants.forEach((participant) => {
       const row = (
         <Chip key={participant._id} style={styles.chip}>
-          <Avatar src={participant.avatar} />
+          <Avatar src={participant.avatar} style={styles.avatar} />
           {participant.name}
         </Chip>
       );

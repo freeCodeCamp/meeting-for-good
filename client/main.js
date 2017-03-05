@@ -14,8 +14,10 @@ injectTapEventPlugin();
 const mountApp = document.getElementById('app');
 
 const muiTheme = getMuiTheme({
+  fontFamily: 'Roboto, sans-serif',
+  fontWeight: 300,
   palette: {
-    textColor: green900,
+    textColor: '#000000',
   },
   appBar: {
     height: 50,
