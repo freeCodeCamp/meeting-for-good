@@ -11,7 +11,6 @@ import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-
 /* external components */
 import EventCard from '../components/EventCard/';
 
@@ -82,12 +81,6 @@ class Dashboard extends Component {
   }
 
   render() {
-    const styles = {
-      float: 'right',
-      bottom: '24px',
-      right: '24px',
-    };
-
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}

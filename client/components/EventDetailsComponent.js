@@ -286,6 +286,7 @@ class EventDetailsComponent extends React.Component {
     const styles = {
       card: {
         width: '510px',
+        marginTop: '2%',
         cardTitle: {
           paddingBottom: 0,
           fontSize: '24px',
@@ -296,7 +297,9 @@ class EventDetailsComponent extends React.Component {
           fontSize: '20px',
           paddingLeft: '5%',
           button: {
+            marginLeft: '70%',
             color: '#F66036',
+
           },
         },
         divider: {
@@ -323,7 +326,7 @@ class EventDetailsComponent extends React.Component {
 
     return (
       <Card style={styles.card}>
-        {(isOwner) ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
+        {isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
         <CardTitle style={styles.card.cardTitle}>{event.name}</CardTitle>
         <CardText>
           <h6 id="best"><strong>All participants so far are available at:</strong></h6>
