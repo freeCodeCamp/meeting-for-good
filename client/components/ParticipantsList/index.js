@@ -5,10 +5,20 @@ import Chip from 'material-ui/Chip';
 class ParticipantsList extends Component {
   constructor(props) {
     super(props);
-    const { event } = this.props;
+    const { event, curUser } = this.props;
     this.state = {
       event: (event !== undefined) ? event : null,
+      curUser,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { curUser } = nextProps;
+    this.setState({ curUser });
+  }
+
+  handleDelete() { 
+    console.log('delete');
   }
 
   participantsLst() {
@@ -28,15 +38,25 @@ class ParticipantsList extends Component {
         height: '40px',
       },
     };
-    const { event } = this.state;
+    const { event, curUser } = this.state;
+    // console.log(event, curUser);
     const rows = [];
     event.participants.forEach((participant) => {
-      const row = (
-        <Chip key={participant._id} style={styles.chip}>
+      let row;
+      if (curUser._id === participant.userId) {
+        row = (
+          <Chip key={participant._id} style={styles.chip} onRequestDelete={this.handleDelete}>
+            <Avatar src={participant.avatar} style={styles.avatar} />
+            {participant.name}
+          </Chip>
+        );
+      } else {
+        row = (<Chip key={participant._id} style={styles.chip} >
           <Avatar src={participant.avatar} style={styles.avatar} />
           {participant.name}
         </Chip>
-      );
+        );
+      }
       rows.push(row);
     });
     return rows;
@@ -54,6 +74,7 @@ class ParticipantsList extends Component {
 
 ParticipantsList.propTypes = {
   event: React.PropTypes.object,
+  curUser: React.PropTypes.object,
 };
 
 export default ParticipantsList;

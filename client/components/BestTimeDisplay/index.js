@@ -14,7 +14,6 @@ class BestTimeDisplay extends Component {
     super(props);
     this.state = {
       event: this.props.event,
-      curUser: this.props.curUser,
       disablePicker: false,
     };
   }
@@ -23,10 +22,10 @@ class BestTimeDisplay extends Component {
     this.setState({ disablePicker: false });
   }
 
-  componentWillReceiveProps() {
-    const { event, curUser, disablePicker } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { event, disablePicker } = nextProps;
     const displayTimes = this.buildBestTimes();
-    this.setState({ event, curUser, displayTimes, disablePicker });
+    this.setState({ event, displayTimes, disablePicker });
   }
 
   buildBestTimes() {
@@ -214,7 +213,6 @@ class BestTimeDisplay extends Component {
 
 BestTimeDisplay.propTypes = {
   event: React.PropTypes.object,
-  curUser: React.PropTypes.object,
   disablePicker: React.PropTypes.bool,
 };
 

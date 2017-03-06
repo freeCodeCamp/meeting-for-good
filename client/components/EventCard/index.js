@@ -22,7 +22,7 @@ class EventCard extends Component {
     this.state = {
       participants: props.event.participants,
       event,
-      user: {},
+      curUser: {},
       notificationMessage: '',
       notificationIsActive: false,
       open: false,
@@ -30,17 +30,8 @@ class EventCard extends Component {
   }
 
   async componentWillMount() {
-    const user = await getCurrentUser();
-    this.setState({ user });
-  }
-
-  componentDidMount() {
-    setTimeout(() => {
-      $('.alt').each((i, el) => {
-        $(el).parents('.card').find('#best')
-          .remove();
-      });
-    }, 100);
+    const curUser = await getCurrentUser();
+    this.setState({ curUser });
   }
 
   @autobind
@@ -62,11 +53,11 @@ class EventCard extends Component {
   }
 
   render() {
-    const { event, user } = this.state;
+    const { event, curUser } = this.state;
     let isOwner;
 
-    if (user !== undefined) {
-      isOwner = event.owner === user._id;
+    if (curUser !== undefined) {
+      isOwner = event.owner === curUser._id;
     }
 
     const styles = {
@@ -99,8 +90,8 @@ class EventCard extends Component {
           {event.name}
         </CardTitle>
         <CardText>
-          <BestTimesDisplay event={event} curUser={user} disablePicker={false} />
-          <ParticipantsList event={event} />
+          <BestTimesDisplay event={event} disablePicker={false} />
+          <ParticipantsList event={event} curUser={curUser} />
         </CardText>
         <Divider style={styles.card.divider} />
         <CardActions style={styles.card.cardActions}>
