@@ -9,7 +9,7 @@
 
 .new-event-icon {
   position: fixed !important;
-  z-index: 99;
+  z-index: 1000;
   right: 0;
   margin-bottom: 20px;
   margin-right: 24px;

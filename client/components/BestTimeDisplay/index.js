@@ -25,9 +25,7 @@ class BestTimeDisplay extends Component {
 
   componentWillReceiveProps() {
     const { event, curUser, disablePicker } = this.props;
-    console.log('componentWillReceiveProps', disablePicker);
     const displayTimes = this.buildBestTimes();
-    //const disPicker = (disablePicker === undefined) ? 
     this.setState({ event, curUser, displayTimes, disablePicker });
   }
 
@@ -204,7 +202,6 @@ class BestTimeDisplay extends Component {
 
   render() {
     const { displayTimes, disablePicker } = this.state;
-    console.log(disablePicker);
     return (
       <div>
         {this.isBestTime(displayTimes) ? this.renderBestTime() :

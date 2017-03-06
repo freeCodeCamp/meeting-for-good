@@ -76,6 +76,12 @@ class Dashboard extends Component {
     });
   }
 
+  @autobind
+  handleNewEvent() {
+    browserHistory.push('/event/new');
+  }
+
+
   render() {
     const styles = {
       float: 'right',
@@ -87,11 +93,11 @@ class Dashboard extends Component {
             <i className="large material-icons">add</i>
           </Link>
         </div>*/
-    
+
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
-        <FloatingActionButton styleName="new-event-icon" secondary={true} >
+        <FloatingActionButton styleName="new-event-icon" secondary={true} onClick={this.handleNewEvent} >
           <ContentAdd />
         </FloatingActionButton>
         {/* Card Template */}
