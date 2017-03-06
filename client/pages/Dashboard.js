@@ -87,7 +87,7 @@ class Dashboard extends Component {
       bottom: '24px',
       right: '24px',
     };
-    
+
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
