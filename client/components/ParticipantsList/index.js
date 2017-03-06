@@ -12,6 +12,7 @@ import cssModules from 'react-css-modules';
 
 import { checkStatus } from '../../util/fetch.util';
 import styles from './participants-list.css';
+import GuestInviteDrawer from '../GuestInviteDrawer/';
 
 class ParticipantsList extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class ParticipantsList extends Component {
       notificationMessage: '',
       notificationIsActive: false,
       notificationTitle: '',
+      openDrawer: false,
     };
   }
 
@@ -82,6 +84,12 @@ class ParticipantsList extends Component {
     } finally {
       this.handleClose();
     }
+  }
+
+  @autobind
+  handleToggle() {
+    const { openDrawer } = this.state;
+    this.setState({ openDrawer: !openDrawer });
   }
 
   renderGuestList() {
@@ -158,6 +166,7 @@ class ParticipantsList extends Component {
   }
 
   render() {
+    const { event, curUser, openDrawer } = this.state;
     const inLineStyles = {
       buttonAddGuest: {
         backgroundColor: '#4A90E2',
@@ -186,6 +195,7 @@ class ParticipantsList extends Component {
             <IconButton
               style={inLineStyles.buttonAddGuest}
               iconStyle={inLineStyles.buttonAddGuest.iconStyle}
+              onClick={this.handleToggle}
             >
               <ContentAdd />
             </IconButton >
@@ -193,6 +203,7 @@ class ParticipantsList extends Component {
         </div>
         {this.renderGuestList()}
         {this.renderModal()}
+        <GuestInviteDrawer open={openDrawer} event={event} curUser={curUser} />
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}

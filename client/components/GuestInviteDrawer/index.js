@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import autobind from 'autobind-decorator';
 
 import styles from './guest-invite.css';
 
@@ -12,21 +13,22 @@ class GuestInviteDrawer extends Component {
       open: false,
       curUser: {},
       event: this.props.event,
-
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const { event, open } = nextProps;
-    this.setState({ event, open });
+    const { event, open, curUser } = nextProps;
+    this.setState({ event, open, curUser });
   }
 
+  @autobind
   handleClose() {
     this.setState({ open: false });
   }
 
 
   render() {
+    const { open } = this.state;
     return (
       <Drawer
         docked={false}
