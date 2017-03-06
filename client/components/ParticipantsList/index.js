@@ -6,8 +6,12 @@ import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
 import { Notification } from 'react-notification';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import IconButton from 'material-ui/IconButton';
+import cssModules from 'react-css-modules';
 
 import { checkStatus } from '../../util/fetch.util';
+import styles from './participants-list.css';
 
 class ParticipantsList extends Component {
   constructor(props) {
@@ -156,9 +160,39 @@ class ParticipantsList extends Component {
   }
 
   render() {
+    const inLineStyles = {
+      buttonAddGuest: {
+        backgroundColor: '#4A90E2',
+        borderRadius: '50%',
+        width: 40,
+        height: 40,
+        padding: 7,
+        marginLeft: '80%',
+        iconStyle: {
+          borderRadius: '50%',
+          width: 24,
+          height: 24,
+        },
+      },
+    };
+
     return (
       <div>
-        <h6><strong>Participants</strong></h6>
+        <div styleName={'Row'}>
+          <div styleName={'Column'}>
+            <p styleName={'particHeader'}>
+              Participants
+            </p>
+          </div>
+          <div styleName={'Column'}>
+            <IconButton
+              style={inLineStyles.buttonAddGuest}
+              iconStyle={inLineStyles.buttonAddGuest.iconStyle}
+            >
+              <ContentAdd />
+            </IconButton >
+          </div>
+        </div>
         {this.renderGuestList()}
         {this.renderModal()}
         <Notification
@@ -181,4 +215,4 @@ ParticipantsList.propTypes = {
   curUser: React.PropTypes.object,
 };
 
-export default ParticipantsList;
+export default cssModules(ParticipantsList, styles);
