@@ -122,7 +122,6 @@ class NewEvent extends React.Component {
       return newRange;
     }
 
-
     // Check if day already exists in a range. If yes, remove it from all the
     // ranges that it exists in.
     for (const range of ranges) {
