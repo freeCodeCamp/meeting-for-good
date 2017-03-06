@@ -115,27 +115,30 @@ class NotificationBar extends Component {
   }
 
   render() {
-    const { notificationColor, quantOwnerNotNotified } = this.state;
+    const { notificationColor, quantOwnerNotNotified, notifications } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
-    return (
-      <IconMenu
-        maxHeight={300}
-        iconButtonElement={
-          <Badge
-            badgeContent={quantOwnerNotNotified}
-            secondary={true}
-            badgeStyle={{ top: 12, right: 12, visibility: visible }}
-          >
-            <IconButton tooltip="Notifications" onClick={this.handleDismissAll}>
-              <NotificationsIcon color={notificationColor} />
-            </IconButton>
-          </Badge>}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-      >
-        {this.renderMenuRows()}
-      </IconMenu>
-    );
+    if (notifications.length > 0) {
+      return (
+        <IconMenu
+          maxHeight={300}
+          iconButtonElement={
+            <Badge
+              badgeContent={quantOwnerNotNotified}
+              secondary={true}
+              badgeStyle={{ top: 12, right: 12, visibility: visible }}
+            >
+              <IconButton tooltip="Notifications" onClick={this.handleDismissAll}>
+                <NotificationsIcon color={notificationColor} />
+              </IconButton>
+            </Badge>}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        >
+          {this.renderMenuRows()}
+        </IconMenu >
+      );
+    }
+    return null;
   }
 }
 

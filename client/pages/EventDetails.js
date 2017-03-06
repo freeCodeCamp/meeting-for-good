@@ -16,7 +16,7 @@ class EventDetails extends Component {
       event: null,
       notificationMessage: '',
       notificationIsActive: false,
-      showModal: false,
+      showLoginModal: false,
     };
   }
 
@@ -39,16 +39,16 @@ class EventDetails extends Component {
         return;
       }
     } else {
-      this.setState({ showModal: true });
+      this.setState({ showLoginModal: true });
     }
   }
 
   render() {
-    const { event, showModal, notificationIsActive, notificationMessage } = this.state;
+    const { event, showLoginModal, notificationIsActive, notificationMessage } = this.state;
     if (event) {
       return <EventDetailsComponent event={event} />;
     }
-    if (showModal) {
+    if (showLoginModal) {
       return <LoginModal open={true} />;
     }
     return (
