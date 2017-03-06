@@ -81,19 +81,13 @@ class Dashboard extends Component {
     browserHistory.push('/event/new');
   }
 
-
   render() {
     const styles = {
       float: 'right',
       bottom: '24px',
       right: '24px',
     };
-    /*  <div className="fixed-action-btn" styleName="new-event-icon">
-          <Link to="/event/new" className="btn-floating btn-large red">
-            <i className="large material-icons">add</i>
-          </Link>
-        </div>*/
-
+    
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
