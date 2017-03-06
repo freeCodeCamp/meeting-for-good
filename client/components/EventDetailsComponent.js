@@ -330,7 +330,7 @@ class EventDetailsComponent extends React.Component {
         <CardTitle style={styles.card.cardTitle}>{event.name}</CardTitle>
         <CardText>
           <h6 id="best"><strong>All participants so far are available at:</strong></h6>
-          <BestTimesDisplay event={event} curUser={user} disablePicker={true} />
+          <BestTimesDisplay event={event} disablePicker={true} />
           {(showHeatmap) ?
             <div id="heatmap">
               <AvailabilityGrid
@@ -373,7 +373,7 @@ class EventDetailsComponent extends React.Component {
             </div>
           }
           <br />
-          <ParticipantsList event={event} />
+          <ParticipantsList event={event} curUser={user} />
         </CardText>
         <Divider style={styles.card.divider} />
         <CardActions style={styles.card.cardActions}>
