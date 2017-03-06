@@ -10,6 +10,7 @@
  * PATCH   /api/events/:id                            ->  patch
  * PATCH   /api/events/GuestNotificationDismiss/:id   ->  GuestNotificationDismiss
  * DELETE  /api/events/:id                            ->  setFalse
+ * DELETE  /api/events/participant:id                 ->  setGuestFalse
  */
 
 'use strict';
@@ -76,7 +77,10 @@ export const setFalse =  (req, res) => {
     if (!event || !event.active) return res.status(404).send('Not found.');
     event.active = false;
     event.save((err) => {
-      if (err) return res.status(500).send(err);
+      if (err) {
+        console.log('err at setFalse', err);
+        return res.status(500).send(err);
+      };
       return res.status(200).json(event);
     });
   });
@@ -99,7 +103,21 @@ export const indexById = (req, res) => {
 
 // Gets all events that a especified user is participant
 export const indexByUser = (req, res) => {
-  return Events.find({ 'participants.userId': req.user._id.toString(), active: true }).exec()
+  return Events.find({
+    'participants.userId': req.user._id.toString(),
+    active: true,
+  }).exec()
+    .then((events) => {
+      console.log(events);
+      events.forEach((event, index) => {
+        event.participants.forEach((participant) => {
+          if (!participant.active && event.owner !== req.user._id.toString()) {
+            events.splice(index, 1);
+          }
+        });
+      });
+      return events;
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -192,7 +210,32 @@ export const GuestNotificationDismiss = (req, res) => {
         if (participant._id.toString() === req.params.id) {
           participant.ownerNotified = true;
           event.save((err) => {
-            if (err) return res.status(500).send(err);
+            if (err) {
+              console.log('err at GuestNotificationDismiss', err);
+              return res.status(500).send(err);
+            }
+            return res.status(200).json(event);
+          });
+        }
+      });
+    });
+};
+// set the owner notification for that particpants._id as true
+export const setGuestFalse = (req, res) => {
+  return Events.findOne({
+    'participants._id': req.params.id,
+  })
+    .exec()
+    .then(handleEntityNotFound(res))
+    .then((event) => {
+      event.participants.forEach((participant) => {
+        if (participant._id.toString() === req.params.id) {
+          participant.active = false;
+          event.save((err) => {
+            if (err) {
+              console.log('err at setGuestFalse', err);
+              return res.status(500).send(err);
+            }
             return res.status(200).json(event);
           });
         }

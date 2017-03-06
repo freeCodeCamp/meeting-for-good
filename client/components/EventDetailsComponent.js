@@ -240,8 +240,6 @@ class EventDetailsComponent extends React.Component {
       notificationTitle: 'Success!',
       showEmail: false,
     });
-
-    this.generateBestDatesAndTimes(event);
     this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
   }
 

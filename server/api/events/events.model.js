@@ -9,6 +9,7 @@ const participantsSchema = new Schema({
   userId: { type: String, required: true },
   ownerNotified: { type: Boolean, required: true, default: false },
   emailUpdate: { type: Boolean, required: true, default: false },
+  active: { type: Boolean, required: true, default: true },
 });
 
 
