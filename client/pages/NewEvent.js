@@ -8,7 +8,7 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
-import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -102,33 +102,16 @@ class NewEvent extends React.Component {
     // Checks whether the event name and dates/weekDays have been entered. If so, un-disable the
     // submit button. Otherwise, disable the submit button (if it isn't already');
 
-    const { submitClass, ranges, eventName, dateOrDay, weekDays } = this.state;
+    const { submitClass, ranges, eventName } = this.state;
 
-    if (!dateOrDay) { // dates
-      if (ranges.length > 0 && ranges[0].from && eventName.length > 0) {
-        this.setState({
-          submitClass: submitClass.replace(' disabled', ''),
-        });
-      } else if (submitClass.indexOf('disabled') === -1) {
-        this.setState({
-          submitClass: `${submitClass} disabled`,
-        });
-      }
-    } else { // weekdays
-      let numOfWeekdaysSelected = 0;
-      Object.keys(weekDays).forEach((weekDay) => {
-        if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
+    if (ranges.length > 0 && ranges[0].from && eventName.length > 0) {
+      this.setState({
+        submitClass: submitClass.replace(' disabled', ''),
       });
-
-      if (eventName.length > 0 && numOfWeekdaysSelected > 0) {
-        this.setState({
-          submitClass: submitClass.replace(' disabled', ''),
-        });
-      } else if (submitClass.indexOf('disabled') === -1) {
-        this.setState({
-          submitClass: `${submitClass} disabled`,
-        });
-      }
+    } else if (submitClass.indexOf('disabled') === -1) {
+      this.setState({
+        submitClass: `${submitClass} disabled`,
+      });
     }
   }
 
@@ -237,31 +220,6 @@ class NewEvent extends React.Component {
         }
         return;
       }
-
-      // weekdays form validator
-      let numOfWeekdaysSelected = 0;
-
-      Object.keys(weekDays).forEach((weekDay) => {
-        if (weekDays[weekDay]) numOfWeekdaysSelected += 1;
-      });
-
-      if (name.length === 0 && numOfWeekdaysSelected === 0) {
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please select a weekday and enter an event name.',
-        });
-      } else if (name.length !== 0 && numOfWeekdaysSelected === 0) {
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please select a weekday.',
-        });
-      } else if (name.length === 0 && numOfWeekdaysSelected !== 0) {
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please enter an event name.',
-        });
-      }
-
       return;
     }
 
