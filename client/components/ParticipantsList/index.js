@@ -125,11 +125,11 @@ class ParticipantsList extends Component {
         actions={actions}
         modal={true}
         open={open}
-        contentStyle= {styles.modal}
+        contentStyle={styles.modal}
       >
         Are you sure you want to delete this guest?
-      </Dialog>    
-    )       
+      </Dialog>
+    );
   }
 
   render() {
