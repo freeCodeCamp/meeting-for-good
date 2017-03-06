@@ -56,20 +56,6 @@ class EventCard extends Component {
 
   @autobind
   handleGuestDelete(ret) {
-    if (ret === true) {
-      this.setState({
-        notificationTitle: 'Alert',
-        notificationIsActive: true,
-        notificationMessage: 'Guest delete success!',
-      });
-    } else {
-      console.log('error at handleGuestDelete Event Card', ret);
-      this.setState({
-        notificationIsActive: true,
-        notificationTitle: 'Error',
-        notificationMessage: 'Failed to delete guest. Please try again later.',
-      });
-    }
   }
 
   render() {
@@ -111,7 +97,7 @@ class EventCard extends Component {
         </CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker={false} />
-          <ParticipantsList event={event} curUser={curUser} cb={this.handleGuestDelete} />
+          <ParticipantsList event={event} curUser={curUser} />
         </CardText>
         <Divider style={styles.card.divider} />
         <CardActions style={styles.card.cardActions}>

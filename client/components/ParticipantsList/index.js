@@ -5,6 +5,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
+import { Notification } from 'react-notification';
 
 import { checkStatus } from '../../util/fetch.util';
 
@@ -17,7 +18,9 @@ class ParticipantsList extends Component {
       curUser,
       open: false,
       guestToDelete: '',
-      deleteResult: this.props.cb,
+      notificationMessage: '',
+      notificationIsActive: false,
+      notificationTitle: '',
     };
   }
 
@@ -58,11 +61,19 @@ class ParticipantsList extends Component {
           newEvent.participants.splice(index, 1);
         }
       });
-      this.setState({ event: newEvent });
-      this.props.cb(true);
+      this.setState({
+        event: newEvent,
+        notificationTitle: 'Alert',
+        notificationIsActive: true,
+        notificationMessage: 'Guest delete success!',
+      });
     } catch (err) {
+      this.setState({
+        notificationIsActive: true,
+        notificationTitle: 'Error',
+        notificationMessage: 'Failed to delete guest. Please try again later.',
+      });
       console.log('deleteEvent Modal', err);
-      this.props.cb(err);
       return err;
     } finally {
       this.handleClose();
@@ -150,6 +161,15 @@ class ParticipantsList extends Component {
         <h6><strong>Participants</strong></h6>
         {this.renderGuestList()}
         {this.renderModal()}
+        <Notification
+          isActive={this.state.notificationIsActive}
+          message={this.state.notificationMessage}
+          action="Dismiss"
+          title={this.state.notificationTitle}
+          onDismiss={() => this.setState({ notificationIsActive: false })}
+          onClick={() => this.setState({ notificationIsActive: false })}
+          activeClassName="notification-bar-is-active"
+        />
       </div>
 
     );
@@ -159,7 +179,6 @@ class ParticipantsList extends Component {
 ParticipantsList.propTypes = {
   event: React.PropTypes.object,
   curUser: React.PropTypes.object,
-  cb: React.PropTypes.func,
 };
 
 export default ParticipantsList;
