@@ -4,6 +4,8 @@ import Chip from 'material-ui/Chip';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
+import _ from 'lodash';
+
 import { checkStatus } from '../../util/fetch.util';
 
 class ParticipantsList extends Component {
@@ -15,6 +17,7 @@ class ParticipantsList extends Component {
       curUser,
       open: false,
       guestToDelete: '',
+      deleteResult: this.props.cb,
     };
   }
 
@@ -35,7 +38,7 @@ class ParticipantsList extends Component {
 
   @autobind
   async handleDelete() {
-    const { guestToDelete } = this.state;
+    const { guestToDelete, event } = this.state;
     const response =  await fetch(
     `/api/events/participant/${guestToDelete}`,
       {
@@ -49,8 +52,17 @@ class ParticipantsList extends Component {
   );
     try {
       checkStatus(response);
+      const newEvent = _.clone(event);
+      newEvent.participants.forEach((participant, index) => {
+        if (participant._id === guestToDelete) {
+          newEvent.participants.splice(index, 1);
+        }
+      });
+      this.setState({ event: newEvent });
+      this.props.cb(true);
     } catch (err) {
       console.log('deleteEvent Modal', err);
+      this.props.cb(err);
       return err;
     } finally {
       this.handleClose();
@@ -147,6 +159,7 @@ class ParticipantsList extends Component {
 ParticipantsList.propTypes = {
   event: React.PropTypes.object,
   curUser: React.PropTypes.object,
+  cb: React.PropTypes.func,
 };
 
 export default ParticipantsList;

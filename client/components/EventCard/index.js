@@ -25,6 +25,7 @@ class EventCard extends Component {
       curUser: {},
       notificationMessage: '',
       notificationIsActive: false,
+      notificationTitle: '',
       open: false,
     };
   }
@@ -46,8 +47,27 @@ class EventCard extends Component {
     } else {
       console.log('deleteEvent EvdentCard', result);
       this.setState({
+        notificationTitle: 'Error',
         notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
+      });
+    }
+  }
+
+  @autobind
+  handleGuestDelete(ret) {
+    if (ret === true) {
+      this.setState({
+        notificationTitle: 'Alert',
+        notificationIsActive: true,
+        notificationMessage: 'Guest delete success!',
+      });
+    } else {
+      console.log('error at handleGuestDelete Event Card', ret);
+      this.setState({
+        notificationIsActive: true,
+        notificationTitle: 'Error',
+        notificationMessage: 'Failed to delete guest. Please try again later.',
       });
     }
   }
@@ -91,7 +111,7 @@ class EventCard extends Component {
         </CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker={false} />
-          <ParticipantsList event={event} curUser={curUser} />
+          <ParticipantsList event={event} curUser={curUser} cb={this.handleGuestDelete} />
         </CardText>
         <Divider style={styles.card.divider} />
         <CardActions style={styles.card.cardActions}>
@@ -101,7 +121,7 @@ class EventCard extends Component {
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
           action="Dismiss"
-          title="Error!"
+          title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
           onClick={() => this.setState({ notificationIsActive: false })}
           activeClassName="notification-bar-is-active"
@@ -114,6 +134,7 @@ class EventCard extends Component {
 EventCard.propTypes = {
   event: React.PropTypes.object,
   removeEventFromDashboard: React.PropTypes.func,
+  cb: React.PropTypes.func,
 };
 
 export default cssModules(EventCard, styles);
