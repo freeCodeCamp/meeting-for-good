@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
 import autobind from 'autobind-decorator';
 import { List, ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import nprogress from 'nprogress';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
-import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import Divider from 'material-ui/Divider';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -67,7 +67,7 @@ class GuestInviteDrawer extends Component {
       guests = await parseJSON(response);
       this.setState({ guests });
     } catch (err) {
-      console.log('loadPassGuests' , err);
+      console.log('loadPassGuests', err);
       this.addNotification('Error!!', 'Failed to load guests. Please try again later.');
       return;
     } finally {
@@ -82,16 +82,23 @@ class GuestInviteDrawer extends Component {
   }
 
   renderRows() {
-    console.log('opa');
+    const styles = {
+      divider: {
+        width: '100%',
+      },
+    };
     const { guests } = this.state;
     const rows = [];
     guests.forEach((guest) => {
       const row = (
-        <ListItem
-          primaryText={guest.name}
-          leftCheckbox={<Checkbox />}
-          rightAvatar={<Avatar src={guest.avatar} />}
-        />
+        <div key={guest._id}>
+          <ListItem
+            primaryText={guest.name}
+            leftCheckbox={<Checkbox />}
+            rightAvatar={<Avatar src={guest.avatar} />}
+          />
+          <Divider style={styles.divider} />
+        </div>
       );
       rows.push(row);
     });
@@ -116,7 +123,12 @@ class GuestInviteDrawer extends Component {
         <List>
           {this.renderRows()}
         </List>
-        <FlatButton label="Invite" primary={true} onTouchTap={this.handleClose} />
+        <RaisedButton
+          fullWidth={true}
+          label="Invite"
+          primary={true}
+          onTouchTap={this.handleClose}
+        />
       </Drawer>
     );
   }
