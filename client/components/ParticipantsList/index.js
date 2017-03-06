@@ -21,7 +21,7 @@ class ParticipantsList extends Component {
     console.log('delete');
   }
 
-  participantsLst() {
+  guestList() {
     const styles = {
       chip: {
         margin: 4,
@@ -39,11 +39,10 @@ class ParticipantsList extends Component {
       },
     };
     const { event, curUser } = this.state;
-    // console.log(event, curUser);
     const rows = [];
     event.participants.forEach((participant) => {
       let row;
-      if (curUser._id === participant.userId) {
+      if (curUser._id !== participant.userId && event.owner === curUser._id) {
         row = (
           <Chip key={participant._id} style={styles.chip} onRequestDelete={this.handleDelete}>
             <Avatar src={participant.avatar} style={styles.avatar} />
@@ -66,7 +65,7 @@ class ParticipantsList extends Component {
     return (
       <div>
         <h6><strong>Participants</strong></h6>
-        {this.participantsLst()}
+        {this.guestList()}
       </div>
     );
   }
