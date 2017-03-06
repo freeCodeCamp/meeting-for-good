@@ -39,16 +39,6 @@ class NewEvent extends React.Component {
           .second(0)._d,
       }],
       eventName: '',
-      weekDays: {
-        mon: false,
-        tue: false,
-        wed: false,
-        thu: false,
-        fri: false,
-        sat: false,
-        sun: false,
-      },
-      dateOrDay: false,
       selectedTimeRange: [0, 23],
       submitClass: 'waves-effect waves-light btn purple disabled',
       notificationIsActive: false,
@@ -194,36 +184,29 @@ class NewEvent extends React.Component {
     const {
       eventName: name,
       ranges,
-      dateOrDay,
-      weekDays,
       selectedTimeRange: [fromTime, toTime],
     } = this.state;
 
     // validate the form
     if (ev.target.className.indexOf('disabled') > -1) {
-      if (!dateOrDay) { // dates
-        if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
-          this.setState({
-            notificationIsActive: true,
-            notificationMessage: 'Please select a date and enter an event name.',
-          });
-        } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
-          this.setState({
-            notificationIsActive: true,
-            notificationMessage: 'Please select a date.',
-          });
-        } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
-          this.setState({
-            notificationIsActive: true,
-            notificationMessage: 'Please enter an event name.',
-          });
-        }
-        return;
+      if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please select a date and enter an event name.',
+        });
+      } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please select a date.',
+        });
+      } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Please enter an event name.',
+        });
       }
       return;
     }
-
-    let sentData;
 
     const fromHours = getHours(fromTime);
     const toHours = getHours(toTime);
@@ -231,44 +214,24 @@ class NewEvent extends React.Component {
     const fromMinutes = getMinutes(fromTime);
     const toMinutes = getMinutes(toTime);
     // create a date range as date
-    if (dateOrDay) {
-      const dates = [];
 
-      Object.keys(weekDays).forEach((key) => {
-        if (weekDays[key]) {
-          dates.push({
-            fromDate: moment()
-                      .day(key)
-                      .set('h', fromHours)
-                      .set('m', fromMinutes),
-            toDate: moment()
-                      .day(key)
-                      .set('h', toHours)
-                      .set('m', toMinutes),
-          });
-        }
-      });
+    let dates = ranges.map(({ from, to }) => {
+      if (!to) to = from;
 
-      sentData = JSON.stringify({ name, weekDays, dates });
-    } else {
-      let dates = ranges.map(({ from, to }) => {
-        if (!to) to = from;
+      if (from > to) {
+        [from, to] = [to, from];
+      }
 
-        if (from > to) {
-          [from, to] = [to, from];
-        }
+      return {
+        fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
+        toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
+      };
+    });
 
-        return {
-          fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
-          toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
-        };
-      });
-
-      dates = dateRangeReducer(dates);
-      // the field active now has a default of true.
-      sentData = JSON.stringify({ name, dates });
-    }
-
+    dates = dateRangeReducer(dates);
+    // the field active now has a default of true.
+    const sentData = JSON.stringify({ name, dates });
+  
     const response = await fetch('/api/events', {
       headers: {
         Accept: 'application/json',
@@ -330,6 +293,7 @@ class NewEvent extends React.Component {
           <form>
             <TextField
               fullWidth={true}
+              floatingLabelStyle={{ fontSize: '24px' }}
               style={styles.card.textField}
               id="event_name"
               value={this.state.eventName}
