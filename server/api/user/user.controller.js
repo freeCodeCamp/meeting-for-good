@@ -159,6 +159,7 @@ export const relatedUsers = (req, res) => {
         return res.status(401).end();
       }
       const response = [];
+      const users = [];
       for (const ev of events) {
         for (const participant of ev.participants) {
           const participantId = participant.userId.toString();
@@ -166,13 +167,15 @@ export const relatedUsers = (req, res) => {
               // check if exists at array.
             if (response.indexOf(participantId) === -1) {
               response.push(participantId);
+              users.push(participant);
             }
           }
         }
       }
-      res.json(response);
+      return users;
     })
-    .catch(err => next(err));
+    .then(respondWithResult(res))
+    .catch(handleError(res));
 };
 
 export const isAuthenticated = (req, res) => {

@@ -68,6 +68,27 @@ class Dashboard extends Component {
     });
   }
 
+  addNotification(msgTitle, msg, participantId = 0, dismissTime = 3400) {
+    const { notifications, count } = this.state;
+    const newCount = count + 1;
+    let msgKey = count + 1;
+    // if was not a new event(no partipants yet)
+    if (participantId !== 0) {
+      msgKey = participantId;
+    }
+    return this.setState({
+      count: newCount,
+      notifications: notifications.add({
+        message: msg,
+        title: msgTitle,
+        key: msgKey,
+        action: 'Dismiss',
+        dismissAfter: dismissTime,
+        onClick: () => this.removeNotification(msgKey),
+      }),
+    });
+  }
+
   @autobind
   removeEventFromDashboard(eventId) {
     const { events } = this.state;
