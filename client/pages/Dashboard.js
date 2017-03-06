@@ -70,8 +70,9 @@ class Dashboard extends Component {
 
   @autobind
   removeEventFromDashboard(eventId) {
+    const { events } = this.state;
     this.setState({
-      events: this.state.events.filter(event => event._id !== eventId),
+      events: events.filter(event => event._id !== eventId),
     });
   }
 
