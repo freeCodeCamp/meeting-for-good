@@ -8,6 +8,7 @@ import Checkbox from 'material-ui/Checkbox';
 import nprogress from 'nprogress';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -106,7 +107,7 @@ class GuestInviteDrawer extends Component {
         open={open}
         onRequestChange={open => this.setState({ open })}
       >
-        <h6> That's a list of your recent guests, if you want we can invite some for you </h6>
+        <h6> That's a list of your recent guests. If you want, we can invite some for you </h6>
         <TextField
           fullWidth={true}  
           hintText="search"
@@ -115,8 +116,7 @@ class GuestInviteDrawer extends Component {
         <List>
           {this.renderRows()}
         </List>
-        
-        <MenuItem onTouchTap={this.handleClose}>Menu Item 2</MenuItem>
+        <FlatButton label="Invite" primary={true} onTouchTap={this.handleClose} />
       </Drawer>
     );
   }
