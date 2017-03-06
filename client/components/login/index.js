@@ -14,8 +14,8 @@ class LoginModal extends Component {
     };
   }
 
-  componentWillReceiveProps() {
-    const { open } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { open } = nextProps;
     this.setState({ open });
   }
 

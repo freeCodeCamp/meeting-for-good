@@ -20,8 +20,9 @@ class DeleteModal extends Component {
     };
   }
 
-  componentWillReceiveProps() {
-    this.setState({ event: this.props.event });
+  componentWillReceiveProps(nextProps) {
+    const { event } = nextProps;
+    this.setState({ event });
   }
 
   @autobind

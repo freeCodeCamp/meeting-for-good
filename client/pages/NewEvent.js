@@ -271,9 +271,6 @@ class NewEvent extends React.Component {
         textField: {
           width: '100%',
         },
-        createButton: {
-        
-        },
       },
     };
 
