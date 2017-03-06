@@ -82,7 +82,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { events, curUser, notifications } = this.state;
+    const { events, curUser, notifications, showNoScheduledMessage } = this.state;
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
@@ -92,7 +92,7 @@ class Dashboard extends Component {
         {/* Card Template */}
         {events.length !== 0 ?
           <Masonry>
-            {this.state.events.map(event => (
+            {events.map(event => (
               <EventCard
                 key={event._id}
                 event={event}
@@ -101,7 +101,7 @@ class Dashboard extends Component {
               />
             ))}
           </Masonry> :
-            this.state.showNoScheduledMessage ?
+            showNoScheduledMessage ?
               <em>
                 <h4 styleName="no-select" className="card-title center-align black-text">
                   You have no scheduled events yet.
