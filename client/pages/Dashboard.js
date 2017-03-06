@@ -81,6 +81,7 @@ class Dashboard extends Component {
   }
 
   render() {
+    const { events, curUser, notifications } = this.state;
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
@@ -88,14 +89,14 @@ class Dashboard extends Component {
           <ContentAdd />
         </FloatingActionButton>
         {/* Card Template */}
-        {this.state.events.length !== 0 ?
+        {events.length !== 0 ?
           <Masonry>
             {this.state.events.map(event => (
               <EventCard
                 key={event._id}
                 event={event}
                 removeEventFromDashboard={this.removeEventFromDashboard}
-                user={this.state.curUser}
+                user={curUser}
               />
             ))}
           </Masonry> :
@@ -108,9 +109,9 @@ class Dashboard extends Component {
               null
         }
         <NotificationStack
-          notifications={this.state.notifications.toArray()}
+          notifications={notifications.toArray()}
           onDismiss={notification => this.setState({
-            notifications: this.state.notifications.delete(notification),
+            notifications: notifications.delete(notification),
           })}
         />
       </div>
