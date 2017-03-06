@@ -65,6 +65,7 @@ const handleEntityNotFound = (res) => {
 const handleError = (res, statusCode) => {
   statusCode = statusCode || 500;
   return (err) => {
+    console.log('handleError at event.controler', err);
     res.status(statusCode).send(err);
   };
 };
@@ -107,17 +108,6 @@ export const indexByUser = (req, res) => {
     'participants.userId': req.user._id.toString(),
     active: true,
   }).exec()
-    .then((events) => {
-      console.log(events);
-      events.forEach((event, index) => {
-        event.participants.forEach((participant) => {
-          if (!participant.active && event.owner !== req.user._id.toString()) {
-            events.splice(index, 1);
-          }
-        });
-      });
-      return events;
-    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -228,6 +218,29 @@ export const setGuestFalse = (req, res) => {
     .exec()
     .then(handleEntityNotFound(res))
     .then((event) => {
+      event.participants.forEach((participant, index) => {
+        if (participant._id.toString() === req.params.id) {
+          event.participants.splice(index, 1);
+          event.save((err) => {
+            if (err) {
+              console.log('err at setGuestFalse', err);
+              return res.status(500).send(err);
+            }
+            return res.status(200).json(event);
+          });
+        }
+      });
+    })
+    .catch(handleError(res));
+};
+
+/*export const setGuestFalse = (req, res) => {
+  return Events.findOne({
+    'participants._id': req.params.id,
+  })
+    .exec()
+    .then(handleEntityNotFound(res))
+    .then((event) => {
       event.participants.forEach((participant) => {
         if (participant._id.toString() === req.params.id) {
           participant.active = false;
@@ -241,5 +254,5 @@ export const setGuestFalse = (req, res) => {
         }
       });
     });
-};
+};*/
 
