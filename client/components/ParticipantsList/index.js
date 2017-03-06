@@ -105,23 +105,21 @@ class ParticipantsList extends Component {
     const rows = [];
     event.participants.forEach((participant) => {
       let row;
-      if (participant.active === true) {
-        if (curUser._id !== participant.userId && event.owner === curUser._id) {
-          row = (
-            <Chip key={participant._id} style={styles.chip} onRequestDelete={() => this.handleOpen(participant._id)}>
-              <Avatar src={participant.avatar} style={styles.avatar} />
-              {participant.name}
-            </Chip>
-          );
-        } else {
-          row = (<Chip key={participant._id} style={styles.chip} >
+      if (curUser._id !== participant.userId && event.owner === curUser._id) {
+        row = (
+          <Chip key={participant._id} style={styles.chip} onRequestDelete={() => this.handleOpen(participant._id)}>
             <Avatar src={participant.avatar} style={styles.avatar} />
             {participant.name}
           </Chip>
-          );
-        }
-        rows.push(row);
+        );
+      } else {
+        row = (<Chip key={participant._id} style={styles.chip} >
+          <Avatar src={participant.avatar} style={styles.avatar} />
+          {participant.name}
+        </Chip>
+        );
       }
+      rows.push(row);
     });
     return rows;
   }
