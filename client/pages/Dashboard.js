@@ -8,6 +8,9 @@ import autobind from 'autobind-decorator';
 import nprogress from 'nprogress';
 import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+
 
 /* external components */
 import EventCard from '../components/EventCard/';
@@ -74,14 +77,23 @@ class Dashboard extends Component {
   }
 
   render() {
-    return (
-      <div styleName="wrapper">
-        {/* New Event Icon */}
-        <div className="fixed-action-btn" styleName="new-event-icon">
+    const styles = {
+      float: 'right',
+      bottom: '24px',
+      right: '24px',
+    };
+    /*  <div className="fixed-action-btn" styleName="new-event-icon">
           <Link to="/event/new" className="btn-floating btn-large red">
             <i className="large material-icons">add</i>
           </Link>
-        </div>
+        </div>*/
+    
+    return (
+      <div styleName="wrapper">
+        {/* New Event Icon */}
+        <FloatingActionButton styleName="new-event-icon" secondary={true} >
+          <ContentAdd />
+        </FloatingActionButton>
         {/* Card Template */}
         {this.state.events.length !== 0 ?
           <Masonry>

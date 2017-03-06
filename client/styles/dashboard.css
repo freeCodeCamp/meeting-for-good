@@ -8,6 +8,11 @@
 }
 
 .new-event-icon {
-  bottom: 24px;
-  right: 24px;
+  position: fixed !important;
+  z-index: 99;
+  right: 0;
+  margin-bottom: 20px;
+  margin-right: 24px;
+  bottom: 0;
+  overflow: 'auto';
 }
