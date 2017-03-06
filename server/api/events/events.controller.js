@@ -233,26 +233,3 @@ export const setGuestFalse = (req, res) => {
     })
     .catch(handleError(res));
 };
-
-/*export const setGuestFalse = (req, res) => {
-  return Events.findOne({
-    'participants._id': req.params.id,
-  })
-    .exec()
-    .then(handleEntityNotFound(res))
-    .then((event) => {
-      event.participants.forEach((participant) => {
-        if (participant._id.toString() === req.params.id) {
-          participant.active = false;
-          event.save((err) => {
-            if (err) {
-              console.log('err at setGuestFalse', err);
-              return res.status(500).send(err);
-            }
-            return res.status(200).json(event);
-          });
-        }
-      });
-    });
-};*/
-
