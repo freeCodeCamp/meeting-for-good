@@ -123,7 +123,7 @@ class GuestInviteDrawer extends Component {
   }
 
   async sendEmailInvite(guestId) {
-    const { event, curUser, activeCheckboxes } = this.state;
+    const { event, curUser } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const guestData = await this.loadUserData(guestId);
     const msg = {
@@ -155,22 +155,20 @@ class GuestInviteDrawer extends Component {
     }
   }
   renderRows() {
-    const { activeCheckboxes } = this.state;
+    const { activeCheckboxes, guests } = this.state;
     const styles = {
       divider: {
         width: '100%',
       },
     };
-    const { guests } = this.state;
     const rows = [];
     guests.forEach((guest) => {
       const row = (
         <div key={guest._id}>
           <ListItem
             primaryText={guest.name}
-            leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} />}
+            leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} checked={activeCheckboxes.includes(guest.userId)} />}
             rightAvatar={<Avatar src={guest.avatar} />}
-            checked={activeCheckboxes.includes(guest.userId)}
           />
           <Divider style={styles.divider} />
         </div>
