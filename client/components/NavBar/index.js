@@ -12,7 +12,7 @@ import { isAuthenticated } from '../../util/auth';
 import NotificationBar from '../../components/NotificationBar';
 import LoginModal from '../Login';
 
-class ToolBar extends Component {
+class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -137,8 +137,8 @@ class ToolBar extends Component {
   }
 }
 
-ToolBar.propTypes = {
+NavBar.propTypes = {
   location: React.PropTypes.object,
 };
 
-export default ToolBar;
+export default NavBar;

@@ -9,6 +9,8 @@ import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
+import { NotificationStack } from 'react-notification';
+import { OrderedSet } from 'immutable';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -21,6 +23,8 @@ class GuestInviteDrawer extends Component {
       curUser: {},
       event: this.props.event,
       guests: [],
+      activeCheckboxes: [],
+      notifications: OrderedSet(),
     };
   }
 
@@ -81,6 +85,78 @@ class GuestInviteDrawer extends Component {
     this.setState({ open: false });
   }
 
+  handleCheck(id) {
+    const { activeCheckboxes } = this.state;
+    const found = activeCheckboxes.includes(id);
+    if (found) {
+      this.setState({
+        activeCheckboxes: activeCheckboxes.filter(x => x !== id),
+      });
+    } else {
+      this.setState({
+        activeCheckboxes: [...activeCheckboxes, id],
+      });
+    }
+  }
+
+  async loadUserData(_id) {
+    const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
+    try {
+      checkStatus(response);
+      return await parseJSON(response);
+    } catch (err) {
+      console.log('loadUserData', err);
+      this.addNotification('Error!!', 'Failed to load user Data. Please try again later.');
+      return null;
+    }
+  }
+
+  @autobind
+  handleInvite() {
+    const { activeCheckboxes } = this.state;
+    console.log('handleInvite', activeCheckboxes);
+    activeCheckboxes.forEach((guest) => {
+      console.log('forEach', guest);
+      this.sendEmailInvite(guest);
+    });
+  }
+
+  async sendEmailInvite(guestId) {
+
+    const { event, curUser } = this.state;
+    console.log(event)
+    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
+    const guestData = await this.loadUserData(guestId);
+    const ownerData = await this.loadUserData(event.owner);
+    const msg = {
+      guestName: guestData.name,
+      eventName: event.name,
+      eventId: event._id,
+      eventOwner: event.owner,
+      eventOwnerMame: curUser.name,
+      url: `${fullUrl}/event/${event._id}`,
+      to: guestData.emails[0],
+      subject: `Invite for ${event.name}!!`,
+    };
+    console.log(msg, curUser);
+    const response = await fetch('/api/email/sendInvite', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      method: 'POST',
+      body: JSON.stringify(msg),
+    });
+
+    try {
+      checkStatus(response);
+      this.addNotification('Info!!', `${curUser.name} invited!`);
+    } catch (err) {
+      console.log('sendEmailOwner', err);
+      this.addNotification('Error!!', `Failed to send invite to ${curUser.name} Please try again later.`);
+    }
+  }
   renderRows() {
     const styles = {
       divider: {
@@ -90,11 +166,12 @@ class GuestInviteDrawer extends Component {
     const { guests } = this.state;
     const rows = [];
     guests.forEach((guest) => {
+      console.log(guest);
       const row = (
         <div key={guest._id}>
           <ListItem
             primaryText={guest.name}
-            leftCheckbox={<Checkbox />}
+            leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} />}
             rightAvatar={<Avatar src={guest.avatar} />}
           />
           <Divider style={styles.divider} />
@@ -106,15 +183,15 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open } = this.state;
+    const { open, event, notifications } = this.state;
     return (
       <Drawer
         docked={false}
         width={300}
         open={open}
         onRequestChange={open => this.setState({ open })}
-      >
-        <h6> That's a list of your recent guests. If you want, we can invite some for you </h6>
+      > <h3> This is { event.name } </h3>
+        <h6> That's yours recent guests. If you want, we can invite some for you </h6>
         <TextField
           fullWidth={true}  
           hintText="search"
@@ -127,7 +204,13 @@ class GuestInviteDrawer extends Component {
           fullWidth={true}
           label="Invite"
           primary={true}
-          onTouchTap={this.handleClose}
+          onTouchTap={this.handleInvite}
+        />
+        <NotificationStack
+          notifications={notifications.toArray()}
+          onDismiss={notification => this.setState({
+            notifications: notifications.delete(notification),
+          })}
         />
       </Drawer>
     );

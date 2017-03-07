@@ -1,6 +1,6 @@
 /* vendor dependencies */
 import React, { Component } from 'react';
-import { browserHistory, Link } from 'react-router';
+import { browserHistory } from 'react-router';
 import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';

@@ -57,3 +57,26 @@ export const ownerNotification = (req, res) => {
     });
   });
 };
+
+export const sendInvite = (req, res) => {
+  const message = req.body;
+  console.log(message);
+  message.from = process.env.emailFrom;
+  const templateDir = path.join(__dirname, 'templates', 'ownerNotification');
+  const template = new EmailTemplate(templateDir);
+  template.render(message, (err, result) => {
+    if (err) {
+      console.log('err at render of ownerNotification', err);
+      return err;
+    }
+    message.subject = 'Lets Meet Invite from ';
+    message.text = result.text;
+    message.html = result.html;
+    return sendEmail(message)
+    .then(respondWithResult(res))
+    .catch((err) => {
+      console.log('err at ownerNotification', err);
+      handleError(res);
+    });
+  });
+};

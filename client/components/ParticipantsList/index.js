@@ -58,7 +58,7 @@ class ParticipantsList extends Component {
         method: 'DELETE',
         credentials: 'same-origin',
       },
-  );
+    );
     try {
       checkStatus(response);
       const newEvent = _.clone(event);

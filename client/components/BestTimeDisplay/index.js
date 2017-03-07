@@ -107,12 +107,15 @@ class BestTimeDisplay extends Component {
     const rows = [];
     let key = 0;
     hours.forEach((hour) => {
-      rows.push(
-        <ListItem key={key} style={styles.listItem} disabled>
-          {hour}
-          <Divider />
-        </ListItem>,
+      const row = (
+        <div key={key}>
+          <ListItem key={key} style={styles.listItem} disabled>
+            {hour}
+            <Divider />
+          </ListItem>
+        </div>
       );
+      rows.push(row);
       key += 1;
     });
     return rows;
@@ -143,7 +146,7 @@ class BestTimeDisplay extends Component {
       },
       divider: {
         width: '100%',
-      }
+      },
     };
     return Object.keys(displayTimes).map(date => (
       <List disabled style={styles.list}>
