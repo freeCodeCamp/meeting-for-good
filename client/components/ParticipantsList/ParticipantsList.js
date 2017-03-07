@@ -180,6 +180,9 @@ class ParticipantsList extends Component {
           width: 24,
           height: 24,
         },
+        hoveredStyle: {
+          backgroundColor: '#00BCD4',
+        },
       },
     };
 
@@ -196,6 +199,7 @@ class ParticipantsList extends Component {
               style={inLineStyles.buttonAddGuest}
               iconStyle={inLineStyles.buttonAddGuest.iconStyle}
               onClick={this.handleToggle}
+              hoveredStyle={inLineStyles.buttonAddGuest.hoveredStyle}
             >
               <ContentAdd />
             </IconButton >
