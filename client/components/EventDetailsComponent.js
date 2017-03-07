@@ -249,7 +249,7 @@ class EventDetailsComponent extends React.Component {
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Event successfully deleted!',
-        notificationTitle: '',
+        notificationTitle: 'Alert',
         showEmail: false,
       });
       browserHistory.push('/dashboard');

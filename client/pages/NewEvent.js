@@ -301,16 +301,15 @@ class NewEvent extends React.Component {
             />
             <div>
               <h6 styleName="heading-dates">What dates might work for you?</h6>
-              <p className="center" styleName="reset-button">
+              <div className="center" styleName="reset-button">
                 {from && to &&
                   <FlatButton
-                    className="btn-flat"
                     href="#reset"
                     label="reset"
                     onClick={this.handleResetClick}
                   />
                 }
-              </p>
+              </div>
               <DayPicker
                 numberOfMonths={2}
                 fromMonth={new Date()}
