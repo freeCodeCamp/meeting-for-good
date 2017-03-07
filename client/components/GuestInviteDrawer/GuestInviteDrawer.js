@@ -118,10 +118,14 @@ class GuestInviteDrawer extends Component {
   @autobind
   handleInvite() {
     const { activeCheckboxes } = this.state;
-    activeCheckboxes.forEach((guest) => {
-      this.sendEmailInvite(guest);
-    });
-    this.setState({ activeCheckboxes: [] });
+    if (activeCheckboxes.length > 0) {
+      activeCheckboxes.forEach((guest) => {
+        this.sendEmailInvite(guest);
+      });
+      this.setState({ activeCheckboxes: [] });
+    } else {
+      this.addNotification('Error!!', 'Please select guests to invite.');
+    }
   }
 
   async sendEmailInvite(guestId) {
@@ -150,7 +154,7 @@ class GuestInviteDrawer extends Component {
 
     try {
       checkStatus(response);
-      this.addNotification('Info!!', `${curUser.name} invited!`);
+      this.addNotification('Info!!', `${guestData.name} invited!`);
     } catch (err) {
       console.log('sendEmailOwner', err);
       this.addNotification('Error!!', `Failed to send invite to ${curUser.name} Please try again later.`);
