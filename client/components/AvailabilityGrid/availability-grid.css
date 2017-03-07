@@ -90,3 +90,8 @@ a.info {
 /*  margin-left: 75px;
   margin-top: 24px;*/
 }
+
+.Column
+{
+    display: table-cell;
+}
