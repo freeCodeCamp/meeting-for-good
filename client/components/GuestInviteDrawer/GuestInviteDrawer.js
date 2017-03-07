@@ -33,8 +33,6 @@ class GuestInviteDrawer extends Component {
 
   async componentWillMount() {
     await this.loadPassGuests();
-    const { guests } = this.state;
-   
   }
 
   componentWillReceiveProps(nextProps) {

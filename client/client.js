@@ -6,7 +6,7 @@ import 'dialog-polyfill/dialog-polyfill.css';
 import App from './components/App';
 import Home from './pages/home/';
 import Dashboard from './pages/Dashboard';
-import EventDetails from './pages/EventDetails';
+import EventDetails from './pages/EventDetails/EventDetails';
 import NewEvent from './pages/NewEvent/';
 
 // Vendor Dependencies

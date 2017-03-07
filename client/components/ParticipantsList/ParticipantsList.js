@@ -12,7 +12,7 @@ import cssModules from 'react-css-modules';
 
 import { checkStatus } from '../../util/fetch.util';
 import styles from './participants-list.css';
-import GuestInviteDrawer from '../GuestInviteDrawer/';
+import GuestInviteDrawer from '../GuestInviteDrawer/GuestInviteDrawer';
 
 class ParticipantsList extends Component {
   constructor(props) {

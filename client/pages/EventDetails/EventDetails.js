@@ -3,9 +3,9 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Notification } from 'react-notification';
 
-import EventDetailsComponent from '../../components/EventDetailsComponent';
+import EventDetailsComponent from '../../components/EventDetailsComponent/EventDetailsComponent';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import LoginModal from '../../components/Login';
+import LoginModal from '../../components/Login/Login';
 import styles from './event-details.css';
 import { isAuthenticated } from '../../util/auth';
 

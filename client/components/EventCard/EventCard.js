@@ -7,9 +7,9 @@ import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 
-import BestTimesDisplay from '../BestTimeDisplay';
-import ParticipantsList from '../ParticipantsList';
-import DeleteModal from '../DeleteModal';
+import BestTimesDisplay from '../BestTimeDisplay/BestTimeDisplay';
+import ParticipantsList from '../ParticipantsList/ParticipantsList';
+import DeleteModal from '../DeleteModal/DeleteModal';
 import { getCurrentUser } from '../../util/auth';
 import styles from './event-card.css';
 

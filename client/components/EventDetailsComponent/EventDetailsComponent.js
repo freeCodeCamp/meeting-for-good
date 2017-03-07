@@ -11,14 +11,14 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import DeleteModal from '../../components/DeleteModal';
+import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import Notification from '../../components/vendor/react-notification';
-import AvailabilityGrid from '../AvailabilityGrid';
+import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { getCurrentUser } from '../../util/auth';
 import styles from './event-details-component.css';
-import ParticipantsList from '../../components/ParticipantsList';
-import BestTimesDisplay from '../../components/BestTimeDisplay';
+import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
+import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {

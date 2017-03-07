@@ -10,7 +10,7 @@ import { browserHistory } from 'react-router';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
 import NotificationBar from '../NotificationBar/NotificationBar';
-import LoginModal from '../Login';
+import LoginModal from '../Login/Login';
 
 class NavBar extends Component {
   constructor(props) {

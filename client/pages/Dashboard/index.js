@@ -12,7 +12,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 /* external components */
-import EventCard from '../../components/EventCard/';
+import EventCard from '../../components/EventCard/EventCard';
 
 /* styles */
 import styles from './dashboard.css';
