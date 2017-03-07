@@ -3,11 +3,11 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Notification } from 'react-notification';
 
-import EventDetailsComponent from '../components/EventDetailsComponent';
-import { checkStatus, parseJSON } from '../util/fetch.util';
-import LoginModal from '../components/Login';
-import styles from '../styles/event-card.css';
-import { isAuthenticated } from '../util/auth';
+import EventDetailsComponent from '../../components/EventDetailsComponent';
+import { checkStatus, parseJSON } from '../../util/fetch.util';
+import LoginModal from '../../components/Login';
+import styles from './event-details.css';
+import { isAuthenticated } from '../../util/auth';
 
 class EventDetails extends Component {
   constructor(props) {

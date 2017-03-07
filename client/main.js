@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { green900 } from 'material-ui/styles/colors';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Client from './client'; // App
 
@@ -23,7 +22,6 @@ const muiTheme = getMuiTheme({
     height: 50,
   },
 });
-
 
 ReactDOM.render(
   <AppContainer>

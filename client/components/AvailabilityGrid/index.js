@@ -8,11 +8,11 @@ import colorsys from 'colorsys';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
-import styles from '../styles/availability-grid.css';
-import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes, removeZero } from '../util/time-format';
-import { getDaysBetween } from '../util/dates.utils';
-import { getTimesBetween } from '../util/times.utils';
+import styles from './availability-grid.css';
+import { checkStatus } from '../../util/fetch.util';
+import { getHours, getMinutes, removeZero } from '../../util/time-format';
+import { getDaysBetween } from '../../util/dates.utils';
+import { getTimesBetween } from '../../util/times.utils';
 
 class AvailabilityGrid extends React.Component {
   constructor(props) {
