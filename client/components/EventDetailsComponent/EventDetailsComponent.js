@@ -373,10 +373,6 @@ class EventDetailsComponent extends React.Component {
           <br />
           <ParticipantsList event={event} curUser={user} />
         </CardText>
-        <Divider style={styles.card.divider} />
-        <CardActions style={styles.card.cardActions}>
-          <FlatButton style={styles.card.cardActions.button} onClick={this.shareEvent}>Share Event</FlatButton>
-        </CardActions>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
