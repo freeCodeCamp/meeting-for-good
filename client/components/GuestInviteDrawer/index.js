@@ -119,10 +119,11 @@ class GuestInviteDrawer extends Component {
     activeCheckboxes.forEach((guest) => {
       this.sendEmailInvite(guest);
     });
+    this.setState({ activeCheckboxes: [] });
   }
 
   async sendEmailInvite(guestId) {
-    const { event, curUser } = this.state;
+    const { event, curUser, activeCheckboxes } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const guestData = await this.loadUserData(guestId);
     const msg = {
@@ -154,6 +155,7 @@ class GuestInviteDrawer extends Component {
     }
   }
   renderRows() {
+    const { activeCheckboxes } = this.state;
     const styles = {
       divider: {
         width: '100%',
@@ -168,6 +170,7 @@ class GuestInviteDrawer extends Component {
             primaryText={guest.name}
             leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} />}
             rightAvatar={<Avatar src={guest.avatar} />}
+            checked={activeCheckboxes.includes(guest.userId)}
           />
           <Divider style={styles.divider} />
         </div>
@@ -179,7 +182,6 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   ClipBoard(url) {
-    console.log(url);
     const { event } = this.state;
     const clipboard = new Clipboard('.btn');
     clipboard.on('success', (e) => {
@@ -210,8 +212,9 @@ class GuestInviteDrawer extends Component {
           marginBottom: '10px',
           marginLeft: '10px',
           icon: {
-            width: 24,
-            height: 24,
+            width: 22,
+            height: 22,
+            paddingBottom: '3px',
           },
         },
       },
@@ -227,9 +230,15 @@ class GuestInviteDrawer extends Component {
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
         <h6 styleName="subHeader"> You can invite new guests coping
-          <IconButton className="btn" style={styles.drawer.copyButtom} data-clipboard-text={fullUrl} onTouchTap={this.ClipBoard} >
-            <Copy tyle={styles.drawer.copyButtom.icon} />
-          </IconButton> 
+          <IconButton
+            className="btn"
+            style={styles.drawer.copyButtom}
+            data-clipboard-text={fullUrl}
+            onTouchTap={this.ClipBoard}
+            iconStyle={styles.drawer.copyButtom.icon}
+          >
+            <Copy />
+          </IconButton>
           the address for the event:
           <a href={fullUrl} id="url">{event.name}</a>
           
