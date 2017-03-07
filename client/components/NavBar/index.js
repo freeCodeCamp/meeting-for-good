@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
-import NotificationBar from '../NotificationBar/index';
+import NotificationBar from '../NotificationBar/NotificationBar';
 import LoginModal from '../Login';
 
 class NavBar extends Component {

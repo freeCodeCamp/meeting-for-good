@@ -327,7 +327,7 @@ class NewEvent extends React.Component {
               No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
             </p>
             <br />
-            <p className="center">
+            <div className="center">
               <RaisedButton
                 labelColor="#9F9F9F"
                 style={styles.card.createButton}
@@ -336,7 +336,7 @@ class NewEvent extends React.Component {
                 onClick={this.createEvent}
                 backgroundColor="transparent"
               />
-            </p>
+            </div>
           </form>
         </CardText>
         <Notification
