@@ -11,7 +11,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
 import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
-
+import Copy from 'material-ui/svg-icons/content/content-copy';
+import IconButton from 'material-ui/IconButton';
+import Clipboard from 'clipboard';
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 
@@ -175,30 +177,81 @@ class GuestInviteDrawer extends Component {
     return rows;
   }
 
+  @autobind
+  ClipBoard(url) {
+    console.log(url);
+    const { event } = this.state;
+    const clipboard = new Clipboard('.btn');
+    clipboard.on('success', (e) => {
+      this.addNotification('Info!!', `url for ${event.name} copied!`);
+      e.clearSelection();
+    });
+  }
+
   render() {
     const { open, event, notifications } = this.state;
+    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+    const styles = {
+      drawer: {
+        textField: {
+          floatingLabel: {
+            fontSize: '24px',
+            paddingLeft: 8,
+          },
+        },
+        divider: {
+          width: '100%',
+          backgroundColor: '#000000',
+        },
+        copyButtom: {
+          width: 28,
+          height: 28,
+          padding: 0,
+          marginBottom: '10px',
+          marginLeft: '10px',
+          icon: {
+            width: 24,
+            height: 24,
+          },
+        },
+      },
+    };
+
     return (
       <Drawer
         docked={false}
         width={300}
         open={open}
         onRequestChange={open => this.setState({ open })}
-      > <h3> This is { event.name } </h3>
-        <h6> That's yours recent guests. If you want, we can invite some for you </h6>
-        <TextField
-          fullWidth={true}  
-          hintText="search"
-          floatingLabelText="Search for Guests"
-        />
-        <List>
-          {this.renderRows()}
-        </List>
+      >
+        <h3 styleName="header"> This is event</h3>
+        <h3 styleName="header"> {event.name} </h3>
+        <h6 styleName="subHeader"> You can invite new guests coping
+          <IconButton className="btn" style={styles.drawer.copyButtom} data-clipboard-text={fullUrl} onTouchTap={this.ClipBoard} >
+            <Copy tyle={styles.drawer.copyButtom.icon} />
+          </IconButton> 
+          the address for the event:
+          <a href={fullUrl} id="url">{event.name}</a>
+          
+        </h6>
+        <Divider style={styles.drawer.divider} />
+        <h6 styleName="subHeader"> That's yours recent guests. If you want, we can invite some for you </h6>
         <RaisedButton
           fullWidth={true}
           label="Invite"
           primary={true}
           onTouchTap={this.handleInvite}
         />
+        <TextField
+          style={styles.drawer.textField}
+          floatingLabelStyle={styles.drawer.textField.floatingLabel}
+          fullWidth={true}
+          hintText="search"
+          floatingLabelText="Search for Guests"
+        />
+        <List>
+          {this.renderRows()}
+        </List>
         <NotificationStack
           notifications={notifications.toArray()}
           onDismiss={notification => this.setState({
