@@ -31,11 +31,6 @@ hr {
   margin: 10px auto;
 }
 
-.material-icons {
-  vertical-align: bottom !important;
-  margin: auto 5px !important;
-}
-
 .participant {
   margin: 10px 10px;
   align-items: center;

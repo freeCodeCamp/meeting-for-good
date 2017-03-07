@@ -114,31 +114,25 @@ class GuestInviteDrawer extends Component {
   @autobind
   handleInvite() {
     const { activeCheckboxes } = this.state;
-    console.log('handleInvite', activeCheckboxes);
     activeCheckboxes.forEach((guest) => {
-      console.log('forEach', guest);
       this.sendEmailInvite(guest);
     });
   }
 
   async sendEmailInvite(guestId) {
-
     const { event, curUser } = this.state;
-    console.log(event)
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const guestData = await this.loadUserData(guestId);
-    const ownerData = await this.loadUserData(event.owner);
     const msg = {
       guestName: guestData.name,
       eventName: event.name,
       eventId: event._id,
       eventOwner: event.owner,
-      eventOwnerMame: curUser.name,
+      eventOwnerName: curUser.name,
       url: `${fullUrl}/event/${event._id}`,
       to: guestData.emails[0],
       subject: `Invite for ${event.name}!!`,
     };
-    console.log(msg, curUser);
     const response = await fetch('/api/email/sendInvite', {
       headers: {
         Accept: 'application/json',
@@ -166,7 +160,6 @@ class GuestInviteDrawer extends Component {
     const { guests } = this.state;
     const rows = [];
     guests.forEach((guest) => {
-      console.log(guest);
       const row = (
         <div key={guest._id}>
           <ListItem
