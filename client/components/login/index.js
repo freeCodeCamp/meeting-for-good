@@ -6,7 +6,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 class LoginModal extends Component {
   constructor(props) {
-    console.log(props);
     super(props);
     const { open } = this.props;
     this.state = {

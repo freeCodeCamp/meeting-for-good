@@ -69,7 +69,6 @@ export const sendInvite = (req, res) => {
       console.log('err at render of sendInvite', err);
       return err;
     }
-    console.log(message);
     message.subject = `Lets Meet Invite from ${message.eventOwnerName}`;
     message.text = result.text;
     message.html = result.html;
