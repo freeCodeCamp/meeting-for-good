@@ -16,13 +16,13 @@ import TextField from 'material-ui/TextField';
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
 
-import { checkStatus, parseJSON } from '../util/fetch.util';
-import { formatTime, getHours, getMinutes } from '../util/time-format';
-import { isAuthenticated, getCurrentUser } from '../util/auth';
-import { dateRangeReducer } from '../util/dates.utils';
+import { checkStatus, parseJSON } from '../../util/fetch.util';
+import { formatTime, getHours, getMinutes } from '../../util/time-format';
+import { isAuthenticated, getCurrentUser } from '../../util/auth';
+import { dateRangeReducer } from '../../util/dates.utils';
 
 
-import styles from '../styles/new-event.css';
+import styles from './new-event.css';
 
 class NewEvent extends React.Component {
   constructor() {
@@ -258,6 +258,7 @@ class NewEvent extends React.Component {
   }
 
   render() {
+    const { ranges, eventName, selectedTimeRange, submitClass, notificationIsActive, notificationMessage } = this.state;
     const styles = {
       card: {
         width: '700px',
@@ -277,10 +278,10 @@ class NewEvent extends React.Component {
     const modifiers = {
       selected: day =>
         DateUtils.isDayInRange(day, this.state) ||
-        this.state.ranges.some(v => DateUtils.isDayInRange(day, v)),
+        ranges.some(v => DateUtils.isDayInRange(day, v)),
     };
 
-    const { from, to } = this.state.ranges[0];
+    const { from, to } = ranges[0];
 
     return (
       <Card style={styles.card}>
@@ -292,7 +293,7 @@ class NewEvent extends React.Component {
               floatingLabelStyle={{ fontSize: '24px' }}
               style={styles.card.textField}
               id="event_name"
-              value={this.state.eventName}
+              value={eventName}
               onChange={this.handleEventNameChange}
               floatingLabelText="Event Name"
               hintText="Enter an event name..."
@@ -323,7 +324,7 @@ class NewEvent extends React.Component {
             <div id="timeSlider" />
             <br />
             <p className="center">
-              No earlier than {this.state.selectedTimeRange[0]} and no later than {this.state.selectedTimeRange[1]}
+              No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
             </p>
             <br />
             <p className="center">
@@ -331,7 +332,7 @@ class NewEvent extends React.Component {
                 labelColor="#9F9F9F"
                 style={styles.card.createButton}
                 label="Create Event"
-                className={this.state.submitClass}
+                className={submitClass}
                 onClick={this.createEvent}
                 backgroundColor="transparent"
               />
@@ -339,8 +340,8 @@ class NewEvent extends React.Component {
           </form>
         </CardText>
         <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
+          isActive={notificationIsActive}
+          message={notificationMessage}
           action="Dismiss"
           title=" "
           onDismiss={() => this.setState({ notificationIsActive: false })}
