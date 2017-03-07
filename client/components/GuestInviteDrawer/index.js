@@ -25,6 +25,7 @@ class GuestInviteDrawer extends Component {
       curUser: {},
       event: this.props.event,
       guests: [],
+      guestsToDisplay: [],
       activeCheckboxes: [],
       notifications: OrderedSet(),
     };
@@ -32,6 +33,8 @@ class GuestInviteDrawer extends Component {
 
   async componentWillMount() {
     await this.loadPassGuests();
+    const { guests } = this.state;
+   
   }
 
   componentWillReceiveProps(nextProps) {
@@ -51,6 +54,7 @@ class GuestInviteDrawer extends Component {
         title: msgTitle,
         key: msgKey,
         action: 'Dismiss',
+        searchText: '',
         dismissAfter: dismissTime,
         onClick: () => this.removeNotification(msgKey),
       }),
@@ -71,7 +75,7 @@ class GuestInviteDrawer extends Component {
     try {
       checkStatus(response);
       guests = await parseJSON(response);
-      this.setState({ guests });
+      this.setState({ guests, guestsToDisplay: guests });
     } catch (err) {
       console.log('loadPassGuests', err);
       this.addNotification('Error!!', 'Failed to load guests. Please try again later.');
@@ -155,14 +159,14 @@ class GuestInviteDrawer extends Component {
     }
   }
   renderRows() {
-    const { activeCheckboxes, guests } = this.state;
+    const { activeCheckboxes, guestsToDisplay } = this.state;
     const styles = {
       divider: {
         width: '100%',
       },
     };
     const rows = [];
-    guests.forEach((guest) => {
+    guestsToDisplay.forEach((guest) => {
       const row = (
         <div key={guest._id}>
           <ListItem
@@ -179,7 +183,7 @@ class GuestInviteDrawer extends Component {
   }
 
   @autobind
-  ClipBoard(url) {
+  ClipBoard() {
     const { event } = this.state;
     const clipboard = new Clipboard('.btn');
     clipboard.on('success', (e) => {
@@ -188,8 +192,23 @@ class GuestInviteDrawer extends Component {
     });
   }
 
+  @autobind
+  handleSearchTextChange(ev) {
+    console.log(ev.target.value);
+    const searchString = ev.target.value.trim().toLowerCase();
+    const { guests } = this.state;
+    let newGuests = guests.slice(0);
+    console.log(newGuests);
+    if (searchString.length > 0) {
+      newGuests = newGuests.filter((guest) => {
+        return guest.name.toLowerCase().match(searchString);
+      });
+    }
+    this.setState({ guestsToDisplay: newGuests });
+  }
+
   render() {
-    const { open, event, notifications } = this.state;
+    const { open, event, notifications, searchText } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
     const styles = {
       drawer: {
@@ -255,6 +274,8 @@ class GuestInviteDrawer extends Component {
           fullWidth={true}
           hintText="search"
           floatingLabelText="Search for Guests"
+          value={searchText}
+          onChange={this.handleSearchTextChange}
         />
         <List>
           {this.renderRows()}
