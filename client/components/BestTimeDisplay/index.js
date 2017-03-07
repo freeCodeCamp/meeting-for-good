@@ -220,4 +220,3 @@ BestTimeDisplay.propTypes = {
 };
 
 export default BestTimeDisplay;
-
