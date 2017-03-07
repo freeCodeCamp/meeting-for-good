@@ -12,14 +12,14 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 /* external components */
-import EventCard from '../components/EventCard/';
+import EventCard from '../../components/EventCard/';
 
 /* styles */
-import styles from '../styles/dashboard.css';
+import styles from './dashboard.css';
 
 /* utilities */
-import { checkStatus, parseJSON } from '../util/fetch.util';
-import { isAuthenticated, getCurrentUser } from '../util/auth';
+import { checkStatus, parseJSON } from '../../util/fetch.util';
+import { isAuthenticated, getCurrentUser } from '../../util/auth';
 
 class Dashboard extends Component {
   constructor() {

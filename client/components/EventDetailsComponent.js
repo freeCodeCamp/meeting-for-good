@@ -278,7 +278,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, showEmail } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, showEmail, dates } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
     const styles = {
@@ -332,7 +332,7 @@ class EventDetailsComponent extends React.Component {
           {(showHeatmap) ?
             <div id="heatmap">
               <AvailabilityGrid
-                dates={this.state.dates}
+                dates={dates}
                 availability={availability}
                 editAvail={this.editAvail}
                 participants={participants}
@@ -342,8 +342,8 @@ class EventDetailsComponent extends React.Component {
             <div id="grid" className="center">
               <div id="availability-grid" className="hide">
                 <AvailabilityGrid
-                  dates={this.state.dates}
-                  user={this.state.user}
+                  dates={dates}
+                  user={user}
                   availability={availability}
                   myAvailability={myAvailability}
                   submitAvail={this.submitAvailability}
