@@ -62,7 +62,7 @@ export const ownerNotification = (req, res) => {
 export const sendInvite = (req, res) => {
   const message = req.body;
   message.from = process.env.emailFrom;
-  const templateDir = path.join(__dirname, 'templates', 'InviteGuests');
+  const templateDir = path.join(__dirname, 'templates', 'inviteGuests');
   const template = new EmailTemplate(templateDir);
   template.render(message, (err, result) => {
     if (err) {
