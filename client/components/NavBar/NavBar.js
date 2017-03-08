@@ -30,8 +30,7 @@ class NavBar extends Component {
 
   @autobind
   handleAuthClick() {
-    const { openLoginModal } = this.state;
-    this.setState({ openLoginModal: !openLoginModal });
+    this.setState({ openLoginModal: true });
   }
 
   async loadUser() {
