@@ -60,7 +60,6 @@ class Dashboard extends Component {
     nprogress.start();
     if (!showPastEvents) {
       const date = Date.now();
-      console.log(date);
       urlToFetch = `/api/events/getByUser/${date}`;
     }
     const response = await fetch(urlToFetch, { credentials: 'same-origin' });
