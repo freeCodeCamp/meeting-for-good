@@ -6,11 +6,13 @@ import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
+import Toggle from 'material-ui/Toggle';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
 import NotificationBar from '../NotificationBar/NotificationBar';
 import LoginModal from '../Login/Login';
+
 
 class NavBar extends Component {
   constructor(props) {
@@ -19,13 +21,13 @@ class NavBar extends Component {
       userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
       user: false,
       conditionalHomeLink: '/',
-      filterPassEvents: true,
       openLoginModal: false,
     };
   }
 
   async componentWillMount() {
     await this.loadUser();
+
   }
 
   @autobind
@@ -53,6 +55,11 @@ class NavBar extends Component {
     browserHistory.push('/dashboard');
   }
 
+  @autobind
+  handleFilterToggle(ev, isInputChecked) {
+    this.props.cbFilter(isInputChecked);
+  }
+
   renderLastGroup() {
     const styles = {
       button: {
@@ -65,7 +72,22 @@ class NavBar extends Component {
       },
       TollbarGroup: {
         paddingRight: '5%',
-
+      },
+      block: {
+        maxWidth: 400,
+      },
+      toggle: {
+        marginTop: 0,
+        paddingLeft: 0,
+        marginRight: 4,
+        label: {
+          color: 'white',
+          fontSize: '18px',
+          width: 100,
+        },
+        thumbSwitched: {
+          backgroundColor: 'red',
+        },
       },
     };
     const { user, curUser, userAvatar, openLoginModal } = this.state;
@@ -77,6 +99,15 @@ class NavBar extends Component {
           style={styles.TollbarGroup}
         >
           <NotificationBar curUser={curUser} />
+          <div style={styles.block}>
+            <Toggle
+              label={'Past Events'}
+              style={styles.toggle}
+              labelStyle={styles.toggle.label}
+              thumbSwitchedStyle={styles.toggle.thumbSwitched}
+              onToggle={this.handleFilterToggle}
+            />
+          </div>
           <FlatButton
             style={styles.button}
             onTouchTap={this.handleDashboardClick}
@@ -140,7 +171,7 @@ class NavBar extends Component {
 
 NavBar.propTypes = {
   location: React.PropTypes.object,
-  filterPassEvents: React.PropTypes.func,
+  cbFilter: React.PropTypes.func,
 };
 
 export default NavBar;
