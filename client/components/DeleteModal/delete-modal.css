@@ -1,0 +1,8 @@
+.delete-buttom {
+  position: relative !important;
+  z-index: 1000;
+  display: block;
+  float: right;
+  margin-right: -17px;
+  margin-top: -20px;
+}
