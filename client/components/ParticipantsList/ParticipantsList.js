@@ -200,6 +200,8 @@ class ParticipantsList extends Component {
               iconStyle={inLineStyles.buttonAddGuest.iconStyle}
               onClick={this.handleToggle}
               hoveredStyle={inLineStyles.buttonAddGuest.hoveredStyle}
+              tooltip={'Add a participant'}
+              tooltipPosition={'top-left'}
             >
               <ContentAdd />
             </IconButton >
