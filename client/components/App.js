@@ -9,25 +9,23 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filterPastEvents: false,
+      showPastEvents: false,
     };
   }
 
   @autobind
   toggleFilterPastEventsTo(value) {
-    console.log('toggleFilterPastEventsTo', value);
-    this.setState({ filterPastEvents: value });
+    this.setState({ showPastEvents: value });
   }
 
   render() {
-    const { filterPastEvents } = this.state;
+    const { showPastEvents } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (this.props.children.type.name === 'Dashboard') {
-          return cloneElement(child, { filterPastEvents });
-        } else {
-          return cloneElement(child);
+          return cloneElement(child, { showPastEvents });
         }
+        return cloneElement(child);
       });
 
     return (

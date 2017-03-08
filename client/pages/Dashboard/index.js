@@ -29,6 +29,7 @@ class Dashboard extends Component {
       events: [],
       notifications: OrderedSet(),
       count: 0,
+      showPastEvents: false,
     };
   }
 
@@ -43,6 +44,15 @@ class Dashboard extends Component {
     }
     const user = await getCurrentUser();
     this.setState({ curUser: user });
+    await this.loadEvents();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { showPastEvents } = nextProps;
+    this.setState({ showPastEvents });
+  }
+
+  async loadEvents() {
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     const response = await fetch('/api/events/getByUser', { credentials: 'same-origin' });
@@ -144,6 +154,10 @@ class Dashboard extends Component {
     );
   }
 }
+
+Dashboard.propTypes = {
+  showPastEvents: React.PropTypes.bool,
+};
 
 export default cssModules(Dashboard, styles);
 
