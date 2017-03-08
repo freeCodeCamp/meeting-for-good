@@ -265,16 +265,9 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  shareEvent() {
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: window.location.href,
-      notificationTitle: 'Event URL:',
-      showEmail: true,
-    });
-    setTimeout(() => {
-      this.selectElementContents(document.getElementsByClassName('notification-bar-message')[0]);
-    }, 100);
+  handleShowInviteGuestsDrawer() {
+    const { event } = this.state;
+    this.props.showInviteGuests(event);
   }
 
   render() {
@@ -371,7 +364,7 @@ class EventDetailsComponent extends React.Component {
             </div>
           }
           <br />
-          <ParticipantsList event={event} curUser={user} />
+        <ParticipantsList event={event} curUser={user} showInviteGuests={this.handleShowInviteGuestsDrawer} />
         </CardText>
         <Notification
           isActive={this.state.notificationIsActive}
@@ -389,6 +382,7 @@ class EventDetailsComponent extends React.Component {
 
 EventDetailsComponent.propTypes = {
   event: React.PropTypes.object,
+  showInviteGuests: React.PropTypes.object,
 };
 
 export default cssModules(EventDetailsComponent, styles);

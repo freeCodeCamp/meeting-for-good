@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Notification } from 'react-notification';
+import autobind from 'autobind-decorator';
 
 import EventDetailsComponent from '../../components/EventDetailsComponent/EventDetailsComponent';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import LoginModal from '../../components/Login/Login';
 import styles from './event-details.css';
-import { isAuthenticated } from '../../util/auth';
+import { isAuthenticated, getCurrentUser } from '../../util/auth';
+import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDrawer';
 
 class EventDetails extends Component {
   constructor(props) {
@@ -17,6 +19,9 @@ class EventDetails extends Component {
       notificationMessage: '',
       notificationIsActive: false,
       showLoginModal: false,
+      openDrawer: false,
+      eventToInvite: {},
+      curUser: {},
     };
   }
 
@@ -29,7 +34,8 @@ class EventDetails extends Component {
       try {
         checkStatus(response);
         event = await parseJSON(response);
-        this.setState({ event });
+        const user = await getCurrentUser();
+        this.setState({ event, curUser: user });
       } catch (err) {
         console.log('err at componentWillMount EventDetail', err);
         this.setState({
@@ -43,10 +49,25 @@ class EventDetails extends Component {
     }
   }
 
+    @autobind
+    handleInviteGuests(event) {
+      this.setState({ openDrawer: true, eventToInvite: event });
+    }
+
+    @autobind
+    handleCbGustInviteDrawer(open) {
+      this.setState({ openDrawer: open });
+    }
+
   render() {
-    const { event, showLoginModal, notificationIsActive, notificationMessage } = this.state;
+    const { event, showLoginModal, notificationIsActive, notificationMessage, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
-      return <EventDetailsComponent event={event} />;
+      return (
+        <div>
+          <EventDetailsComponent event={event} showInviteGuests={this.handleInviteGuests} />
+          <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGustInviteDrawer} />
+        </div> 
+      );
     }
     if (showLoginModal) {
       return <LoginModal open={true} />;
