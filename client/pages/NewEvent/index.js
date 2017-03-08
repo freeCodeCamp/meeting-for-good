@@ -230,7 +230,7 @@ class NewEvent extends React.Component {
     dates = dateRangeReducer(dates);
     // the field active now has a default of true.
     const sentData = JSON.stringify({ name, dates });
-  
+
     const response = await fetch('/api/events', {
       headers: {
         Accept: 'application/json',

@@ -104,10 +104,14 @@ export const indexById = (req, res) => {
 
 // Gets all events that a especified user is participant
 export const indexByUser = (req, res) => {
+  const actualDate = (req.params.actualDate) ? req.params.actualDate : 1;
   return Events.find({
     'participants.userId': req.user._id.toString(),
-    active: true,
-  }).exec()
+  })
+    .where('active').equals(true)
+    .where('dates.toDate')
+    .gt(actualDate)
+    .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };

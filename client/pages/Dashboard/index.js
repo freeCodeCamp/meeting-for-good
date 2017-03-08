@@ -23,13 +23,14 @@ import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated, getCurrentUser } from '../../util/auth';
 
 class Dashboard extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    const showPastEvents = props.showPastEvents;
     this.state = {
       events: [],
       notifications: OrderedSet(),
       count: 0,
-      showPastEvents: false,
+      showPastEvents,
     };
   }
 
@@ -47,15 +48,22 @@ class Dashboard extends Component {
     await this.loadEvents();
   }
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     const { showPastEvents } = nextProps;
+    await this.loadEvents(showPastEvents);
     this.setState({ showPastEvents });
   }
 
-  async loadEvents() {
+  async loadEvents(showPastEvents) {
+    let urlToFetch = '/api/events/getByUser';
     nprogress.configure({ showSpinner: false });
     nprogress.start();
-    const response = await fetch('/api/events/getByUser', { credentials: 'same-origin' });
+    if (!showPastEvents) {
+      const date = Date.now();
+      console.log(date);
+      urlToFetch = `/api/events/getByUser/${date}`;
+    }
+    const response = await fetch(urlToFetch, { credentials: 'same-origin' });
     let events;
     try {
       checkStatus(response);
