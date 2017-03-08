@@ -274,7 +274,6 @@ class GuestInviteDrawer extends Component {
           style={styles.drawer.textField}
           floatingLabelStyle={styles.drawer.textField.floatingLabel}
           fullWidth={true}
-          hintText="search"
           floatingLabelText="Search for Guests"
           value={searchText}
           onChange={this.handleSearchTextChange}
