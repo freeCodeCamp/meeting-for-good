@@ -19,7 +19,8 @@ class NavBar extends Component {
       userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
       user: false,
       conditionalHomeLink: '/',
-      open: false,
+      filterPassEvents: true,
+      openLoginModal: false,
     };
   }
 
@@ -29,7 +30,8 @@ class NavBar extends Component {
 
   @autobind
   handleAuthClick() {
-    this.setState({ open: true });
+    const { openLoginModal } = this.state;
+    this.setState({ openLoginModal: !openLoginModal });
   }
 
   async loadUser() {
@@ -67,7 +69,7 @@ class NavBar extends Component {
 
       },
     };
-    const { user, curUser, userAvatar, open } = this.state;
+    const { user, curUser, userAvatar, openLoginModal } = this.state;
 
     if (user) {
       return (
@@ -96,7 +98,7 @@ class NavBar extends Component {
         lastChild={true}
         style={styles.TollbarGroup}
       >
-        <LoginModal open={open} />
+        <LoginModal open={openLoginModal} />
         <RaisedButton style={styles.loginButton} backgroundColor="#3F51B5" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
@@ -139,6 +141,7 @@ class NavBar extends Component {
 
 NavBar.propTypes = {
   location: React.PropTypes.object,
+  filterPassEvents: React.PropTypes.func,
 };
 
 export default NavBar;
