@@ -32,7 +32,7 @@ class GuestInviteDrawer extends Component {
   }
 
   async componentWillMount() {
-    await this.loadPassGuests();
+    await this.loadPastGuests();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -66,7 +66,7 @@ class GuestInviteDrawer extends Component {
     });
   }
 
-  async loadPassGuests() {
+  async loadPastGuests() {
     nprogress.start();
     const response = await fetch('/api/user/relatedUsers', { credentials: 'same-origin' });
     let guests;
@@ -209,6 +209,13 @@ class GuestInviteDrawer extends Component {
     this.setState({ guestsToDisplay: newGuests });
   }
 
+  @autobind
+  handleonRequestChange(open) {
+    this.setState({ open });
+    this.props.cb(open);
+  }
+
+
   render() {
     const { open, event, notifications, searchText } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
@@ -244,7 +251,7 @@ class GuestInviteDrawer extends Component {
         docked={false}
         width={300}
         open={open}
-        onRequestChange={open => this.setState({ open })}
+        onRequestChange={open => this.handleonRequestChange(open)}
       >
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
@@ -296,6 +303,7 @@ GuestInviteDrawer.propTypes = {
   event: React.PropTypes.object,
   curUser: React.PropTypes.object,
   open: React.PropTypes.bool,
+  cb: React.PropTypes.func,
 };
 
 export default cssModules(GuestInviteDrawer, styles);

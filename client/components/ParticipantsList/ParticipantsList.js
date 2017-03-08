@@ -12,7 +12,7 @@ import cssModules from 'react-css-modules';
 
 import { checkStatus } from '../../util/fetch.util';
 import styles from './participants-list.css';
-import GuestInviteDrawer from '../GuestInviteDrawer/GuestInviteDrawer';
+
 
 class ParticipantsList extends Component {
   constructor(props) {
@@ -87,9 +87,9 @@ class ParticipantsList extends Component {
   }
 
   @autobind
-  handleToggle() {
-    const { openDrawer } = this.state;
-    this.setState({ openDrawer: !openDrawer });
+  handleToggleShowInviteGuestDrawer() {
+    this.props.showInviteGuests();
+    // this.setState({ openDrawer: !openDrawer });
   }
 
   renderGuestList() {
@@ -198,7 +198,7 @@ class ParticipantsList extends Component {
             <IconButton
               style={inLineStyles.buttonAddGuest}
               iconStyle={inLineStyles.buttonAddGuest.iconStyle}
-              onClick={this.handleToggle}
+              onClick={this.handleToggleShowInviteGuestDrawer}
               hoveredStyle={inLineStyles.buttonAddGuest.hoveredStyle}
               tooltip={'Add a participant'}
               tooltipPosition={'top-left'}
@@ -209,7 +209,6 @@ class ParticipantsList extends Component {
         </div>
         {this.renderGuestList()}
         {this.renderModal()}
-        <GuestInviteDrawer open={openDrawer} event={event} curUser={curUser} />
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
@@ -228,6 +227,7 @@ class ParticipantsList extends Component {
 ParticipantsList.propTypes = {
   event: React.PropTypes.object,
   curUser: React.PropTypes.object,
+  showInviteGuests: React.PropTypes.func,
 };
 
 export default cssModules(ParticipantsList, styles);

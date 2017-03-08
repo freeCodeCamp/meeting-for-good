@@ -54,8 +54,11 @@ class EventCard extends Component {
     }
   }
 
+
   @autobind
-  handleGuestDelete(ret) {
+  handleShowInviteGuestsDrawer() {
+    const { event } = this.state;
+    this.props.showInviteGuests(event);
   }
 
   render() {
@@ -97,7 +100,7 @@ class EventCard extends Component {
         </CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker={false} />
-          <ParticipantsList event={event} curUser={curUser} />
+          <ParticipantsList event={event} curUser={curUser} showInviteGuests={this.handleShowInviteGuestsDrawer} />
         </CardText>
         <Divider style={styles.card.divider} />
         <CardActions style={styles.card.cardActions}>
@@ -121,6 +124,7 @@ EventCard.propTypes = {
   event: React.PropTypes.object,
   removeEventFromDashboard: React.PropTypes.func,
   cb: React.PropTypes.func,
+  showInviteGuests: React.PropTypes.func,
 };
 
 export default cssModules(EventCard, styles);

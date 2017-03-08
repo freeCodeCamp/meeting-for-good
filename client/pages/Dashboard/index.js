@@ -14,6 +14,7 @@ import { Card } from 'material-ui/Card';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
+import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDrawer';
 
 /* styles */
 import styles from './dashboard.css';
@@ -31,6 +32,8 @@ class Dashboard extends Component {
       notifications: OrderedSet(),
       count: 0,
       showPastEvents,
+      openDrawer: false,
+      eventToInvite: {},
     };
   }
 
@@ -120,8 +123,20 @@ class Dashboard extends Component {
     browserHistory.push('/event/new');
   }
 
+  @autobind
+  handleInviteGuests(event) {
+    console.log(event);
+    this.setState({ openDrawer: true, eventToInvite: event });
+  }
+
+  @autobind
+  handleCbGustInviteDrawer(open) {
+    console.log('saco');
+    this.setState({ openDrawer: open });
+  }
+
   render() {
-    const { events, curUser, notifications, showNoScheduledMessage } = this.state;
+    const { events, curUser, notifications, showNoScheduledMessage, openDrawer, eventToInvite } = this.state;
     const styles = {
       height: '80vh',
     }
@@ -140,6 +155,7 @@ class Dashboard extends Component {
                 event={event}
                 removeEventFromDashboard={this.removeEventFromDashboard}
                 user={curUser}
+                showInviteGuests={this.handleInviteGuests}
               />
             ))}
           </Masonry> :
@@ -157,6 +173,7 @@ class Dashboard extends Component {
             notifications: notifications.delete(notification),
           })}
         />
+        <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGustInviteDrawer} />
       </div>
     );
   }
