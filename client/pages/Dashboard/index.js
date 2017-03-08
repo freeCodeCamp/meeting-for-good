@@ -10,7 +10,7 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDrawer';
+import { Card } from 'material-ui/Card';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -105,6 +105,9 @@ class Dashboard extends Component {
 
   render() {
     const { events, curUser, notifications, showNoScheduledMessage } = this.state;
+    const styles = {
+      height: '80vh',
+    }
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
@@ -124,12 +127,12 @@ class Dashboard extends Component {
             ))}
           </Masonry> :
             showNoScheduledMessage ?
-              <em>
-                <h4 styleName="no-select" className="card-title center-align black-text">
+              <Card style={styles}>
+                <h4 styleName="no-select" >
                   You have no scheduled events yet.
                 </h4>
-              </em> :
-              null
+              </Card> :
+            null
         }
         <NotificationStack
           notifications={notifications.toArray()}
