@@ -10,6 +10,7 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDrawer';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';

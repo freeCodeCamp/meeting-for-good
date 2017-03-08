@@ -260,7 +260,7 @@ class GuestInviteDrawer extends Component {
           </IconButton>
           the address for the event:
           <a href={fullUrl} id="url">{event.name}</a>
-          
+
         </h6>
         <Divider style={styles.drawer.divider} />
         <h6 styleName="subHeader"> That's yours recent guests. If you want, we can invite some for you </h6>

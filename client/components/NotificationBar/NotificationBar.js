@@ -106,7 +106,7 @@ class NotificationBar extends Component {
               </MenuItem>
             );
             rows.push(row);
-            rows.push(<Divider style={{ width: '100%' }} />);
+            rows.push(<Divider key={participant._id} style={{ width: '100%' }} />);
           }
         });
       });

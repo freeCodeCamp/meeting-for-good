@@ -41,7 +41,7 @@ class ParticipantsList extends Component {
   }
 
   @autobind
-  handleOpen(id) {
+  handleOpenDeleteModal(id) {
     this.setState({ open: true, guestToDelete: id });
   }
 
@@ -115,7 +115,7 @@ class ParticipantsList extends Component {
       let row;
       if (curUser._id !== participant.userId && event.owner === curUser._id) {
         row = (
-          <Chip key={participant._id} style={styles.chip} onRequestDelete={() => this.handleOpen(participant._id)}>
+          <Chip key={participant._id} style={styles.chip} onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}>
             <Avatar src={participant.avatar} style={styles.avatar} />
             {participant.name}
           </Chip>
