@@ -63,6 +63,7 @@ class Dashboard extends Component {
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     if (!showPastEvents) {
+      console.log('no old');
       const date = new Date();
       urlToFetch = `/api/events/getByUser/${date}`;
     }
@@ -71,15 +72,15 @@ class Dashboard extends Component {
     try {
       checkStatus(response);
       events = await parseJSON(response);
+      this.setState({ events });
     } catch (err) {
-      console.log(err);
+      console.log('loadEvents, at Dashboard', err);
       this.addNotification('Error!!', 'Failed to load events. Please try again later.');
       return;
     } finally {
       nprogress.done();
       this.setState({ showNoScheduledMessage: true });
     }
-    this.setState({ events });
   }
 
   removeNotification(key) {
