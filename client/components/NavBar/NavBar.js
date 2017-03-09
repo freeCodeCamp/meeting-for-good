@@ -12,13 +12,14 @@ import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { isAuthenticated } from '../../util/auth';
 import NotificationBar from '../NotificationBar/NotificationBar';
 import LoginModal from '../Login/Login';
+import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userAvatar: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+      userAvatar: avatarPlaceHolder,
       user: false,
       conditionalHomeLink: '/',
       openLoginModal: false,
