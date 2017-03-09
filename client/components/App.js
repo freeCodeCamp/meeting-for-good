@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   render() {
-    const { location } = this.props; 
+    const { location } = this.props;
     const { showPastEvents } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {

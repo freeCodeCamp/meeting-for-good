@@ -39,7 +39,6 @@ class NavBar extends Component {
 
   MenuVisibility(location) {
     if (location.pathname === '/dashboard') {
-      console.log(location);
       this.setState({ toggleVisible: true });
     } else {
       this.setState({ toggleVisible: false });

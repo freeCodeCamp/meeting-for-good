@@ -97,6 +97,9 @@ class ParticipantsList extends Component {
         width: '100%',
         border: '0.5px solid #E0E0E0',
         backgroundColor: '#ECEFF1',
+        label: {
+          width: '80%',
+        },
       },
       wrapper: {
         display: 'flex',
@@ -113,7 +116,12 @@ class ParticipantsList extends Component {
       let row;
       if (curUser._id !== participant.userId && event.owner === curUser._id) {
         row = (
-          <Chip key={participant._id} style={styles.chip} onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}>
+          <Chip
+            key={participant._id}
+            style={styles.chip}
+            labelStyle={styles.chip.label}
+            onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
+          >
             <Avatar src={participant.avatar} style={styles.avatar} />
             {participant.name}
           </Chip>

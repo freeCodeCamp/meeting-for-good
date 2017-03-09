@@ -12,8 +12,3 @@
 {
   display: table-cell;
 }
-.Snackbar
-{
-  position:relative;
-  z-index: 1000;
-}
