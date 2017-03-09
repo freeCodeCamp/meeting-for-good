@@ -97,7 +97,7 @@ class NotificationBar extends Component {
             }
             const row = (
               <MenuItem
-                key={participant._id}
+                key={`${participant._id} first`}
                 value={participant._id}
                 style={{ backgroundColor: bkgColor, color: '#000000' }}
               >
@@ -106,7 +106,7 @@ class NotificationBar extends Component {
               </MenuItem>
             );
             rows.push(row);
-            rows.push(<Divider key={participant._id} style={{ width: '100%' }} />);
+            rows.push(<Divider key={`${participant._id} divider`} style={{ width: '100%' }} />);
           }
         });
       });
