@@ -21,12 +21,12 @@ class ParticipantsList extends Component {
     this.state = {
       event: (event !== undefined) ? event : null,
       curUser,
-      open: false,
+      openDeleteModal: false,
+      openDrawer: false,
       guestToDelete: '',
       notificationMessage: '',
       notificationIsActive: false,
       notificationTitle: '',
-      openDrawer: false,
     };
   }
 
@@ -36,17 +36,17 @@ class ParticipantsList extends Component {
   }
 
   @autobind
-  handleClose() {
-    this.setState({ open: false });
+  handleCloseDeleteModal() {
+    this.setState({ openDeleteModal: false });
   }
 
   @autobind
   handleOpenDeleteModal(id) {
-    this.setState({ open: true, guestToDelete: id });
+    this.setState({ openDeleteModal: true, guestToDelete: id });
   }
 
   @autobind
-  async handleDelete() {
+  async handleDeleteGuest() {
     const { guestToDelete, event } = this.state;
     const response =  await fetch(
     `/api/events/participant/${guestToDelete}`,
@@ -71,25 +71,23 @@ class ParticipantsList extends Component {
         event: newEvent,
         notificationTitle: 'Alert',
         notificationIsActive: true,
-        notificationMessage: 'Guest delete success!',
-      });
+        notificationMessage: 'Guest delete success!',      });
     } catch (err) {
       this.setState({
         notificationIsActive: true,
         notificationTitle: 'Error',
         notificationMessage: 'Failed to delete guest. Please try again later.',
       });
-      console.log('deleteEvent Modal', err);
+      console.log('error at deleteEvent Modal', err);
       return err;
     } finally {
-      this.handleClose();
+      this.handleCloseDeleteModal();
     }
   }
 
   @autobind
   handleToggleShowInviteGuestDrawer() {
     this.props.showInviteGuests();
-    // this.setState({ openDrawer: !openDrawer });
   }
 
   renderGuestList() {
@@ -132,33 +130,47 @@ class ParticipantsList extends Component {
     return rows;
   }
 
-  renderModal() {
-    const { open } = this.state;
+  renderDeleteModal() {
+    const { openDeleteModal } = this.state;
     const actions = [
       <FlatButton
         label="Cancel"
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.handleCloseDeleteModal}
       />,
       <FlatButton
         label="yes"
         secondary={true}
-        onTouchTap={this.handleDelete}
+        onTouchTap={this.handleDeleteGuest}
       />,
     ];
     const styles = {
       modal: {
-        width: '35%',
-        maxWidth: '35%',
+        title: {
+          backgroundColor: '#FF4081',
+          color: '#ffffff',
+          fontSize: '25px',
+        },
+        content: {
+          width: '22%',
+          maxWidth: '22%',
+        },
+        bodyStyle: {
+          paddingTop: 10,
+          fontSize: '25px',
+        },
       },
     };
+
     return (
       <Dialog
         title="Delete Guest"
+        titleStyle={styles.modal.title}
+        contentStyle={styles.modal.content}
+        bodyStyle={styles.modal.bodyStyle}
         actions={actions}
         modal={true}
-        open={open}
-        contentStyle={styles.modal}
+        open={openDeleteModal}
       >
         Are you sure you want to delete this guest?
       </Dialog>
@@ -207,7 +219,7 @@ class ParticipantsList extends Component {
           </div>
         </div>
         {this.renderGuestList()}
-        {this.renderModal()}
+        {this.renderDeleteModal()}
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
