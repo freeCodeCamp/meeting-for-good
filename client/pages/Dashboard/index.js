@@ -11,7 +11,6 @@ import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { Card } from 'material-ui/Card';
-import moment from 'moment';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -59,11 +58,12 @@ class Dashboard extends Component {
   }
 
   async loadEvents(showPastEvents) {
+    console.log('showPastEvents', showPastEvents);
     let urlToFetch = '/api/events/getPastByUser';
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     if (!showPastEvents) {
-      console.log('no old');
+      console.log('no old', showPastEvents);
       const date = new Date();
       urlToFetch = `/api/events/getByUser/${date}`;
     }
