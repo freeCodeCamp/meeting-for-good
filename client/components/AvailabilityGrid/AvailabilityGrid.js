@@ -8,11 +8,14 @@ import colorsys from 'colorsys';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
-import styles from '../styles/availability-grid.css';
-import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes, removeZero } from '../util/time-format';
-import { getDaysBetween } from '../util/dates.utils';
-import { getTimesBetween } from '../util/times.utils';
+import FlatButton from 'material-ui/FlatButton';
+
+import styles from './availability-grid.css';
+import { checkStatus } from '../../util/fetch.util';
+import { getHours, getMinutes, removeZero } from '../../util/time-format';
+import { getDaysBetween } from '../../util/dates.utils';
+import { getTimesBetween } from '../../util/times.utils';
+
 
 class AvailabilityGrid extends React.Component {
   constructor(props) {
@@ -383,10 +386,15 @@ class AvailabilityGrid extends React.Component {
     const { allDatesRender, allTimesRender, hourTime } = this.state;
     const { dates } = this.props;
     return (
-      <div>
-        <a styleName="info" onClick={() => document.querySelector('#showAvailHelper').showModal()}>
-          <em>How do I use the grid?</em>
-        </a>
+      <div styleName="Column">
+        <div styleName="row">
+          <FlatButton
+            primary={true}
+            onClick={() => document.querySelector('#showAvailHelper').showModal()}
+          >
+            How do I use the grid?
+          </FlatButton>
+        </div>
         <div styleName="selectbox" id="selectbox" />
         {hourTime.map((time, i) => {
           return (
@@ -475,7 +483,7 @@ class AvailabilityGrid extends React.Component {
         >
           <p className="mdl-dialog__title">This is how you can enter and remove your availablity:</p>
           <div className="mdl-dialog__actions">
-            <img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/enteravail.gif" alt="entering availablity gif" />
+            <img src={require('../../assets/enteravail.gif')} alt="entering availablity gif" />
             <button
               type="button"
               className="mdl-button close"

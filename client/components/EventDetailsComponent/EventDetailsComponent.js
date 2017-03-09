@@ -4,15 +4,21 @@ import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
-import moment from 'moment';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
-import 'react-day-picker/lib/style.css';
-import Notification from '../components/vendor/react-notification';
-import AvailabilityGrid from './AvailabilityGrid';
-import { checkStatus, parseJSON } from '../util/fetch.util';
-import { getCurrentUser } from '../util/auth';
-import styles from '../styles/event-card.css';
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import DeleteModal from '../../components/DeleteModal/DeleteModal';
+import Notification from '../../components/vendor/react-notification';
+import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
+import { checkStatus, parseJSON } from '../../util/fetch.util';
+import { getCurrentUser } from '../../util/auth';
+import styles from './event-details-component.css';
+import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
+import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -64,7 +70,6 @@ class EventDetailsComponent extends React.Component {
 
       this.setState({ user, showHeatmap, myAvailability });
     }
-    this.generateBestDatesAndTimes(event);
   }
 
   componentDidMount() {
@@ -143,16 +148,29 @@ class EventDetailsComponent extends React.Component {
     this.setState({ event, eventParticipantsIds });
   }
 
+  async loadOwnerData(_id) {
+    const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
+    try {
+      checkStatus(response);
+      return await parseJSON(response);
+    } catch (err) {
+      console.log('loadOwnerData', err);
+      this.addNotification('Error!!', 'Failed to load owner Data. Please try again later.');
+      return null;
+    }
+  }
+
   async sendEmailOwner(event) {
-    const { name, emails } = this.state.user;
-    const full = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
+    const { name } = this.state.user;
+    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
+    const ownerData = await this.loadOwnerData(event.owner);
     const msg = {
       guestName: name,
       eventName: event.name,
       eventId: event._id,
       eventOwner: event.owner,
-      url: `${full}/event/${event._id}`,
-      to: emails[0],
+      url: `${fullUrl}/event/${event._id}`,
+      to: ownerData.emails[0],
       subject: 'Invite Accepted!!',
     };
     const response = await fetch('/api/email/ownerNotification', {
@@ -176,7 +194,7 @@ class EventDetailsComponent extends React.Component {
         showEmail: false,
       });
     }
-  }  
+  }
 
   @autobind
   showAvailability(ev) {
@@ -222,133 +240,68 @@ class EventDetailsComponent extends React.Component {
       notificationTitle: 'Success!',
       showEmail: false,
     });
-
-    this.generateBestDatesAndTimes(event);
     this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
   }
 
   @autobind
-  async deleteEvent() {
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin', method: 'DELETE',
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
+  handleDelete(result) {
+    if (result === true) {
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Event successfully deleted!',
+        notificationTitle: 'Alert',
+        showEmail: false,
+      });
+      browserHistory.push('/dashboard');
+    } else {
+      console.log('error at handleDelete EventDetailsComponent', result);
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
         notificationTitle: 'Error!',
         showEmail: false,
       });
-      return;
-    } finally {
-      nprogress.done();
     }
-
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: 'Event successfully deleted!',
-      notificationTitle: '',
-      showEmail: false,
-    });
-
-    browserHistory.push('/dashboard');
-  }
-
-  generateBestDatesAndTimes(event) {
-    const availability = [];
-    const overlaps = [];
-    const displayTimes = {};
-    const formatStr = this.state.days ? 'dddd' : 'DD MMM';
-
-    event.participants.forEach((user) => {
-      if (user.availability !== undefined) availability.push(user.availability);
-    });
-
-    if (availability.length <= 1) return;
-
-    for (let i = 0; i < availability[0].length; i++) {
-      const current = availability[0][i];
-      let count = 0;
-      for (let j = 0; j < availability.length; j++) {
-        for (let k = 0; k < availability[j].length; k++) {
-          if (availability[j][k][0] === current[0]) {
-            count++;
-          }
-        }
-      }
-      if (count === availability.length) overlaps.push(current);
-    }
-
-
-    if (overlaps.length === 0) {
-      this.setState({ displayTimes });
-      return;
-    }
-
-    let index = 0;
-    for (let i = 0; i < overlaps.length; i++) {
-      if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
-        if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
-          );
-        } else {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`],
-          };
-        }
-        index = i + 1;
-      } else if (overlaps[i + 1] === undefined) {
-        if (displayTimes[moment(overlaps[index][0]).format(formatStr)] !== undefined) {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)].hours.push(
-            `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`,
-          );
-        } else {
-          displayTimes[moment(overlaps[index][0]).format(formatStr)] = {
-            hours: [`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`],
-          };
-        }
-      }
-    }
-
-    this.setState({ displayTimes });
   }
 
   @autobind
-  shareEvent() {
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: window.location.href,
-      notificationTitle: 'Event URL:',
-      showEmail: true,
-    });
-    setTimeout(() => {
-      this.selectElementContents(document.getElementsByClassName('notification-bar-message')[0]);
-    }, 100);
+  handleShowInviteGuestsDrawer() {
+    const { event } = this.state;
+    this.props.showInviteGuests(event);
   }
 
   render() {
-    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, showEmail } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, showEmail, dates } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
+    const styles = {
+      card: {
+        width: '510px',
+        marginTop: '2%',
+        cardTitle: {
+          paddingBottom: 0,
+          fontSize: '24px',
+          paddingTop: 25,
+          fontWeight: 300,
+        },
+        cardActions: {
+          fontSize: '20px',
+          paddingLeft: '5%',
+          button: {
+            marginLeft: '70%',
+            color: '#F66036',
+
+          },
+        },
+        divider: {
+          width: '100%',
+        },
+      },
+    };
 
     if (user !== undefined) {
       isOwner = event.owner === user._id;
     }
-
-    const bestTimes = this.state.displayTimes;
-    let isBestTime;
-
-    if (bestTimes !== undefined) {
-      if (Object.keys(bestTimes).length > 0) isBestTime = true;
-      else isBestTime = false;
-    } else isBestTime = false;
 
     const notifActions = [{
       text: 'Dismiss',
@@ -363,47 +316,16 @@ class EventDetailsComponent extends React.Component {
     }
 
     return (
-      <div className="card meeting" styleName="event-details">
-        {
-          isOwner ?
-            <button
-              className="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-              styleName="delete-event"
-              onClick={() => document.querySelector('#deleteEventModal').showModal()}
-            ><i className="material-icons">delete</i></button> : null
-        }
-        <div className="card-content">
-          <span styleName="card-title" className="card-title">{event.name}</span>
+      <Card style={styles.card}>
+        {isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
+        <CardTitle style={styles.card.cardTitle}>{event.name}</CardTitle>
+        <CardText>
           <h6 id="best"><strong>All participants so far are available at:</strong></h6>
-          <div className="row">
-            <div className="col s12">
-              {isBestTime ?
-                Object.keys(bestTimes).map(date => (
-                  <div key={date}>
-                    <div styleName="bestTimeDate">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >date_range</i>
-                      {date}
-                    </div>
-                    <div styleName="bestTime">
-                      <i
-                        className="material-icons"
-                        styleName="material-icons"
-                      >alarm</i>
-                      {bestTimes[date].hours.join(', ')}
-                    </div>
-                    <hr />
-                  </div>
-                )) : null
-              }
-            </div>
-          </div>
-          {showHeatmap ?
+          <BestTimesDisplay event={event} disablePicker={true} />
+          {(showHeatmap) ?
             <div id="heatmap">
               <AvailabilityGrid
-                dates={this.state.dates}
+                dates={dates}
                 availability={availability}
                 editAvail={this.editAvail}
                 participants={participants}
@@ -413,49 +335,37 @@ class EventDetailsComponent extends React.Component {
             <div id="grid" className="center">
               <div id="availability-grid" className="hide">
                 <AvailabilityGrid
-                  dates={this.state.dates}
-                  user={this.state.user}
+                  dates={dates}
+                  user={user}
                   availability={availability}
                   myAvailability={myAvailability}
                   submitAvail={this.submitAvailability}
                   event={event}
                 />
               </div>
-              {Object.keys(user).length > 0 ?
-                eventParticipantsIds.indexOf(user._id) > -1 ?
-                  <a
+              {(Object.keys(user).length > 0) ?
+                (eventParticipantsIds.indexOf(user._id) > -1) ?
+                  <RaisedButton
                     id="enterAvailButton"
-                    className="waves-effect waves-light btn"
+                    backgroundColor="#28AEA1"
+                    labelColor="#ffffff"
                     onClick={this.showAvailability}
-                  >Enter my availability</a> :
-                  <a
-                    className="waves-effect waves-light btn"
+                    label={'Enter my availability'}
+                  />
+                  :
+                  <RaisedButton
                     onClick={this.joinEvent}
-                  >Join Event</a> :
-                  <p>Login to enter your availability!</p>
+                    label={'Join Event'}
+                    backgroundColor="#28AEA1"
+                    labelColor="#ffffff"
+                  />
+                : null
               }
             </div>
           }
           <br />
-          <div>
-            <h6><strong>Participants</strong></h6>
-            {event.participants.map((participant, index) => (
-              <div className="participant" styleName="participant" key={index}>
-                <img
-                  className="circle"
-                  styleName="participant-img"
-                  src={participant.avatar}
-                  alt="participant avatar"
-                />
-                {participant.name}
-              </div>
-            ))}
-
-          </div>
-        </div>
-        <div styleName="action" className="card-action">
-          <a onClick={this.shareEvent}>Share Event</a>
-        </div>
+        <ParticipantsList event={event} curUser={user} showInviteGuests={this.handleShowInviteGuestsDrawer} />
+        </CardText>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
@@ -465,34 +375,14 @@ class EventDetailsComponent extends React.Component {
           dismissAfter={10000}
           activeClassName="notification-bar-is-active"
         />
-        <dialog
-          onClick={ev => ev.stopPropagation()}
-          className="mdl-dialog"
-          styleName="mdl-dialog"
-          id="deleteEventModal"
-        >
-          <h6 styleName="modal-title" className="mdl-dialog__title">Are you sure you want to delete the event?</h6>
-          <div className="mdl-dialog__actions">
-            <button
-              type="button"
-              className="mdl-button close"
-              onClick={() => document.querySelector('#deleteEventModal').close()}
-            >Cancel</button>
-            <button
-              type="button"
-              className="mdl-button"
-              style={{ color: '#f44336' }}
-              onClick={this.deleteEvent}
-            >Yes</button>
-          </div>
-        </dialog>
-      </div>
+      </Card>
     );
   }
 }
 
 EventDetailsComponent.propTypes = {
   event: React.PropTypes.object,
+  showInviteGuests: React.PropTypes.object,
 };
 
 export default cssModules(EventDetailsComponent, styles);
