@@ -58,7 +58,7 @@ class Dashboard extends Component {
   }
 
   async loadEvents(showPastEvents) {
-    let urlToFetch = '/api/events/getPastByUser';
+    let urlToFetch = '/api/events/getByUser';
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     if (!showPastEvents) {
