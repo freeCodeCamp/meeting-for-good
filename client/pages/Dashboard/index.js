@@ -58,12 +58,10 @@ class Dashboard extends Component {
   }
 
   async loadEvents(showPastEvents) {
-    console.log('showPastEvents', showPastEvents);
-    let urlToFetch = '/api/events/getPastByUser';
+    let urlToFetch = '/api/events/getByUser';
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     if (!showPastEvents) {
-      console.log('no old', showPastEvents);
       const date = new Date();
       urlToFetch = `/api/events/getByUser/${date}`;
     }
@@ -127,13 +125,11 @@ class Dashboard extends Component {
 
   @autobind
   handleInviteGuests(event) {
-    console.log(event);
     this.setState({ openDrawer: true, eventToInvite: event });
   }
 
   @autobind
   handleCbGustInviteDrawer(open) {
-    console.log('saco');
     this.setState({ openDrawer: open });
   }
 
@@ -141,7 +137,7 @@ class Dashboard extends Component {
     const { events, curUser, notifications, showNoScheduledMessage, openDrawer, eventToInvite } = this.state;
     const styles = {
       height: '80vh',
-    }
+    };
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}

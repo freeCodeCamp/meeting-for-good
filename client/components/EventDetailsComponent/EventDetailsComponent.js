@@ -382,7 +382,7 @@ class EventDetailsComponent extends React.Component {
 
 EventDetailsComponent.propTypes = {
   event: React.PropTypes.object,
-  showInviteGuests: React.PropTypes.object,
+  showInviteGuests: React.PropTypes.func,
 };
 
 export default cssModules(EventDetailsComponent, styles);
