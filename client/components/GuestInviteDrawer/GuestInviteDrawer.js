@@ -213,7 +213,7 @@ class GuestInviteDrawer extends Component {
   }
 
   @autobind
-  handleonRequestChange(open) {
+  handleOnRequestChange(open) {
     this.setState({ open });
     this.props.cb(open);
   }
@@ -258,7 +258,7 @@ class GuestInviteDrawer extends Component {
         docked={false}
         width={300}
         open={open}
-        onRequestChange={open => this.handleonRequestChange(open)}
+        onRequestChange={open => this.handleOnRequestChange(open)}
       >
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
