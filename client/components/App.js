@@ -24,7 +24,7 @@ class App extends Component {
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (this.props.children.type.name === 'Dashboard') {
-          console.log('no clone');
+          console.log('no clone do App com achei o Dashboard');
           return cloneElement(child, { showPastEvents });
         }
         return cloneElement(child);
