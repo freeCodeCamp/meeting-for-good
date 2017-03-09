@@ -14,8 +14,12 @@ import { OrderedSet } from 'immutable';
 import Copy from 'material-ui/svg-icons/content/content-copy';
 import IconButton from 'material-ui/IconButton';
 import Clipboard from 'clipboard';
+import { browserHistory } from 'react-router';
+import FlatButton from 'material-ui/FlatButton';
+
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
+
 
 class GuestInviteDrawer extends Component {
   constructor(props) {
@@ -214,6 +218,10 @@ class GuestInviteDrawer extends Component {
     this.props.cb(open);
   }
 
+  @autobind  
+  handleEventLinkClick(id) {
+    browserHistory.push(`/event/${id}`);
+  }
 
   render() {
     const { open, event, notifications, searchText } = this.state;
@@ -265,7 +273,12 @@ class GuestInviteDrawer extends Component {
             <Copy />
           </IconButton>
           the address for the event:
-          <a href={fullUrl} id="url">{event.name}</a>
+          <FlatButton
+            onClick={() => this.handleEventLinkClick(event._id)}
+            primary={true}
+          >
+            {event.name}
+          </FlatButton>
 
         </h6>
         <Divider style={styles.drawer.divider} />
