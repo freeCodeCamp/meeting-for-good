@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
-import { Notification } from 'react-notification';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';

@@ -7,6 +7,8 @@ import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Badge from 'material-ui/Badge';
 import Divider from 'material-ui/Divider';
+import { browserHistory } from 'react-router';
+import FlatButton from 'material-ui/FlatButton';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 
@@ -67,6 +69,11 @@ class NotificationBar extends Component {
     }
   }
 
+  @autobind  
+  handleEventLinkClick(id) {
+    browserHistory.push(`/event/${id}`);
+  }
+
   IconButtonColor() {
     const { notifications, curUser } = this.state;
     let notificationColor = '#ffffff';
@@ -102,7 +109,12 @@ class NotificationBar extends Component {
                 style={{ backgroundColor: bkgColor, color: '#000000' }}
               >
                 {`${participant.name} accept your invite for `}
-                <a href={`/event/${notice._id}`}> {notice.name} </a>
+                <FlatButton
+                  onClick={() => this.handleEventLinkClick(notice._id)}
+                  primary={true}
+                >
+                  {notice.name}
+                </FlatButton>
               </MenuItem>
             );
             rows.push(row);
