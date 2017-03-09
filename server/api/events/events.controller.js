@@ -111,7 +111,7 @@ export const indexByUser = (req, res) => {
   })
     .where('active').equals(true)
     .where('dates.toDate')
-    .gt(actualDate)
+    .gte(actualDate)
     .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
