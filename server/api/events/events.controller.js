@@ -81,7 +81,7 @@ export const setFalse =  (req, res) => {
       if (err) {
         console.log('err at setFalse', err);
         return res.status(500).send(err);
-      };
+      }
       return res.status(200).json(event);
     });
   });
@@ -108,10 +108,9 @@ export const indexByUser = (req, res) => {
   console.log(actualDate);
   return Events.find({
     'participants.userId': req.user._id.toString(),
+    active: true,
+    'dates.toDate': { $gte: actualDate },
   })
-    .where('active').equals(true)
-    .where('dates.toDate')
-    .gte(actualDate)
     .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
