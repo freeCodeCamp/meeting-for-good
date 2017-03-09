@@ -7,7 +7,7 @@
 }
 
 .header {
-	color: white;
+	color: darkblue;
 	text-transform: uppercase;
 	height: 87vh;
 }
@@ -41,13 +41,21 @@ footer {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: blue;
 }
 
 footer p {
-	color: #fff;
+	color: blue;
 	margin: 0;
 }
 
 footer a:hover {
 	text-decoration: underline;
+}
+
+.divider {
+	border-style: solid;
+	width: 100%;
+	border-width: 0.2px;
+	border-color: lightgrey;
 }

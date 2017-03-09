@@ -1,6 +1,6 @@
 {
   "name": "letsmeet",
-  "version": "0.0.56",
+  "version": "0.0.90",
   "description": "Schedule events with ease!",
   "homepage": "https://github.com/FreeCodeCamp/LetsMeet#readme",
   "main": "index.js",
