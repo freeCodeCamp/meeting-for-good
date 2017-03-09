@@ -15,6 +15,7 @@ class App extends Component {
 
   @autobind
   toggleFilterPastEventsTo(value) {
+    console.log('toggleFilterPastEventsTo no App', value);
     this.setState({ showPastEvents: value });
   }
 
