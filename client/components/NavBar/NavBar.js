@@ -22,17 +22,24 @@ class NavBar extends Component {
       user: false,
       conditionalHomeLink: '/',
       openLoginModal: false,
-      toggleVisible: false,
+      toggleVisible: true,
     };
   }
 
   async componentWillMount() {
     await this.loadUser();
+    const { location } = this.props;
+    this.MenuVisibility(location);
   }
 
   componentWillReceiveProps(nextProps) {
     const { location } = nextProps;
+    this.MenuVisibility(location);
+  }
+
+  MenuVisibility(location) {
     if (location.pathname === '/dashboard') {
+      console.log(location);
       this.setState({ toggleVisible: true });
     } else {
       this.setState({ toggleVisible: false });

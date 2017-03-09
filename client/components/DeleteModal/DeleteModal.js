@@ -62,8 +62,19 @@ class DeleteModal extends Component {
   render() {
     const styles = {
       modal: {
-        width: '35%',
-        maxWidth: '35%',
+        title: {
+          backgroundColor: '#FF4081',
+          color: '#ffffff',
+          fontSize: '25px',
+        },
+        content: {
+          width: '22%',
+          maxWidth: '22%',
+        },
+        bodyStyle: {
+          paddingTop: 10,
+          fontSize: '25px',
+        },
       },
       FloatingBt: {
         marginLeft: '85%',
@@ -93,12 +104,16 @@ class DeleteModal extends Component {
           <EventDelete />
         </FloatingActionButton>
         <Dialog
-          title="Are you sure you want to delete the event?"
+          title="Delete Event"
           actions={actions}
           modal={true}
           open={this.state.open}
-          contentStyle={styles.modal}
-        />
+          titleStyle={styles.modal.title}
+          contentStyle={styles.modal.content}
+          bodyStyle={styles.modal.bodyStyle}
+        >
+          Are you sure you want to delete the event?  
+        </Dialog>
       </div>
     );
   }
