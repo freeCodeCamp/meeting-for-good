@@ -14,7 +14,6 @@ import NotificationBar from '../NotificationBar/NotificationBar';
 import LoginModal from '../Login/Login';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 
-
 class NavBar extends Component {
   constructor(props) {
     super(props);

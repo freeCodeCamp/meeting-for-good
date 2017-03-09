@@ -104,7 +104,7 @@ export const indexById = (req, res) => {
 
 // Gets all events that a especified user is participant
 export const indexByUser = (req, res) => {
-  const actualDate = (req.params.actualDate) ? req.params.actualDate : 0;
+  const actualDate = (req.params.actualDate) ? req.params.actualDate : new Date(1970, 1, 1);
   console.log(actualDate);
   return Events.find({
     'participants.userId': req.user._id.toString(),
