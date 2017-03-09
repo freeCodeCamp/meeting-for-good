@@ -80,7 +80,6 @@ class GuestInviteDrawer extends Component {
       return;
     } finally {
       nprogress.done();
-      this.setState({ showNoScheduledMessage: true });
     }
   }
 

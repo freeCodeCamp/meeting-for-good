@@ -6,6 +6,7 @@ import { Notification } from 'react-notification';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+import Snackbar from 'material-ui/Snackbar';
 
 import BestTimesDisplay from '../BestTimeDisplay/BestTimeDisplay';
 import ParticipantsList from '../ParticipantsList/ParticipantsList';
@@ -23,10 +24,10 @@ class EventCard extends Component {
       participants: props.event.participants,
       event,
       curUser: {},
-      notificationMessage: '',
+      snackBarMessage: '',
       notificationIsActive: false,
       notificationTitle: '',
-      open: false,
+      openSnackBar: false,
     };
   }
 
@@ -47,13 +48,17 @@ class EventCard extends Component {
     } else {
       console.log('deleteEvent EvdentCard', result);
       this.setState({
-        notificationTitle: 'Error',
-        notificationIsActive: true,
+        openSnackBar: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
       });
     }
   }
-
+  @autobind
+  handleSnackBarRequestClose() {
+    this.setState({
+      openSnackBar: false,
+    });
+  }
 
   @autobind
   handleShowInviteGuestsDrawer() {
@@ -62,7 +67,7 @@ class EventCard extends Component {
   }
 
   render() {
-    const { event, curUser } = this.state;
+    const { event, curUser, openSnackBar, snackBarMessage } = this.state;
     let isOwner;
 
     if (curUser !== undefined) {
@@ -106,14 +111,13 @@ class EventCard extends Component {
         <CardActions style={styles.card.cardActions}>
           <FlatButton style={styles.card.cardActions.button} onClick={this.redirectToEvent}>View Details</FlatButton>
         </CardActions>
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          action="Dismiss"
-          title={this.state.notificationTitle}
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
+        <Snackbar
+          open={openSnackBar}
+          message={snackBarMessage}
+          action="Dimiss"
+          autoHideDuration={3000}
+          onActionTouchTap={this.handleSnackBarRequestClose}
+          onRequestClose={this.handleSnackBarRequestClose}
         />
       </Card>
     );

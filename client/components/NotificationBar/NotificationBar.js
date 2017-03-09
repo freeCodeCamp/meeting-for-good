@@ -117,6 +117,14 @@ class NotificationBar extends Component {
   render() {
     const { notificationColor, quantOwnerNotNotified, notifications } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
+    const styles = {
+      badge: {
+        top: 12,
+        right: 12,
+        visibility: visible,
+      },
+    };
+
     if (notifications.length > 0) {
       return (
         <IconMenu
@@ -125,12 +133,13 @@ class NotificationBar extends Component {
             <Badge
               badgeContent={quantOwnerNotNotified}
               secondary={true}
-              badgeStyle={{ top: 12, right: 12, visibility: visible }}
+              badgeStyle={styles.badge}
             >
               <IconButton tooltip="Notifications" onClick={this.handleDismissAll}>
                 <NotificationsIcon color={notificationColor} />
               </IconButton>
-            </Badge>}
+            </Badge>
+          }
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}
         >

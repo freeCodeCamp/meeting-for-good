@@ -166,7 +166,6 @@ class ParticipantsList extends Component {
   }
 
   render() {
-    const { event, curUser, openDrawer } = this.state;
     const inLineStyles = {
       buttonAddGuest: {
         backgroundColor: '#4A90E2',
