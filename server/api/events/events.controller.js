@@ -4,6 +4,7 @@
  * GET     /api/events/getbyuid/:uid'                 ->  indexById
  * GET    /api/events/getGhestsNotifications          ->  GuestNotifications
  * GET    /api/events/getbyUser                       ->  indexByUser
+ * GET    /api/events/getPastbyUser                  ->  indexPastByUser
  * POST    /api/events                                ->  create
  * GET     /api/events/:id                            ->  show
  * PUT     /api/events/:id                            ->  upsert
@@ -104,12 +105,10 @@ export const indexById = (req, res) => {
 
 // Gets all events that a especified user is participant
 export const indexByUser = (req, res) => {
-  const actualDate = (req.params.actualDate) ? req.params.actualDate : new Date(1970, 1, 1);
-  console.log(actualDate);
   return Events.find({
     'participants.userId': req.user._id.toString(),
     active: true,
-    'dates.toDate': { $gte: actualDate },
+    'dates.toDate': { $gte: req.params.actualDate },
   })
     .exec()
     .then(respondWithResult(res))
@@ -123,6 +122,18 @@ export const show = (req, res) => {
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
+
+// Gets all events that a especified user is participant
+export const indexPastByUser = (req, res) => {
+  return Events.find({
+    'participants.userId': req.user._id.toString(),
+    active: true,
+  })
+    .exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+};
+
 
 // Updates an existing Event in the DB
 export const patch = (req, res) => {

@@ -11,7 +11,8 @@ const isAuthenticated = (req, res, next) => {
 };
 
 router.get('/', isAuthenticated, controller.index);
-router.get('/getByUser/:actualDate?', isAuthenticated, controller.indexByUser);
+router.get('/getByUser/:actualDate', isAuthenticated, controller.indexByUser);
+router.get('/getPastByUser', isAuthenticated, controller.indexPastByUser);
 router.get('/getGuestNotifications', isAuthenticated, controller.GuestNotifications);
 router.get('/getbyuid/:uid', isAuthenticated, controller.indexById);
 router.get('/:id', isAuthenticated, controller.show);
