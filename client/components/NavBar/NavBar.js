@@ -22,12 +22,21 @@ class NavBar extends Component {
       user: false,
       conditionalHomeLink: '/',
       openLoginModal: false,
+      toggleVisible: false,
     };
   }
 
   async componentWillMount() {
     await this.loadUser();
+  }
 
+  componentWillReceiveProps(nextProps) {
+    const { location } = nextProps;
+    if (location.pathname === '/dashboard') {
+      this.setState({ toggleVisible: true });
+    } else {
+      this.setState({ toggleVisible: false });
+    }
   }
 
   @autobind
@@ -61,6 +70,7 @@ class NavBar extends Component {
   }
 
   renderLastGroup() {
+    const { toggleVisible } = this.state;
     const styles = {
       button: {
         fontSize: '15px',
@@ -100,20 +110,26 @@ class NavBar extends Component {
         >
           <NotificationBar curUser={curUser} />
           <div style={styles.block}>
-            <Toggle
-              label={'Past Events'}
-              style={styles.toggle}
-              labelStyle={styles.toggle.label}
-              thumbSwitchedStyle={styles.toggle.thumbSwitched}
-              onToggle={this.handleFilterToggle}
-            />
+            {toggleVisible ?
+              <Toggle
+                label={'Past Events'}
+                style={styles.toggle}
+                labelStyle={styles.toggle.label}
+                thumbSwitchedStyle={styles.toggle.thumbSwitched}
+                onToggle={this.handleFilterToggle}
+              />
+              : null
+            }
           </div>
-          <FlatButton
-            style={styles.button}
-            onTouchTap={this.handleDashboardClick}
-          >
-            Dashboard
+          {!toggleVisible ?
+            <FlatButton
+              style={styles.button}
+              onTouchTap={this.handleDashboardClick}
+            >
+              Dashboard
           </FlatButton>
+            : null
+          }
           <FlatButton style={styles.button} href={'/api/auth/logout'}>
             Logout
           </FlatButton>

@@ -19,6 +19,7 @@ class App extends Component {
   }
 
   render() {
+    const { location } = this.props; 
     const { showPastEvents } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
@@ -30,7 +31,7 @@ class App extends Component {
 
     return (
       <div>
-        <NavBar location={this.props.location} cbFilter={this.toggleFilterPastEventsTo} />
+        <NavBar location={location} cbFilter={this.toggleFilterPastEventsTo} />
         <main styleName="main">
           {childrenWithProps}
         </main>
