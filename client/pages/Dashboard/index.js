@@ -53,18 +53,15 @@ class Dashboard extends Component {
 
   async componentWillReceiveProps(nextProps) {
     const { showPastEvents } = nextProps;
-    console.log('componentWillReceiveProps do dash', showPastEvents);
     await this.loadEvents(showPastEvents);
     this.setState({ showPastEvents });
   }
 
   async loadEvents(showPastEvents) {
-    console.log('showPastEvents', showPastEvents);
     let urlToFetch = '/api/events/getPastByUser';
     nprogress.configure({ showSpinner: false });
     nprogress.start();
     if (!showPastEvents) {
-      console.log('no old', showPastEvents);
       const date = new Date();
       urlToFetch = `/api/events/getByUser/${date}`;
     }

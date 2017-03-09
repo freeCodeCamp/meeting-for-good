@@ -15,7 +15,6 @@ class App extends Component {
 
   @autobind
   toggleFilterPastEventsTo(value) {
-    console.log('toggleFilterPastEventsTo no App', value);
     this.setState({ showPastEvents: value });
   }
 
@@ -23,9 +22,7 @@ class App extends Component {
     const { showPastEvents } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
-         console.log('no clone do App', this.props.children);
         if (this.props.children.type.displayName === 'Dashboard') {
-          console.log('no clone do App com achei o Dashboard');
           return cloneElement(child, { showPastEvents });
         }
         return child;

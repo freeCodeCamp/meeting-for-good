@@ -57,7 +57,6 @@ class NavBar extends Component {
 
   @autobind
   handleFilterToggle(ev, isInputChecked) {
-    console.log('isInputChecked do handleFilterToggle no navBar', isInputChecked);
     this.props.cbFilter(isInputChecked);
   }
 
