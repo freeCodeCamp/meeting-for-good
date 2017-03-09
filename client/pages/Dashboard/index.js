@@ -53,6 +53,7 @@ class Dashboard extends Component {
 
   async componentWillReceiveProps(nextProps) {
     const { showPastEvents } = nextProps;
+    console.log('componentWillReceiveProps do dash', showPastEvents);
     await this.loadEvents(showPastEvents);
     this.setState({ showPastEvents });
   }
@@ -127,13 +128,11 @@ class Dashboard extends Component {
 
   @autobind
   handleInviteGuests(event) {
-    console.log(event);
     this.setState({ openDrawer: true, eventToInvite: event });
   }
 
   @autobind
   handleCbGustInviteDrawer(open) {
-    console.log('saco');
     this.setState({ openDrawer: open });
   }
 
@@ -141,7 +140,7 @@ class Dashboard extends Component {
     const { events, curUser, notifications, showNoScheduledMessage, openDrawer, eventToInvite } = this.state;
     const styles = {
       height: '80vh',
-    }
+    };
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
