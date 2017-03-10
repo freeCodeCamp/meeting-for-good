@@ -8,7 +8,6 @@ import path from 'path';
 
 const EmailTemplate = require('email-templates').EmailTemplate;
 
-
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
   return (entity) => {

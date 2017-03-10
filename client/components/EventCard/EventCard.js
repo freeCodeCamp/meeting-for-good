@@ -12,7 +12,6 @@ import DeleteModal from '../DeleteModal/DeleteModal';
 import { getCurrentUser } from '../../util/auth';
 import styles from './event-card.css';
 
-
 class EventCard extends Component {
   constructor(props) {
     super(props);

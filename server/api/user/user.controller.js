@@ -15,8 +15,6 @@ import jsonpatch from 'fast-json-patch';
 import Users from './user.model';
 import Events from '../events/events.model';
 
-
-
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
   return (entity) => {
@@ -182,6 +180,3 @@ export const isAuthenticated = (req, res) => {
   if (req.user) return res.status(200).json({ isAuthenticated: true });
   return res.status(200).json({ isAuthenticated: false });
 };
-
-
-

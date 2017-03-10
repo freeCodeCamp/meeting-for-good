@@ -66,7 +66,7 @@ class EventDetails extends Component {
         <div>
           <EventDetailsComponent event={event} showInviteGuests={this.handleInviteGuests} />
           <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGustInviteDrawer} />
-        </div> 
+        </div>
       );
     }
     if (showLoginModal) {

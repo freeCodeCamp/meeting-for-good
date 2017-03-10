@@ -70,7 +70,6 @@ const handleError = (res, statusCode) => {
   };
 };
 
-
 // Make a false delete setting the active to false
 export const setFalse =  (req, res) => {
   Events.findById(req.params.id, (err, event) => {
