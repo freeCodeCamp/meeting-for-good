@@ -71,7 +71,7 @@ class ParticipantsList extends Component {
         event: newEvent,
         notificationTitle: 'Alert',
         notificationIsActive: true,
-        notificationMessage: 'Guest delete success!',      });
+        notificationMessage: 'Guest delete success!' });
     } catch (err) {
       this.setState({
         notificationIsActive: true,
@@ -186,6 +186,7 @@ class ParticipantsList extends Component {
   }
 
   render() {
+    const { notificationIsActive, notificationMessage, notificationTitle } = this.state;
     const inLineStyles = {
       buttonAddGuest: {
         backgroundColor: '#4A90E2',
@@ -229,10 +230,10 @@ class ParticipantsList extends Component {
         {this.renderGuestList()}
         {this.renderDeleteModal()}
         <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
+          isActive={notificationIsActive}
+          message={notificationMessage}
           action="Dismiss"
-          title={this.state.notificationTitle}
+          title={notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
           onClick={() => this.setState({ notificationIsActive: false })}
           activeClassName="notification-bar-is-active"

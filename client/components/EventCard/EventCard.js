@@ -16,20 +16,15 @@ class EventCard extends Component {
   constructor(props) {
     super(props);
 
-    const { event } = props;
+    const { event, curUser } = props;
     this.state = {
       participants: props.event.participants,
       event,
-      curUser: {},
+      curUser,
       notificationMessage: '',
       notificationIsActive: false,
       notificationTitle: '',
     };
-  }
-
-  async componentWillMount() {
-    const curUser = await getCurrentUser();
-    this.setState({ curUser });
   }
 
   @autobind
@@ -120,6 +115,7 @@ EventCard.propTypes = {
   removeEventFromDashboard: React.PropTypes.func,
   cb: React.PropTypes.func,
   showInviteGuests: React.PropTypes.func,
+  curUser: React.PropTypes.object,
 };
 
 export default cssModules(EventCard, styles);

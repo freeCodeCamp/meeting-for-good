@@ -47,9 +47,9 @@ class Dashboard extends Component {
     if (!await isAuthenticated()) {
       browserHistory.push('/');
     }
-    const user = await getCurrentUser();
+    const curUser = await getCurrentUser();
     const events = await this.loadEvents(false);
-    this.setState({ curUser: user, events });
+    this.setState({ curUser, events });
   }
 
   async componentWillReceiveProps(nextProps) {
@@ -157,7 +157,7 @@ class Dashboard extends Component {
                 key={event._id}
                 event={event}
                 removeEventFromDashboard={this.removeEventFromDashboard}
-                user={curUser}
+                curUser={curUser}
                 showInviteGuests={this.handleInviteGuests}
               />
             ))}
