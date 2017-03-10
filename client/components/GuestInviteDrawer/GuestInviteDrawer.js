@@ -276,6 +276,7 @@ class GuestInviteDrawer extends Component {
           <FlatButton
             onClick={() => this.handleEventLinkClick(event._id)}
             primary={true}
+            label={' '}
           >
             {event.name}
           </FlatButton>
