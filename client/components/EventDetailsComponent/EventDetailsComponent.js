@@ -364,7 +364,7 @@ class EventDetailsComponent extends React.Component {
             </div>
           }
           <br />
-        <ParticipantsList event={event} curUser={user} showInviteGuests={this.handleShowInviteGuestsDrawer} />
+          <ParticipantsList event={event} curUser={user} showInviteGuests={this.handleShowInviteGuestsDrawer} />
         </CardText>
         <Notification
           isActive={this.state.notificationIsActive}
