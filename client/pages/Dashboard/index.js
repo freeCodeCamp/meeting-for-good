@@ -34,6 +34,7 @@ class Dashboard extends Component {
       showPastEvents,
       openDrawer: false,
       eventToInvite: {},
+      curUser: {},
     };
   }
 
@@ -47,14 +48,15 @@ class Dashboard extends Component {
       browserHistory.push('/');
     }
     const user = await getCurrentUser();
-    this.setState({ curUser: user });
-    await this.loadEvents();
+    const events = await this.loadEvents(false);
+    this.setState({ curUser: user, events });
   }
 
   async componentWillReceiveProps(nextProps) {
     const { showPastEvents } = nextProps;
-    await this.loadEvents(showPastEvents);
-    this.setState({ showPastEvents });
+    const events = await this.loadEvents(showPastEvents);
+
+    this.setState({ showPastEvents, events });
   }
 
   async loadEvents(showPastEvents) {
@@ -70,14 +72,16 @@ class Dashboard extends Component {
     try {
       checkStatus(response);
       events = await parseJSON(response);
-      this.setState({ events });
+      return events;
     } catch (err) {
       console.log('loadEvents, at Dashboard', err);
       this.addNotification('Error!!', 'Failed to load events. Please try again later.');
       return;
     } finally {
       nprogress.done();
-      this.setState({ showNoScheduledMessage: true });
+      if (events.length === 0) {
+        this.setState({ showNoScheduledMessage: true });
+      }
     }
   }
 
