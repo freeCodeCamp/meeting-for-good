@@ -199,7 +199,6 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleSearchTextChange(ev) {
-    console.log(ev.target.value);
     const searchString = ev.target.value.trim().toLowerCase();
     const { guests } = this.state;
     let newGuests = guests.slice(0);
