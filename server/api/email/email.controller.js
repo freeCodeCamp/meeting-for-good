@@ -1,12 +1,12 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * POST    /api/ownerNotification  ->  ownerNotification
+ * POST    /api/ownerNotification   ->  ownerNotification
+  * POST   /api/sendInvite          ->  sendInvite
  */
 import nodemailer from 'nodemailer';
 import path from 'path';
 
 const EmailTemplate = require('email-templates').EmailTemplate;
-
 
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
@@ -43,7 +43,8 @@ export const ownerNotification = (req, res) => {
   const template = new EmailTemplate(templateDir);
   template.render(message, (err, result) => {
     if (err) {
-      console.log(err);
+      console.log('err at render of ownerNotification', err);
+      return err;
     }
     message.subject = 'Lets Meet Invite Accepeted';
     message.text = result.text;
@@ -51,8 +52,30 @@ export const ownerNotification = (req, res) => {
     return sendEmail(message)
     .then(respondWithResult(res))
     .catch((err) => {
-      console.log('err no ownerNotification', err);
+      console.log('err at ownerNotification', err);
       handleError(res);
+    });
+  });
+};
+
+export const sendInvite = (req, res) => {
+  const message = req.body;
+  message.from = process.env.emailFrom;
+  const templateDir = path.join(__dirname, 'templates', 'inviteGuests');
+  const template = new EmailTemplate(templateDir);
+  template.render(message, (err, result) => {
+    if (err) {
+      console.log('err at render of sendInvite', err);
+      return err;
+    }
+    message.subject = `Lets Meet Invite from ${message.eventOwnerName}`;
+    message.text = result.text;
+    message.html = result.html;
+    return sendEmail(message)
+    .then(respondWithResult(res))
+    .catch((err) => {
+      console.log('err at ownerNotification', err);
+      handleError(err);
     });
   });
 };
