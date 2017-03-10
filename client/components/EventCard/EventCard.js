@@ -21,7 +21,6 @@ class EventCard extends Component {
       participants: props.event.participants,
       event,
       curUser: {},
-      snackBarMessage: '',
       notificationMessage: '',
       notificationIsActive: false,
       notificationTitle: '',
@@ -45,7 +44,7 @@ class EventCard extends Component {
     } else {
       console.log('deleteEvent EvdentCard', result);
       this.setState({
-        openSnackBar: true,
+        notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
       });
     }

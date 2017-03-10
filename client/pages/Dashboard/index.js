@@ -120,6 +120,7 @@ class Dashboard extends Component {
     this.setState({
       events: events.filter(event => event._id !== eventId),
     });
+    this.addNotification('Info', ' Event Deleted ');
   }
 
   @autobind
