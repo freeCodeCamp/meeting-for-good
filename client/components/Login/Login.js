@@ -4,6 +4,9 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import Facebook from '../../assets/facebook.png';
+import Google from '../../assets/google.png';
+
 class LoginModal extends Component {
   constructor(props) {
     super(props);
@@ -74,7 +77,7 @@ class LoginModal extends Component {
           href="/api/auth/facebook"
           onClick={this.handleAuthClick}
           label="facebook"
-          icon={<img src={require('../../assets/facebook.png')} alt="facebook Logo" />}
+          icon={<img src={Facebook} alt="facebook Logo" />}
         />
         <RaisedButton
           backgroundColor="#F44336"
@@ -83,7 +86,7 @@ class LoginModal extends Component {
           href="/api/auth/google"
           onClick={this.handleAuthClick}
           label="Google"
-          icon={<img src={require('../../assets/google.png')} alt="Google Logo" />}
+          icon={<img src={Google} alt="Google Logo" />}
         />
       </Dialog>
     );

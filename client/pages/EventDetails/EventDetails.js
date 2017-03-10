@@ -49,15 +49,15 @@ class EventDetails extends Component {
     }
   }
 
-    @autobind
-    handleInviteGuests(event) {
-      this.setState({ openDrawer: true, eventToInvite: event });
-    }
+  @autobind
+  handleInviteGuests(event) {
+    this.setState({ openDrawer: true, eventToInvite: event });
+  }
 
-    @autobind
-    handleCbGustInviteDrawer(open) {
-      this.setState({ openDrawer: open });
-    }
+  @autobind
+  handleCbGustInviteDrawer(open) {
+    this.setState({ openDrawer: open });
+  }
 
   render() {
     const { event, showLoginModal, notificationIsActive, notificationMessage, openDrawer, eventToInvite, curUser } = this.state;

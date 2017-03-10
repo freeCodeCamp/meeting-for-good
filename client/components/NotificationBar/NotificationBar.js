@@ -69,7 +69,7 @@ class NotificationBar extends Component {
     }
   }
 
-  @autobind  
+  @autobind
   handleEventLinkClick(id) {
     browserHistory.push(`/event/${id}`);
   }

@@ -13,7 +13,6 @@ import cssModules from 'react-css-modules';
 import { checkStatus } from '../../util/fetch.util';
 import styles from './participants-list.css';
 
-
 class ParticipantsList extends Component {
   constructor(props) {
     super(props);

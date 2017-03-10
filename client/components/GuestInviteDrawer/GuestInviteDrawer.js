@@ -21,8 +21,6 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 
-
-
 class GuestInviteDrawer extends Component {
   constructor(props) {
     super(props);
@@ -160,29 +158,6 @@ class GuestInviteDrawer extends Component {
       });
     }
   }
-  renderRows() {
-    const { activeCheckboxes, guestsToDisplay } = this.state;
-    const styles = {
-      divider: {
-        width: '100%',
-      },
-    };
-    const rows = [];
-    guestsToDisplay.forEach((guest) => {
-      const row = (
-        <div key={guest._id}>
-          <ListItem
-            primaryText={guest.name}
-            leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} checked={activeCheckboxes.includes(guest.userId)} />}
-            rightAvatar={<Avatar src={guest.avatar} />}
-          />
-          <Divider style={styles.divider} />
-        </div>
-      );
-      rows.push(row);
-    });
-    return rows;
-  }
 
   @autobind
   ClipBoard() {
@@ -213,9 +188,33 @@ class GuestInviteDrawer extends Component {
     this.props.cb(open);
   }
 
-  @autobind  
+  @autobind
   handleEventLinkClick(id) {
     browserHistory.push(`/event/${id}`);
+  }
+
+  renderRows() {
+    const { activeCheckboxes, guestsToDisplay } = this.state;
+    const styles = {
+      divider: {
+        width: '100%',
+      },
+    };
+    const rows = [];
+    guestsToDisplay.forEach((guest) => {
+      const row = (
+        <div key={guest._id}>
+          <ListItem
+            primaryText={guest.name}
+            leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} checked={activeCheckboxes.includes(guest.userId)} />}
+            rightAvatar={<Avatar src={guest.avatar} />}
+          />
+          <Divider style={styles.divider} />
+        </div>
+      );
+      rows.push(row);
+    });
+    return rows;
   }
 
   render() {
