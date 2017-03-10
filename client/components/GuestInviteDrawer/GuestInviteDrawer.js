@@ -15,9 +15,11 @@ import Clipboard from 'clipboard';
 import { browserHistory } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
+import LinearProgress from 'material-ui/LinearProgress';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
+
 
 
 class GuestInviteDrawer extends Component {
@@ -32,6 +34,7 @@ class GuestInviteDrawer extends Component {
       activeCheckboxes: [],
       snackbarOpen: false,
       snackbarMsg: '',
+      linearProgressVisible: 'hidden',
     };
   }
 
@@ -112,6 +115,7 @@ class GuestInviteDrawer extends Component {
   }
 
   async sendEmailInvite(guestId) {
+    this.setState({ linearProgressVisible: 'visible' });
     const { event, curUser } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const guestData = await this.loadUserData(guestId);
@@ -139,7 +143,8 @@ class GuestInviteDrawer extends Component {
       checkStatus(response);
       this.setState({
         snackbarOpen: true,
-        snackbarMsg: `Info!!, ${guestData.name} invited!`,
+        snackbarMsg: `Info!!, ${guestData.name} invited! to ${event.name}`,
+        linearProgressVisible: 'hidden',
       });
     } catch (err) {
       console.log('sendEmailOwner', err);
@@ -209,7 +214,7 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, event, snackbarOpen, searchText, snackbarMsg } = this.state;
+    const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
     const styles = {
       drawer: {
@@ -235,6 +240,18 @@ class GuestInviteDrawer extends Component {
             paddingBottom: '3px',
           },
         },
+      },
+      snackbar: {
+        height: 'flex',
+        bodyStyle: {
+          height: 'flex',
+        },
+        contentStyle: {
+          color: '#FF4081',
+        },
+      },
+      linearProgress: {
+        visibility: linearProgressVisible,
       },
     };
 
@@ -283,17 +300,24 @@ class GuestInviteDrawer extends Component {
           value={searchText}
           onChange={this.handleSearchTextChange}
         />
+        <LinearProgress style={styles.linearProgress} />
         <List>
           {this.renderRows()}
         </List>
         <Snackbar
+          style={styles.snackbar}  
+          bodyStyle={styles.snackbar.bodyStyle}
+          contentStyle={styles.snackbar.contentStyle}
           open={snackbarOpen}
           message={snackbarMsg}
           action="Dismiss"
           autoHideDuration={3000}
+          onActionTouchTap={this.handleSnackbarRequestClose}
           onRequestClose={this.handleSnackbarRequestClose}
         />
       </Drawer>
+     
+      
     );
   }
 }
