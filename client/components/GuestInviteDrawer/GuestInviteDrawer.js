@@ -9,13 +9,12 @@ import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
-import { NotificationStack } from 'react-notification';
-import { OrderedSet } from 'immutable';
 import Copy from 'material-ui/svg-icons/content/content-copy';
 import IconButton from 'material-ui/IconButton';
 import Clipboard from 'clipboard';
 import { browserHistory } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -31,7 +30,8 @@ class GuestInviteDrawer extends Component {
       guests: [],
       guestsToDisplay: [],
       activeCheckboxes: [],
-      notifications: OrderedSet(),
+      snackbarOpen: false,
+      snackbarMsg: '',
     };
   }
 
@@ -44,32 +44,6 @@ class GuestInviteDrawer extends Component {
     this.setState({ event, open, curUser });
   }
 
-  addNotification(msgTitle, msg, dismissTime = 3400) {
-    const { notifications, count } = this.state;
-    const newCount = count + 1;
-    const msgKey = count + 1;
-
-    return this.setState({
-      count: newCount,
-      notifications: notifications.add({
-        message: msg,
-        title: msgTitle,
-        key: msgKey,
-        action: 'Dismiss',
-        searchText: '',
-        dismissAfter: dismissTime,
-        onClick: () => this.removeNotification(msgKey),
-      }),
-    });
-  }
-
-  removeNotification(key) {
-    const { notifications } = this.state;
-    this.setState({
-      notifications: notifications.filter(n => n.key !== key),
-    });
-  }
-
   async loadPastGuests() {
     nprogress.start();
     const response = await fetch('/api/user/relatedUsers', { credentials: 'same-origin' });
@@ -80,7 +54,10 @@ class GuestInviteDrawer extends Component {
       this.setState({ guests, guestsToDisplay: guests });
     } catch (err) {
       console.log('loadPassGuests', err);
-      this.addNotification('Error!!', 'Failed to load guests. Please try again later.');
+      this.setState({
+        snackbarOpen: true,
+        snackbarMsg: 'Error!!, Failed to load guests. Please try again later.',
+      });
       return;
     } finally {
       nprogress.done();
@@ -88,8 +65,8 @@ class GuestInviteDrawer extends Component {
   }
 
   @autobind
-  handleClose() {
-    this.setState({ open: false });
+  handleSnackbarRequestClose() {
+    this.setState({ snackbarOpen: false });
   }
 
   handleCheck(id) {
@@ -127,7 +104,10 @@ class GuestInviteDrawer extends Component {
       });
       this.setState({ activeCheckboxes: [] });
     } else {
-      this.addNotification('Error!!', 'Please select guests to invite.');
+      this.setState({
+        snackbarOpen: true,
+        snackbarMsg: 'Error!!, Please select guests to invite.',
+      });
     }
   }
 
@@ -157,10 +137,16 @@ class GuestInviteDrawer extends Component {
 
     try {
       checkStatus(response);
-      this.addNotification('Info!!', `${guestData.name} invited!`);
+      this.setState({
+        snackbarOpen: true,
+        snackbarMsg: `Info!!, ${guestData.name} invited!`,
+      });
     } catch (err) {
       console.log('sendEmailOwner', err);
-      this.addNotification('Error!!', `Failed to send invite to ${curUser.name} Please try again later.`);
+      this.setState({
+        snackbarOpen: true,
+        snackbarMsg: `Error!!, Failed to send invite to ${curUser.name} Please try again later.`,
+      });
     }
   }
   renderRows() {
@@ -223,7 +209,7 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, event, notifications, searchText } = this.state;
+    const { open, event, snackbarOpen, searchText, snackbarMsg } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
     const styles = {
       drawer: {
@@ -300,11 +286,12 @@ class GuestInviteDrawer extends Component {
         <List>
           {this.renderRows()}
         </List>
-        <NotificationStack
-          notifications={notifications.toArray()}
-          onDismiss={notification => this.setState({
-            notifications: notifications.delete(notification),
-          })}
+        <Snackbar
+          open={snackbarOpen}
+          message={snackbarMsg}
+          action="Dismiss"
+          autoHideDuration={3000}
+          onRequestClose={this.handleSnackbarRequestClose}
         />
       </Drawer>
     );
