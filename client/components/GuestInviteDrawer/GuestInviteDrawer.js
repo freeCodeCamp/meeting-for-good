@@ -36,6 +36,7 @@ class GuestInviteDrawer extends Component {
       snackbarMsg: '',
       linearProgressVisible: 'hidden',
     };
+    this.timer = undefined;
   }
 
   async componentWillMount() {
@@ -141,11 +142,11 @@ class GuestInviteDrawer extends Component {
 
     try {
       checkStatus(response);
-      this.setState({
+      this.timer = setTimeout(this.setState({
         snackbarOpen: true,
         snackbarMsg: `Info!!, ${guestData.name} invited! to ${event.name}`,
         linearProgressVisible: 'hidden',
-      });
+      }), 1500);
     } catch (err) {
       console.log('sendEmailOwner', err);
       this.setState({
@@ -247,9 +248,7 @@ class GuestInviteDrawer extends Component {
         },
         contentStyle: {
           color: '#FF4081',
-          margin: 0,
           borderBottom: '0.2px solid',
-          padding: 0,
         },
       },
       linearProgress: {
