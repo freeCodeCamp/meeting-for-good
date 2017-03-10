@@ -164,7 +164,11 @@ class GuestInviteDrawer extends Component {
     const { event } = this.state;
     const clipboard = new Clipboard('.btn');
     clipboard.on('success', (e) => {
-      this.addNotification('Info!!', `url for ${event.name} copied!`);
+      this.setState({
+        snackbarOpen: true,
+        snackbarMsg: `Info!!, url for ${event.name} copied!`,
+        linearProgressVisible: 'hidden',
+      });
       e.clearSelection();
     });
   }
@@ -274,6 +278,7 @@ class GuestInviteDrawer extends Component {
         <h3 styleName="header"> {event.name} </h3>
         <h6 styleName="subHeader"> You can invite new guests coping
           <IconButton
+            className="btn"
             style={styles.drawer.copyButtom}
             data-clipboard-text={fullUrl}
             onTouchTap={this.ClipBoard}
@@ -291,7 +296,7 @@ class GuestInviteDrawer extends Component {
           </FlatButton>
         </h6>
         <Divider style={styles.drawer.divider} />
-        <h6 styleName="subHeader"> That's yours recent guests. If you want, we can invite some for you </h6>
+        <h6 styleName="subHeader"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
         <RaisedButton
           fullWidth={true}
           label="Invite"
