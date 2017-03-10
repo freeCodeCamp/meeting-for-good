@@ -283,6 +283,7 @@ class GuestInviteDrawer extends Component {
             data-clipboard-text={fullUrl}
             onTouchTap={this.ClipBoard}
             iconStyle={styles.drawer.copyButtom.icon}
+            tooltip="click to copy Url"
           >
             <Copy />
           </IconButton>
