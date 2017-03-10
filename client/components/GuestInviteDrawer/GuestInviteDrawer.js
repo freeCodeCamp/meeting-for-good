@@ -94,7 +94,10 @@ class GuestInviteDrawer extends Component {
       return await parseJSON(response);
     } catch (err) {
       console.log('loadUserData', err);
-      this.addNotification('Error!!', 'Failed to load user Data. Please try again later.');
+      this.setState({
+        snackbarOpen: true,
+        snackbarMsg: 'Error!!, Failed to load user Data. Please try again later.',
+      });
       return null;
     }
   }
