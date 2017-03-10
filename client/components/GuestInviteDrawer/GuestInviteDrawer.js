@@ -16,6 +16,7 @@ import { browserHistory } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
+import SearchIcon from 'material-ui/svg-icons/action/search';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -45,7 +46,7 @@ class GuestInviteDrawer extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { event, open, curUser } = nextProps;
-    this.setState({ event, open, curUser });
+    this.setState({ event, open, curUser, activeCheckboxes: [] });
   }
 
   async loadPastGuests() {
@@ -104,6 +105,7 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleInvite() {
+    this.timer = undefined;
     const { activeCheckboxes } = this.state;
     if (activeCheckboxes.length > 0) {
       activeCheckboxes.forEach((guest) => {
@@ -149,7 +151,7 @@ class GuestInviteDrawer extends Component {
         snackbarOpen: true,
         snackbarMsg: `Info!!, ${guestData.name} invited! to ${event.name}`,
         linearProgressVisible: 'hidden',
-      }), 1500);
+      }), 5000);
     } catch (err) {
       console.log('sendEmailOwner', err);
       this.setState({
@@ -222,6 +224,9 @@ class GuestInviteDrawer extends Component {
     const styles = {
       drawer: {
         textField: {
+          paddingTop: 0,
+          paddingBottom: 0,
+          margin: 0,
           floatingLabel: {
             fontSize: '24px',
             paddingLeft: 8,
@@ -270,7 +275,6 @@ class GuestInviteDrawer extends Component {
         <h3 styleName="header"> {event.name} </h3>
         <h6 styleName="subHeader"> You can invite new guests coping
           <IconButton
-            className="btn"
             style={styles.drawer.copyButtom}
             data-clipboard-text={fullUrl}
             onTouchTap={this.ClipBoard}
@@ -295,14 +299,17 @@ class GuestInviteDrawer extends Component {
           primary={true}
           onTouchTap={this.handleInvite}
         />
-        <TextField
-          style={styles.drawer.textField}
-          floatingLabelStyle={styles.drawer.textField.floatingLabel}
-          fullWidth={true}
-          floatingLabelText="Search for Guests"
-          value={searchText}
-          onChange={this.handleSearchTextChange}
-        />
+        <div styleName="Row">
+          <SearchIcon />
+          <TextField
+            style={styles.drawer.textField}
+            floatingLabelStyle={styles.drawer.textField.floatingLabel}
+            fullWidth={false}
+            floatingLabelText="Search for Guests"
+            value={searchText}
+            onChange={this.handleSearchTextChange}
+          />
+        </div>
         <LinearProgress style={styles.linearProgress} />
         <List>
           {this.renderRows()}
@@ -314,7 +321,7 @@ class GuestInviteDrawer extends Component {
           open={snackbarOpen}
           message={snackbarMsg}
           action="Dismiss"
-          autoHideDuration={3000000}
+          autoHideDuration={3000}
           onActionTouchTap={this.handleSnackbarRequestClose}
           onRequestClose={this.handleSnackbarRequestClose}
         />
