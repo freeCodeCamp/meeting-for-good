@@ -193,7 +193,6 @@ class GuestInviteDrawer extends Component {
     const searchString = ev.target.value.trim().toLowerCase();
     const { guests } = this.state;
     let newGuests = guests.slice(0);
-    console.log(newGuests);
     if (searchString.length > 0) {
       newGuests = newGuests.filter((guest) => {
         return guest.name.toLowerCase().match(searchString);
@@ -248,6 +247,9 @@ class GuestInviteDrawer extends Component {
         },
         contentStyle: {
           color: '#FF4081',
+          margin: 0,
+          borderBottom: '0.2px solid',
+          padding: 0,
         },
       },
       linearProgress: {
@@ -282,7 +284,6 @@ class GuestInviteDrawer extends Component {
           >
             {event.name}
           </FlatButton>
-
         </h6>
         <Divider style={styles.drawer.divider} />
         <h6 styleName="subHeader"> That's yours recent guests. If you want, we can invite some for you </h6>
@@ -305,19 +306,17 @@ class GuestInviteDrawer extends Component {
           {this.renderRows()}
         </List>
         <Snackbar
-          style={styles.snackbar}  
+          style={styles.snackbar}
           bodyStyle={styles.snackbar.bodyStyle}
           contentStyle={styles.snackbar.contentStyle}
           open={snackbarOpen}
           message={snackbarMsg}
           action="Dismiss"
-          autoHideDuration={3000}
+          autoHideDuration={3000000}
           onActionTouchTap={this.handleSnackbarRequestClose}
           onRequestClose={this.handleSnackbarRequestClose}
         />
       </Drawer>
-     
-      
     );
   }
 }
