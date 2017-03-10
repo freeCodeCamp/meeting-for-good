@@ -163,11 +163,11 @@ class Dashboard extends Component {
             ))}
           </Masonry> :
             showNoScheduledMessage ?
-              <Card style={styles}>
+              <div style={styles}>
                 <h4 styleName="no-select" >
                   You have no scheduled events yet.
                 </h4>
-              </Card> :
+              </div> :
             null
         }
         <NotificationStack
