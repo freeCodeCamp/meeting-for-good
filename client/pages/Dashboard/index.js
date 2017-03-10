@@ -93,7 +93,7 @@ class Dashboard extends Component {
     });
   }
 
-  addNotification(msgTitle, msg, participantId = 0, dismissTime = 3400) {
+  addNotification(msgTitle, msg, participantId = 0, dismissTime = 6000) {
     const { notifications, count } = this.state;
     const newCount = count + 1;
     let msgKey = count + 1;
