@@ -14,7 +14,7 @@ class DeleteModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
+      DialogOpen: false,
       event: this.props.event,
       deleteResult: this.props.cb,
     };
@@ -27,12 +27,12 @@ class DeleteModal extends Component {
 
   @autobind
   handleClose() {
-    this.setState({ open: false });
+    this.setState({ DialogOpen: false });
   }
 
   @autobind
   handleOpen() {
-    this.setState({ open: true });
+    this.setState({ DialogOpen: true });
   }
 
   @autobind
@@ -60,6 +60,7 @@ class DeleteModal extends Component {
   }
 
   render() {
+    const { DialogOpen } = this.state;
     const styles = {
       modal: {
         title: {
@@ -107,7 +108,7 @@ class DeleteModal extends Component {
           title="Delete Event"
           actions={actions}
           modal={true}
-          open={this.state.open}
+          open={DialogOpen}
           titleStyle={styles.modal.title}
           contentStyle={styles.modal.content}
           bodyStyle={styles.modal.bodyStyle}
