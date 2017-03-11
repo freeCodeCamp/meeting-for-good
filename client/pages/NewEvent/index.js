@@ -291,72 +291,74 @@ class NewEvent extends React.Component {
     const { from, to } = ranges[0];
 
     return (
-      <Card style={inLinestyles.card} >
-        <CardTitle style={inLinestyles.card.cardTitle}>Create a New Event</CardTitle>
-        <CardText>
-          <form>
-            <TextField
-              fullWidth={true}
-              floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
-              floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
-              style={inLinestyles.card.textField}
-              id="event_name"
-              value={eventName}
-              onChange={this.handleEventNameChange}
-              floatingLabelText="Event Name"
-              hintText="Enter an event name..."
-              className="validate"
-              autoFocus
-            />
-            <div>
-              <h6 styleName="heading-dates">What dates might work for you?</h6>
-              <div className="center" styleName="reset-button">
-                {from && to &&
-                  <FlatButton
-                    href="#reset"
-                    label="reset"
-                    onClick={this.handleResetClick}
-                  />
-                }
+      <div styleName="card">
+        <Card style={inLinestyles.card} >
+          <CardTitle style={inLinestyles.card.cardTitle}>Create a New Event</CardTitle>
+          <CardText>
+            <form>
+              <TextField
+                fullWidth={true}
+                floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
+                floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
+                style={inLinestyles.card.textField}
+                id="event_name"
+                value={eventName}
+                onChange={this.handleEventNameChange}
+                floatingLabelText="Event Name"
+                hintText="Enter an event name..."
+                className="validate"
+                autoFocus
+              />
+              <div>
+                <h6 styleName="heading-dates">What dates might work for you?</h6>
+                <div className="center" styleName="reset-button">
+                  {from && to &&
+                    <FlatButton
+                      href="#reset"
+                      label="reset"
+                      onClick={this.handleResetClick}
+                    />
+                  }
+                </div>
+                <DayPicker
+                  numberOfMonths={2}
+                  fromMonth={new Date()}
+                  disabledDays={DateUtils.isPastDay}
+                  modifiers={modifiers}
+                  onDayClick={this.handleDayClick}
+                  styleName="daypicker"
+                />
               </div>
-              <DayPicker
-                numberOfMonths={2}
-                fromMonth={new Date()}
-                disabledDays={DateUtils.isPastDay}
-                modifiers={modifiers}
-                onDayClick={this.handleDayClick}
-                styleName="daypicker"
-              />
-            </div>
-            <h6 styleName="heading">What times might work?</h6>
-            <div id="timeSlider" />
-            <br />
-            <p className="center">
-              No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
-            </p>
-            <br />
-            <div className="center">
-              <RaisedButton
-                labelColor="#9F9F9F"
-                style={inLinestyles.card.createButton}
-                label="Create Event"
-                className={submitClass}
-                onClick={this.createEvent}
-                backgroundColor="transparent"
-              />
-            </div>
-          </form>
-        </CardText>
-        <Notification
-          isActive={notificationIsActive}
-          message={notificationMessage}
-          action="Dismiss"
-          title=" "
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={10000}
-          activeClassName="notification-bar-is-active"
-        />
-      </Card>
+              <h6 styleName="heading">What times might work?</h6>
+              <div id="timeSlider" />
+              <br />
+              <p className="center">
+                No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
+              </p>
+              <br />
+              <div className="center">
+                <RaisedButton
+                  labelColor="#9F9F9F"
+                  style={inLinestyles.card.createButton}
+                  label="Create Event"
+                  className={submitClass}
+                  onClick={this.createEvent}
+                  backgroundColor="transparent"
+                />
+              </div>
+            </form>
+          </CardText>
+          <Notification
+            isActive={notificationIsActive}
+            message={notificationMessage}
+            action="Dismiss"
+            title=" "
+            onDismiss={() => this.setState({ notificationIsActive: false })}
+            dismissAfter={10000}
+            activeClassName="notification-bar-is-active"
+          />
+        </Card>
+      </div>
     );
   }
 }
