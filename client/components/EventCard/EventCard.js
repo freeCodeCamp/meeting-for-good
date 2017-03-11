@@ -9,7 +9,6 @@ import { Notification } from 'react-notification';
 import BestTimesDisplay from '../BestTimeDisplay/BestTimeDisplay';
 import ParticipantsList from '../ParticipantsList/ParticipantsList';
 import DeleteModal from '../DeleteModal/DeleteModal';
-import { getCurrentUser } from '../../util/auth';
 import styles from './event-card.css';
 
 class EventCard extends Component {

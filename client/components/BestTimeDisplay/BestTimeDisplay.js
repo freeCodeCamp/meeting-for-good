@@ -6,7 +6,10 @@ import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import DateRange from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
+import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
+
+import styles from './best-times-display.css';
 
 class BestTimeDisplay extends Component {
   constructor(props) {
@@ -97,7 +100,7 @@ class BestTimeDisplay extends Component {
   }
 
   renderRows(hours) {
-    const styles = {
+    const inLineStyles = {
       listItem: {
         paddingLeft: 26,
         paddingTop: 0,
@@ -108,7 +111,7 @@ class BestTimeDisplay extends Component {
     const rows = [];
     hours.forEach((hour) => {
       const row = (
-        <ListItem key={hour} style={styles.listItem} disabled>
+        <ListItem key={hour} style={inLineStyles.listItem} disabled>
           {hour}
           <Divider />
         </ListItem>
@@ -120,7 +123,7 @@ class BestTimeDisplay extends Component {
 
   renderBestTime() {
     const { displayTimes } = this.state;
-    const styles = {
+    const inLineStyles = {
       listItem: {
         paddingLeft: 0,
         paddingTop: 0,
@@ -146,13 +149,13 @@ class BestTimeDisplay extends Component {
       },
     };
     return Object.keys(displayTimes).map(date => (
-      <List key={date} disabled style={styles.list}>
-        <Subheader style={styles.subHeader}><DateRange style={styles.icon} />{date}</Subheader>
-        <ListItem key={date} disabled style={styles.listItem}>
+      <List key={date} disabled style={inLineStyles.list}>
+        <Subheader style={inLineStyles.subHeader}><DateRange style={inLineStyles.icon} />{date}</Subheader>
+        <ListItem key={date} disabled style={inLineStyles.listItem}>
           <List>
             {this.renderRows(displayTimes[date].hours)}
           </List>
-          <Divider style={styles.divider} />
+          <Divider style={inLineStyles.divider} />
         </ListItem>
       </List>
     ));
@@ -188,7 +191,6 @@ class BestTimeDisplay extends Component {
     return (
       <DayPicker
         className="alt"
-        styleName="day-picker"
         initialMonth={minDate}
         fromMonth={minDate}
         toMonth={maxDate}
@@ -203,7 +205,7 @@ class BestTimeDisplay extends Component {
       <div>
         {this.isBestTime(displayTimes) ?
           <div>
-            <h6><strong>All participants so far are available at:</strong></h6>
+            <h6 styleName="bestTimeTitle"><strong>All participants so far are available at:</strong></h6>
             {this.renderBestTime()}
           </div>
          :
@@ -219,4 +221,4 @@ BestTimeDisplay.propTypes = {
   disablePicker: React.PropTypes.bool,
 };
 
-export default BestTimeDisplay;
+export default cssModules(BestTimeDisplay, styles);
