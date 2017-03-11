@@ -17,7 +17,7 @@ class NotificationBar extends Component {
     super(props);
     this.state = {
       notifications: [],
-      notificationColor: '#ffffff',
+      notificationColor: '#9FA6AD',
       curUser: this.props.curUser,
       quantOwnerNotNotified: 0,
     };
@@ -76,9 +76,12 @@ class NotificationBar extends Component {
 
   IconButtonColor() {
     const { notifications, curUser } = this.state;
-    let notificationColor = '#ffffff';
+    let notificationColor;
     let quantOwnerNotNotified = 0;
-    if (notifications) {
+    console.log(notifications.length);
+    if (notifications.length > 0) {
+      console.log('dentro', notifications);
+      notificationColor = '#ffffff';
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
           if (participant.userId !== curUser && participant.ownerNotified === false) {
@@ -129,6 +132,7 @@ class NotificationBar extends Component {
   render() {
     const { notificationColor, quantOwnerNotNotified, notifications } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
+    const openMenu = (notifications.length === 0) ? false : null;
     const styles = {
       badge: {
         top: 12,
@@ -136,30 +140,30 @@ class NotificationBar extends Component {
         visibility: visible,
       },
     };
-
-    if (notifications.length > 0) {
-      return (
-        <IconMenu
-          maxHeight={300}
-          iconButtonElement={
-            <Badge
-              badgeContent={quantOwnerNotNotified}
-              secondary={true}
-              badgeStyle={styles.badge}
+    return (
+      <IconMenu
+        maxHeight={300}
+        open={openMenu}
+        iconButtonElement={
+          <Badge
+            badgeContent={quantOwnerNotNotified}
+            secondary={true}
+            badgeStyle={styles.badge}
+          >
+            <IconButton
+              tooltip="Notifications"
+              onClick={this.handleDismissAll}
             >
-              <IconButton tooltip="Notifications" onClick={this.handleDismissAll}>
-                <NotificationsIcon color={notificationColor} />
-              </IconButton>
-            </Badge>
-          }
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        >
-          {this.renderMenuRows()}
-        </IconMenu >
-      );
-    }
-    return null;
+              <NotificationsIcon color={notificationColor} />
+            </IconButton>
+          </Badge>
+        }
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+      >
+        {this.renderMenuRows()}
+      </IconMenu >
+    );
   }
 }
 
