@@ -295,7 +295,6 @@ class EventDetailsComponent extends React.Component {
       handleClick: () => { this.setState({ notificationIsActive: false }); },
     }];
 
-    console.log(participants.length);
     return (
       <Card style={styles.card}>
         {isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
