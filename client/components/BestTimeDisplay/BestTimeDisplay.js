@@ -114,7 +114,6 @@ class BestTimeDisplay extends Component {
       const row = (
         <ListItem key={hour} style={inLineStyles.listItem} disabled>
           {hour}
-          <Divider />
         </ListItem>
       );
       rows.push(row);

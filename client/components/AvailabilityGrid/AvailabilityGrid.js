@@ -424,14 +424,6 @@ class AvailabilityGrid extends React.Component {
   }
 
   render() {
-    const inlineStyles = {
-      submitButton: {
-        label: {
-          color: '#000000',
-        },
-      },
-    };
-
     const { allDatesRender, allTimesRender, hourTime } = this.state;
     const { dates } = this.props;
     return (
