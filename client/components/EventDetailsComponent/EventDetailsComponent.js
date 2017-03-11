@@ -99,9 +99,7 @@ class EventDetailsComponent extends React.Component {
   @autobind
   async joinEvent() {
     const { name, avatar, _id: userId } = this.state.user;
-
     const participant = { name, avatar, userId };
-
     const event = update(this.state.event, { $set: this.state.event });
     const observerEvent = jsonpatch.observe(event);
 
@@ -280,7 +278,6 @@ class EventDetailsComponent extends React.Component {
           button: {
             marginLeft: '70%',
             color: '#F66036',
-
           },
         },
         divider: {
@@ -298,12 +295,13 @@ class EventDetailsComponent extends React.Component {
       handleClick: () => { this.setState({ notificationIsActive: false }); },
     }];
 
+    console.log(participants.length);
     return (
-      <Card style={styles.card}>
+      <Card style={styles.card}> 
         {isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
         <CardTitle style={styles.card.cardTitle}>{event.name}</CardTitle>
         <CardText>
-          <h6 id="best"><strong>All participants so far are available at:</strong></h6>
+          {participants.length > 1 ? <h6 id="best"><strong>All participants so far are available at:</strong></h6> : null}
           <BestTimesDisplay event={event} disablePicker={true} />
           {(showHeatmap) ?
             <div id="heatmap">
