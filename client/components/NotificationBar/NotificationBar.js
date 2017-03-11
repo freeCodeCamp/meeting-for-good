@@ -78,9 +78,7 @@ class NotificationBar extends Component {
     const { notifications, curUser } = this.state;
     let notificationColor;
     let quantOwnerNotNotified = 0;
-    console.log(notifications.length);
     if (notifications.length > 0) {
-      console.log('dentro', notifications);
       notificationColor = '#ffffff';
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
