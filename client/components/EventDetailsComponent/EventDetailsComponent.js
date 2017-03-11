@@ -46,7 +46,6 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: false,
       notificationMessage: '',
       notificationTitle: '',
-      showEmail: false,
     };
   }
 
@@ -78,7 +77,7 @@ class EventDetailsComponent extends React.Component {
     }, 100);
 
     $('.notification-bar-action').on('click', () => {
-      this.setState({ notificationIsActive: false, showEmail: false });
+      this.setState({ notificationIsActive: false });
     });
   }
 
@@ -134,7 +133,6 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to join event. Please try again later.',
         notificationTitle: 'Error!',
-        showEmail: false,
       });
       return;
     } finally {
@@ -188,7 +186,6 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to send email for event Owner.',
         notificationTitle: 'Error!',
-        showEmail: false,
       });
     }
   }
@@ -224,7 +221,6 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to update availability. Please try again later.',
         notificationTitle: 'Error!',
-        showEmail: false,
       });
       return;
     } finally {
@@ -235,7 +231,6 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: true,
       notificationMessage: 'Saved availability successfully.',
       notificationTitle: 'Success!',
-      showEmail: false,
     });
     this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
   }
@@ -247,7 +242,6 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Event successfully deleted!',
         notificationTitle: 'Alert',
-        showEmail: false,
       });
       browserHistory.push('/dashboard');
     } else {
@@ -256,7 +250,6 @@ class EventDetailsComponent extends React.Component {
         notificationIsActive: true,
         notificationMessage: 'Failed to delete event. Please try again later.',
         notificationTitle: 'Error!',
-        showEmail: false,
       });
     }
   }
@@ -268,7 +261,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, showEmail, dates } = this.state;
+    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, dates } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
     const styles = {
@@ -304,13 +297,6 @@ class EventDetailsComponent extends React.Component {
       text: 'Dismiss',
       handleClick: () => { this.setState({ notificationIsActive: false }); },
     }];
-
-    if (showEmail) {
-      notifActions.push({
-        text: 'Email Event',
-        handleClick: () => { window.location.href = `mailto:?subject=Schedule ${event.name}&body=Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:%0D%0A%0D%0A${window.location.href} %0D%0A%0D%0A All times will automatically be converted to your local timezone.`; },
-      });
-    }
 
     return (
       <Card style={styles.card}>
@@ -369,7 +355,7 @@ class EventDetailsComponent extends React.Component {
           actions={notifActions}
           title={this.state.notificationTitle}
           onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={10000}
+          dismissAfter={3000}
           activeClassName="notification-bar-is-active"
         />
       </Card>
