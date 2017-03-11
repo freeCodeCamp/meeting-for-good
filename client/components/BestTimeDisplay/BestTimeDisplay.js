@@ -4,7 +4,6 @@ import { List, ListItem } from 'material-ui/List';
 import _ from 'lodash';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
-import Alarm from 'material-ui/svg-icons/action/alarm';
 import DateRange from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -149,7 +148,6 @@ class BestTimeDisplay extends Component {
         <Subheader style={styles.subHeader}><DateRange style={styles.icon} />{date}</Subheader>
         <ListItem key={date} disabled style={styles.listItem}>
           <List>
-            <Subheader style={styles.subHeader}></Subheader>
             {this.renderRows(displayTimes[date].hours)}
           </List>
           <Divider style={styles.divider} />
@@ -202,7 +200,12 @@ class BestTimeDisplay extends Component {
     const { displayTimes, disablePicker } = this.state;
     return (
       <div>
-        {this.isBestTime(displayTimes) ? this.renderBestTime() :
+        {this.isBestTime(displayTimes) ?
+          <div>
+            <h6><strong>All participants so far are available at:</strong></h6>
+            {this.renderBestTime()}
+          </div>
+         :
          (disablePicker === false) ? this.renderDayPicker() : null
         }
       </div>
