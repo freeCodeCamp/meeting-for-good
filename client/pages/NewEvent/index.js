@@ -259,7 +259,7 @@ class NewEvent extends React.Component {
 
   render() {
     const { ranges, eventName, selectedTimeRange, submitClass, notificationIsActive, notificationMessage } = this.state;
-    const styles = {
+    const inLinestyles = {
       card: {
         width: '700px',
         cardTitle: {
@@ -271,6 +271,13 @@ class NewEvent extends React.Component {
         },
         textField: {
           width: '100%',
+          floatingLabelStyle: {
+            color: '#000000',
+            fontSize: '24px',
+          },
+          floatingLabelFocusStyle: {
+            color: '#26A69A',
+          },
         },
       },
     };
@@ -284,14 +291,15 @@ class NewEvent extends React.Component {
     const { from, to } = ranges[0];
 
     return (
-      <Card style={styles.card}>
-        <CardTitle style={styles.card.cardTitle}>Create a New Event</CardTitle>
+      <Card style={inLinestyles.card} >
+        <CardTitle style={inLinestyles.card.cardTitle}>Create a New Event</CardTitle>
         <CardText>
           <form>
             <TextField
               fullWidth={true}
-              floatingLabelStyle={{ fontSize: '24px' }}
-              style={styles.card.textField}
+              floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
+              floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
+              style={inLinestyles.card.textField}
               id="event_name"
               value={eventName}
               onChange={this.handleEventNameChange}
@@ -330,7 +338,7 @@ class NewEvent extends React.Component {
             <div className="center">
               <RaisedButton
                 labelColor="#9F9F9F"
-                style={styles.card.createButton}
+                style={inLinestyles.card.createButton}
                 label="Create Event"
                 className={submitClass}
                 onClick={this.createEvent}
