@@ -4,7 +4,7 @@ import { List, ListItem } from 'material-ui/List';
 import _ from 'lodash';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
-import DateRange from 'material-ui/svg-icons/action/date-range';
+import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
@@ -106,6 +106,7 @@ class BestTimeDisplay extends Component {
         paddingTop: 0,
         paddingBottom: 0,
         color: '#000000',
+        fontSize: '15px',
       },
     };
     const rows = [];
@@ -138,11 +139,15 @@ class BestTimeDisplay extends Component {
         paddingLeft: 0,
         paddingTop: 0,
         paddingBottom: 0,
+        marginTop: 0,
+        marginBottom: 7,
         height: '22px',
+        fontSize: '18px',
+        color: '#000000',
       },
       icon: {
         marginRight: 2,
-        marginTop: 2,
+        marginTop: -8,
       },
       divider: {
         width: '100%',
@@ -150,7 +155,7 @@ class BestTimeDisplay extends Component {
     };
     return Object.keys(displayTimes).map(date => (
       <List key={date} disabled style={inLineStyles.list}>
-        <Subheader style={inLineStyles.subHeader}><DateRange style={inLineStyles.icon} />{date}</Subheader>
+        <Subheader style={inLineStyles.subHeader}><DateRangeIcon style={inLineStyles.icon} />{date}</Subheader>
         <ListItem key={date} disabled style={inLineStyles.listItem}>
           <List>
             {this.renderRows(displayTimes[date].hours)}
