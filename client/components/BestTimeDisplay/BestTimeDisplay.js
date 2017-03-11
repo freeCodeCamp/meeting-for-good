@@ -18,7 +18,9 @@ class BestTimeDisplay extends Component {
   }
 
   componentWillMount() {
-    this.setState({ disablePicker: false });
+    const { event, disablePicker } = this.props;
+    const displayTimes = this.buildBestTimes();
+    this.setState({ event, displayTimes, disablePicker });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -194,7 +196,6 @@ class BestTimeDisplay extends Component {
       />
     );
   }
-
 
   render() {
     const { displayTimes, disablePicker } = this.state;
