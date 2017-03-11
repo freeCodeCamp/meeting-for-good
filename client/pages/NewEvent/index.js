@@ -12,6 +12,7 @@ import { Card, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import Subheader from 'material-ui/Subheader';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -40,7 +41,7 @@ class NewEvent extends React.Component {
       }],
       eventName: '',
       selectedTimeRange: [0, 23],
-      submitClass: 'waves-effect waves-light btn purple disabled',
+      disableSubmit: true,
       notificationIsActive: false,
       notificationMessage: '',
     };
@@ -92,16 +93,12 @@ class NewEvent extends React.Component {
     // Checks whether the event name and dates/weekDays have been entered. If so, un-disable the
     // submit button. Otherwise, disable the submit button (if it isn't already');
 
-    const { submitClass, ranges, eventName } = this.state;
+    const { ranges, eventName } = this.state;
 
     if (ranges.length > 0 && ranges[0].from && eventName.length > 0) {
-      this.setState({
-        submitClass: submitClass.replace(' disabled', ''),
-      });
-    } else if (submitClass.indexOf('disabled') === -1) {
-      this.setState({
-        submitClass: `${submitClass} disabled`,
-      });
+      this.setState({ disableSubmit: false });
+    } else {
+      this.setState({ disableSubmit: true });
     }
   }
 
@@ -172,10 +169,13 @@ class NewEvent extends React.Component {
   @autobind
   handleResetClick(e) {
     e.preventDefault();
-    this.setState({ ranges: [{
-      from: null,
-      to: null,
-    }] });
+    this.setState({
+      ranges: [{
+        from: null,
+        to: null,
+      }],
+      disableSubmit: true,
+    });
   }
 
   @autobind
@@ -258,7 +258,7 @@ class NewEvent extends React.Component {
   }
 
   render() {
-    const { ranges, eventName, selectedTimeRange, submitClass, notificationIsActive, notificationMessage } = this.state;
+    const { ranges, eventName, selectedTimeRange, disableSubmit, notificationIsActive, notificationMessage } = this.state;
     const inLinestyles = {
       card: {
         width: '700px',
@@ -278,6 +278,10 @@ class NewEvent extends React.Component {
           floatingLabelFocusStyle: {
             color: '#26A69A',
           },
+        },
+        subHeader: {
+          textAlign: 'Center',
+          color: '#000000',
         },
       },
     };
@@ -329,21 +333,21 @@ class NewEvent extends React.Component {
                   styleName="daypicker"
                 />
               </div>
-              <h6 styleName="heading">What times might work?</h6>
+              <Subheader style={inLinestyles.card.subHeader}>What times might work?</Subheader>
               <div id="timeSlider" />
               <br />
-              <p className="center">
+              <Subheader style={inLinestyles.card.subHeader}>
                 No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
-              </p>
-              <br />
+              </Subheader>
               <div className="center">
                 <RaisedButton
                   labelColor="#9F9F9F"
                   style={inLinestyles.card.createButton}
                   label="Create Event"
-                  className={submitClass}
+                  className="submit"
+                  disabled={disableSubmit}
+                  primary={true}
                   onClick={this.createEvent}
-                  backgroundColor="transparent"
                 />
               </div>
             </form>

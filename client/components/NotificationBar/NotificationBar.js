@@ -17,7 +17,7 @@ class NotificationBar extends Component {
     super(props);
     this.state = {
       notifications: [],
-      notificationColor: '#9FA6AD',
+      notificationColor: '#A7A7A7',
       curUser: this.props.curUser,
       quantOwnerNotNotified: 0,
     };
