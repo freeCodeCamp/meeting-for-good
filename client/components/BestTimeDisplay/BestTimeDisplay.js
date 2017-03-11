@@ -149,7 +149,7 @@ class BestTimeDisplay extends Component {
         <Subheader style={styles.subHeader}><DateRange style={styles.icon} />{date}</Subheader>
         <ListItem key={date} disabled style={styles.listItem}>
           <List>
-            <Subheader style={styles.subHeader}><Alarm style={styles.icon} /> </Subheader>
+            <Subheader style={styles.subHeader}></Subheader>
             {this.renderRows(displayTimes[date].hours)}
           </List>
           <Divider style={styles.divider} />
