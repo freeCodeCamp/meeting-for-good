@@ -6,9 +6,7 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
-import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import Divider from 'material-ui/Divider';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
@@ -53,7 +51,6 @@ class EventDetailsComponent extends React.Component {
   }
 
   async componentWillMount() {
-    const { event } = this.state;
     const user = await getCurrentUser();
     if (user) {
       let showHeatmap = false;
