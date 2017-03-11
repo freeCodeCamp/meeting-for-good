@@ -63,7 +63,7 @@ class EventDetails extends Component {
     const { event, showLoginModal, notificationIsActive, notificationMessage, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
       return (
-        <div>
+        <div styleName="event">
           <EventDetailsComponent event={event} showInviteGuests={this.handleInviteGuests} />
           <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGustInviteDrawer} />
         </div>
