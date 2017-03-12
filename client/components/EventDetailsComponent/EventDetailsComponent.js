@@ -205,6 +205,7 @@ class EventDetailsComponent extends React.Component {
     try {
       checkStatus(response);
       event = await parseJSON(response);
+      this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
     } catch (err) {
       console.log(err);
       this.setState({
@@ -222,7 +223,7 @@ class EventDetailsComponent extends React.Component {
       notificationMessage: 'Saved availability successfully.',
       notificationTitle: 'Success!',
     });
-    this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
+  
   }
 
   @autobind
