@@ -46,6 +46,8 @@ class EventDetailsComponent extends React.Component {
       notificationIsActive: false,
       notificationMessage: '',
       notificationTitle: '',
+      showButtonAviability: 'none',
+      showAvailabilityGrid: 'none',
     };
   }
 
@@ -69,13 +71,6 @@ class EventDetailsComponent extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      $('.alt').each((i, el) => {
-        $(el).parents('.card').find('#best')
-          .remove();
-      });
-    }, 100);
-
     $('.notification-bar-action').on('click', () => {
       this.setState({ notificationIsActive: false });
     });
@@ -138,7 +133,7 @@ class EventDetailsComponent extends React.Component {
       this.sendEmailOwner(event);
     }
 
-    this.setState({ event, eventParticipantsIds });
+    this.setState({ event, eventParticipantsIds, showAvailabilityGrid: 'block' });
   }
 
   async loadOwnerData(_id) {
@@ -190,15 +185,12 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   showAvailability(ev) {
-    document.getElementById('availability-grid').className = '';
-    ev.target.className += ' hide';
+    this.setState({ showButtonAviability: 'hidden', showAvailabilityGrid: 'block' });
   }
 
   @autobind
   editAvail() {
-    this.setState({ showHeatmap: false }, () => {
-      document.getElementById('enterAvailButton').click();
-    });
+    this.setState({ showHeatmap: false, showButtonAviability: 'none', showAvailabilityGrid: 'block' });
   }
 
   @autobind
@@ -259,10 +251,14 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    const { event, user, showHeatmap, participants, myAvailability, eventParticipantsIds, dates } = this.state;
+    const {
+      event,
+      user, showHeatmap, participants,
+      myAvailability, eventParticipantsIds,
+      dates, showButtonAviability, showAvailabilityGrid } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
-    const styles = {
+    const inlineStyles = {
       card: {
         width: '510px',
         marginTop: '2%',
@@ -283,6 +279,12 @@ class EventDetailsComponent extends React.Component {
         divider: {
           width: '100%',
         },
+        buttonAviability: {
+          display: showButtonAviability,
+        },
+        availabilityGrid: {
+          display: showAvailabilityGrid,
+        },
       },
     };
 
@@ -296,9 +298,9 @@ class EventDetailsComponent extends React.Component {
     }];
 
     return (
-      <Card style={styles.card}>
+      <Card style={inlineStyles.card}>
         {isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
-        <CardTitle style={styles.card.cardTitle}>{event.name}</CardTitle>
+        <CardTitle style={inlineStyles.card.cardTitle}>{event.name}</CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker={true} />
           {(showHeatmap) ?
@@ -311,8 +313,8 @@ class EventDetailsComponent extends React.Component {
                 heatmap
               />
             </div> :
-            <div id="grid" className="center">
-              <div id="availability-grid" className="hide">
+            <div id="grid" className="center" >
+              <div style={inlineStyles.card.availabilityGrid}>
                 <AvailabilityGrid
                   dates={dates}
                   user={user}
@@ -325,6 +327,7 @@ class EventDetailsComponent extends React.Component {
               {(Object.keys(user).length > 0) ?
                 (eventParticipantsIds.indexOf(user._id) > -1) ?
                   <RaisedButton
+                    style={inlineStyles.card.buttonAviability}
                     id="enterAvailButton"
                     backgroundColor="#28AEA1"
                     labelColor="#ffffff"
@@ -339,7 +342,7 @@ class EventDetailsComponent extends React.Component {
                     labelColor="#ffffff"
                   />
                 : null
-              }
+            }
             </div>
           }
           <br />
