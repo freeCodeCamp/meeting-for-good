@@ -4,10 +4,10 @@ import 'dialog-polyfill/dialog-polyfill';
 import 'dialog-polyfill/dialog-polyfill.css';
 // Import App
 import App from './components/App';
-import Home from './pages/Home';
+import Home from './pages/home/';
 import Dashboard from './pages/Dashboard';
-import EventDetails from './pages/EventDetails';
-import NewEvent from './pages/NewEvent';
+import EventDetails from './pages/EventDetails/EventDetails';
+import NewEvent from './pages/NewEvent/';
 
 // Vendor Dependencies
 import './styles/no-css-modules/nprogress.css';

@@ -8,11 +8,16 @@ import colorsys from 'colorsys';
 import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
-import styles from '../styles/availability-grid.css';
-import { checkStatus } from '../util/fetch.util';
-import { getHours, getMinutes, removeZero } from '../util/time-format';
-import { getDaysBetween } from '../util/dates.utils';
-import { getTimesBetween } from '../util/times.utils';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+
+import styles from './availability-grid.css';
+import { checkStatus } from '../../util/fetch.util';
+import { getHours, getMinutes, removeZero } from '../../util/time-format';
+import { getDaysBetween } from '../../util/dates.utils';
+import { getTimesBetween } from '../../util/times.utils';
+import enteravail from '../../assets/enteravail.gif';
 
 class AvailabilityGrid extends React.Component {
   constructor(props) {
@@ -34,6 +39,7 @@ class AvailabilityGrid extends React.Component {
       hourTime: [],
       startCell: null,
       endCell: null,
+      openModal: false,
     };
   }
 
@@ -379,14 +385,55 @@ class AvailabilityGrid extends React.Component {
     });
   }
 
+  renderDialog() {
+    const { openModal } = this.state;
+    const actions = [
+      <FlatButton
+        label="close"
+        primary={true}
+        onTouchTap={() => this.setState({ openModal: false })}
+      />,
+    ];
+    const inlineStyles = {
+      modal: {
+        content: {
+          width: '30%',
+          maxWidth: '30%',
+        },
+        bodyStyle: {
+          paddingTop: 10,
+          fontSize: '25px',
+        },
+      },
+    };
+
+    return (
+      <Dialog
+        contentStyle={inlineStyles.modal.content}
+        bodyStyle={inlineStyles.modal.bodyStyle}
+        actions={actions}
+        modal={true}
+        open={openModal}
+      >
+        <h4>This is how you can enter and remove your availablity:</h4>
+        <img src={enteravail} alt="entering availablity gif" />
+      </Dialog>
+    );
+  }
+
   render() {
     const { allDatesRender, allTimesRender, hourTime } = this.state;
     const { dates } = this.props;
     return (
-      <div>
-        <a styleName="info" onClick={() => document.querySelector('#showAvailHelper').showModal()}>
-          <em>How do I use the grid?</em>
-        </a>
+      <div styleName="Column">
+        <div styleName="row">
+          <FlatButton
+            primary={true}
+            onClick={() => this.setState({ openModal: true })}
+          >
+            How do I use the grid?
+          </FlatButton>
+        </div>
         <div styleName="selectbox" id="selectbox" />
         {hourTime.map((time, i) => {
           return (
@@ -438,17 +485,19 @@ class AvailabilityGrid extends React.Component {
         <br />
         <div className="center">
           {this.props.heatmap ?
-            <div>
-              <a
-                className="waves-effect waves-light btn grey darken-3"
-                onClick={this.editAvailability}
-              >Edit Availability</a>
-              <br />
-            </div> :
-            <a
-              className="waves-effect waves-light btn grey darken-3"
+            <RaisedButton
+              labelColor="#ffffff"
+              backgroundColor="#000000"
+              label="Edit Availability"
+              onClick={this.editAvailability}
+            />
+            :
+            <RaisedButton
+              labelColor="#ffffff"
+              backgroundColor="#000000"
+              label="Submit"
               onClick={this.submitAvailability}
-            >Submit</a>
+            />
           }
         </div>
         <div styleName="hover-container">
@@ -467,22 +516,7 @@ class AvailabilityGrid extends React.Component {
             null
           }
         </div>
-        <dialog
-          onClick={(ev) => ev.stopPropagation()}
-          className="mdl-dialog"
-          styleName="mdl-dialog"
-          id="showAvailHelper"
-        >
-          <p className="mdl-dialog__title">This is how you can enter and remove your availablity:</p>
-          <div className="mdl-dialog__actions">
-            <img src="https://cdn.rawgit.com/AkiraLaine/LetsMeet/development/client/assets/enteravail.gif" alt="entering availablity gif" />
-            <button
-              type="button"
-              className="mdl-button close"
-              onClick={() => document.querySelector('#showAvailHelper').close()}
-            >Cancel</button>
-          </div>
-        </dialog>
+        {this.renderDialog()}
       </div>
     );
   }

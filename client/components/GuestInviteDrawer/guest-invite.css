@@ -1,0 +1,16 @@
+.header {
+   text-align: center;
+} 
+
+.subHeader {
+   text-align: center;
+} 
+.Row
+{
+  padding: 0;
+  display: table;
+  width: 100%; 
+  table-layout: fixed; 
+  border-spacing: 10px; 
+  height: flex;
+}
