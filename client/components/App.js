@@ -32,7 +32,7 @@ class App extends Component {
     return (
       <div>
         <NavBar location={location} cbFilter={this.toggleFilterPastEventsTo} />
-        <main styleName="main">
+        <main className="main">
           {childrenWithProps}
         </main>
       </div>
