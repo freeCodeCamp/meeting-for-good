@@ -223,7 +223,6 @@ class EventDetailsComponent extends React.Component {
       notificationMessage: 'Saved availability successfully.',
       notificationTitle: 'Success!',
     });
-  
   }
 
   @autobind
@@ -327,14 +326,7 @@ class EventDetailsComponent extends React.Component {
               </div>
               {(Object.keys(user).length > 0) ?
                 (eventParticipantsIds.indexOf(user._id) > -1) ?
-                  <RaisedButton
-                    style={inlineStyles.card.buttonAviability}
-                    id="enterAvailButton"
-                    backgroundColor="#28AEA1"
-                    labelColor="#ffffff"
-                    onClick={this.showAvailability}
-                    label={'Enter my availability'}
-                  />
+                  null
                   :
                   <RaisedButton
                     onClick={this.joinEvent}
