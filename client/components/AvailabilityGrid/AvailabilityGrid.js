@@ -19,8 +19,6 @@ import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 
-
-
 class AvailabilityGrid extends React.Component {
   constructor(props) {
     super(props);
