@@ -244,7 +244,8 @@ class GuestInviteDrawer extends Component {
           height: 28,
           padding: 0,
           marginBottom: '10px',
-          marginLeft: '10px',
+          marginLeft: '7px',
+          marginRight: '7px',
           icon: {
             width: 22,
             height: 22,
