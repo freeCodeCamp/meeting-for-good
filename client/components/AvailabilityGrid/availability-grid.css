@@ -70,23 +70,13 @@ a.info {
   margin: 5px;
 }
 
-.mdl-dialog {
-  width: 550px;
-  height: auto;
-}
-
-.mdl-dialog p {
-  font-size: 1em;
-}
-
-.mdl-dialog img {
-  width: 508px;
-  height: 163px;
-}
-
 .selectbox {
   position: absolute;
   border: 1px solid black;
-/*  margin-left: 75px;
-  margin-top: 24px;*/
+
+}
+
+.Column
+{
+    display: table-cell;
 }

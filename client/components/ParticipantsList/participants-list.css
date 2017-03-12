@@ -1,0 +1,14 @@
+.particHeader {
+  font-size: 20px;
+}
+.Row
+{
+  display: table;
+  width: 100%; 
+  table-layout: fixed; 
+  border-spacing: 10px; 
+}
+.Column
+{
+  display: table-cell;
+}

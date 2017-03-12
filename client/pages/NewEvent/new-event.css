@@ -1,22 +1,7 @@
-h1 {
-  text-align: center;
-  margin: 0;
-}
 
-.new-event-card {
-  width: 700px;
-}
 
-@media (min-width:550px) and (max-width:850px) {
-  .new-event-card {
-    width: 80%;
-  }
-}
-
-@media (max-width:550px) {
-  .new-event-card {
-    width: 98%;
-  }
+.card:hover {
+  box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3);
 }
 
 .daypicker {

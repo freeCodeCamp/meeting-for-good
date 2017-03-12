@@ -1,21 +1,19 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/users                  ->  index
- * GET     /api/users/me               ->  me
- * POST    /api/users                  ->  create
- * GET     /api/users/:id              ->  show
- * PUT     /api/users/:id              ->  upsert
- * PATCH   /api/users/:id              ->  patch
- * DELETE  /api/users/:id              ->  destroy
- * GET     /api/users/byName/:name     -> indexByName
- *GET     /api/users/relatedUsers/     -> relatedUsers
+ * GET     /api/user                  ->  index
+ * GET     /api/user/me               ->  me
+ * POST    /api/user                  ->  create
+ * GET     /api/user/:id              ->  show
+ * PUT     /api/user/:id              ->  upsert
+ * PATCH   /api/user/:id              ->  patch
+ * DELETE  /api/user/:id              ->  destroy
+ * GET     /api/user/byName/:name     -> indexByName
+ *GET     /api/user/relatedUsers/     -> relatedUsers
  */
 
 import jsonpatch from 'fast-json-patch';
 import Users from './user.model';
 import Events from '../events/events.model';
-
-
 
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
@@ -100,7 +98,7 @@ export const upsert = (req, res) => {
     req.body,
     { upsert: true, setDefaultsOnInsert: true, runValidators: true }).exec()
     .then(respondWithResult(res))
-    .catch((err) => { 
+    .catch((err) => {
       console.log('err no put', err);
       handleError(res);
     });
@@ -159,6 +157,7 @@ export const relatedUsers = (req, res) => {
         return res.status(401).end();
       }
       const response = [];
+      const users = [];
       for (const ev of events) {
         for (const participant of ev.participants) {
           const participantId = participant.userId.toString();
@@ -166,19 +165,18 @@ export const relatedUsers = (req, res) => {
               // check if exists at array.
             if (response.indexOf(participantId) === -1) {
               response.push(participantId);
+              users.push(participant);
             }
           }
         }
       }
-      res.json(response);
+      return users;
     })
-    .catch(err => next(err));
+    .then(respondWithResult(res))
+    .catch(handleError(res));
 };
 
 export const isAuthenticated = (req, res) => {
   if (req.user) return res.status(200).json({ isAuthenticated: true });
   return res.status(200).json({ isAuthenticated: false });
 };
-
-
-

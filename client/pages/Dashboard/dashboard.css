@@ -1,0 +1,19 @@
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  text-align: center;
+}
+
+.wrapper {
+  min-width: 95%;
+}
+
+.new-event-icon {
+  position: fixed !important;
+  z-index: 1000;
+  right: 0;
+  margin-bottom: 20px;
+  margin-right: 24px;
+  bottom: 0;
+  overflow: 'auto';
+}

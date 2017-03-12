@@ -1,0 +1,31 @@
+.card {
+  margin: 1% 1%;
+  width: 23%;
+  max-width: 300px;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3) !important;
+}
+
+@media (min-width:850px) and (max-width:1200px) {
+  .card {
+    margin: 2% 1.5%;
+    width: 30%;
+  }
+}
+
+@media (min-width:550px) and (max-width:850px) {
+  .card {
+    margin: 2% 2%;
+    width: 42%;
+  }
+}
+
+@media (max-width:550px) {
+  .card {
+    margin: 2.5% 1%;
+    width: 98%;
+  }
+}

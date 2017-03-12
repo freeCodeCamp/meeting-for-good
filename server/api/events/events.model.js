@@ -11,7 +11,6 @@ const participantsSchema = new Schema({
   emailUpdate: { type: Boolean, required: true, default: false },
 });
 
-
 const datesSchema =  new Schema({
   toDate: { type: Date, required: true },
   fromDate: { type: Date, required: true },
@@ -25,6 +24,5 @@ const EventSchema = new Schema({
   selectedTimeRange: Array,
   owner: { type: String, required: true },
 });
-
 
 export default mongoose.model('Event', EventSchema);
