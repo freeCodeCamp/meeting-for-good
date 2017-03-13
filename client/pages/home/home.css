@@ -1,7 +1,11 @@
 .main {
 	text-align: center;
+	font-family: Lato !important;
 }
 
+h1 h2, h3, h4, h5, h6 {
+	font-family: Lato !important;
+}
 .main img {
 	width: 700px;
 }
@@ -12,6 +16,9 @@
 	height: 87vh;
 }
 
+.header h2 {
+	font-family: Lato !important;
+}
 .content {
 	width: 100vw;
 	height: auto;
@@ -36,6 +43,11 @@
   margin-top: 40px;
 }
 
+body {
+		font-family: Lato !important;
+	
+}
+
 footer {
 	height: 75px;
 	display: flex;
@@ -58,4 +70,9 @@ footer a:hover {
 	width: 100%;
 	border-width: 0.2px;
 	border-color: lightgrey;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url('../../assets/lato/Lato-Regular.ttf');
 }
