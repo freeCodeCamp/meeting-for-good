@@ -22,12 +22,6 @@ const muiTheme = getMuiTheme({
     primary1Color: '#3949AB',
     accent1Color: '#FF4025',
   },
-  raiseButton: {
-  },
-  flatButton: {
-
-  },
-
 });
 
 ReactDOM.render(
