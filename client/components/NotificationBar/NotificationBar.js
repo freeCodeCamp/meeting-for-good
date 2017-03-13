@@ -149,8 +149,8 @@ class NotificationBar extends Component {
     const openMenu = (notifications.length === 0) ? false : null;
     const styles = {
       badge: {
-        top: 12,
-        right: 12,
+        top: 20,
+        right: 17,
         visibility: visible,
       },
     };
