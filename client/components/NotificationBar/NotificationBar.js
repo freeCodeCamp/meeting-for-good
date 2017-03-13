@@ -95,6 +95,21 @@ class NotificationBar extends Component {
   renderMenuRows() {
     const { notifications, curUser } = this.state;
     const rows = [];
+    const inlineStyles = {
+      flatButton: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginLeft: 0,
+        borderLeft: 0,
+        textAlign: 'left',
+        label: {
+          paddingLeft: 0,
+          textTransform: 'none',
+          marginLeft: 0,
+          textAlign: 'left',
+        },
+      },
+    }
     if (notifications) {
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
@@ -107,15 +122,16 @@ class NotificationBar extends Component {
               <MenuItem
                 key={`${participant._id} first`}
                 value={participant._id}
-                style={{ backgroundColor: bkgColor, color: '#000000' }}
+                style={{ backgroundColor: bkgColor }}
               >
                 {`${participant.name} accept your invite for `}
                 <FlatButton
                   onClick={() => this.handleEventLinkClick(notice._id)}
                   primary={true}
-                >
-                  {notice.name}
-                </FlatButton>
+                  style={inlineStyles.flatButton}
+                  labelStyle={inlineStyles.flatButton.label}
+                  label={notice.name}
+                />
               </MenuItem>
             );
             rows.push(row);
@@ -136,6 +152,9 @@ class NotificationBar extends Component {
         top: 12,
         right: 12,
         visibility: visible,
+        iconButton: {
+          disabledColor: '#00FF00',
+        },
       },
     };
     return (

@@ -64,9 +64,11 @@ class DeleteModal extends Component {
     const styles = {
       modal: {
         title: {
-          backgroundColor: '#FF4081',
+          backgroundColor: '#FF4025',
           color: '#ffffff',
           fontSize: '25px',
+          height: '50px',
+          paddingTop: 6,
         },
         content: {
           width: '22%',

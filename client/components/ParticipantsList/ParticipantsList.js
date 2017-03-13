@@ -151,12 +151,14 @@ class ParticipantsList extends Component {
         onTouchTap={this.handleDeleteGuest}
       />,
     ];
-    const styles = {
+    const inLineStyles = {
       modal: {
         title: {
-          backgroundColor: '#FF4081',
+          backgroundColor: '#FF4025',
           color: '#ffffff',
           fontSize: '25px',
+          height: '50px',
+          paddingTop: 6,
         },
         content: {
           width: '22%',
@@ -172,9 +174,9 @@ class ParticipantsList extends Component {
     return (
       <Dialog
         title="Delete Guest"
-        titleStyle={styles.modal.title}
-        contentStyle={styles.modal.content}
-        bodyStyle={styles.modal.bodyStyle}
+        titleStyle={inLineStyles.modal.title}
+        contentStyle={inLineStyles.modal.content}
+        bodyStyle={inLineStyles.modal.bodyStyle}
         actions={actions}
         modal={true}
         open={openDeleteModal}
@@ -188,7 +190,7 @@ class ParticipantsList extends Component {
     const { notificationIsActive, notificationMessage, notificationTitle } = this.state;
     const inLineStyles = {
       buttonAddGuest: {
-        backgroundColor: '#4A90E2',
+        backgroundColor: '#2DB9FF',
         borderRadius: '50%',
         width: 40,
         height: 40,
@@ -198,29 +200,30 @@ class ParticipantsList extends Component {
           borderRadius: '50%',
           width: 24,
           height: 24,
+          color: '#ffffff',
         },
         hoveredStyle: {
-          backgroundColor: '#00BCD4',
+          backgroundColor: '#3949AB',
         },
       },
     };
 
     return (
       <div>
-        <div styleName={'Row'}>
-          <div styleName={'Column'}>
-            <p styleName={'particHeader'}>
+        <div styleName="Row">
+          <div styleName="Column">
+            <p styleName="particHeader">
               Participants
             </p>
           </div>
-          <div styleName={'Column'}>
+          <div styleName="Column">
             <IconButton
               style={inLineStyles.buttonAddGuest}
               iconStyle={inLineStyles.buttonAddGuest.iconStyle}
               onClick={this.handleToggleShowInviteGuestDrawer}
               hoveredStyle={inLineStyles.buttonAddGuest.hoveredStyle}
-              tooltip={'Add a participant'}
-              tooltipPosition={'top-left'}
+              tooltip="Add a participant"
+              tooltipPosition="top-left"
             >
               <ContentAdd />
             </IconButton >

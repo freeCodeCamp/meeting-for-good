@@ -17,7 +17,10 @@ h1 h2, h3, h4, h5, h6 {
 }
 
 .header h2 {
-	font-family: Lato !important;
+	font-family: saxMono !important;
+	text-transform: none !important;
+	font-size: 80px !important;
+
 }
 .content {
 	width: 100vw;
@@ -72,7 +75,3 @@ footer a:hover {
 	border-color: lightgrey;
 }
 
-@font-face {
-    font-family: Lato;
-    src: url('../../assets/lato/Lato-Regular.ttf');
-}

@@ -5,6 +5,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Client from './client'; // App
+import { white, darkBlack, fullBlack } from '../node_modules/material-ui/styles/colors';
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -16,11 +17,17 @@ const muiTheme = getMuiTheme({
   fontFamily: 'Lato, Roboto, sans-serif',
   fontWeight: 300,
   palette: {
-    textColor: '#000000',
+    textColor: darkBlack,
+    disabledColor: '#A7A7A7',
+    primary1Color: '#3949AB',
+    accent1Color: '#FF4025',
   },
-  appBar: {
-    height: 50,
+  raiseButton: {
   },
+  flatButton: {
+
+  },
+
 });
 
 ReactDOM.render(
