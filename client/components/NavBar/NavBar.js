@@ -164,7 +164,7 @@ class NavBar extends Component {
   render() {
     const styles = {
       toolBar: {
-        height: '60px',
+        height: '65px',
         backgroundColor: '#006400',
       },
       button: {
