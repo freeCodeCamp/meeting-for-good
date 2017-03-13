@@ -152,9 +152,6 @@ class NotificationBar extends Component {
         top: 12,
         right: 12,
         visibility: visible,
-        iconButton: {
-          disabledColor: '#00FF00',
-        },
       },
     };
     return (
