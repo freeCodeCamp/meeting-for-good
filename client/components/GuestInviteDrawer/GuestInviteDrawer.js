@@ -209,11 +209,12 @@ class GuestInviteDrawer extends Component {
       const row = (
         <div key={guest._id}>
           <ListItem
+            key={`${guest._id}.listItem`}
             primaryText={guest.name}
             leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} checked={activeCheckboxes.includes(guest.userId)} />}
             rightAvatar={<Avatar src={guest.avatar} />}
           />
-          <Divider style={styles.divider} />
+          <Divider key={`${guest._id}.divider`} style={styles.divider} />
         </div>
       );
       rows.push(row);
