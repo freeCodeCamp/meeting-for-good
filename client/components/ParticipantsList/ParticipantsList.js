@@ -194,11 +194,11 @@ class ParticipantsList extends Component {
     const { notificationIsActive, notificationMessage, notificationTitle } = this.state;
     const inLineStyles = {
       buttonAddGuest: {
-        backgroundColor: '#2DB9FF',
+        backgroundColor: '#3949AB',
         borderRadius: '50%',
         width: 40,
         height: 40,
-        padding: 7,
+        padding: 0,
         iconStyle: {
           borderRadius: '50%',
           width: 24,
@@ -206,7 +206,7 @@ class ParticipantsList extends Component {
           color: '#ffffff',
         },
         hoveredStyle: {
-          backgroundColor: '#3949AB',
+          backgroundColor: '#2DB9FF',
         },
       },
     };

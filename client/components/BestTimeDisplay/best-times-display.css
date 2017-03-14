@@ -1,3 +1,13 @@
 .bestTimeTitle {
   margin-bottom: 0px;
+  font-size: 14.9px;
+  font-weight: 900;
+}
+
+.bestTimeDisplay {
+  padding: 0px 0px 10px 0px !important;
+}
+.daypicker {
+  outline: none;
+  padding: 0;
 }
