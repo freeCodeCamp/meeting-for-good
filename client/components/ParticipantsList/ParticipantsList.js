@@ -90,14 +90,16 @@ class ParticipantsList extends Component {
   }
 
   renderGuestList() {
-    const styles = {
+    const inLinestyles = {
       chip: {
         margin: 4,
         width: '100%',
         border: '0.5px solid #E0E0E0',
         backgroundColor: '#ECEFF1',
+        display: 'flex',
+        flexDirection: 'row',
         label: {
-          width: '80%',
+          flexGrow: 100,
         },
       },
       wrapper: {
@@ -117,17 +119,18 @@ class ParticipantsList extends Component {
         row = (
           <Chip
             key={participant._id}
-            style={styles.chip}
-            labelStyle={styles.chip.label}
+            style={inLinestyles.chip}
+            labelStyle={inLinestyles.chip.label}
+            deleteHovered={true}
             onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
           >
-            <Avatar src={participant.avatar} style={styles.avatar} />
+            <Avatar src={participant.avatar} style={inLinestyles.avatar} />
             {participant.name}
           </Chip>
         );
       } else {
-        row = (<Chip key={participant._id} style={styles.chip} >
-          <Avatar src={participant.avatar} style={styles.avatar} />
+        row = (<Chip key={participant._id} style={inLinestyles.chip} >
+          <Avatar src={participant.avatar} style={inLinestyles.avatar} />
           {participant.name}
         </Chip>
         );
