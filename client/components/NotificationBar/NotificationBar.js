@@ -147,11 +147,17 @@ class NotificationBar extends Component {
     const { notificationColor, quantOwnerNotNotified, notifications } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const openMenu = (notifications.length === 0) ? false : null;
-    const styles = {
+    const inLineStyles = {
       badge: {
-        top: 20,
-        right: 17,
+        top: 25,
+        right: 30,
         visibility: visible,
+        fontSize: '15px',
+        width: 20,
+        height: 20,
+        iconButton: {
+          paddingBottom: 50,
+        },
       },
     };
     return (
@@ -162,13 +168,14 @@ class NotificationBar extends Component {
           <Badge
             badgeContent={quantOwnerNotNotified}
             secondary={true}
-            badgeStyle={styles.badge}
+            badgeStyle={inLineStyles.badge}
           >
             <IconButton
               tooltip="Notifications"
               onClick={this.handleDismissAll}
+              style={inLineStyles.badge.iconButton}
             >
-              <NotificationsIcon color={notificationColor} />
+              <NotificationsIcon color="white" />
             </IconButton>
           </Badge>
         }
