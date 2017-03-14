@@ -24,12 +24,7 @@ class LoginModal extends Component {
 
   @autobind
   handleClose() {
-    this.setState({ open: false });
-  }
-
-  @autobind
-  async handleAuthClick() {
-    // this.handleClose();
+    this.props.cbCancel();
   }
 
   render() {
@@ -37,7 +32,7 @@ class LoginModal extends Component {
       <FlatButton
         label="Cancel"
         primary={true}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
     ];
 
@@ -94,6 +89,7 @@ class LoginModal extends Component {
 LoginModal.propTypes = {
   open: React.PropTypes.bool,
   logFail: React.PropTypes.bool,
+  cbCancel: React.PropTypes.func,
 };
 
 export default LoginModal;

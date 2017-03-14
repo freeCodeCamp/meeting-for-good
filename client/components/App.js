@@ -53,7 +53,9 @@ class App extends Component {
         sessionStorage.removeItem('redirectTo');
       }
     } else {
+      sessionStorage.removeItem('redirectTo');
       this.setState({ loginFail: true });
+      browserHistory.push('/');
     }
   }
 
@@ -64,6 +66,15 @@ class App extends Component {
       sessionStorage.setItem('redirectTo', pathToGo);
       this.setState({ openLoginModal: true, pathToGo });
     }
+  }
+
+  @autobind
+  handleCancelLoginModal() {
+    this.setState({ openLoginModal: false });
+    if (sessionStorage.getItem('redirectTo')) {
+      sessionStorage.removeItem('redirectTo');
+    }
+    browserHistory.push('/');
   }
 
   render() {
@@ -97,6 +108,7 @@ class App extends Component {
         <LoginModal
           open={openLoginModal}
           logFail={loginFail}
+          cbCancel={this.handleCancelLoginModal}
         />
         <NavBar
           location={location}
