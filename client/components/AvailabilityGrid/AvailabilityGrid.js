@@ -397,8 +397,8 @@ class AvailabilityGrid extends React.Component {
     const inlineStyles = {
       modal: {
         content: {
-          width: '30%',
-          maxWidth: '30%',
+          width: '38%',
+          maxWidth: '38%',
         },
         bodyStyle: {
           paddingTop: 10,
