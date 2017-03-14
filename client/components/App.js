@@ -17,7 +17,7 @@ class App extends Component {
       openLoginModal: false,
       isAuthenticated: false,
       loginFail: false,
-      pathToGo: '',
+      pathToGo: '/',
       loginModalDisable: false,
     };
   }
@@ -33,21 +33,25 @@ class App extends Component {
     this.setState({ showPastEvents: value });
   }
 
-  @autobind 
+  @autobind
   handleLogin(curUser) {
     if (Object.keys(curUser).length > 0) {
       this.setState({ curUser, isAuthenticated: true });
     }
   }
 
-  @autobind 
+  @autobind
   async handleAuthentication(result) {
     console.log('result', result);
     const { pathToGo } = this.state;
     if (result) {
+      console.log('logou', pathToGo);
       const curUser = await getCurrentUser();
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
-      browserHistory.push(pathToGo);
+      if (sessionStorage.getItem('redirectTo')) {
+        browserHistory.push(sessionStorage.getItem('redirectTo'));
+        sessionStorage.removeItem('redirectTo');
+      }
     } else {
       this.setState({ loginFail: true });
     }
@@ -56,7 +60,8 @@ class App extends Component {
   @autobind
   async handleOpenLoginModal(pathToGo) {
     console.log('pathToGo', pathToGo);
-    if (!await isAuthenticated()) {
+    if (await isAuthenticated() === false) {
+      sessionStorage.setItem('redirectTo', pathToGo);
       this.setState({ openLoginModal: true, pathToGo });
     }
   }
@@ -97,7 +102,7 @@ class App extends Component {
           location={location}
           cbFilter={this.toggleFilterPastEventsTo}
           isAuthenticated={isAuthenticated}
-          curUser={curUser}  
+          curUser={curUser}
           cbOpenLoginModal={this.handleOpenLoginModal}
         />
         <main className="main">

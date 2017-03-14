@@ -47,7 +47,7 @@ class NewEvent extends React.Component {
     };
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     if (!await isAuthenticated()) {
       // find the current user aka possible owner
       this.state.curUser = await getCurrentUser();
@@ -366,5 +366,11 @@ class NewEvent extends React.Component {
     );
   }
 }
+
+NewEvent.propTypes = {
+  isAuthenticated: React.PropTypes.bool,
+  cbOpenLoginModal: React.PropTypes.func,
+  curUser: React.PropTypes.object,
+};
 
 export default cssModules(NewEvent, styles);
