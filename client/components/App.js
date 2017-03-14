@@ -66,6 +66,7 @@ class App extends Component {
     const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
+        console.log(this.props.children, child);
         if (this.props.children.type.displayName === 'Dashboard') {
           return cloneElement(child, {
             showPastEvents,

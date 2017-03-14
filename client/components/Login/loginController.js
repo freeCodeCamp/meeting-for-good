@@ -5,11 +5,11 @@ import { isAuthenticated } from '../../util/auth';
 class LoginController extends Component {
   constructor(props) {
     super(props);
+    console.log(props);
   };
 
   async componentWillMount() {
     if (await isAuthenticated()) {
-      console.log('opa');
       this.props.handleAuthentication(true);
     } else {
       this.props.handleAuthentication(false);
