@@ -76,7 +76,7 @@ class App extends Component {
             cbOpenLoginModal: this.handleOpenLoginModal,
           });
         }
-        if (child.type.displayName === 'LoginController') {
+        if (child.type.name === 'LoginController') {
           console.log('entrei LoginController');
           return cloneElement(child, { handleAuthentication: this.handleAuthentication });
         }
