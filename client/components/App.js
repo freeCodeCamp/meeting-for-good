@@ -74,7 +74,7 @@ class App extends Component {
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
           });
-        } else if (this.props.children.type.displayName === 'LoginController') {
+        } else if (this.props.children.type.Name === 'LoginController') {
           return cloneElement(child, { handleAuthentication: this.handleAuthentication });
         }
         return child;
