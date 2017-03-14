@@ -47,10 +47,10 @@ class Dashboard extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    const { showPastEvents, isAuthenticated } = nextProps;
+    const { showPastEvents, isAuthenticated, curUser } = nextProps;
     if (isAuthenticated) {
       const events = await this.loadEvents(showPastEvents);
-      this.setState({ showPastEvents, events });
+      this.setState({ showPastEvents, events, curUser });
     }
   }
 
@@ -182,6 +182,7 @@ Dashboard.propTypes = {
   showPastEvents: React.PropTypes.bool,
   isAuthenticated: React.PropTypes.bool,
   cbOpenLoginModal: React.PropTypes.func,
+  curUser: React.PropTypes.object,
 };
 
 export default cssModules(Dashboard, styles);

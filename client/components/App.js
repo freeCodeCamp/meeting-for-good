@@ -66,7 +66,7 @@ class App extends Component {
     const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
-        console.log('child', child);
+        console.log('child', child.type.displayName);
         if (child.type.displayName === 'Dashboard') {
           console.log('entrei Dash');
           return cloneElement(child, {
@@ -80,7 +80,11 @@ class App extends Component {
           console.log('entrei LoginController');
           return cloneElement(child, { handleAuthentication: this.handleAuthentication });
         }
-        return child;
+        return cloneElement(child, {
+          curUser,
+          isAuthenticated,
+          cbOpenLoginModal: this.handleOpenLoginModal,
+        });
       });
 
     return (

@@ -40,6 +40,8 @@ class GuestInviteDrawer extends Component {
 
   async componentWillMount() {
     await this.loadPastGuests();
+    const { event, open, curUser } = this.props;
+    this.setState({ event, open, curUser, activeCheckboxes: [] });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -123,6 +125,7 @@ class GuestInviteDrawer extends Component {
     const { event, curUser } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const guestData = await this.loadUserData(guestId);
+    console.log(curUser);
     const msg = {
       guestName: guestData.name,
       eventName: event.name,
