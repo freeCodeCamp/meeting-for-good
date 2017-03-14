@@ -98,6 +98,7 @@ class ParticipantsList extends Component {
         backgroundColor: '#ECEFF1',
         display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
         label: {
           flexGrow: 100,
         },
