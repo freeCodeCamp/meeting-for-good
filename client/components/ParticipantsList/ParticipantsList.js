@@ -199,7 +199,6 @@ class ParticipantsList extends Component {
         width: 40,
         height: 40,
         padding: 7,
-        marginLeft: '80%',
         iconStyle: {
           borderRadius: '50%',
           width: 24,
@@ -214,24 +213,20 @@ class ParticipantsList extends Component {
 
     return (
       <div>
-        <div styleName="Row">
-          <div styleName="Column">
-            <p styleName="particHeader">
-              Participants
-            </p>
-          </div>
-          <div styleName="Column">
-            <IconButton
-              style={inLineStyles.buttonAddGuest}
-              iconStyle={inLineStyles.buttonAddGuest.iconStyle}
-              onClick={this.handleToggleShowInviteGuestDrawer}
-              hoveredStyle={inLineStyles.buttonAddGuest.hoveredStyle}
-              tooltip="Add a participant"
-              tooltipPosition="top-left"
-            >
-              <ContentAdd />
-            </IconButton >
-          </div>
+        <div styleName="headerContainer">
+          <p styleName="particHeader">
+            Participants
+          </p>
+          <IconButton
+            style={inLineStyles.buttonAddGuest}
+            iconStyle={inLineStyles.buttonAddGuest.iconStyle}
+            onClick={this.handleToggleShowInviteGuestDrawer}
+            hoveredStyle={inLineStyles.buttonAddGuest.hoveredStyle}
+            tooltip="Add a participant"
+            tooltipPosition="top-left"
+          >
+            <ContentAdd />
+          </IconButton >
         </div>
         {this.renderGuestList()}
         {this.renderDeleteModal()}
