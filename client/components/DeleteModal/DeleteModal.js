@@ -88,19 +88,19 @@ class DeleteModal extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        primary={true}
+        primary
         onTouchTap={this.handleClose}
       />,
       <FlatButton
         label="yes"
-        secondary={true}
+        secondary
         onTouchTap={this.handleDelete}
       />,
     ];
     return (
       <div>
         <FloatingActionButton
-          secondary={true}
+          secondary
           onTouchTap={this.handleOpen}
           styleName={'delete-buttom'}
         >
@@ -109,13 +109,13 @@ class DeleteModal extends Component {
         <Dialog
           title="Delete Event"
           actions={actions}
-          modal={true}
+          modal
           open={DialogOpen}
           titleStyle={styles.modal.title}
           contentStyle={styles.modal.content}
           bodyStyle={styles.modal.bodyStyle}
         >
-          Are you sure you want to delete the event?  
+          Are you sure you want to delete the event?
         </Dialog>
       </div>
     );
@@ -125,6 +125,6 @@ class DeleteModal extends Component {
 DeleteModal.propTypes = {
   event: React.PropTypes.object,
   cb: React.PropTypes.func,
-}
+};
 
 export default cssModules(DeleteModal, styles);

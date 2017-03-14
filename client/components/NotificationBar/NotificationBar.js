@@ -109,7 +109,8 @@ class NotificationBar extends Component {
           textAlign: 'left',
         },
       },
-    }
+    };
+
     if (notifications) {
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
@@ -127,7 +128,7 @@ class NotificationBar extends Component {
                 {`${participant.name} accept your invite for `}
                 <FlatButton
                   onClick={() => this.handleEventLinkClick(notice._id)}
-                  primary={true}
+                  primary
                   style={inlineStyles.flatButton}
                   labelStyle={inlineStyles.flatButton.label}
                   label={notice.name}
@@ -144,7 +145,7 @@ class NotificationBar extends Component {
   }
 
   render() {
-    const { notificationColor, quantOwnerNotNotified, notifications } = this.state;
+    const { quantOwnerNotNotified, notifications } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const openMenu = (notifications.length === 0) ? false : null;
     const inLineStyles = {
@@ -167,7 +168,7 @@ class NotificationBar extends Component {
         iconButtonElement={
           <Badge
             badgeContent={quantOwnerNotNotified}
-            secondary={true}
+            secondary
             badgeStyle={inLineStyles.badge}
           >
             <IconButton

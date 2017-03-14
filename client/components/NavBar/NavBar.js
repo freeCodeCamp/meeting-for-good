@@ -114,7 +114,7 @@ class NavBar extends Component {
     if (user) {
       return (
         <ToolbarGroup
-          lastChild={true}
+          lastChild
           style={styles.TollbarGroup}
         >
           <NotificationBar curUser={curUser} />
@@ -150,7 +150,7 @@ class NavBar extends Component {
     }
     return (
       <ToolbarGroup
-        lastChild={true}
+        lastChild
         style={styles.TollbarGroup}
       >
         <LoginModal open={openLoginModal} />
@@ -179,7 +179,7 @@ class NavBar extends Component {
         style={styles.toolBar}
       >
         <ToolbarGroup
-          firstChild={true}
+          firstChild
           style={{ paddingLeft: '2%' }}
         >
           <FlatButton

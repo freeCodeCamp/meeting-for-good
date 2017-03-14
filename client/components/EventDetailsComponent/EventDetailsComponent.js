@@ -302,7 +302,7 @@ class EventDetailsComponent extends React.Component {
         {isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
         <CardTitle style={inlineStyles.card.cardTitle}>{event.name}</CardTitle>
         <CardText>
-          <BestTimesDisplay event={event} disablePicker={true} />
+          <BestTimesDisplay event={event} disablePicker />
           {(showHeatmap) ?
             <div id="heatmap">
               <AvailabilityGrid

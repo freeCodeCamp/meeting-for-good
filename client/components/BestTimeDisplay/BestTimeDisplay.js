@@ -194,8 +194,7 @@ class BestTimeDisplay extends Component {
     }
     return (
       <DayPicker
-        className="alt"
-        styleName="daypicker"
+        styleName="DayPicker"
         initialMonth={minDate}
         fromMonth={minDate}
         toMonth={maxDate}

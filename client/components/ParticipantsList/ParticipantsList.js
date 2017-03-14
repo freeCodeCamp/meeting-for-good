@@ -122,7 +122,7 @@ class ParticipantsList extends Component {
             key={participant._id}
             style={inLinestyles.chip}
             labelStyle={inLinestyles.chip.label}
-            deleteHovered={true}
+            deleteHovered
             onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
           >
             <Avatar src={participant.avatar} style={inLinestyles.avatar} />
@@ -146,12 +146,12 @@ class ParticipantsList extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        primary={true}
+        primary
         onTouchTap={this.handleCloseDeleteModal}
       />,
       <FlatButton
         label="yes"
-        secondary={true}
+        secondary
         onTouchTap={this.handleDeleteGuest}
       />,
     ];
@@ -182,7 +182,7 @@ class ParticipantsList extends Component {
         contentStyle={inLineStyles.modal.content}
         bodyStyle={inLineStyles.modal.bodyStyle}
         actions={actions}
-        modal={true}
+        modal
         open={openDeleteModal}
       >
         Are you sure you want to delete this guest?

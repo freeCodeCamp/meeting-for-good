@@ -73,7 +73,7 @@ class LoginModal extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        primary={true}
+        primary
         onTouchTap={this.handleClose}
       />,
     ];
@@ -82,7 +82,7 @@ class LoginModal extends Component {
       <Dialog
         title="Please login"
         actions={actions}
-        modal={true}
+        modal
         style={inLineStyles.modal}
         titleStyle={inLineStyles.modal.title}
         open={this.state.open}

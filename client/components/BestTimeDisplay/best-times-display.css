@@ -7,7 +7,17 @@
 .bestTimeDisplay {
   padding: 0px 0px 10px 0px !important;
 }
-.daypicker {
+.DayPicker {
   outline: none;
   padding: 0;
+}
+
+.DayPicker-Day--today {
+  color: #d0021b;
+  font-weight: 500;
+}
+
+.DayPicker-Day--selected {
+  background-color: #3949AB;
+  color: black;
 }

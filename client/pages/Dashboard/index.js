@@ -145,7 +145,7 @@ class Dashboard extends Component {
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
-        <FloatingActionButton styleName="new-event-icon" secondary={true} onClick={this.handleNewEvent} >
+        <FloatingActionButton styleName="new-event-icon" secondary onClick={this.handleNewEvent} >
           <ContentAdd />
         </FloatingActionButton>
         {/* Card Template */}

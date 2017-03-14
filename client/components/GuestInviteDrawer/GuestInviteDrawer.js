@@ -293,7 +293,7 @@ class GuestInviteDrawer extends Component {
           the address for the event:
           <FlatButton
             onClick={() => this.handleEventLinkClick(event._id)}
-            primary={true}
+            primary
             label={' '}
           >
             {event.name}
@@ -302,9 +302,9 @@ class GuestInviteDrawer extends Component {
         <Divider style={styles.drawer.divider} />
         <h6 styleName="subHeader"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
         <RaisedButton
-          fullWidth={true}
+          fullWidth
           label="Invite"
-          primary={true}
+          primary
           onTouchTap={this.handleInvite}
         />
         <div styleName="Row">
