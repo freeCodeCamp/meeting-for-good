@@ -10,7 +10,6 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import { Card } from 'material-ui/Card';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -21,7 +20,6 @@ import styles from './dashboard.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import { isAuthenticated, getCurrentUser } from '../../util/auth';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -39,24 +37,23 @@ class Dashboard extends Component {
   }
 
   async componentWillMount() {
-    if (sessionStorage.getItem('redirectTo')) {
-      browserHistory.push(sessionStorage.getItem('redirectTo'));
-      sessionStorage.removeItem('redirectTo');
+    const { isAuthenticated, curUser } = this.props;
+    console.log('isAuthenticated', isAuthenticated);
+    if (isAuthenticated === false) {
+      this.props.cbOpenLoginModal('/dashboard');
+    } else {
+      // const curUser = await getCurrentUser();
+      const events = await this.loadEvents(false);
+      this.setState({ curUser, events });
     }
-
-    if (!await isAuthenticated()) {
-      browserHistory.push('/');
-    }
-    const curUser = await getCurrentUser();
-    const events = await this.loadEvents(false);
-    this.setState({ curUser, events });
   }
 
   async componentWillReceiveProps(nextProps) {
-    const { showPastEvents } = nextProps;
-    const events = await this.loadEvents(showPastEvents);
-
-    this.setState({ showPastEvents, events });
+    const { showPastEvents, isAuthenticated } = nextProps;
+    if (isAuthenticated) {
+      const events = await this.loadEvents(showPastEvents);
+      this.setState({ showPastEvents, events });
+    }
   }
 
   async loadEvents(showPastEvents) {
@@ -184,6 +181,8 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   showPastEvents: React.PropTypes.bool,
+  isAuthenticated: React.PropTypes.bool,
+  cbOpenLoginModal: React.PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

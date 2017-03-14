@@ -10,15 +10,16 @@ import Google from '../../assets/google.png';
 class LoginModal extends Component {
   constructor(props) {
     super(props);
-    const { open } = this.props;
+    const { open, logFail } = this.props;
     this.state = {
       open,
+      logFail,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const { open } = nextProps;
-    this.setState({ open });
+    const { open, logFail } = nextProps;
+    this.setState({ open, logFail });
   }
 
   @autobind
@@ -28,10 +29,7 @@ class LoginModal extends Component {
 
   @autobind
   async handleAuthClick() {
-    this.handleClose();
-    if (!sessionStorage.getItem('redirectTo')) {
-      sessionStorage.setItem('redirectTo', window.location.pathname);
-    }
+    // this.handleClose();
   }
 
   render() {
@@ -95,6 +93,7 @@ class LoginModal extends Component {
 
 LoginModal.propTypes = {
   open: React.PropTypes.bool,
+  logFail: React.PropTypes.bool,
 };
 
 export default LoginModal;
