@@ -113,7 +113,7 @@ class DeleteModal extends Component {
           contentStyle={styles.modal.content}
           bodyStyle={styles.modal.bodyStyle}
         >
-          Are you sure you want to delete the event?  
+          Are you sure you want to delete the event?
         </Dialog>
       </div>
     );
@@ -123,6 +123,6 @@ class DeleteModal extends Component {
 DeleteModal.propTypes = {
   event: React.PropTypes.object,
   cb: React.PropTypes.func,
-}
+};
 
 export default cssModules(DeleteModal, styles);

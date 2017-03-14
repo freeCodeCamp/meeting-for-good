@@ -5,7 +5,6 @@ import passport from 'passport';
 
 const router = express.Router();
 
-
 router.get('/', passport.authenticate('facebook', {
   scope: ['email', 'public_profile'],
   failureRedirect: '/',
