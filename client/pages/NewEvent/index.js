@@ -44,17 +44,17 @@ class NewEvent extends React.Component {
       disableSubmit: true,
       notificationIsActive: false,
       notificationMessage: '',
+        curUser: {},
     };
   }
 
   componentWillMount() {
-    if (!await isAuthenticated()) {
+    const { isAuthenticated, curUser } = this.props;
+    if (isAuthenticated === true) {
       // find the current user aka possible owner
-      this.state.curUser = await getCurrentUser();
-      if (!sessionStorage.getItem('redirectTo')) {
-        sessionStorage.setItem('redirectTo', '/event/new');
-      }
-      browserHistory.push('/');
+      this.setState({ curUser });
+    } else {
+      this.props.cbOpenLoginModal('/event/new');
     }
   }
 
