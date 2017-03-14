@@ -38,11 +38,9 @@ class Dashboard extends Component {
 
   async componentWillMount() {
     const { isAuthenticated, curUser } = this.props;
-    console.log('isAuthenticated', isAuthenticated);
     if (isAuthenticated === false) {
       this.props.cbOpenLoginModal('/dashboard');
     } else {
-      // const curUser = await getCurrentUser();
       const events = await this.loadEvents(false);
       this.setState({ curUser, events });
     }
@@ -178,6 +176,7 @@ class Dashboard extends Component {
     );
   }
 }
+
 
 Dashboard.propTypes = {
   showPastEvents: React.PropTypes.bool,

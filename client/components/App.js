@@ -66,19 +66,23 @@ class App extends Component {
     const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
-        console.log(this.props.children, child);
-        if (this.props.children.type.displayName === 'Dashboard') {
+        console.log('child', child);
+        if (child.type.displayName === 'Dashboard') {
+          console.log('entrei Dash');
           return cloneElement(child, {
             showPastEvents,
             curUser,
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
           });
-        } else if (this.props.children.type.Name === 'LoginController') {
+        }
+        if (child.type.displayName === 'LoginController') {
+          console.log('entrei LoginController');
           return cloneElement(child, { handleAuthentication: this.handleAuthentication });
         }
         return child;
       });
+
     return (
       <div>
         <LoginModal
