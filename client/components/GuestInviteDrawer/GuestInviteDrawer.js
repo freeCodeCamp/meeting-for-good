@@ -125,7 +125,6 @@ class GuestInviteDrawer extends Component {
     const { event, curUser } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const guestData = await this.loadUserData(guestId);
-    console.log(curUser);
     const msg = {
       guestName: guestData.name,
       eventName: event.name,

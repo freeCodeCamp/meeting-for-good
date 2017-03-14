@@ -25,7 +25,6 @@ class NavBar extends Component {
   }
 
   componentWillMount() {
-    console.log('carregando a Nav bar');
     const { location, curUser, isAuthenticated } = this.props;
     this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar });
     this.MenuVisibility(location);

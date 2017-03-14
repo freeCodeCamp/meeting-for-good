@@ -82,7 +82,6 @@ class Dashboard extends Component {
 
   removeNotification(key) {
     const { notifications } = this.state;
-    this.setOwnerNotified(key);
     this.setState({
       notifications: notifications.filter(n => n.key !== key),
     });

@@ -26,7 +26,6 @@ class EventDetails extends Component {
 
   async componentWillMount() {
     const { isAuthenticated, curUser } = this.props;
-    console.log('EventDetail componentWillMount', isAuthenticated);
     if (isAuthenticated === true) {
       const event = await this.loadEvent();
       this.setState({ event, curUser });
@@ -37,7 +36,6 @@ class EventDetails extends Component {
 
   async componentWillReceiveProps(nextProps) {
     const { isAuthenticated, curUser } = nextProps;
-    console.log('componentWillReceiveProps', isAuthenticated, curUser);
     if (isAuthenticated === true) {
       const event = await this.loadEvent();
       this.setState({ event, curUser });

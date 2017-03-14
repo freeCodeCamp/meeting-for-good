@@ -42,10 +42,7 @@ class App extends Component {
 
   @autobind
   async handleAuthentication(result) {
-    console.log('result', result);
-    const { pathToGo } = this.state;
     if (result) {
-      console.log('logou', pathToGo);
       const curUser = await getCurrentUser();
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
       if (sessionStorage.getItem('redirectTo')) {
@@ -61,7 +58,6 @@ class App extends Component {
 
   @autobind
   async handleOpenLoginModal(pathToGo) {
-    console.log('pathToGo', pathToGo);
     if (await isAuthenticated() === false) {
       sessionStorage.setItem('redirectTo', pathToGo);
       this.setState({ openLoginModal: true, pathToGo });
@@ -82,9 +78,7 @@ class App extends Component {
     const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
-        console.log('child', child.type.displayName);
         if (child.type.displayName === 'Dashboard') {
-          console.log('entrei Dash');
           return cloneElement(child, {
             showPastEvents,
             curUser,
@@ -93,7 +87,6 @@ class App extends Component {
           });
         }
         if (child.type.name === 'LoginController') {
-          console.log('entrei LoginController');
           return cloneElement(child, { handleAuthentication: this.handleAuthentication });
         }
         return cloneElement(child, {
