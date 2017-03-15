@@ -64,9 +64,11 @@ class DeleteModal extends Component {
     const styles = {
       modal: {
         title: {
-          backgroundColor: '#FF4081',
+          backgroundColor: '#FF4025',
           color: '#ffffff',
           fontSize: '25px',
+          height: '50px',
+          paddingTop: 6,
         },
         content: {
           width: '22%',
@@ -86,19 +88,19 @@ class DeleteModal extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        primary={true}
+        primary
         onTouchTap={this.handleClose}
       />,
       <FlatButton
         label="yes"
-        secondary={true}
+        secondary
         onTouchTap={this.handleDelete}
       />,
     ];
     return (
       <div>
         <FloatingActionButton
-          secondary={true}
+          secondary
           onTouchTap={this.handleOpen}
           styleName={'delete-buttom'}
         >
@@ -107,7 +109,7 @@ class DeleteModal extends Component {
         <Dialog
           title="Delete Event"
           actions={actions}
-          modal={true}
+          modal
           open={DialogOpen}
           titleStyle={styles.modal.title}
           contentStyle={styles.modal.content}

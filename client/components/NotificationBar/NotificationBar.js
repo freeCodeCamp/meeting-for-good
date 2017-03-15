@@ -95,6 +95,22 @@ class NotificationBar extends Component {
   renderMenuRows() {
     const { notifications, curUser } = this.state;
     const rows = [];
+    const inlineStyles = {
+      flatButton: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginLeft: 0,
+        borderLeft: 0,
+        textAlign: 'left',
+        label: {
+          paddingLeft: 0,
+          textTransform: 'none',
+          marginLeft: 0,
+          textAlign: 'left',
+        },
+      },
+    };
+
     if (notifications) {
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
@@ -107,15 +123,16 @@ class NotificationBar extends Component {
               <MenuItem
                 key={`${participant._id} first`}
                 value={participant._id}
-                style={{ backgroundColor: bkgColor, color: '#000000' }}
+                style={{ backgroundColor: bkgColor }}
               >
                 {`${participant.name} accept your invite for `}
                 <FlatButton
                   onClick={() => this.handleEventLinkClick(notice._id)}
-                  primary={true}
-                >
-                  {notice.name}
-                </FlatButton>
+                  primary
+                  style={inlineStyles.flatButton}
+                  labelStyle={inlineStyles.flatButton.label}
+                  label={notice.name}
+                />
               </MenuItem>
             );
             rows.push(row);
@@ -128,14 +145,20 @@ class NotificationBar extends Component {
   }
 
   render() {
-    const { notificationColor, quantOwnerNotNotified, notifications } = this.state;
+    const { quantOwnerNotNotified, notifications } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const openMenu = (notifications.length === 0) ? false : null;
-    const styles = {
+    const inLineStyles = {
       badge: {
-        top: 12,
-        right: 12,
+        top: 25,
+        right: 30,
         visibility: visible,
+        fontSize: '15px',
+        width: 20,
+        height: 20,
+        iconButton: {
+          paddingBottom: 50,
+        },
       },
     };
     return (
@@ -145,14 +168,15 @@ class NotificationBar extends Component {
         iconButtonElement={
           <Badge
             badgeContent={quantOwnerNotNotified}
-            secondary={true}
-            badgeStyle={styles.badge}
+            secondary
+            badgeStyle={inLineStyles.badge}
           >
             <IconButton
               tooltip="Notifications"
               onClick={this.handleDismissAll}
+              style={inLineStyles.badge.iconButton}
             >
-              <NotificationsIcon color={notificationColor} />
+              <NotificationsIcon color="white" />
             </IconButton>
           </Badge>
         }

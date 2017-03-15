@@ -300,7 +300,7 @@ class NewEvent extends React.Component {
           <CardText>
             <form>
               <TextField
-                fullWidth={true}
+                fullWidth
                 floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
                 floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
                 style={inLinestyles.card.textField}
@@ -345,7 +345,7 @@ class NewEvent extends React.Component {
                   label="Create Event"
                   className="submit"
                   disabled={disableSubmit}
-                  primary={true}
+                  primary
                   onClick={this.createEvent}
                 />
               </div>

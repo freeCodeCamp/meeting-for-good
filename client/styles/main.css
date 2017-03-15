@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+
 }
 
 body {
@@ -18,4 +19,14 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: Lato;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url('../assets/fonts/lato/Lato-Regular.ttf');
+}
+@font-face {
+    font-family: SaxMono;
+    src: url('../assets/fonts/lato/Lato-Regular.ttf');
 }
