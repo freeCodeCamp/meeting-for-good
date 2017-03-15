@@ -253,11 +253,19 @@ class EventDetailsComponent extends React.Component {
   render() {
     const {
       event,
-      user, showHeatmap, participants,
-      myAvailability, eventParticipantsIds,
-      dates, showButtonAviability, showAvailabilityGrid } = this.state;
+      user,
+      showHeatmap,
+      participants,
+      myAvailability,
+      eventParticipantsIds,
+      dates,
+      showButtonAviability,
+      showAvailabilityGrid,
+    } = this.state;
+
     const availability = participants.map(participant => participant.availability);
     let isOwner;
+
     const inlineStyles = {
       card: {
         width: '510px',
@@ -288,9 +296,7 @@ class EventDetailsComponent extends React.Component {
       },
     };
 
-    if (user !== undefined) {
-      isOwner = event.owner === user._id;
-    }
+    if (user !== undefined) isOwner = event.owner === user._id;
 
     const notifActions = [{
       text: 'Dismiss',
