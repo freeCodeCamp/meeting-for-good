@@ -257,6 +257,11 @@ class GuestInviteDrawer extends Component {
             paddingBottom: '3px',
           },
         },
+        eventButton: {
+          width: 30,
+          padding: 0,
+          height: 28,
+        },
       },
       snackbar: {
         height: 'flex',
@@ -272,7 +277,9 @@ class GuestInviteDrawer extends Component {
         visibility: linearProgressVisible,
       },
     };
-
+    const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:
+    %0D%0A%0D%0A${fullUrl} 
+    %0D%0A%0D%0A All times will automatically be converted to your local timezone.`;
     return (
       <Drawer
         docked={false}
@@ -283,7 +290,7 @@ class GuestInviteDrawer extends Component {
       >
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
-        <h6 styleName="subHeader"> You can invite new guests coping
+        <p styleName="subHeader"> You can invite new guests coping
           <IconButton
             className="btn"
             style={inLineStyles.drawer.copyButton}
@@ -295,17 +302,19 @@ class GuestInviteDrawer extends Component {
           >
             <Copy />
           </IconButton>
-          the address for the event:
+          the url for:
           <FlatButton
+            style={inLineStyles.drawer.eventButton}
             onClick={() => this.handleEventLinkClick(event._id)}
             primary
             label={' '}
           >
             {event.name}
           </FlatButton>
-        </h6>
+          or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
+        </p>
         <Divider style={inLineStyles.drawer.divider} />
-        <h6 styleName="subHeader"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
+        <h6 styleName="InviteEventText"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
         <RaisedButton
           fullWidth
           label="Invite"
