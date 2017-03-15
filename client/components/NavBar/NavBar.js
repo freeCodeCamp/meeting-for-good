@@ -138,7 +138,7 @@ class NavBar extends Component {
         style={styles.TollbarGroup}
       >
 
-        <RaisedButton style={styles.loginButton} backgroundColor="#3F51B5" onTouchTap={this.handleAuthClick}>
+        <RaisedButton style={styles.loginButton} backgroundColor="#006400" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
       </ToolbarGroup>
