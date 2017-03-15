@@ -4,7 +4,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
+const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
+console.log(noVisualization);
 const VENDOR_LIBS = [
   'autobind-decorator',
   'bluebird',
@@ -23,6 +26,10 @@ const VENDOR_LIBS = [
   'react-masonry-component',
   'react-notification',
   'react-router',
+  'immutable',
+  'material-ui',
+  'nprogress',
+  'clipboard',
 ];
 
 module.exports = {
@@ -48,12 +55,18 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        test: /\.(ttf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
         loader: 'file-loader',
       },
       {
-        test: /\.(png|jpg|gif)$/,
-        loader: 'url-loader',
+        test: /\.(png|jp?g|gif|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: { limit: 40000 },
+          },
+          'image-webpack-loader',
+        ],
       },
       {
         test: /\.css$/,
@@ -74,6 +87,11 @@ module.exports = {
     ],
   },
   plugins: [
+     (!noVisualization ?
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+        }) : null),
+
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
@@ -97,7 +115,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-  ],
+  ].filter(p => p),
   resolve: {
     extensions: ['.js', '.css'],
   },

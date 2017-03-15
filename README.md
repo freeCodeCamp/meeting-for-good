@@ -24,6 +24,7 @@ NODE_ENV = 'development'
 mailgunLogin='your mail user'
 mailgunPassword='your mailgun  pass'
 emailFrom='default email from'
+ANALYSE_PACK=false
 ```
 - Open a new terminal session and run `mongod`
 - Run `npm run serve` from the app's root directory. This will start the app at port 8080 (unless overridden)
