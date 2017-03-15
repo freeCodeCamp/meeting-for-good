@@ -225,8 +225,12 @@ class GuestInviteDrawer extends Component {
   render() {
     const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-    const styles = {
+    const inLineStyles = {
       drawer: {
+        container: {
+          paddingLeft: '7px',
+          paddingRight: '5px',
+        },
         textField: {
           paddingTop: 0,
           paddingBottom: 0,
@@ -240,7 +244,7 @@ class GuestInviteDrawer extends Component {
           width: '100%',
           backgroundColor: '#000000',
         },
-        copyButtom: {
+        copyButton: {
           width: 28,
           height: 28,
           padding: 0,
@@ -272,19 +276,20 @@ class GuestInviteDrawer extends Component {
     return (
       <Drawer
         docked={false}
-        width={300}
+        width={320}
         open={open}
         onRequestChange={open => this.handleOnRequestChange(open)}
+        containerStyle={inLineStyles.drawer.container}
       >
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
         <h6 styleName="subHeader"> You can invite new guests coping
           <IconButton
             className="btn"
-            style={styles.drawer.copyButtom}
+            style={inLineStyles.drawer.copyButton}
             data-clipboard-text={fullUrl}
             onTouchTap={this.ClipBoard}
-            iconStyle={styles.drawer.copyButtom.icon}
+            iconStyle={inLineStyles.drawer.copyButton.icon}
             tooltip="click to copy Url"
             tooltipPosition="top-left"
           >
@@ -299,7 +304,7 @@ class GuestInviteDrawer extends Component {
             {event.name}
           </FlatButton>
         </h6>
-        <Divider style={styles.drawer.divider} />
+        <Divider style={inLineStyles.drawer.divider} />
         <h6 styleName="subHeader"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
         <RaisedButton
           fullWidth
@@ -310,22 +315,22 @@ class GuestInviteDrawer extends Component {
         <div styleName="Row">
           <SearchIcon />
           <TextField
-            style={styles.drawer.textField}
-            floatingLabelStyle={styles.drawer.textField.floatingLabel}
+            style={inLineStyles.drawer.textField}
+            floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
             fullWidth={false}
             floatingLabelText="Search for Guests"
             value={searchText}
             onChange={this.handleSearchTextChange}
           />
         </div>
-        <LinearProgress style={styles.linearProgress} />
+        <LinearProgress style={inLineStyles.linearProgress} />
         <List>
           {this.renderRows()}
         </List>
         <Snackbar
-          style={styles.snackbar}
-          bodyStyle={styles.snackbar.bodyStyle}
-          contentStyle={styles.snackbar.contentStyle}
+          style={inLineStyles.snackbar}
+          bodyStyle={inLineStyles.snackbar.bodyStyle}
+          contentStyle={inLineStyles.snackbar.contentStyle}
           open={snackbarOpen}
           message={snackbarMsg}
           action="Dismiss"
