@@ -3,14 +3,22 @@
 } 
 
 .subHeader {
-   text-align: center;
+   text-align: left;
+   font-size: 18px;
+   line-height: 100%;
+   margin-bottom: 10px;
 } 
-.Row
-{
-  padding: 0;
-  display: table;
-  width: 100%; 
-  table-layout: fixed; 
-  border-spacing: 10px; 
+
+.Row {
+  display: flex;
+  flex-flow: flex-start;
+  flex-wrap: nowrap;
+  align-items: center;
   height: flex;
+}
+
+.InviteEventText {
+  margin: 0 '1px' 0 0;
+  text-align: center;
+  font-size: 18px;
 }

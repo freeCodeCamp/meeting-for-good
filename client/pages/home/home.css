@@ -1,7 +1,11 @@
 .main {
 	text-align: center;
+	font-family: Lato !important;
 }
 
+h1 h2, h3, h4, h5, h6 {
+	font-family: Lato !important;
+}
 .main img {
 	width: 700px;
 }
@@ -12,6 +16,12 @@
 	height: 87vh;
 }
 
+.header h2 {
+	font-family: saxMono !important;
+	text-transform: none !important;
+	font-size: 80px !important;
+
+}
 .content {
 	width: 100vw;
 	height: auto;
@@ -34,6 +44,11 @@
   background-color: black;
   height: 2px;
   margin-top: 40px;
+}
+
+body {
+		font-family: Lato !important;
+	
 }
 
 footer {
