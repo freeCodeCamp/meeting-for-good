@@ -390,15 +390,15 @@ class AvailabilityGrid extends React.Component {
     const actions = [
       <FlatButton
         label="close"
-        primary={true}
+        primary
         onTouchTap={() => this.setState({ openModal: false })}
       />,
     ];
     const inlineStyles = {
       modal: {
         content: {
-          width: '30%',
-          maxWidth: '30%',
+          width: '38%',
+          maxWidth: '38%',
         },
         bodyStyle: {
           paddingTop: 10,
@@ -412,7 +412,7 @@ class AvailabilityGrid extends React.Component {
         contentStyle={inlineStyles.modal.content}
         bodyStyle={inlineStyles.modal.bodyStyle}
         actions={actions}
-        modal={true}
+        modal
         open={openModal}
       >
         <h4>This is how you can enter and remove your availablity:</h4>

@@ -85,6 +85,9 @@ class NavBar extends Component {
       },
       loginButton: {
         color: '#ffffff',
+        primary: true,
+        fontSize: '25px',
+        width: '150px',
       },
       TollbarGroup: {
         paddingRight: '5%',
@@ -111,7 +114,7 @@ class NavBar extends Component {
     if (user) {
       return (
         <ToolbarGroup
-          lastChild={true}
+          lastChild
           style={styles.TollbarGroup}
         >
           <NotificationBar curUser={curUser} />
@@ -147,11 +150,11 @@ class NavBar extends Component {
     }
     return (
       <ToolbarGroup
-        lastChild={true}
+        lastChild
         style={styles.TollbarGroup}
       >
         <LoginModal open={openLoginModal} />
-        <RaisedButton style={styles.loginButton} backgroundColor="#3F51B5" onTouchTap={this.handleAuthClick}>
+        <RaisedButton style={styles.loginButton} backgroundColor="#006400" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
       </ToolbarGroup>
@@ -161,12 +164,13 @@ class NavBar extends Component {
   render() {
     const styles = {
       toolBar: {
-        height: '70px',
+        height: '65px',
         backgroundColor: '#006400',
       },
       button: {
-        fontSize: '25px',
+        fontSize: '35px',
         color: '#ffffff',
+        fontFamily: 'saxMono',
       },
     };
 
@@ -175,7 +179,7 @@ class NavBar extends Component {
         style={styles.toolBar}
       >
         <ToolbarGroup
-          firstChild={true}
+          firstChild
           style={{ paddingLeft: '2%' }}
         >
           <FlatButton

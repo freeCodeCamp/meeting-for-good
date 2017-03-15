@@ -1,14 +1,10 @@
 .particHeader {
   font-size: 20px;
+  margin: 0;
 }
-.Row
-{
-  display: table;
-  width: 100%; 
-  table-layout: fixed; 
-  border-spacing: 10px; 
-}
-.Column
-{
-  display: table-cell;
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

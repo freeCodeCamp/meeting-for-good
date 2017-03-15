@@ -209,11 +209,12 @@ class GuestInviteDrawer extends Component {
       const row = (
         <div key={guest._id}>
           <ListItem
+            key={`${guest._id}.listItem`}
             primaryText={guest.name}
             leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} checked={activeCheckboxes.includes(guest.userId)} />}
             rightAvatar={<Avatar src={guest.avatar} />}
           />
-          <Divider style={styles.divider} />
+          <Divider key={`${guest._id}.divider`} style={styles.divider} />
         </div>
       );
       rows.push(row);
@@ -224,8 +225,12 @@ class GuestInviteDrawer extends Component {
   render() {
     const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-    const styles = {
+    const inLineStyles = {
       drawer: {
+        container: {
+          paddingLeft: '7px',
+          paddingRight: '5px',
+        },
         textField: {
           paddingTop: 0,
           paddingBottom: 0,
@@ -239,7 +244,7 @@ class GuestInviteDrawer extends Component {
           width: '100%',
           backgroundColor: '#000000',
         },
-        copyButtom: {
+        copyButton: {
           width: 28,
           height: 28,
           padding: 0,
@@ -251,6 +256,11 @@ class GuestInviteDrawer extends Component {
             height: 22,
             paddingBottom: '3px',
           },
+        },
+        eventButton: {
+          width: 30,
+          padding: 0,
+          height: 28,
         },
       },
       snackbar: {
@@ -267,64 +277,69 @@ class GuestInviteDrawer extends Component {
         visibility: linearProgressVisible,
       },
     };
-
+    const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:
+    %0D%0A%0D%0A${fullUrl} 
+    %0D%0A%0D%0A All times will automatically be converted to your local timezone.`;
     return (
       <Drawer
         docked={false}
-        width={300}
+        width={320}
         open={open}
         onRequestChange={open => this.handleOnRequestChange(open)}
+        containerStyle={inLineStyles.drawer.container}
       >
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
-        <h6 styleName="subHeader"> You can invite new guests coping
+        <p styleName="subHeader"> You can invite new guests coping
           <IconButton
             className="btn"
-            style={styles.drawer.copyButtom}
+            style={inLineStyles.drawer.copyButton}
             data-clipboard-text={fullUrl}
             onTouchTap={this.ClipBoard}
-            iconStyle={styles.drawer.copyButtom.icon}
+            iconStyle={inLineStyles.drawer.copyButton.icon}
             tooltip="click to copy Url"
             tooltipPosition="top-left"
           >
             <Copy />
           </IconButton>
-          the address for the event:
+          the url for:
           <FlatButton
+            style={inLineStyles.drawer.eventButton}
             onClick={() => this.handleEventLinkClick(event._id)}
-            primary={true}
+            primary
             label={' '}
           >
             {event.name}
           </FlatButton>
-        </h6>
-        <Divider style={styles.drawer.divider} />
-        <h6 styleName="subHeader"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
+          or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
+        </p>
+        <Divider style={inLineStyles.drawer.divider} />
+        <h6 styleName="InviteEventText"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
         <RaisedButton
-          fullWidth={true}
+          fullWidth
           label="Invite"
-          primary={true}
+          primary
           onTouchTap={this.handleInvite}
         />
         <div styleName="Row">
           <SearchIcon />
           <TextField
-            style={styles.drawer.textField}
-            floatingLabelStyle={styles.drawer.textField.floatingLabel}
+            style={inLineStyles.drawer.textField}
+            floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
             fullWidth={false}
             floatingLabelText="Search for Guests"
             value={searchText}
             onChange={this.handleSearchTextChange}
           />
         </div>
-        <LinearProgress style={styles.linearProgress} />
+        <LinearProgress style={inLineStyles.linearProgress} />
         <List>
           {this.renderRows()}
         </List>
         <Snackbar
-          style={styles.snackbar}
-          bodyStyle={styles.snackbar.bodyStyle}
-          contentStyle={styles.snackbar.contentStyle}
+          style={inLineStyles.snackbar}
+          bodyStyle={inLineStyles.snackbar.bodyStyle}
+          contentStyle={inLineStyles.snackbar.contentStyle}
           open={snackbarOpen}
           message={snackbarMsg}
           action="Dismiss"

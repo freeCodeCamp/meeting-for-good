@@ -194,7 +194,7 @@ class BestTimeDisplay extends Component {
     }
     return (
       <DayPicker
-        className="alt"
+        styleName="DayPicker"
         initialMonth={minDate}
         fromMonth={minDate}
         toMonth={maxDate}
@@ -206,7 +206,7 @@ class BestTimeDisplay extends Component {
   render() {
     const { displayTimes, disablePicker } = this.state;
     return (
-      <div>
+      <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
           <div>
             <h6 styleName="bestTimeTitle"><strong>All participants so far are available at:</strong></h6>

@@ -35,22 +35,30 @@ class LoginModal extends Component {
   }
 
   render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.handleClose}
-      />,
-    ];
-
-    const styles = {
+    const inLineStyles = {
       modal: {
-        width: '20%',
-        maxWidth: '20%',
+        contentStyle: {
+          maxWidth: '250px',
+        },
+        title: {
+          backgroundColor: '#006400',
+          marginBottom: '10px',
+          fontSize: '25px',
+          height: '50px',
+          paddingTop: 6,
+          color: '#ffffff',
+        },
+        bodyStyle: {
+          width: '250px',
+          paddingBottom: 10,
+        },
+        actions: {
+          paddingTop: 0,
+        },
       },
       button: {
         marginBottom: 10,
-        width: '100%',
+        width: '200px',
         label: {
           color: '#ffffff',
           fontSize: '20px',
@@ -62,18 +70,30 @@ class LoginModal extends Component {
       },
     };
 
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onTouchTap={this.handleClose}
+      />,
+    ];
+
     return (
       <Dialog
         title="Please login"
         actions={actions}
-        modal={true}
+        modal
+        style={inLineStyles.modal}
+        titleStyle={inLineStyles.modal.title}
         open={this.state.open}
-        contentStyle={styles.modal}
+        bodyStyle={inLineStyles.modal.bodyStyle}
+        actionsContainerStyle={inLineStyles.modal.actions}
+        contentStyle={inLineStyles.modal.contentStyle}
       >
         <RaisedButton
           backgroundColor="#3F51B5"
-          style={styles.button}
-          labelStyle={styles.button.label}
+          style={inLineStyles.button}
+          labelStyle={inLineStyles.button.label}
           href="/api/auth/facebook"
           onClick={this.handleAuthClick}
           label="facebook"
@@ -81,8 +101,8 @@ class LoginModal extends Component {
         />
         <RaisedButton
           backgroundColor="#F44336"
-          style={styles.button}
-          labelStyle={styles.button.label}
+          style={inLineStyles.button}
+          labelStyle={inLineStyles.button.label}
           href="/api/auth/google"
           onClick={this.handleAuthClick}
           label="Google"
