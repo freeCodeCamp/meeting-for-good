@@ -145,7 +145,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  showAvailList(ev) {
+  handleCellMouseEnter(ev) {
     const bgNotBlack = getComputedStyle(ev.target)['background-color'] !== 'rgba(0, 0, 0, 0)';
 
     if (this.props.heatmap && bgNotBlack) {
@@ -182,7 +182,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  hideAvailList() {
+  handleCellMouseLeave() {
     this.setState({ availableOnDate: [], notAvailableOnDate: [] });
   }
 
@@ -435,8 +435,8 @@ class AvailabilityGrid extends React.Component {
                   data-time={time}
                   data-date={date}
                   className={`cell ${disabled}`}
-                  onMouseEnter={this.showAvailList}
-                  onMouseLeave={this.hideAvailList}
+                  onMouseEnter={this.handleCellMouseEnter}
+                  onMouseLeave={this.handleCellMouseLeave}
                   onClick={this.handleCellClick}
                 />
               );
