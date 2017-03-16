@@ -71,7 +71,7 @@ class NavBar extends Component {
       loginButton: {
         color: '#ffffff',
         primary: true,
-        fontSize: '25px',
+        fontSize: '20px',
         width: '150px',
       },
       TollbarGroup: {
