@@ -9,6 +9,7 @@
     "no-console": 0,
     "strict": [0, "global"],
     "react/prefer-stateless-function": 0,
+    "react/require-default-props": 0,
     "no-multi-spaces": ["error", {
       "exceptions": {
         "VariableDeclarator": true

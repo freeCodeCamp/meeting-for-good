@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent } from '../util/events';
+import { loadEvents, loadEvent, newEvent } from '../util/events';
 
 import '../styles/main.css';
 
@@ -48,6 +48,14 @@ class App extends Component {
       return event;
     }
     return event[0];
+  }
+
+ @autobind
+  async handleNewEvent(event) {
+    const { events } = this.state;
+    const nEvent = await newEvent(event);
+    this.setState({ events: [...events, nEvent] });
+    return nEvent;
   }
 
   @autobind
