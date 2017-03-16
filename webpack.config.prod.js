@@ -52,13 +52,7 @@ module.exports = {
       },
       {
         test: /\.(png|jp?g|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: { limit: 40000 },
-          },
-          'image-webpack-loader',
-        ],
+        loader: 'url-loader',
       },
       {
         test: /\.css$/,
