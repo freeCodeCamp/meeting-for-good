@@ -33,8 +33,6 @@ class AvailabilityGrid extends React.Component {
       availableOnDate: [],
       notAvailableOnDate: [],
       hourTime: [],
-      startCell: null,
-      endCell: null,
       openModal: false,
       isResetDisabled: true,
     };
