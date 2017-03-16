@@ -226,28 +226,15 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  handleDelete(result) {
-    if (result === true) {
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Event successfully deleted!',
-        notificationTitle: 'Alert',
-      });
-      browserHistory.push('/dashboard');
-    } else {
-      console.log('error at handleDelete EventDetailsComponent', result);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to delete event. Please try again later.',
-        notificationTitle: 'Error!',
-      });
-    }
-  }
-
-  @autobind
   handleShowInviteGuestsDrawer() {
     const { event } = this.state;
     this.props.showInviteGuests(event);
+  }
+
+  @autobind
+  handleDelete() {
+    const { event } = this.state;
+    this.props.cbDeleteEvent(event._id);
   }
 
   render() {
@@ -299,7 +286,7 @@ class EventDetailsComponent extends React.Component {
 
     return (
       <Card style={inlineStyles.card}>
-        {isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null}
+        {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
         <CardTitle style={inlineStyles.card.cardTitle}>{event.name}</CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker />
@@ -358,6 +345,7 @@ class EventDetailsComponent extends React.Component {
 EventDetailsComponent.propTypes = {
   event: React.PropTypes.object,
   showInviteGuests: React.PropTypes.func,
+  cbDeleteEvent: React.PropTypes.func,
 };
 
 export default cssModules(EventDetailsComponent, styles);

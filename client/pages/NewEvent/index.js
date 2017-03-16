@@ -230,25 +230,8 @@ class NewEvent extends React.Component {
     // the field active now has a default of true.
     const sentData = JSON.stringify({ name, dates });
 
-    const response = await fetch('/api/events', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: sentData,
-      credentials: 'same-origin',
-    });
-
-    let newEvent;
-    try {
-      checkStatus(response);
-      newEvent = await parseJSON(response);
-    } catch (err) {
-      console.log('err at POST NewEvent', err);
-    } finally {
-      browserHistory.push(`/event/${newEvent._id}`);
-    }
+    const newEvent = await this.props.cbNewEvent(sentData);
+    browserHistory.push(`/event/${newEvent._id}`);
   }
 
   @autobind
@@ -370,6 +353,7 @@ NewEvent.propTypes = {
   isAuthenticated: React.PropTypes.bool,
   cbOpenLoginModal: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbNewEvent: React.PropTypes.func,
 };
 
 export default cssModules(NewEvent, styles);

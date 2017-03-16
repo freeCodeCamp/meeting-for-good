@@ -16,7 +16,6 @@ class DeleteModal extends Component {
     this.state = {
       DialogOpen: false,
       event: this.props.event,
-      deleteResult: this.props.cb,
     };
   }
 
@@ -37,26 +36,8 @@ class DeleteModal extends Component {
 
   @autobind
   async handleDelete() {
-    const response =  await fetch(
-    `/api/events/${this.props.event._id}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-        credentials: 'same-origin',
-      },
-  );
-    try {
-      checkStatus(response);
-      this.props.cb(true);
-    } catch (err) {
-      console.log('deleteEvent Modal', err);
-      this.props.cb(err);
-    } finally {
-      this.handleClose();
-    }
+    await this.props.cbEventDelete(this.props.event._id);
+    this.handleClose();
   }
 
   render() {
@@ -124,7 +105,7 @@ class DeleteModal extends Component {
 
 DeleteModal.propTypes = {
   event: React.PropTypes.object,
-  cb: React.PropTypes.func,
+  cbEventDelete: React.PropTypes.func,
 };
 
 export default cssModules(DeleteModal, styles);
