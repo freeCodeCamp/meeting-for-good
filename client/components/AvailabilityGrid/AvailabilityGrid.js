@@ -107,9 +107,9 @@ class AvailabilityGrid extends React.Component {
 
     // Change the border of the cell if it's minutes = 0 or 30 to help visually
     // separate 15 minute blocks from 30 minute and 1 hour blocks.
-    const cells = document.querySelectorAll('.cell');
+    const cells = document.getElementsByClassName('cell');
 
-    cells.forEach((cell) => {
+    Array.from(cells).forEach((cell) => {
       if (getMinutes(cell.getAttribute('data-time')) === 0) {
         cell.style.borderLeft = '1px solid rgb(120, 120, 120)';
       } else if (getMinutes(cell.getAttribute('data-time')) === 30) {
@@ -163,7 +163,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  handleCellMouseEnter(ev) {
+  handleCellMouseOver(ev) {
     // If the cell's background is transparent, that means that it hasn't been
     // selected yet. "Dirty" because we aren't explicitly storing state, but
     // cheaper than going through the array
@@ -217,9 +217,9 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   addCellToAvail(e) {
-    if (!e.buttons === 1 && !e.buttons === 3) {
-      return;
-    }
+    if (this.props.heatmap) return;
+
+    if (!e.buttons === 1 && !e.buttons === 3) return;
 
     let cellAdded = true;
 
@@ -487,7 +487,7 @@ class AvailabilityGrid extends React.Component {
                   data-time={time}
                   data-date={date}
                   className={`cell ${disabled}`}
-                  onMouseEnter={this.handleCellMouseEnter}
+                  onMouseOver={this.handleCellMouseOver}
                   onMouseLeave={this.handleCellMouseLeave}
                   onClick={this.handleCellClick}
                 />
