@@ -77,10 +77,6 @@ class AvailabilityGrid extends React.Component {
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
-    // $('.cell').on('clijck', (e) => {
-    //   if (!this.props.heatmap) this.addCellToAvail(e);
-    // });
-
     // Offset the grid-hour row if the event starts with a date that's offset by
     // 15/30/45 minutes.
     const gridHour = document.querySelector('.grid-hour');
@@ -124,7 +120,9 @@ class AvailabilityGrid extends React.Component {
         // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
         // to the object again when it's inserted into this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
-          const cell = document.querySelector(`.cell[data-time='${nextDate.format('hh:mm a')}']`);
+          const cell = document.querySelector(
+            `.cell[data-time='${nextDate.format('hh:mm a')}']`,
+          );
           cell.style.marginLeft = '50px';
 
           // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
@@ -147,8 +145,10 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  showAvailBox(ev) {
-    if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
+  showAvailList(ev) {
+    const bgNotBlack = getComputedStyle(ev.target)['background-color'] !== 'rgba(0, 0, 0, 0)';
+
+    if (this.props.heatmap && bgNotBlack) {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
       const formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
@@ -182,7 +182,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  hideAvailBox() {
+  hideAvailList() {
     this.setState({ availableOnDate: [], notAvailableOnDate: [] });
   }
 
@@ -435,8 +435,8 @@ class AvailabilityGrid extends React.Component {
                   data-time={time}
                   data-date={date}
                   className={`cell ${disabled}`}
-                  onMouseEnter={this.showAvailBox}
-                  onMouseLeave={this.hideAvailBox}
+                  onMouseEnter={this.showAvailList}
+                  onMouseLeave={this.hideAvailList}
                   onClick={this.handleCellClick}
                 />
               );
