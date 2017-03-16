@@ -10,6 +10,7 @@
     "strict": [0, "global"],
     "react/prefer-stateless-function": 0,
     "react/require-default-props": 0,
+    "react/forbid-prop-types": 0,
     "no-multi-spaces": ["error", {
       "exceptions": {
         "VariableDeclarator": true
