@@ -54,7 +54,7 @@ class LoginModal extends Component {
         width: '200px',
         label: {
           color: '#ffffff',
-          fontSize: '20px',
+          fontSize: '17px',
           fontFamily: 'roboto',
         },
       },
