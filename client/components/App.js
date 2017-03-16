@@ -5,6 +5,8 @@ import { browserHistory } from 'react-router';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
+import { loadEvents, loadEvent, addEvent, deleteEvent } from '../util/events';
+
 
 import '../styles/main.css';
 
@@ -19,18 +21,54 @@ class App extends Component {
       loginFail: false,
       pathToGo: '/',
       loginModalDisable: false,
+      events: [],
     };
   }
+
   async componentWillMount() {
     if (await isAuthenticated()) {
+      const { showPastEvents } = this.state;
       const curUser = await getCurrentUser();
-      this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
+      const events = await loadEvents(showPastEvents);
+      this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
 
   @autobind
-  toggleFilterPastEventsTo(value) {
-    this.setState({ showPastEvents: value });
+  async toggleFilterPastEventsTo(value) {
+    const events = await loadEvents(value);
+    this.setState({ showPastEvents: value, events });
+  }
+
+  @autobind
+  async handleLoadEvent(id) {
+    const { events } = this.state;
+    const event = events.filter(event => event._id === id);
+    if (event.length === 0) {
+      const event = await loadEvent(id);
+      return event;
+    }
+    return event[0];
+  }
+
+ @autobind
+  async handleNewEvent(event) {
+    const { events } = this.state;
+    const nEvent = await addEvent(event);
+    this.setState({ events: [nEvent, ...events] });
+    return nEvent;
+  }
+
+  @autobind
+  async handleDeleteEvent(id) {
+    const { events } = this.state;
+    const response = await deleteEvent(id);
+    if (response) {
+      const nEvents = events.filter(event => event._id !== id);
+      this.setState({ events: nEvents });
+      return true;
+    }
+    return false;
   }
 
   @autobind
@@ -75,7 +113,14 @@ class App extends Component {
 
   render() {
     const { location } = this.props;
-    const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail } = this.state;
+    const {
+      showPastEvents,
+      curUser,
+      openLoginModal,
+      isAuthenticated,
+      loginFail,
+      events,
+    } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (child.type.displayName === 'Dashboard') {
@@ -84,10 +129,29 @@ class App extends Component {
             curUser,
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
+            cbDeleteEvent: this.handleDeleteEvent,
+            events,
           });
         }
         if (child.type.name === 'LoginController') {
           return cloneElement(child, { handleAuthentication: this.handleAuthentication });
+        }
+        if (child.type.displayName === 'EventDetails') {
+          return cloneElement(child, {
+            curUser,
+            isAuthenticated,
+            cbOpenLoginModal: this.handleOpenLoginModal,
+            cbLoadEvent: this.handleLoadEvent,
+            cbDeleteEvent: this.handleDeleteEvent,
+          });
+        }
+        if (child.type.displayName === 'NewEvent') {
+          return cloneElement(child, {
+            curUser,
+            isAuthenticated,
+            cbOpenLoginModal: this.handleOpenLoginModal,
+            cbNewEvent: this.handleNewEvent,
+          });
         }
         return cloneElement(child, {
           curUser,
@@ -109,6 +173,7 @@ class App extends Component {
           isAuthenticated={isAuthenticated}
           curUser={curUser}
           cbOpenLoginModal={this.handleOpenLoginModal}
+          showPastEvents={showPastEvents}
         />
         <main className="main">
           {childrenWithProps}

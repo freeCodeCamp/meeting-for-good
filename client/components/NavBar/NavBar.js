@@ -13,27 +13,28 @@ import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png
 class NavBar extends Component {
   constructor(props) {
     super(props);
-    const { isAuthenticated, curUser } = this.props;
+    const { isAuthenticated, curUser, showPastEvents } = this.props;
     this.state = {
       userAvatar: avatarPlaceHolder,
       isAuthenticated,
       curUser,
       conditionalHomeLink: '/',
       toggleVisible: true,
+      showPastEvents,
 
     };
   }
 
   componentWillMount() {
-    const { location, curUser, isAuthenticated } = this.props;
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar });
+    const { location, curUser, isAuthenticated, showPastEvents } = this.props;
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents });
     this.MenuVisibility(location);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location, curUser, isAuthenticated } = nextProps;
+    const { location, curUser, isAuthenticated, showPastEvents } = nextProps;
     this.MenuVisibility(location);
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar });
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar, showPastEvents });
   }
 
   MenuVisibility(location) {
@@ -66,12 +67,16 @@ class NavBar extends Component {
         fontSize: '15px',
         color: '#ffffff',
         margin: 0,
+        border: 0,
       },
       loginButton: {
         color: '#ffffff',
         primary: true,
-        fontSize: '25px',
+        fontSize: '20px',
         width: '150px',
+        backgroundColor: 'transparent',
+        boxShadow: 'opx'
+        ,
       },
       TollbarGroup: {
         paddingRight: '5%',
@@ -93,7 +98,7 @@ class NavBar extends Component {
         },
       },
     };
-    const { isAuthenticated, curUser, userAvatar } = this.state;
+    const { isAuthenticated, curUser, userAvatar, showPastEvents } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -106,6 +111,7 @@ class NavBar extends Component {
             {toggleVisible ?
               <Toggle
                 label={'Past Events'}
+                toggled={showPastEvents}
                 style={styles.toggle}
                 labelStyle={styles.toggle.label}
                 thumbSwitchedStyle={styles.toggle.thumbSwitched}
@@ -138,7 +144,7 @@ class NavBar extends Component {
         style={styles.TollbarGroup}
       >
 
-        <RaisedButton style={styles.loginButton} backgroundColor="#006400" onTouchTap={this.handleAuthClick}>
+        <RaisedButton style={styles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
       </ToolbarGroup>
@@ -185,6 +191,7 @@ NavBar.propTypes = {
   isAuthenticated: React.PropTypes.bool,
   curUser: React.PropTypes.object,
   cbOpenLoginModal: React.PropTypes.func,
+  showPastEvents: React.PropTypes.bool,
 };
 
 export default NavBar;
