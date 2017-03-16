@@ -40,6 +40,23 @@ class App extends Component {
   }
 
   @autobind
+  async handleLoadEvent(id) {
+    const { events } = this.state;
+    const event = events.filter(event => event._id === id);
+    console.log(event[0], event.length);
+    if (event.length === 0) {
+      const oldEvents = await loadEvents(true);
+      const oldEvent = oldEvents.filter(event => event._id === id);
+      if (oldEvent.length === 0) {
+        return null;
+      }
+      this.setState({ events: oldEvents, showPastEvents: true });
+      return event[0];
+    }
+    return event[0];
+  }
+
+  @autobind
   handleLogin(curUser) {
     if (Object.keys(curUser).length > 0) {
       this.setState({ curUser, isAuthenticated: true });
@@ -102,6 +119,14 @@ class App extends Component {
         }
         if (child.type.name === 'LoginController') {
           return cloneElement(child, { handleAuthentication: this.handleAuthentication });
+        }
+        if (child.type.displayName === 'EventDetails') {
+          return cloneElement(child, {
+            curUser,
+            isAuthenticated,
+            cbOpenLoginModal: this.handleOpenLoginModal,
+            cbLoadEvent: this.handleLoadEvent,
+          });
         }
         return cloneElement(child, {
           curUser,
