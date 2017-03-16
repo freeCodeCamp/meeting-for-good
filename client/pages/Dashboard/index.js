@@ -73,18 +73,20 @@ class Dashboard extends Component {
     });
   }
 
-  @autobind
-  removeEventFromDashboard(eventId) {
-    const { events } = this.state;
-    this.setState({
-      events: events.filter(event => event._id !== eventId),
-    });
-    this.addNotification('Info', ' Event Deleted ');
-  }
 
   @autobind
   handleNewEvent() {
     browserHistory.push('/event/new');
+  }
+
+  @autobind
+  async handleDeleteEvent(id) {
+    const response = this.props.cbDeleteEvent(id);
+    if (response) {
+      this.addNotification('Info', 'Event Deleted');
+    } else {
+      this.addNotification('Alert!!!', 'Event Deleted fail, please try again latter.');
+    }
   }
 
   @autobind
@@ -93,7 +95,7 @@ class Dashboard extends Component {
   }
 
   @autobind
-  handleCbGustInviteDrawer(open) {
+  handleCbGuestInviteDrawer(open) {
     this.setState({ openDrawer: open });
   }
 
@@ -115,7 +117,7 @@ class Dashboard extends Component {
               <EventCard
                 key={event._id}
                 event={event}
-                removeEventFromDashboard={this.removeEventFromDashboard}
+                cbDeleteEvent={this.handleDeleteEvent}
                 curUser={curUser}
                 showInviteGuests={this.handleInviteGuests}
               />
@@ -135,7 +137,7 @@ class Dashboard extends Component {
             notifications: notifications.delete(notification),
           })}
         />
-        <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGustInviteDrawer} />
+        <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
       </div>
     );
   }
@@ -147,6 +149,7 @@ Dashboard.propTypes = {
   cbOpenLoginModal: React.PropTypes.func,
   curUser: React.PropTypes.object,
   events: React.PropTypes.array,
+  cbDeleteEvent: React.PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

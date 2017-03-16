@@ -32,16 +32,8 @@ class EventCard extends Component {
   }
 
   @autobind
-  handleDelete(result) {
-    if (result === true) {
-      this.props.removeEventFromDashboard(this.state.event._id);
-    } else {
-      console.log('deleteEvent EvdentCard', result);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to delete event. Please try again later.',
-      });
-    }
+  handleDelete(id) {
+    this.props.cbDeleteEvent(id);
   }
 
   @autobind
@@ -82,7 +74,7 @@ class EventCard extends Component {
     return (
       <Card style={styles.card} styleName="card">
         {
-          isOwner ? <DeleteModal event={event} cb={this.handleDelete} /> : null
+          isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null
         }
         <CardTitle style={styles.card.cardTitle}>
           {event.name}
@@ -111,7 +103,7 @@ class EventCard extends Component {
 
 EventCard.propTypes = {
   event: React.PropTypes.object,
-  removeEventFromDashboard: React.PropTypes.func,
+  cbDeleteEvent: React.PropTypes.func,
   cb: React.PropTypes.func,
   showInviteGuests: React.PropTypes.func,
   curUser: React.PropTypes.object,

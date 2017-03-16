@@ -68,3 +68,28 @@ export async function addEvent(event) {
     nprogress.done();
   }
 }
+
+export async function deleteEvent(id) {
+  nprogress.configure({ showSpinner: false });
+  nprogress.start();
+  const response =  await fetch(
+  `/api/events/${id}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+      credentials: 'same-origin',
+    },
+);
+  try {
+    checkStatus(response);
+    return true;
+  } catch (err) {
+    console.log('deleteEvent', err);
+    return false;
+  } finally {
+    nprogress.done();
+  }
+}
