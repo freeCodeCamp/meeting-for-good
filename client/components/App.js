@@ -5,6 +5,7 @@ import { browserHistory } from 'react-router';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
+import { loadEvents } from '../util/events';
 
 import '../styles/main.css';
 
@@ -19,18 +20,23 @@ class App extends Component {
       loginFail: false,
       pathToGo: '/',
       loginModalDisable: false,
+      events: [],
     };
   }
+
   async componentWillMount() {
     if (await isAuthenticated()) {
+      const { showPastEvents } = this.state;
       const curUser = await getCurrentUser();
-      this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
+      const events = await loadEvents(showPastEvents);
+      this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events });
     }
   }
 
   @autobind
-  toggleFilterPastEventsTo(value) {
-    this.setState({ showPastEvents: value });
+  async toggleFilterPastEventsTo(value) {
+    const events = await loadEvents(value);
+    this.setState({ showPastEvents: value, events });
   }
 
   @autobind
@@ -75,7 +81,14 @@ class App extends Component {
 
   render() {
     const { location } = this.props;
-    const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail } = this.state;
+    const {
+      showPastEvents,
+      curUser,
+      openLoginModal,
+      isAuthenticated,
+      loginFail,
+      events,
+    } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (child.type.displayName === 'Dashboard') {
@@ -84,6 +97,7 @@ class App extends Component {
             curUser,
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
+            events,
           });
         }
         if (child.type.name === 'LoginController') {
