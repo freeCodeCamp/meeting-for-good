@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import { Notification } from 'react-notification';
 import autobind from 'autobind-decorator';
+import { browserHistory } from 'react-router';
 
 import EventDetailsComponent from '../../components/EventDetailsComponent/EventDetailsComponent';
 import styles from './event-details.css';
@@ -52,13 +53,9 @@ class EventDetails extends Component {
 
   @autobind
   async handleDeleteEvent(id) {
-    const response = this.props.cbDeleteEvent(id);
+    const response = await this.props.cbDeleteEvent(id);
     if (response) {
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Event Deleted.',
-        notificationTitle: 'Info',
-      });
+      browserHistory.push('/dashboard');
     } else {
       this.setState({
         notificationIsActive: true,
@@ -69,7 +66,7 @@ class EventDetails extends Component {
   }
 
   render() {
-    const { event, notificationIsActive, notificationMessage, openDrawer, eventToInvite, curUser } = this.state;
+    const { event, notificationIsActive, notificationMessage, notificationTitle, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
       return (
         <div styleName="event">
@@ -83,11 +80,11 @@ class EventDetails extends Component {
         isActive={notificationIsActive}
         message={notificationMessage}
         action="Dismiss"
-        title="Error!"
+        title={notificationTitle}
         onDismiss={() => this.setState({ notificationIsActive: false })}
         onClick={() => this.setState({ notificationIsActive: false })}
         activeClassName="notification-bar-is-active"
-        dismissAfter={10000}
+        dismissAfter={6000}
       />
     );
   }
