@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
-import fetch from 'isomorphic-fetch';
 import FlatButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
@@ -8,33 +7,33 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
 import Toggle from 'material-ui/Toggle';
 
-import { checkStatus, parseJSON } from '../../util/fetch.util';
-import { isAuthenticated } from '../../util/auth';
 import NotificationBar from '../NotificationBar/NotificationBar';
-import LoginModal from '../Login/Login';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
+    const { isAuthenticated, curUser } = this.props;
     this.state = {
       userAvatar: avatarPlaceHolder,
-      user: false,
+      isAuthenticated,
+      curUser,
       conditionalHomeLink: '/',
-      openLoginModal: false,
       toggleVisible: true,
+
     };
   }
 
-  async componentWillMount() {
-    await this.loadUser();
-    const { location } = this.props;
+  componentWillMount() {
+    const { location, curUser, isAuthenticated } = this.props;
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar });
     this.MenuVisibility(location);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location } = nextProps;
+    const { location, curUser, isAuthenticated } = nextProps;
     this.MenuVisibility(location);
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar });
   }
 
   MenuVisibility(location) {
@@ -47,24 +46,9 @@ class NavBar extends Component {
 
   @autobind
   handleAuthClick() {
-    this.setState({ openLoginModal: true });
+    this.props.cbOpenLoginModal('/dashboard');
   }
 
-  async loadUser() {
-    if (await isAuthenticated()) {
-      const response = await fetch('/api/auth/current', { credentials: 'same-origin' });
-      let user;
-      try {
-        checkStatus(response);
-        user = await parseJSON(response);
-        const userAvatar = user.avatar;
-        this.setState({ userAvatar, user: true, curUser: user._id, conditionalHomeLink: '/dashboard' });
-      } catch (err) {
-        console.log('TollBar loadUser', err);
-        return null;
-      }
-    }
-  }
   @autobind
   handleDashboardClick() {
     browserHistory.push('/dashboard');
@@ -109,9 +93,9 @@ class NavBar extends Component {
         },
       },
     };
-    const { user, curUser, userAvatar, openLoginModal } = this.state;
+    const { isAuthenticated, curUser, userAvatar } = this.state;
 
-    if (user) {
+    if (isAuthenticated) {
       return (
         <ToolbarGroup
           lastChild
@@ -153,7 +137,7 @@ class NavBar extends Component {
         lastChild
         style={styles.TollbarGroup}
       >
-        <LoginModal open={openLoginModal} />
+
         <RaisedButton style={styles.loginButton} backgroundColor="#006400" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
@@ -198,6 +182,9 @@ class NavBar extends Component {
 NavBar.propTypes = {
   location: React.PropTypes.object,
   cbFilter: React.PropTypes.func,
+  isAuthenticated: React.PropTypes.bool,
+  curUser: React.PropTypes.object,
+  cbOpenLoginModal: React.PropTypes.func,
 };
 
 export default NavBar;

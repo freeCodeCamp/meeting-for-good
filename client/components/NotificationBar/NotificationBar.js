@@ -82,7 +82,7 @@ class NotificationBar extends Component {
       notificationColor = '#ffffff';
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
-          if (participant.userId !== curUser && participant.ownerNotified === false) {
+          if (participant.userId !== curUser._id && participant.ownerNotified === false) {
             notificationColor = '#ff0000';
             quantOwnerNotNotified += 1;
           }
@@ -114,7 +114,7 @@ class NotificationBar extends Component {
     if (notifications) {
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
-          if (participant.userId !== curUser) {
+          if (participant.userId !== curUser._id) {
             let bkgColor = '#ffffff';
             if (!participant.ownerNotified) {
               bkgColor = '#EEEEFF';
@@ -190,7 +190,7 @@ class NotificationBar extends Component {
 }
 
 NotificationBar.propTypes = {
-  curUser: React.PropTypes.string,
+  curUser: React.PropTypes.object,
 };
 
 export default NotificationBar;
