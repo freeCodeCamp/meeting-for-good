@@ -10,7 +10,6 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import { Card } from 'material-ui/Card';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -146,7 +145,7 @@ class Dashboard extends Component {
     return (
       <div styleName="wrapper">
         {/* New Event Icon */}
-        <FloatingActionButton styleName="new-event-icon" secondary={true} onClick={this.handleNewEvent} >
+        <FloatingActionButton styleName="new-event-icon" secondary onClick={this.handleNewEvent} >
           <ContentAdd />
         </FloatingActionButton>
         {/* Card Template */}

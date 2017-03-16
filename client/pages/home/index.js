@@ -23,14 +23,14 @@ class Home extends React.Component {
           <hr />
           <h6>The best meeting coordination app</h6>
           <img
-            src={require('../../assets/dashboard-banner.jpg')}
+            src={require('../../assets/dashboard-banner.png')}
             alt="dashboard"
           />
         </header>
         <div styleName="content">
           <h3>Easy event creation</h3>
           <h6>Creating an event is easy as saying 1, 2, 3.</h6>
-          <img src={require('../../assets/main-banner.jpg')} alt="new event" />
+          <img src={require('../../assets/main-banner.png')} alt="new event" />
           <hr styleName="hr" />
           <h3>Entering your availabily is a breeze</h3>
           <h6>Using our simplistic availabily grid, entering your availabily just got easier</h6>

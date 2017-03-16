@@ -128,7 +128,8 @@ class AvailabilityGrid extends React.Component {
         // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
         // to the object again when it's inserted into this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
-          $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
+          const cell = document.querySelector(`.cell[data-time='${nextDate.format('hh:mm a')}']`);
+          cell.style.marginLeft = '50px';
 
           // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
           // eslint. Using setState in componentDidMount couldn't be avoided in this case.
@@ -153,11 +154,10 @@ class AvailabilityGrid extends React.Component {
   showAvailBox(ev) {
     if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
-      let formatStr = 'Do MMMM YYYY hh:mm a';
+      const formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
       const notAvailableOnDate = [];
 
-      if (this.props.weekDays) formatStr = 'ddd hh:mm a';
       const participants = JSON.parse(JSON.stringify(this.props.participants))
         .filter(participant => participant.availability)
         .map((participant) => {
@@ -192,14 +192,17 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   addCellToAvail(e) {
-    if (this.props.heatmap) return;
+    if (!e.buttons === 1 && !e.buttons === 3) {
+      return;
+    }
 
-    const selectedAvailability = this.state.selectedAvailability;
+    let cellAdded = true;
 
     if (getComputedStyle(e.target)['background-color'] !== 'rgb(128, 0, 128)') {
       e.target.style.backgroundColor = 'purple';
     } else {
       e.target.style.backgroundColor = 'white';
+      cellAdded = false;
     }
 
     const { allDates, allTimes, allTimesRender, allDatesRender } = this.state;
@@ -208,15 +211,27 @@ class AvailabilityGrid extends React.Component {
     const dateIndex = allDatesRender.indexOf(e.target.getAttribute('data-date'));
 
     const date = moment(allDates[dateIndex]).get('date');
-
     const from = moment(allTimes[timeIndex]).set('date', date)._d;
     const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
 
-    this.setState({
-      selectedAvailability: this.state.selectedAvailability.concat([[from, to]]),
-    });
+    let selectedAvailability = JSON.parse(
+      JSON.stringify(this.state.selectedAvailability),
+    );
 
-    this.setState({ startCell: null, endCell: null });
+    if (cellAdded) {
+      selectedAvailability = selectedAvailability.concat([from, to]);
+    } else {
+      selectedAvailability = selectedAvailability
+        .filter(([fromDate, toDate]) => fromDate !== from || toDate !== to);
+    }
+
+    this.setState({ selectedAvailability });
+  }
+
+  @autobind
+  handleCellClick(e) {
+    if (e.target.classList.contains('disabled')) return;
+    if (!this.props.heatmap) this.addCellToAvail(e);
   }
 
   @autobind
@@ -342,8 +357,8 @@ class AvailabilityGrid extends React.Component {
     const actions = [
       <FlatButton
         label="close"
-        primary={true}
         onTouchTap={() => this.setState({ openModal: false })}
+        primary
       />,
     ];
     const inlineStyles = {
@@ -364,8 +379,8 @@ class AvailabilityGrid extends React.Component {
         contentStyle={inlineStyles.modal.content}
         bodyStyle={inlineStyles.modal.bodyStyle}
         actions={actions}
-        modal={true}
         open={openModal}
+        modal
       >
         <h4>This is how you can enter and remove your availablity:</h4>
         <img src={enteravail} alt="entering availablity gif" />
@@ -380,8 +395,8 @@ class AvailabilityGrid extends React.Component {
       <div styleName="Column">
         <div styleName="row">
           <FlatButton
-            primary={true}
             onClick={() => this.setState({ openModal: true })}
+            primary
           >
             How do I use the grid?
           </FlatButton>
@@ -426,7 +441,7 @@ class AvailabilityGrid extends React.Component {
                   className={`cell ${disabled}`}
                   onMouseEnter={this.showAvailBox}
                   onMouseLeave={this.hideAvailBox}
-                  onClick={this.addCellToAvail}
+                  onClick={this.handleCellClick}
                 />
               );
             })}

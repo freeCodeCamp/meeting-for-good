@@ -70,7 +70,7 @@ class EventDetails extends Component {
       );
     }
     if (showLoginModal) {
-      return <LoginModal open={true} />;
+      return <LoginModal open />;
     }
     return (
       <Notification
