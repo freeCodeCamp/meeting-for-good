@@ -40,6 +40,8 @@ class GuestInviteDrawer extends Component {
 
   async componentWillMount() {
     await this.loadPastGuests();
+    const { event, open, curUser } = this.props;
+    this.setState({ event, open, curUser, activeCheckboxes: [] });
   }
 
   componentWillReceiveProps(nextProps) {

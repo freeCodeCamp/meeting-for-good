@@ -6,9 +6,7 @@ import autobind from 'autobind-decorator';
 
 import EventDetailsComponent from '../../components/EventDetailsComponent/EventDetailsComponent';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import LoginModal from '../../components/Login/Login';
 import styles from './event-details.css';
-import { isAuthenticated, getCurrentUser } from '../../util/auth';
 import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDrawer';
 
 class EventDetails extends Component {
@@ -22,32 +20,46 @@ class EventDetails extends Component {
       openDrawer: false,
       eventToInvite: {},
       curUser: {},
+      isAuthenticated: false,
     };
   }
 
   async componentWillMount() {
-    if (await isAuthenticated()) {
-      const response = await fetch(`/api/events/${this.props.params.uid}`, {
-        credentials: 'same-origin',
-      });
-      let event;
-      try {
-        checkStatus(response);
-        event = await parseJSON(response);
-        const user = await getCurrentUser();
-        this.setState({ event, curUser: user });
-      } catch (err) {
-        console.log('err at componentWillMount EventDetail', err);
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Failed to load event. Please try again later.',
-        });
-        return;
-      }
+    const { isAuthenticated, curUser } = this.props;
+    if (isAuthenticated === true) {
+      const event = await this.loadEvent();
+      this.setState({ event, curUser });
     } else {
-      this.setState({ showLoginModal: true });
+      this.props.cbOpenLoginModal(`/event/${this.props.params.uid}`);
     }
   }
+
+  async componentWillReceiveProps(nextProps) {
+    const { isAuthenticated, curUser } = nextProps;
+    if (isAuthenticated === true) {
+      const event = await this.loadEvent();
+      this.setState({ event, curUser });
+    }
+  }
+
+  async loadEvent() {
+    const response = await fetch(`/api/events/${this.props.params.uid}`, {
+      credentials: 'same-origin',
+    });
+    try {
+      checkStatus(response);
+      const event = await parseJSON(response);
+      return event;
+    } catch (err) {
+      console.log('err at componentWillMount EventDetail', err);
+      this.setState({
+        notificationIsActive: true,
+        notificationMessage: 'Failed to load event. Please try again later.',
+      });
+      return null;
+    }
+  }
+
 
   @autobind
   handleInviteGuests(event) {
@@ -60,7 +72,7 @@ class EventDetails extends Component {
   }
 
   render() {
-    const { event, showLoginModal, notificationIsActive, notificationMessage, openDrawer, eventToInvite, curUser } = this.state;
+    const { event, notificationIsActive, notificationMessage, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
       return (
         <div styleName="event">
@@ -68,9 +80,6 @@ class EventDetails extends Component {
           <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGustInviteDrawer} />
         </div>
       );
-    }
-    if (showLoginModal) {
-      return <LoginModal open />;
     }
     return (
       <Notification
@@ -89,6 +98,9 @@ class EventDetails extends Component {
 
 EventDetails.propTypes = {
   params: React.PropTypes.object,
+  isAuthenticated: React.PropTypes.bool,
+  cbOpenLoginModal: React.PropTypes.func,
+  curUser: React.PropTypes.object,
 };
 
 export default cssModules(EventDetails, styles);

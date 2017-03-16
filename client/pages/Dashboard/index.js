@@ -20,7 +20,6 @@ import styles from './dashboard.css';
 
 /* utilities */
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import { isAuthenticated, getCurrentUser } from '../../util/auth';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -38,24 +37,21 @@ class Dashboard extends Component {
   }
 
   async componentWillMount() {
-    if (sessionStorage.getItem('redirectTo')) {
-      browserHistory.push(sessionStorage.getItem('redirectTo'));
-      sessionStorage.removeItem('redirectTo');
+    const { isAuthenticated, curUser } = this.props;
+    if (isAuthenticated === false) {
+      this.props.cbOpenLoginModal('/dashboard');
+    } else {
+      const events = await this.loadEvents(false);
+      this.setState({ curUser, events });
     }
-
-    if (!await isAuthenticated()) {
-      browserHistory.push('/');
-    }
-    const curUser = await getCurrentUser();
-    const events = await this.loadEvents(false);
-    this.setState({ curUser, events });
   }
 
   async componentWillReceiveProps(nextProps) {
-    const { showPastEvents } = nextProps;
-    const events = await this.loadEvents(showPastEvents);
-
-    this.setState({ showPastEvents, events });
+    const { showPastEvents, isAuthenticated, curUser } = nextProps;
+    if (isAuthenticated) {
+      const events = await this.loadEvents(showPastEvents);
+      this.setState({ showPastEvents, events, curUser });
+    }
   }
 
   async loadEvents(showPastEvents) {
@@ -86,7 +82,6 @@ class Dashboard extends Component {
 
   removeNotification(key) {
     const { notifications } = this.state;
-    this.setOwnerNotified(key);
     this.setState({
       notifications: notifications.filter(n => n.key !== key),
     });
@@ -181,8 +176,12 @@ class Dashboard extends Component {
   }
 }
 
+
 Dashboard.propTypes = {
   showPastEvents: React.PropTypes.bool,
+  isAuthenticated: React.PropTypes.bool,
+  cbOpenLoginModal: React.PropTypes.func,
+  curUser: React.PropTypes.object,
 };
 
 export default cssModules(Dashboard, styles);

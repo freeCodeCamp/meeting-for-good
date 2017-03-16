@@ -46,7 +46,7 @@ class BestTimeDisplay extends Component {
       for (let i = 0; i < availability[0].length; i += 1) {
         const current = availability[0][i];
         let count = 0;
-        for (let j = 0; j < availability.length; j++) {
+        for (let j = 0; j < availability.length; j += 1) {
           for (let k = 0; k < availability[j].length; k += 1) {
             if (availability[j][k][0] === current[0]) {
               count += 1;
@@ -58,7 +58,7 @@ class BestTimeDisplay extends Component {
 
       if (overlaps.length !== 0) {
         let index = 0;
-        for (let i = 0; i < overlaps.length; i++) {
+        for (let i = 0; i < overlaps.length; i += 1) {
           if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
             if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
               displayTimes[moment(overlaps[index][0]).format('DD MMM')]

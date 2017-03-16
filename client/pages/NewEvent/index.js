@@ -19,7 +19,6 @@ import 'react-day-picker/lib/style.css';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
-import { isAuthenticated, getCurrentUser } from '../../util/auth';
 import { dateRangeReducer } from '../../util/dates.utils';
 
 
@@ -44,17 +43,17 @@ class NewEvent extends React.Component {
       disableSubmit: true,
       notificationIsActive: false,
       notificationMessage: '',
+      curUser: {},
     };
   }
 
-  async componentWillMount() {
-    if (!await isAuthenticated()) {
+  componentWillMount() {
+    const { isAuthenticated, curUser } = this.props;
+    if (isAuthenticated === true) {
       // find the current user aka possible owner
-      this.state.curUser = await getCurrentUser();
-      if (!sessionStorage.getItem('redirectTo')) {
-        sessionStorage.setItem('redirectTo', '/event/new');
-      }
-      browserHistory.push('/');
+      this.setState({ curUser });
+    } else {
+      this.props.cbOpenLoginModal('/event/new');
     }
   }
 
@@ -366,5 +365,11 @@ class NewEvent extends React.Component {
     );
   }
 }
+
+NewEvent.propTypes = {
+  isAuthenticated: React.PropTypes.bool,
+  cbOpenLoginModal: React.PropTypes.func,
+  curUser: React.PropTypes.object,
+};
 
 export default cssModules(NewEvent, styles);
