@@ -23,3 +23,17 @@ export async function loadEvents(showPastEvents) {
     nprogress.done();
   }
 }
+
+export async function loadEvent(id) {
+  const response = await fetch(`/api/events/${id}`, {
+    credentials: 'same-origin',
+  });
+  try {
+    checkStatus(response);
+    const event = await parseJSON(response);
+    return event;
+  } catch (err) {
+    console.log('err at componentWillMount EventDetail', err);
+    return null;
+  }
+}

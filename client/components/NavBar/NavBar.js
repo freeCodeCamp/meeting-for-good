@@ -13,27 +13,28 @@ import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png
 class NavBar extends Component {
   constructor(props) {
     super(props);
-    const { isAuthenticated, curUser } = this.props;
+    const { isAuthenticated, curUser, showPastEvents } = this.props;
     this.state = {
       userAvatar: avatarPlaceHolder,
       isAuthenticated,
       curUser,
       conditionalHomeLink: '/',
       toggleVisible: true,
+      showPastEvents,
 
     };
   }
 
   componentWillMount() {
-    const { location, curUser, isAuthenticated } = this.props;
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar });
+    const { location, curUser, isAuthenticated, showPastEvents } = this.props;
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents });
     this.MenuVisibility(location);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location, curUser, isAuthenticated } = nextProps;
+    const { location, curUser, isAuthenticated, showPastEvents } = nextProps;
     this.MenuVisibility(location);
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar });
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar, showPastEvents });
   }
 
   MenuVisibility(location) {
@@ -93,7 +94,7 @@ class NavBar extends Component {
         },
       },
     };
-    const { isAuthenticated, curUser, userAvatar } = this.state;
+    const { isAuthenticated, curUser, userAvatar, showPastEvents } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -106,6 +107,7 @@ class NavBar extends Component {
             {toggleVisible ?
               <Toggle
                 label={'Past Events'}
+                toggled={showPastEvents}
                 style={styles.toggle}
                 labelStyle={styles.toggle.label}
                 thumbSwitchedStyle={styles.toggle.thumbSwitched}
@@ -185,6 +187,7 @@ NavBar.propTypes = {
   isAuthenticated: React.PropTypes.bool,
   curUser: React.PropTypes.object,
   cbOpenLoginModal: React.PropTypes.func,
+  showPastEvents: React.PropTypes.bool,
 };
 
 export default NavBar;

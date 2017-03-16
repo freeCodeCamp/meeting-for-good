@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents } from '../util/events';
+import { loadEvents, loadEvent } from '../util/events';
 
 import '../styles/main.css';
 
@@ -29,7 +29,7 @@ class App extends Component {
       const { showPastEvents } = this.state;
       const curUser = await getCurrentUser();
       const events = await loadEvents(showPastEvents);
-      this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events });
+      this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
 
@@ -43,15 +43,10 @@ class App extends Component {
   async handleLoadEvent(id) {
     const { events } = this.state;
     const event = events.filter(event => event._id === id);
-    console.log(event[0], event.length);
     if (event.length === 0) {
-      const oldEvents = await loadEvents(true);
-      const oldEvent = oldEvents.filter(event => event._id === id);
-      if (oldEvent.length === 0) {
-        return null;
-      }
-      this.setState({ events: oldEvents, showPastEvents: true });
-      return event[0];
+      console.log('nao achou');
+      const event = await loadEvent(id);
+      return event;
     }
     return event[0];
   }
@@ -148,6 +143,7 @@ class App extends Component {
           isAuthenticated={isAuthenticated}
           curUser={curUser}
           cbOpenLoginModal={this.handleOpenLoginModal}
+          showPastEvents={showPastEvents}
         />
         <main className="main">
           {childrenWithProps}
