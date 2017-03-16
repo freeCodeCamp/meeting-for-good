@@ -67,12 +67,16 @@ class NavBar extends Component {
         fontSize: '15px',
         color: '#ffffff',
         margin: 0,
+        border: 0,
       },
       loginButton: {
         color: '#ffffff',
         primary: true,
         fontSize: '20px',
         width: '150px',
+        backgroundColor: 'transparent',
+        boxShadow: 'opx'
+        ,
       },
       TollbarGroup: {
         paddingRight: '5%',
@@ -140,7 +144,7 @@ class NavBar extends Component {
         style={styles.TollbarGroup}
       >
 
-        <RaisedButton style={styles.loginButton} backgroundColor="#006400" onTouchTap={this.handleAuthClick}>
+        <RaisedButton style={styles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
       </ToolbarGroup>
