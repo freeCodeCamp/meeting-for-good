@@ -54,7 +54,6 @@ class EventDetails extends Component {
   @autobind
   async handleDeleteEvent(id) {
     const response = await this.props.cbDeleteEvent(id);
-    console.log('response', response);
     if (response) {
       browserHistory.push('/dashboard');
     } else {
