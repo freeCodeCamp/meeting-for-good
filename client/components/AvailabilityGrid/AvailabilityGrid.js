@@ -23,17 +23,13 @@ class AvailabilityGrid extends React.Component {
   constructor(props) {
     super(props);
 
-    let dateFormatStr = 'Do MMM ddd';
-
-    if (props.weekDays) dateFormatStr = 'ddd';
-
     this.state = {
       selectedAvailability: [],
       allTimes: [],
       allTimesRender: [],
       allDates: [],
       allDatesRender: [],
-      dateFormatStr,
+      dateFormatStr: 'Do MMM ddd',
       availableOnDate: [],
       notAvailableOnDate: [],
       hourTime: [],
