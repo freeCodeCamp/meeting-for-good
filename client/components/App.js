@@ -44,7 +44,6 @@ class App extends Component {
     const { events } = this.state;
     const event = events.filter(event => event._id === id);
     if (event.length === 0) {
-      console.log('nao achou');
       const event = await loadEvent(id);
       return event;
     }

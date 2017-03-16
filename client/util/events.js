@@ -17,7 +17,7 @@ export async function loadEvents(showPastEvents) {
     events = await parseJSON(response);
     return events;
   } catch (err) {
-    console.log('loadEvents, at Dashboard', err);
+    console.log('loadEvents, at events.js', err);
     return err;
   } finally {
     nprogress.done();
@@ -25,6 +25,8 @@ export async function loadEvents(showPastEvents) {
 }
 
 export async function loadEvent(id) {
+  nprogress.configure({ showSpinner: false });
+  nprogress.start();
   const response = await fetch(`/api/events/${id}`, {
     credentials: 'same-origin',
   });
@@ -35,5 +37,33 @@ export async function loadEvent(id) {
   } catch (err) {
     console.log('err at componentWillMount EventDetail', err);
     return null;
+  } finally {
+    nprogress.done();
+  }
+}
+
+export async function addEvent(event) {
+  nprogress.configure({ showSpinner: false });
+  nprogress.start();
+  const response = await fetch('/api/events', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: event,
+    credentials: 'same-origin',
+  });
+
+  let newEvent;
+  try {
+    checkStatus(response);
+    newEvent = await parseJSON(response);
+    return newEvent;
+  } catch (err) {
+    console.log('err at POST NewEvent', err);
+    return err;
+  } finally {
+    nprogress.done();
   }
 }
