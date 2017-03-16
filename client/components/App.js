@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent, newEvent } from '../util/events';
+import { loadEvents, loadEvent, addEvent } from '../util/events';
 
 import '../styles/main.css';
 
@@ -53,8 +53,9 @@ class App extends Component {
  @autobind
   async handleNewEvent(event) {
     const { events } = this.state;
-    const nEvent = await newEvent(event);
-    this.setState({ events: [...events, nEvent] });
+    const nEvent = await addEvent(event);
+    console.log('handleNewEvent', nEvent);
+    this.setState({ events: [nEvent, ...events] });
     return nEvent;
   }
 
@@ -128,6 +129,14 @@ class App extends Component {
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbLoadEvent: this.handleLoadEvent,
+          });
+        }
+        if (child.type.displayName === 'NewEvent') {
+          return cloneElement(child, {
+            curUser,
+            isAuthenticated,
+            cbOpenLoginModal: this.handleOpenLoginModal,
+            cbNewEvent: this.handleNewEvent,
           });
         }
         return cloneElement(child, {
