@@ -202,26 +202,24 @@ class GuestInviteDrawer extends Component {
 
   renderRows() {
     const { activeCheckboxes, guestsToDisplay } = this.state;
-    const styles = {
-      divider: {
-        width: '100%',
+    const inLineStyles = {
+      listItem: {
+        borderBottom: '1px solid #D4D4D4',
       },
     };
     const rows = [];
     guestsToDisplay.forEach((guest) => {
       const row = (
-        <div key={guest._id}>
-          <ListItem
-            key={`${guest._id}.listItem`}
-            primaryText={guest.name}
-            leftCheckbox={<Checkbox
-              onCheck={() => this.handleCheck(guest.userId)}
-              checked={activeCheckboxes.includes(guest.userId)}
-            />}
-            rightAvatar={<Avatar src={guest.avatar} />}
-          />
-          <Divider key={`${guest._id}.divider`} style={styles.divider} />
-        </div>
+        <ListItem
+          style={inLineStyles.listItem}  
+          key={`${guest._id}.listItem`}
+          primaryText={guest.name}
+          leftCheckbox={<Checkbox
+            onCheck={() => this.handleCheck(guest.userId)}
+            checked={activeCheckboxes.includes(guest.userId)}
+          />}
+          rightAvatar={<Avatar src={guest.avatar} />}
+        />
       );
       rows.push(row);
     });
