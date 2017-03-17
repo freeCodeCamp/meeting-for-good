@@ -237,8 +237,6 @@ class GuestInviteDrawer extends Component {
     } else if (guestsToDisplay.length > 0) {
       lines = guestsToDisplay.length * 58;
     }
-    console.log('lines', lines, guestsToDisplay.length);
-
     const inLineStyles = {
       drawer: {
         container: {
@@ -265,6 +263,8 @@ class GuestInviteDrawer extends Component {
           marginRight: 5,
         },
         copyButton: {
+          backgroundColor: 'transparent',
+          boxShadow: '0px',
           minWidth: '60px',
           maxWidth: '60px',
           padding: 0,
@@ -317,6 +317,7 @@ class GuestInviteDrawer extends Component {
             labelStyle={inLineStyles.drawer.copyButton.label}
             data-clipboard-text={fullUrl}
             onClick={this.ClipBoard}
+            backgroundColor="transparent"
             label="copy"
             hoverColor="#F5F5F5"
           />
