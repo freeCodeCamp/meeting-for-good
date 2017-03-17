@@ -246,23 +246,19 @@ class GuestInviteDrawer extends Component {
           width: '100%',
           backgroundColor: '#000000',
         },
-        copyButton: {
-          width: 28,
-          height: 28,
-          padding: 0,
-          marginBottom: '10px',
-          marginLeft: '7px',
-          marginRight: '7px',
-          icon: {
-            width: 22,
-            height: 22,
-            paddingBottom: '3px',
-          },
+        textUrl: {
+          backgroundColor: '#F5F5F5',
+          maxHeight: 40,
+          minWidth: '280',
         },
-        eventButton: {
-          width: 30,
+        copyButton: {
+          minWidth: '60px',
+          maxWidth: '60px',
           padding: 0,
-          height: 28,
+          margin: 0,
+          label: {
+            padding: 10,
+          },
         },
       },
       snackbar: {
@@ -285,59 +281,55 @@ class GuestInviteDrawer extends Component {
     return (
       <Drawer
         docked={false}
-        width={320}
+        width={350}
         open={open}
         onRequestChange={open => this.handleOnRequestChange(open)}
         containerStyle={inLineStyles.drawer.container}
       >
+        <LinearProgress style={inLineStyles.linearProgress} />  
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
-        <p styleName="subHeader"> You can invite new guests coping
-          <IconButton
+        <div styleName="Row">
+          <TextField
+            style={inLineStyles.drawer.textUrl}
+            value={fullUrl}
+            underlineShow={false}
+          />
+          <FlatButton
             className="btn"
             style={inLineStyles.drawer.copyButton}
+            labelStyle={inLineStyles.drawer.copyButton.label}
             data-clipboard-text={fullUrl}
-            onTouchTap={this.ClipBoard}
-            iconStyle={inLineStyles.drawer.copyButton.icon}
-            tooltip="click to copy Url"
-            tooltipPosition="top-left"
-          >
-            <Copy />
-          </IconButton>
-          the url for:
-          <FlatButton
-            style={inLineStyles.drawer.eventButton}
-            onClick={() => this.handleEventLinkClick(event._id)}
-            primary
-            label={' '}
-          >
-            {event.name}
-          </FlatButton>
+            onClick={this.ClipBoard}
+            label="copy"
+            hoverColor="#F5F5F5"
+          />
+        </div>
+        <p styleName="subHeader">
           or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
         </p>
         <Divider style={inLineStyles.drawer.divider} />
         <h6 styleName="InviteEventText"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
+        <div styleName="Row">
+          <SearchIcon />
+          <TextField
+            style={inLineStyles.drawer.textField}
+            floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
+            fullWidth={true}
+            floatingLabelText="Search for Guests"
+            value={searchText}
+            onChange={this.handleSearchTextChange}
+          />
+        </div>
+        <List>
+          {this.renderRows()}
+        </List>
         <RaisedButton
           fullWidth
           label="Invite"
           primary
           onTouchTap={this.handleInvite}
         />
-        <div styleName="Row">
-          <SearchIcon />
-          <TextField
-            style={inLineStyles.drawer.textField}
-            floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
-            fullWidth={false}
-            floatingLabelText="Search for Guests"
-            value={searchText}
-            onChange={this.handleSearchTextChange}
-          />
-        </div>
-        <LinearProgress style={inLineStyles.linearProgress} />
-        <List>
-          {this.renderRows()}
-        </List>
         <Snackbar
           style={inLineStyles.snackbar}
           bodyStyle={inLineStyles.snackbar.bodyStyle}

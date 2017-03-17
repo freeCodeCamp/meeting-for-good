@@ -3,10 +3,11 @@
 } 
 
 .subHeader {
-   text-align: left;
+   text-align: center;
    font-size: 18px;
    line-height: 100%;
    margin-bottom: 10px;
+   margin-top: 5px;
 } 
 
 .Row {
@@ -18,7 +19,10 @@
 }
 
 .InviteEventText {
-  margin: 0 '1px' 0 0;
+  margin: 0 10 0 0;
   text-align: center;
   font-size: 18px;
+}
+a:hover {
+  color: blue;
 }
