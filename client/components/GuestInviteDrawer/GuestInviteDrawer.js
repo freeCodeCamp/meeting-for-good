@@ -165,7 +165,7 @@ class GuestInviteDrawer extends Component {
   @autobind
   ClipBoard() {
     const { event } = this.state;
-    const clipboard = new Clipboard('.btn');
+    const clipboard = new Clipboard('.cpBtn');
     clipboard.on('success', (e) => {
       this.setState({
         snackbarOpen: true,
@@ -259,8 +259,8 @@ class GuestInviteDrawer extends Component {
         textUrl: {
           backgroundColor: '#F5F5F5',
           maxHeight: 40,
-          minWidth: '275',
-          marginRight: 5,
+          minWidth: 275,
+          marginRight: 0,
         },
         copyButton: {
           backgroundColor: 'transparent',
@@ -270,7 +270,9 @@ class GuestInviteDrawer extends Component {
           padding: 0,
           margin: 0,
           label: {
-            padding: 10,
+            maxWidth: '60px',
+            padding: 0,
+            margin: 0,
           },
         },
         inviteButton: {
@@ -307,17 +309,17 @@ class GuestInviteDrawer extends Component {
         <h3 styleName="header"> {event.name} </h3>
         <div styleName="Row">
           <TextField
+            id="fullUrl"
             style={inLineStyles.drawer.textUrl}
             value={fullUrl}
             underlineShow={false}
           />
           <FlatButton
-            className="btn"
+            className="cpBtn"
             style={inLineStyles.drawer.copyButton}
             labelStyle={inLineStyles.drawer.copyButton.label}
             data-clipboard-text={fullUrl}
-            onClick={this.ClipBoard}
-            backgroundColor="transparent"
+            onTouchTap={this.ClipBoard}
             label="copy"
             hoverColor="#F5F5F5"
           />
