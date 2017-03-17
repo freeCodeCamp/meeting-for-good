@@ -19,7 +19,9 @@
 }
 
 .InviteEventText {
-  margin: 0 10 0 0;
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 0;
   text-align: center;
   font-size: 18px;
 }

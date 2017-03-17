@@ -9,14 +9,14 @@ import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
-import Copy from 'material-ui/svg-icons/content/content-copy';
-import IconButton from 'material-ui/IconButton';
 import Clipboard from 'clipboard';
 import { browserHistory } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
+import Infinite from 'react-infinite';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -34,6 +34,7 @@ class GuestInviteDrawer extends Component {
       snackbarOpen: false,
       snackbarMsg: '',
       linearProgressVisible: 'hidden',
+      rowsCount: 0,
     };
     this.timer = undefined;
   }
@@ -207,26 +208,32 @@ class GuestInviteDrawer extends Component {
       },
     };
     const rows = [];
-    guestsToDisplay.forEach((guest) => {
-      const row = (
-        <div key={guest._id}>
-          <ListItem
-            key={`${guest._id}.listItem`}
-            primaryText={guest.name}
-            leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} checked={activeCheckboxes.includes(guest.userId)} />}
-            rightAvatar={<Avatar src={guest.avatar} />}
-          />
-          <Divider key={`${guest._id}.divider`} style={styles.divider} />
-        </div>
-      );
-      rows.push(row);
-    });
+    for (let i = 0; i < 10; i++) {
+      guestsToDisplay.forEach((guest) => {
+        const row = (
+          <div key={guest._id}>
+            <ListItem
+              key={`${guest._id}.listItem`}
+              primaryText={guest.name}
+              leftCheckbox={<Checkbox
+                onCheck={() => this.handleCheck(guest.userId)}
+                checked={activeCheckboxes.includes(guest.userId)}
+              />}
+              rightAvatar={<Avatar src={guest.avatar} />}
+            />
+            <Divider key={`${guest._id}.divider`} style={styles.divider} />
+          </div>
+        );
+        rows.push(row);
+      });
+    }
     return rows;
   }
 
   render() {
-    const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible } = this.state;
+    const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible, guestsToDisplay } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+    const lines = guestsToDisplay.length * 40;
     const inLineStyles = {
       drawer: {
         container: {
@@ -236,7 +243,7 @@ class GuestInviteDrawer extends Component {
         textField: {
           paddingTop: 0,
           paddingBottom: 0,
-          margin: 0,
+          marginTop: 0,
           floatingLabel: {
             fontSize: '24px',
             paddingLeft: 8,
@@ -249,7 +256,8 @@ class GuestInviteDrawer extends Component {
         textUrl: {
           backgroundColor: '#F5F5F5',
           maxHeight: 40,
-          minWidth: '280',
+          minWidth: '275',
+          marginRight: 5,
         },
         copyButton: {
           minWidth: '60px',
@@ -259,6 +267,9 @@ class GuestInviteDrawer extends Component {
           label: {
             padding: 10,
           },
+        },
+        inviteButton: {
+          paddingTop: '5px',
         },
       },
       snackbar: {
@@ -286,7 +297,7 @@ class GuestInviteDrawer extends Component {
         onRequestChange={open => this.handleOnRequestChange(open)}
         containerStyle={inLineStyles.drawer.container}
       >
-        <LinearProgress style={inLineStyles.linearProgress} />  
+        <LinearProgress style={inLineStyles.linearProgress} />
         <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
         <div styleName="Row">
@@ -315,19 +326,20 @@ class GuestInviteDrawer extends Component {
           <TextField
             style={inLineStyles.drawer.textField}
             floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
-            fullWidth={true}
+            fullWidth
             floatingLabelText="Search for Guests"
             value={searchText}
             onChange={this.handleSearchTextChange}
           />
         </div>
-        <List>
+        <Infinite containerHeight={400} elementHeight={40}>
           {this.renderRows()}
-        </List>
+        </Infinite>
         <RaisedButton
           fullWidth
           label="Invite"
           primary
+          style={inLineStyles.drawer.inviteButton}
           onTouchTap={this.handleInvite}
         />
         <Snackbar
