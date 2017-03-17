@@ -208,32 +208,37 @@ class GuestInviteDrawer extends Component {
       },
     };
     const rows = [];
-    for (let i = 0; i < 10; i++) {
-      guestsToDisplay.forEach((guest) => {
-        const row = (
-          <div key={guest._id}>
-            <ListItem
-              key={`${guest._id}.listItem`}
-              primaryText={guest.name}
-              leftCheckbox={<Checkbox
-                onCheck={() => this.handleCheck(guest.userId)}
-                checked={activeCheckboxes.includes(guest.userId)}
-              />}
-              rightAvatar={<Avatar src={guest.avatar} />}
-            />
-            <Divider key={`${guest._id}.divider`} style={styles.divider} />
-          </div>
-        );
-        rows.push(row);
-      });
-    }
+    guestsToDisplay.forEach((guest) => {
+      const row = (
+        <div key={guest._id}>
+          <ListItem
+            key={`${guest._id}.listItem`}
+            primaryText={guest.name}
+            leftCheckbox={<Checkbox
+              onCheck={() => this.handleCheck(guest.userId)}
+              checked={activeCheckboxes.includes(guest.userId)}
+            />}
+            rightAvatar={<Avatar src={guest.avatar} />}
+          />
+          <Divider key={`${guest._id}.divider`} style={styles.divider} />
+        </div>
+      );
+      rows.push(row);
+    });
     return rows;
   }
 
   render() {
     const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible, guestsToDisplay } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-    const lines = guestsToDisplay.length * 40;
+    let lines = 800;
+    if (guestsToDisplay.length > 10) {
+      lines = 450;
+    } else if (guestsToDisplay.length > 0) {
+      lines = guestsToDisplay.length * 58;
+    }
+    console.log('lines', lines, guestsToDisplay.length);
+
     const inLineStyles = {
       drawer: {
         container: {
@@ -332,7 +337,7 @@ class GuestInviteDrawer extends Component {
             onChange={this.handleSearchTextChange}
           />
         </div>
-        <Infinite containerHeight={400} elementHeight={40}>
+        <Infinite elementHeight={58} containerHeight={lines}>
           {this.renderRows()}
         </Infinite>
         <RaisedButton
