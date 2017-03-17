@@ -9,8 +9,11 @@ import Toggle from 'material-ui/Toggle';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
+import Divider from 'material-ui/Divider';
+
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
+
 
 class NavBar extends Component {
   constructor(props) {
@@ -94,7 +97,8 @@ class NavBar extends Component {
         },
         toggle: {
           verticalAlign: 'center',
-          marginTop: 30,
+          minHeight: '100px',
+          marginTop: 20,
           label: {
             fontSize: '18px',
           },
@@ -103,12 +107,8 @@ class NavBar extends Component {
           },
         },
         itens: {
-          textAlign: 'center',
-          height: 5,
+          backgroundColor: 'white',
         },
-      },
-      avatar: {
-        minWidth: 80,
       },
     };
     const { isAuthenticated, curUser, userAvatar, showPastEvents } = this.state;
@@ -133,7 +133,6 @@ class NavBar extends Component {
             iconButtonElement={
               <IconButton>
                 <Avatar
-                  style={styles.avatar}
                   src={userAvatar}
                 />
               </IconButton>}
@@ -141,9 +140,9 @@ class NavBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             style={styles.menu}
             iconStyle={styles.menu.iconStyle}
-            menuItemStyle={styles.menu.itens}
+            listStyle={styles.menu.itens}
           >
-            <MenuItem >
+            <MenuItem>
               <Toggle
                 label={'Past Events'}
                 toggled={showPastEvents}
@@ -153,6 +152,7 @@ class NavBar extends Component {
                 onToggle={this.handleFilterToggle}
               />
             </MenuItem >
+            <Divider />
             <MenuItem
               href={'/api/auth/logout'}
               primaryText="Logout"
