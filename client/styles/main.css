@@ -1,7 +1,6 @@
 * {
   margin: 0;
   padding: 0;
-
 }
 
 body {
@@ -10,6 +9,7 @@ body {
   background-attachment: fixed;
   height: 100vh;
   overflow-x: hidden;
+  background-color:  #fbfffb; 
 }
 
 main {
@@ -20,6 +20,7 @@ main {
   justify-content: center;
   align-items: center;
   font-family: Lato;
+  
 }
 
 @font-face {
