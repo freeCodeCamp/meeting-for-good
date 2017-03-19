@@ -19,8 +19,6 @@
   bottom: 0;
   overflow: 'auto';
 }
-<<<<<<< HEAD
-=======
 
 .no-selectIcon {
   width: 200px !important;
@@ -34,8 +32,5 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  
-    
+  align-items: center;   
 }
->>>>>>> ded2e28646ba66603a8aabe87eaac0804cfd8fff
