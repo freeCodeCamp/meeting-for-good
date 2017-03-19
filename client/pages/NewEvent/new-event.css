@@ -1,4 +1,7 @@
 
+.card {
+  width: 700px;
+}
 
 .card:hover {
   box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3);
@@ -6,13 +9,6 @@
 
 .daypicker {
   outline: none;
-}
-
-.weekdayList {
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 .heading {
@@ -28,4 +24,16 @@
 
 .reset-button {
   min-height: 36px;
+}
+
+@media (min-width:550px) and (max-width:850px) {
+   .card {
+    width: 600px;
+  }
+}
+
+@media (max-width:550px) {
+  .card {
+    width: 300px;
+  }
 }
