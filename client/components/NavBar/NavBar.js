@@ -80,7 +80,7 @@ class NavBar extends Component {
         boxShadow: '0px',
       },
       TollbarGroup: {
-      
+        paddingRight: '5%',
       },
       block: {
         maxWidth: 400,
@@ -105,7 +105,6 @@ class NavBar extends Component {
       return (
         <ToolbarGroup
           lastChild
-          style={inLineStyles.TollbarGroup}
         >
           <NotificationBar curUser={curUser} />
           <div style={inLineStyles.block}>
@@ -134,6 +133,7 @@ class NavBar extends Component {
             Logout
           </FlatButton>
           <Avatar
+            styleName="avatar"
             src={userAvatar}
           />
         </ToolbarGroup>
@@ -142,7 +142,6 @@ class NavBar extends Component {
     return (
       <ToolbarGroup
         lastChild
-        style={inLineStyles.TollbarGroup}
       >
 
         <RaisedButton style={inLineStyles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
