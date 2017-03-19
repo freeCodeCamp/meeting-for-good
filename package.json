@@ -61,6 +61,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "cpy-cli": "^1.0.1",
     "css-loader": "^0.26.4",
+
     "dialog-polyfill": "^0.4.6",
     "dotenv": "^4.0.0",
     "ejs": "^2.5.5",
