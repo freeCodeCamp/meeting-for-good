@@ -4,10 +4,8 @@ import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EventDelete from 'material-ui/svg-icons/action/delete';
-import fetch from 'isomorphic-fetch';
 import cssModules from 'react-css-modules';
 
-import { checkStatus } from '../../util/fetch.util';
 import styles from './delete-modal.css';
 
 class DeleteModal extends Component {
@@ -81,9 +79,9 @@ class DeleteModal extends Component {
     return (
       <div>
         <FloatingActionButton
-          secondary
+          backgroundColor="#BDBDBD"
           onTouchTap={this.handleOpen}
-          styleName={'delete-buttom'}
+          styleName="delete-buttom"
         >
           <EventDelete />
         </FloatingActionButton>
