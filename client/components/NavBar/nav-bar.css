@@ -1,0 +1,23 @@
+.toolBar {
+  height: 65px !important;
+  background-color: #006400 !important;
+}
+
+ .logoButton {
+    font-size: 35px !important;
+    color: #ffffff !important;
+    font-family: 'saxMono' !important;
+  }
+
+@media (min-width:550px) and (max-width:850px) {
+  .logoButton {
+    font-size: 25px !important;
+
+  }
+}
+
+@media (max-width:550px) {
+  .logoButton {
+    font-size: 20px !important;
+  }
+}

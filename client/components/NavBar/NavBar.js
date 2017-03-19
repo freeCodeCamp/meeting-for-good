@@ -6,9 +6,11 @@ import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
 import Toggle from 'material-ui/Toggle';
+import cssModules from 'react-css-modules';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
+import styles from './nav-bar.css';
 
 class NavBar extends Component {
   constructor(props) {
@@ -62,7 +64,7 @@ class NavBar extends Component {
 
   renderLastGroup() {
     const { toggleVisible } = this.state;
-    const styles = {
+    const inLineStyles = {
       button: {
         fontSize: '15px',
         color: '#ffffff',
@@ -78,7 +80,7 @@ class NavBar extends Component {
         boxShadow: '0px',
       },
       TollbarGroup: {
-        paddingRight: '5%',
+      
       },
       block: {
         maxWidth: 400,
@@ -103,17 +105,17 @@ class NavBar extends Component {
       return (
         <ToolbarGroup
           lastChild
-          style={styles.TollbarGroup}
+          style={inLineStyles.TollbarGroup}
         >
           <NotificationBar curUser={curUser} />
-          <div style={styles.block}>
+          <div style={inLineStyles.block}>
             {toggleVisible ?
               <Toggle
                 label={'Past Events'}
                 toggled={showPastEvents}
-                style={styles.toggle}
-                labelStyle={styles.toggle.label}
-                thumbSwitchedStyle={styles.toggle.thumbSwitched}
+                style={inLineStyles.toggle}
+                labelStyle={inLineStyles.toggle.label}
+                thumbSwitchedStyle={inLineStyles.toggle.thumbSwitched}
                 onToggle={this.handleFilterToggle}
               />
               : null
@@ -121,14 +123,14 @@ class NavBar extends Component {
           </div>
           {!toggleVisible ?
             <FlatButton
-              style={styles.button}
+              style={inLineStyles.button}
               onTouchTap={this.handleDashboardClick}
             >
               Dashboard
           </FlatButton>
             : null
           }
-          <FlatButton style={styles.button} href={'/api/auth/logout'}>
+          <FlatButton style={inLineStyles.button} href={'/api/auth/logout'}>
             Logout
           </FlatButton>
           <Avatar
@@ -140,10 +142,10 @@ class NavBar extends Component {
     return (
       <ToolbarGroup
         lastChild
-        style={styles.TollbarGroup}
+        style={inLineStyles.TollbarGroup}
       >
 
-        <RaisedButton style={styles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
+        <RaisedButton style={inLineStyles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
       </ToolbarGroup>
@@ -151,29 +153,17 @@ class NavBar extends Component {
   }
 
   render() {
-    const styles = {
-      toolBar: {
-        height: '65px',
-        backgroundColor: '#006400',
-      },
-      button: {
-        fontSize: '35px',
-        color: '#ffffff',
-        fontFamily: 'saxMono',
-      },
-    };
-
     return (
       <Toolbar
-        style={styles.toolBar}
+        styleName="toolBar"
       >
         <ToolbarGroup
           firstChild
           style={{ paddingLeft: '2%' }}
         >
           <FlatButton
-            style={styles.button}
             href={this.state.conditionalHomeLink}
+            styleName="logoButton"
           >
             Lets Meet
           </FlatButton>
@@ -193,4 +183,4 @@ NavBar.propTypes = {
   showPastEvents: React.PropTypes.bool,
 };
 
-export default NavBar;
+export default cssModules(NavBar, styles);
