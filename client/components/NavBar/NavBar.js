@@ -125,7 +125,7 @@ class NavBar extends Component {
               onTouchTap={this.handleDashboardClick}
             >
               Dashboard
-          </FlatButton>
+            </FlatButton>
             : null
           }
           <FlatButton style={styles.button} href={'/api/auth/logout'}>
@@ -142,7 +142,6 @@ class NavBar extends Component {
         lastChild
         style={styles.TollbarGroup}
       >
-
         <RaisedButton style={styles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
