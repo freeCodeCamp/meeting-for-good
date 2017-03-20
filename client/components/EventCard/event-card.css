@@ -4,8 +4,28 @@
   max-width: 300px;
 }
 
+.cardTitle {
+    padding-bottom: 0px;
+    font-size: 24px;
+    padding-top: 20;
+    font-weight: 300;
+}
+
+.cardActions {
+  font-size: 20px;
+  padding-left: 5%;
+}
+
+.viewDetailsButton {
+   color: '#F66036',
+}
+
 .card:hover {
   box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3) !important;
+}
+
+.divider {
+   width: 100%;
 }
 
 @media (min-width:850px) and (max-width:1200px) {

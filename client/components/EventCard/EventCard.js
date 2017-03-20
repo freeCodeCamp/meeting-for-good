@@ -50,33 +50,12 @@ class EventCard extends Component {
       isOwner = event.owner === curUser._id;
     }
 
-    const styles = {
-      card: {
-        cardTitle: {
-          paddingBottom: 0,
-          fontSize: '24px',
-          paddingTop: 20,
-          fontWeight: 300,
-        },
-        cardActions: {
-          fontSize: '20px',
-          paddingLeft: '5%',
-          button: {
-            color: '#F66036',
-          },
-        },
-        divider: {
-          width: '100%',
-        },
-      },
-    };
-
     return (
-      <Card style={styles.card} styleName="card">
+      <Card styleName="card">
         {
           isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null
         }
-        <CardTitle style={styles.card.cardTitle}>
+        <CardTitle styleName="cardTitle">
           {event.name}
         </CardTitle>
         <CardText>
@@ -84,8 +63,8 @@ class EventCard extends Component {
           <ParticipantsList event={event} curUser={curUser} showInviteGuests={this.handleShowInviteGuestsDrawer} />
         </CardText>
         <Divider style={styles.card.divider} />
-        <CardActions style={styles.card.cardActions}>
-          <FlatButton style={styles.card.cardActions.button} onClick={this.redirectToEvent}>View Details</FlatButton>
+        <CardActions styleName="cardActions">
+          <FlatButton styleName="viewDetailsButton" onClick={this.redirectToEvent}>View Details</FlatButton>
         </CardActions>
         <Notification
           isActive={notificationIsActive}
