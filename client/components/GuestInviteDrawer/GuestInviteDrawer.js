@@ -238,7 +238,7 @@ class GuestInviteDrawer extends Component {
       drawer: {
         container: {
           paddingLeft: '9px',
-          paddingRight: '5px',
+          paddingRight: '10px',
         },
         textField: {
           paddingTop: 0,
@@ -251,7 +251,9 @@ class GuestInviteDrawer extends Component {
         },
         divider: {
           width: '100%',
-          backgroundColor: '#000000',
+          backgroundColor: '#BDBDBD',
+          marginTop: 6,
+
         },
         textUrl: {
           backgroundColor: '#F5F5F5',
@@ -260,14 +262,8 @@ class GuestInviteDrawer extends Component {
           marginRight: 0,
         },
         copyButton: {
-          backgroundColor: 'transparent',
-          boxShadow: '0px',
-          minWidth: '60px',
-          maxWidth: '60px',
-          padding: 0,
-          margin: 0,
+          backgroundColor: 'white',
           label: {
-            maxWidth: '60px',
             padding: 0,
             margin: 0,
           },
@@ -303,26 +299,27 @@ class GuestInviteDrawer extends Component {
       >
         <LinearProgress style={inLineStyles.linearProgress} />
         <h3 styleName="header"> {event.name} </h3>
+        <TextField
+          id="fullUrl"
+          style={inLineStyles.drawer.textUrl}
+          value={fullUrl}
+          underlineShow={false}
+          fullWidth
+        />
         <div styleName="Row">
-          <TextField
-            id="fullUrl"
-            style={inLineStyles.drawer.textUrl}
-            value={fullUrl}
-            underlineShow={false}
-          />
           <FlatButton
             className="cpBtn"
+            styleName="copyButton"
             style={inLineStyles.drawer.copyButton}
             labelStyle={inLineStyles.drawer.copyButton.label}
             data-clipboard-text={fullUrl}
             onTouchTap={this.ClipBoard}
-            label="copy"
-            hoverColor="#F5F5F5"
+            label="copy link"
           />
+          <p styleName="subHeader">
+            or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
+          </p>
         </div>
-        <p styleName="subHeader">
-          or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
-        </p>
         <Divider style={inLineStyles.drawer.divider} />
         <h6 styleName="InviteEventText"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
         <div styleName="Row">
