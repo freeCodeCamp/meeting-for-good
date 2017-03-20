@@ -321,14 +321,14 @@ class GuestInviteDrawer extends Component {
           </p>
         </div>
         <Divider style={inLineStyles.drawer.divider} />
-        <h6 styleName="InviteEventText"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
+        <h6 styleName="InviteEventText"> Recent guests. If you want, we can invite some for you </h6>
         <div styleName="Row">
           <SearchIcon />
           <TextField
             style={inLineStyles.drawer.textField}
             floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
             fullWidth
-            floatingLabelText="Search for Guests"
+            floatingLabelText="Search guests"
             value={searchText}
             onChange={this.handleSearchTextChange}
           />
