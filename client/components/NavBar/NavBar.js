@@ -137,7 +137,7 @@ class NavBar extends Component {
             listStyle={styles.menu.itens}
             menuStyle={{backgroundColor: 'black' }}
             iconButtonElement={
-              <IconButton style={{ paddingBottom: 45 }}>
+              <IconButton style={{ paddingBottom: 55 }}>
                 <div>
                   <Avatar
                     src={userAvatar}
