@@ -10,10 +10,10 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import Divider from 'material-ui/Divider';
+import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
-
 
 class NavBar extends Component {
   constructor(props) {
@@ -92,8 +92,12 @@ class NavBar extends Component {
         paddingBottom: 28,
         iconStyle: {
           padding: 0,
-          minWidth: 50,
-          minHeight: 50,
+          minWidth: 70,
+          minHeight: 70,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          fontSize: '30px',
         },
         toggle: {
           verticalAlign: 'center',
@@ -126,15 +130,18 @@ class NavBar extends Component {
               onTouchTap={this.handleDashboardClick}
             >
               Dashboard
-          </FlatButton>
+            </FlatButton>
             : null
           }
           <IconMenu
             iconButtonElement={
               <IconButton>
-                <Avatar
-                  src={userAvatar}
-                />
+                <div>
+                  <Avatar
+                    src={userAvatar}
+                  />
+                  <ArrowDown style={{ fontSize: '30px', color: '#ffffff' }} />
+                </div>
               </IconButton>}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
