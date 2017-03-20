@@ -41,9 +41,15 @@
 .centerContainer {
   display: flex !important;
   justify-content: space-around !important;
+  padding-bottom: 10px;
 
 }
 
+.textField {
+  width: 95% !important;
+  padding: 0 0 0 10px !important;
+  margin: 0 !important;
+}
 
 .subHeader {
   text-align: center;

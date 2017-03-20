@@ -242,9 +242,6 @@ class NewEvent extends React.Component {
     const inLinestyles = {
       card: {
         textField: {
-          width: '95%',
-          paddingTop: 0,
-          paddingLeft: 10,
           floatingLabelStyle: {
             color: '#000000',
             fontSize: '24px',
@@ -275,7 +272,7 @@ class NewEvent extends React.Component {
               fullWidth
               floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
               floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
-              style={inLinestyles.card.textField}
+              styleName="textField"
               id="event_name"
               value={eventName}
               onChange={this.handleEventNameChange}
@@ -288,11 +285,11 @@ class NewEvent extends React.Component {
               <h6 styleName="heading-dates">What dates might work for you?</h6>
               <div styleName="reset-button">
                 {from && to &&
-                  <FlatButton
-                    href="#reset"
-                    label="reset"
-                    onClick={this.handleResetClick}
-                  />
+                <FlatButton
+                  href="#reset"
+                  label="reset"
+                  onClick={this.handleResetClick}
+                />
                 }
               </div>
               <DayPicker
