@@ -44,6 +44,7 @@ class LoginModal extends Component {
         bodyStyle: {
           width: '250px',
           paddingBottom: 10,
+          paddingTop: 12,
         },
         actions: {
           paddingTop: 0,
@@ -83,15 +84,6 @@ class LoginModal extends Component {
         actionsContainerStyle={inLineStyles.modal.actions}
         contentStyle={inLineStyles.modal.contentStyle}
       >
-        <RaisedButton
-          backgroundColor="#3F51B5"
-          style={inLineStyles.button}
-          labelStyle={inLineStyles.button.label}
-          href="/api/auth/facebook"
-          onClick={this.handleAuthClick}
-          label="facebook"
-          icon={<img src={Facebook} alt="facebook Logo" />}
-        />
         <RaisedButton
           backgroundColor="#F44336"
           style={inLineStyles.button}
