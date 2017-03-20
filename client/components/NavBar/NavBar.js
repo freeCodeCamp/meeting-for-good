@@ -6,6 +6,11 @@ import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
 import Toggle from 'material-ui/Toggle';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import Divider from 'material-ui/Divider';
+import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
@@ -63,11 +68,11 @@ class NavBar extends Component {
   renderLastGroup() {
     const { toggleVisible } = this.state;
     const styles = {
-      button: {
+      dashButton: {
         fontSize: '15px',
-        color: '#ffffff',
         margin: 0,
         border: 0,
+        color: '#ffffff',
       },
       loginButton: {
         color: '#ffffff',
@@ -83,17 +88,26 @@ class NavBar extends Component {
       block: {
         maxWidth: 400,
       },
-      toggle: {
-        marginTop: 0,
-        paddingLeft: 0,
-        marginRight: 4,
-        label: {
-          color: 'white',
-          fontSize: '18px',
-          width: 100,
+      menu: {
+        iconStyle: {
+          minWidth: 70,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
         },
-        thumbSwitched: {
-          backgroundColor: 'red',
+        toggle: {
+          verticalAlign: 'center',
+          minHeight: '100px',
+          marginTop: 20,
+          label: {
+            fontSize: '18px',
+          },
+          thumbSwitched: {
+            backgroundColor: 'red',
+          },
+        },
+        itens: {
+          backgroundColor: 'white',
         },
       },
     };
@@ -106,34 +120,48 @@ class NavBar extends Component {
           style={styles.TollbarGroup}
         >
           <NotificationBar curUser={curUser} />
-          <div style={styles.block}>
-            {toggleVisible ?
+          {!toggleVisible ?
+            <FlatButton
+              style={styles.dashButton}
+              onTouchTap={this.handleDashboardClick}
+            >
+              Dashboard
+            </FlatButton>
+            : null
+          }
+          <IconMenu
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+            style={styles.menu}
+            iconStyle={styles.menu.iconStyle}
+            listStyle={styles.menu.itens}
+            menuStyle={{backgroundColor: 'black' }}
+            iconButtonElement={
+              <IconButton style={{ paddingBottom: 55, paddingRight: 58 }}>
+                <div>
+                  <Avatar
+                    src={userAvatar}
+                  />
+                  <ArrowDown style={{ fontSize: '30px', color: '#ffffff' }} />
+                </div>
+              </IconButton>}
+          >
+            <MenuItem>
               <Toggle
                 label={'Past Events'}
                 toggled={showPastEvents}
                 style={styles.toggle}
-                labelStyle={styles.toggle.label}
-                thumbSwitchedStyle={styles.toggle.thumbSwitched}
+                labelStyle={styles.menu.toggle.label}
+                thumbSwitchedStyle={styles.menu.toggle.thumbSwitched}
                 onToggle={this.handleFilterToggle}
               />
-              : null
-            }
-          </div>
-          {!toggleVisible ?
-            <FlatButton
-              style={styles.button}
-              onTouchTap={this.handleDashboardClick}
-            >
-              Dashboard
-          </FlatButton>
-            : null
-          }
-          <FlatButton style={styles.button} href={'/api/auth/logout'}>
-            Logout
-          </FlatButton>
-          <Avatar
-            src={userAvatar}
-          />
+            </MenuItem >
+            <Divider />
+            <MenuItem
+              href={'/api/auth/logout'}
+              primaryText="Logout"
+            />
+          </IconMenu>
         </ToolbarGroup>
       );
     }
