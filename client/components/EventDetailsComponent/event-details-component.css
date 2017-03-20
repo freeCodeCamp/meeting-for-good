@@ -1,0 +1,16 @@
+.card {
+   width: flex !important;
+   margin-top: 2% !important;
+}
+
+.cardTitle {
+  padding-bottom: 0px !important;
+  font-size: 36px !important;
+  padding-top: 25px !important;
+  font-weight: 300 !important;
+}
+
+aviabilityContainer {
+  display: flex;
+  justify-content: space-around;
+}

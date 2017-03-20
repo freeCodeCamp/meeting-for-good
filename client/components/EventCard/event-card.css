@@ -12,12 +12,12 @@
 }
 
 .cardActions {
-  font-size: 20px;
+  font-size: 20px !important;
   padding-left: 5%;
 }
 
 .viewDetailsButton {
-   color: '#F66036',
+   color: #F66036 !important;
 }
 
 .card:hover {
