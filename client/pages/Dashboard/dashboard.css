@@ -2,6 +2,8 @@
   user-select: none;
   -webkit-user-select: none;
   text-align: center;
+  width: 100%;
+  font-size: 40px !important;
 }
 
 .wrapper {
@@ -16,4 +18,19 @@
   margin-right: 24px;
   bottom: 0;
   overflow: 'auto';
+}
+
+.no-selectIcon {
+  width: 200px !important;
+  height: 200px !important;
+  color: #BDBDBD !important;
+  text-align: center;
+  flex-grow: 100;
+}
+
+.no-select-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;   
 }
