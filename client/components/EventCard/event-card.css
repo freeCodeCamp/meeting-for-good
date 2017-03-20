@@ -44,7 +44,7 @@
 
 @media (max-width:550px) {
   .card {
-    margin: 2.5% 1%;
-    width: 98%;
+    margin: 2.5% 1% 0% 5%;
+    width: 100%;
   }
 }

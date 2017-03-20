@@ -8,6 +8,7 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Paper from 'material-ui/Paper';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -105,7 +106,7 @@ class Dashboard extends Component {
       height: '80vh',
     };
     return (
-      <div styleName="wrapper">
+      <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}
         <FloatingActionButton styleName="new-event-icon" secondary onClick={this.handleNewEvent} >
           <ContentAdd />
@@ -138,7 +139,7 @@ class Dashboard extends Component {
           })}
         />
         <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
-      </div>
+      </Paper>
     );
   }
 }

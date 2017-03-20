@@ -5,7 +5,11 @@
 }
 
 .wrapper {
-  min-width: 95%;
+  min-width: 100% !important;
+  min-height: 100vh !important;
+  background-color: transparent !important;
+  padding: 0px 30px 0px 0px !important;
+  margin: 0px !important;
 }
 
 .new-event-icon {
@@ -16,4 +20,16 @@
   margin-right: 24px;
   bottom: 0;
   overflow: 'auto';
+}
+
+@media (min-width:850px) and (max-width:1200px) {
+  
+}
+
+@media (min-width:550px) and (max-width:850px) {
+ 
+}
+
+@media (max-width:550px) {
+  
 }
