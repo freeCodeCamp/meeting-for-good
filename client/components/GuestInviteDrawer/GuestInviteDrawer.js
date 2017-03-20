@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import Drawer from 'material-ui/Drawer';
 import autobind from 'autobind-decorator';
-import { List, ListItem } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import nprogress from 'nprogress';
 import Avatar from 'material-ui/Avatar';
@@ -16,7 +16,6 @@ import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import Infinite from 'react-infinite';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -238,7 +237,7 @@ class GuestInviteDrawer extends Component {
     const inLineStyles = {
       drawer: {
         container: {
-          paddingLeft: '7px',
+          paddingLeft: '9px',
           paddingRight: '5px',
         },
         textField: {
@@ -274,7 +273,7 @@ class GuestInviteDrawer extends Component {
           },
         },
         inviteButton: {
-          paddingTop: '5px',
+          paddingTop: '15px',
         },
       },
       snackbar: {
@@ -303,7 +302,6 @@ class GuestInviteDrawer extends Component {
         containerStyle={inLineStyles.drawer.container}
       >
         <LinearProgress style={inLineStyles.linearProgress} />
-        <h3 styleName="header"> This is event</h3>
         <h3 styleName="header"> {event.name} </h3>
         <div styleName="Row">
           <TextField
