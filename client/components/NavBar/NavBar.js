@@ -89,15 +89,11 @@ class NavBar extends Component {
         maxWidth: 400,
       },
       menu: {
-        paddingBottom: 28,
         iconStyle: {
-          padding: 0,
           minWidth: 70,
-          minHeight: 70,
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          fontSize: '30px',
         },
         toggle: {
           verticalAlign: 'center',
@@ -134,8 +130,14 @@ class NavBar extends Component {
             : null
           }
           <IconMenu
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+            style={styles.menu}
+            iconStyle={styles.menu.iconStyle}
+            listStyle={styles.menu.itens}
+            menuStyle={{backgroundColor: 'black' }}
             iconButtonElement={
-              <IconButton>
+              <IconButton style={{ paddingBottom: 45 }}>
                 <div>
                   <Avatar
                     src={userAvatar}
@@ -143,11 +145,6 @@ class NavBar extends Component {
                   <ArrowDown style={{ fontSize: '30px', color: '#ffffff' }} />
                 </div>
               </IconButton>}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            style={styles.menu}
-            iconStyle={styles.menu.iconStyle}
-            listStyle={styles.menu.itens}
           >
             <MenuItem>
               <Toggle
