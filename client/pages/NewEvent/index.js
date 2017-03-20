@@ -241,15 +241,10 @@ class NewEvent extends React.Component {
     const { ranges, eventName, selectedTimeRange, disableSubmit, notificationIsActive, notificationMessage } = this.state;
     const inLinestyles = {
       card: {
-        cardTitle: {
-          textAlign: 'center',
-          paddingBottom: 0,
-          fontSize: '24px',
-          paddingTop: 20,
-          fontWeight: 300,
-        },
         textField: {
-          width: '100%',
+          width: '95%',
+          paddingTop: 0,
+          paddingLeft: 10,
           floatingLabelStyle: {
             color: '#000000',
             fontSize: '24px',
@@ -257,10 +252,6 @@ class NewEvent extends React.Component {
           floatingLabelFocusStyle: {
             color: '#26A69A',
           },
-        },
-        subHeader: {
-          textAlign: 'Center',
-          color: '#000000',
         },
       },
     };
@@ -277,8 +268,8 @@ class NewEvent extends React.Component {
 
     return (
       <Card styleName="card">
-        <CardTitle style={inLinestyles.card.cardTitle}>Create a New Event</CardTitle>
-        <CardText>
+        <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
+        <CardText styleName="cardText">
           <form>
             <TextField
               fullWidth
@@ -295,7 +286,7 @@ class NewEvent extends React.Component {
             />
             <div>
               <h6 styleName="heading-dates">What dates might work for you?</h6>
-              <div className="center" styleName="reset-button">
+              <div styleName="reset-button">
                 {from && to &&
                   <FlatButton
                     href="#reset"
@@ -313,16 +304,15 @@ class NewEvent extends React.Component {
                 styleName="daypicker"
               />
             </div>
-            <Subheader style={inLinestyles.card.subHeader}>What times might work?</Subheader>
+            <Subheader styleName="subHeader">What times might work?</Subheader>
             <div id="timeSlider" />
             <br />
-            <Subheader style={inLinestyles.card.subHeader}>
+            <Subheader styleName="subHeader">
               No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
             </Subheader>
-            <div className="center">
+            <div styleName="centerContainer">
               <RaisedButton
                 labelColor="#9F9F9F"
-                style={inLinestyles.card.createButton}
                 label="Create Event"
                 className="submit"
                 disabled={disableSubmit}
