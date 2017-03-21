@@ -56,9 +56,9 @@
 @media (max-width:550px) {
   .new-event-icon {
     right: 0;
-    top: 0;
-    margin-top: 70px;
-    margin-left: 24px;
+    bottom: 0;
+    margin-bottom: 10px !important;
+    margin-right: 10px;
     box-shadow: none !important;
   }
 }
