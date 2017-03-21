@@ -1,6 +1,6 @@
 .header {
    text-align: center;
-} 
+}
 
 .subHeader {
    text-align: center;
@@ -8,7 +8,7 @@
    line-height: 100% !important;
    margin-bottom: 10px !important;
    margin-top: 5px !important;
-} 
+}
 
 .Row {
   display: flex;
