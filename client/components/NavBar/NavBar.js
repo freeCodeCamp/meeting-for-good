@@ -167,7 +167,7 @@ class NavBar extends Component {
       <ToolbarGroup
         lastChild
       >
-        <RaisedButton styleName="loginButton" backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
+        <RaisedButton style={styles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
       </ToolbarGroup>
