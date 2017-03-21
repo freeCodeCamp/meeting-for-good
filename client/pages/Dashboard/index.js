@@ -1,5 +1,5 @@
 /* vendor dependencies */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
@@ -75,7 +75,6 @@ class Dashboard extends Component {
     });
   }
 
-
   @autobind
   handleNewEvent() {
     browserHistory.push('/event/new');
@@ -142,11 +141,11 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
-  isAuthenticated: React.PropTypes.bool,
-  cbOpenLoginModal: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  events: React.PropTypes.array,
-  cbDeleteEvent: React.PropTypes.func,
+  isAuthenticated: PropTypes.bool,
+  cbOpenLoginModal: PropTypes.func,
+  curUser: PropTypes.object,
+  events: PropTypes.array,
+  cbDeleteEvent: PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

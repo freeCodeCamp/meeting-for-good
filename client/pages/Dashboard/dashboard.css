@@ -61,4 +61,17 @@
     margin-right: 10px;
     box-shadow: none !important;
   }
+
+  .no-select {
+    font-size: 30px !important;
+  }
+
+  .no-selectIcon {
+    width: 150px !important;
+    height: 150px !important;
+    color: #BDBDBD !important;
+    text-align: center;
+    flex-grow: 100;
+  }
+
 }
