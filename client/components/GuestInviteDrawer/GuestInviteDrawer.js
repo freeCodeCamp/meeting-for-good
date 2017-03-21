@@ -246,20 +246,7 @@ class GuestInviteDrawer extends Component {
             paddingLeft: 8,
           },
         },
-        divider: {
-          width: '100%',
-          backgroundColor: '#BDBDBD',
-          marginTop: 6,
-
-        },
-        textUrl: {
-          backgroundColor: '#F5F5F5',
-          maxHeight: 40,
-          minWidth: 275,
-          marginRight: 0,
-        },
         copyButton: {
-          backgroundColor: 'white',
           label: {
             padding: 0,
             margin: 0,
@@ -271,7 +258,6 @@ class GuestInviteDrawer extends Component {
         },
       },
       snackbar: {
-        height: 'flex',
         bodyStyle: {
           height: 'flex',
         },
@@ -299,7 +285,7 @@ class GuestInviteDrawer extends Component {
         <h3 styleName="header"> {event.name} </h3>
         <TextField
           id="fullUrl"
-          style={inLineStyles.drawer.textUrl}
+          styleName="textUrl"
           value={fullUrl}
           underlineShow={false}
           fullWidth
@@ -308,7 +294,6 @@ class GuestInviteDrawer extends Component {
           <FlatButton
             className="cpBtn"
             styleName="copyButton"
-            style={inLineStyles.drawer.copyButton}
             labelStyle={inLineStyles.drawer.copyButton.label}
             data-clipboard-text={fullUrl}
             onTouchTap={this.ClipBoard}
@@ -318,12 +303,11 @@ class GuestInviteDrawer extends Component {
             or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
           </p>
         </div>
-        <Divider style={inLineStyles.drawer.divider} />
+        <Divider styleName="Divider" />
         <h6 styleName="InviteEventText"> Recent Guests </h6>
         <div styleName="Row">
           <SearchIcon styleName="searchIcon" />
           <TextField
-            style={inLineStyles.drawer.textField}
             floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
             fullWidth
             floatingLabelText="Search guests"
@@ -338,11 +322,11 @@ class GuestInviteDrawer extends Component {
           fullWidth
           label="Invite"
           primary
-          style={inLineStyles.drawer.inviteButton}
+          styleName="inviteButton"
           onTouchTap={this.handleInvite}
         />
         <Snackbar
-          style={inLineStyles.snackbar}
+          styleName="Snackbar"
           bodyStyle={inLineStyles.snackbar.bodyStyle}
           contentStyle={inLineStyles.snackbar.contentStyle}
           open={snackbarOpen}
