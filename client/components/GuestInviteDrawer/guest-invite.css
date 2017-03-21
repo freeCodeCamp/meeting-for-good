@@ -15,6 +15,7 @@
   flex-wrap: nowrap;
   align-items: flex-end;
   height: flex;
+  justify-content: center;
 }
 
 .InviteEventText {
