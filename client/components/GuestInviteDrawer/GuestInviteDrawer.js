@@ -318,14 +318,14 @@ class GuestInviteDrawer extends Component {
         />
         <div styleName="Row">
           <RaisedButton
-            styleName="primaryButton"
+            styleName="copyAndEmailButton"
             className="cpBtn"
             onTouchTap={this.handleCopyButtonClick}
             label="Copy Link"
             primary
           />
           <RaisedButton
-            styleName="primaryButton"
+            styleName="copyAndEmailButton"
             label="Send Email Invite"
             href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}
             primary
