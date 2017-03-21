@@ -175,13 +175,17 @@ class GuestInviteDrawer extends Component {
   }
 
   @autobind
-  ClipBoard() {
+  handleCopyButtonClick(ev) {
     const { event } = this.state;
-    const clipboard = new Clipboard('.cpBtn');
+    console.log(ev.target);
+    const clipboard = new Clipboard(ev.target, {
+      target: () => document.getElementById('fullUrl'),
+    });
+
     clipboard.on('success', (e) => {
       this.setState({
         snackbarOpen: true,
-        snackbarMsg: `Info!!, url for ${event.name} copied!`,
+        snackbarMsg: `${event.name} link copied to clipboard!`,
         linearProgressVisible: 'hidden',
       });
       e.clearSelection();
@@ -276,17 +280,6 @@ class GuestInviteDrawer extends Component {
           minWidth: 275,
           marginRight: 0,
         },
-        copyButton: {
-          backgroundColor: 'white',
-          label: {
-            padding: 0,
-            margin: 0,
-            fontSize: '14px',
-          },
-        },
-        inviteButton: {
-          paddingTop: '15px',
-        },
       },
       snackbar: {
         height: 'flex',
@@ -305,6 +298,7 @@ class GuestInviteDrawer extends Component {
     const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:
     %0D%0A%0D%0A${fullUrl}
     %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
+
     return (
       <Drawer
         docked={false}
@@ -323,24 +317,22 @@ class GuestInviteDrawer extends Component {
           fullWidth
         />
         <div styleName="Row">
-          <FlatButton
+          <RaisedButton
+            styleName="primaryButton"
             className="cpBtn"
-            styleName="copyButton"
-            style={inLineStyles.drawer.copyButton}
-            labelStyle={inLineStyles.drawer.copyButton.label}
-            data-clipboard-text={fullUrl}
-            onTouchTap={this.ClipBoard}
-            label="copy link"
+            onTouchTap={this.handleCopyButtonClick}
+            label="Copy Link"
+            primary
           />
-          <p styleName="subHeader">
-            or send a
-            <a
-              href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}
-            >email</a>
-          </p>
+          <RaisedButton
+            styleName="primaryButton"
+            label="Send Email Invite"
+            href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}
+            primary
+          />
         </div>
         <Divider style={inLineStyles.drawer.divider} />
-        <h6 styleName="InviteEventText"> Recent Guests </h6>
+        <h6 styleName="inviteEventText">Recent Guests</h6>
         <div styleName="Row">
           <SearchIcon styleName="searchIcon" />
           <TextField
@@ -356,11 +348,11 @@ class GuestInviteDrawer extends Component {
           {this.renderRows()}
         </Infinite>
         <RaisedButton
-          fullWidth
           label="Invite"
-          primary
-          style={inLineStyles.drawer.inviteButton}
+          styleName="inviteButton"
           onTouchTap={this.handleInvite}
+          fullWidth
+          primary
         />
         <Snackbar
           style={inLineStyles.snackbar}
