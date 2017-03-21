@@ -98,9 +98,6 @@ class NavBar extends Component {
           alignItems: 'center',
         },
         toggle: {
-          verticalAlign: 'center',
-          minHeight: '100px',
-          marginTop: 20,
           label: {
             fontSize: '18px',
           },
@@ -133,9 +130,9 @@ class NavBar extends Component {
           <IconMenu
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            style={styles.menu}
-            iconStyle={styles.menu.iconStyle}
-            listStyle={styles.menu.itens}
+            styleName="menu"
+            iconStyle={inLineStyles.menu.iconStyle}
+            listStyle={inLineStyles.menu.itens}
             menuStyle={{backgroundColor: 'black' }}
             iconButtonElement={
               <IconButton style={{ paddingBottom: 55, paddingRight: 58 }}>
@@ -151,9 +148,9 @@ class NavBar extends Component {
               <Toggle
                 label={'Past Events'}
                 toggled={showPastEvents}
-                style={styles.toggle}
-                labelStyle={styles.menu.toggle.label}
-                thumbSwitchedStyle={styles.menu.toggle.thumbSwitched}
+                styleName="toggle"
+                labelStyle={inLineStyles.menu.toggle.label}
+                thumbSwitchedStyle={inLineStyles.menu.toggle.thumbSwitched}
                 onToggle={this.handleFilterToggle}
               />
             </MenuItem >
@@ -170,8 +167,7 @@ class NavBar extends Component {
       <ToolbarGroup
         lastChild
       >
-
-        <RaisedButton style={inLineStyles.loginButton} backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
+        <RaisedButton styleName="loginButton" backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
           Login
         </RaisedButton>
       </ToolbarGroup>
