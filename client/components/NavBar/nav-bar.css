@@ -3,6 +3,7 @@
   background-color: #006400 !important;
   display: flex !important;
   justify-content: space-between !important;
+  align-items: center !important;
 
 }
 
@@ -36,7 +37,7 @@
 .loginButton {
   color: #ffffff !important;
   font-size: 22px !important;
-  width: 120px !important;
+  width: 100px !important;
   background-color: #006400 !important;
   box-shadow: none !important;
 }
@@ -64,7 +65,7 @@
   }
 
   .toolBar {
-    
+    padding: 0px !important;
   }
 
   .rightToolbarGroup {
@@ -72,8 +73,8 @@
     margin: 0px;
   }
   .leftToolbarGroup {
-    padding: 0 !important; 
-    margin: 0 !important;
+    padding-left: 0px !important; 
+    margin: 0px !important;
   }
   
 

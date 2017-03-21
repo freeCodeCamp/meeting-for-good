@@ -70,7 +70,7 @@ class NavBar extends Component {
   renderRightGroup() {
     const { toggleVisible } = this.state;
     const inLineStyles = {
-      menu: {
+      iconMenu: {
         iconStyle: {
           minWidth: 70,
           display: 'flex',
@@ -112,8 +112,8 @@ class NavBar extends Component {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             styleName="iconMenu"
-            iconStyle={inLineStyles.menu.iconStyle}
-            listStyle={inLineStyles.menu.itens}
+            iconStyle={inLineStyles.iconMenu.iconStyle}
+            listStyle={inLineStyles.iconMenu.itens}
             iconButtonElement={
               <IconButton style={{ padding: '25px 1% 56px 0px' }}>
                 <div>
@@ -129,8 +129,8 @@ class NavBar extends Component {
                 label={'Past Events'}
                 toggled={showPastEvents}
                 styleName="Toggle"
-                labelStyle={inLineStyles.menu.toggle.label}
-                thumbSwitchedStyle={inLineStyles.menu.toggle.thumbSwitched}
+                labelStyle={inLineStyles.iconMenu.toggle.label}
+                thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
                 onToggle={this.handleFilterToggle}
               />
             </MenuItem >
