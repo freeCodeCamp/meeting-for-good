@@ -70,9 +70,6 @@ class NavBar extends Component {
   renderRightGroup() {
     const { toggleVisible } = this.state;
     const inLineStyles = {
-      TollbarGroup: {
-        paddingRight: '5%',
-      },
       menu: {
         iconStyle: {
           minWidth: 70,
@@ -99,6 +96,7 @@ class NavBar extends Component {
       return (
         <ToolbarGroup
           lastChild
+          styleName="rightToolbarGroup"
         >
           <NotificationBar curUser={curUser} />
           {!toggleVisible ?
