@@ -11,7 +11,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
 import Clipboard from 'clipboard';
 import { browserHistory } from 'react-router';
-import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
@@ -55,7 +54,7 @@ class GuestInviteDrawer extends Component {
   }
 
   async loadPastGuests() {
-    nprogress.start();
+    this.setState({ linearProgressVisible: 'visible' });
 
     const response = await fetch('/api/user/relatedUsers', {
       credentials: 'same-origin',
@@ -74,7 +73,7 @@ class GuestInviteDrawer extends Component {
       });
       return;
     } finally {
-      nprogress.done();
+      this.setState({ linearProgressVisible: 'hidden' });
     }
   }
 
@@ -163,7 +162,6 @@ class GuestInviteDrawer extends Component {
       this.timer = setTimeout(this.setState({
         snackbarOpen: true,
         snackbarMsg: `Info!!, ${guestData.name} invited! to ${event.name}`,
-        linearProgressVisible: 'hidden',
       }), 5000);
     } catch (err) {
       console.log('sendEmailOwner', err);
@@ -171,6 +169,8 @@ class GuestInviteDrawer extends Component {
         snackbarOpen: true,
         snackbarMsg: `Failed to send invite to ${curUser.name}. Please try again later.`,
       });
+    } finally {
+      this.setState({ linearProgressVisible: 'hidden' });
     }
   }
 
@@ -186,7 +186,6 @@ class GuestInviteDrawer extends Component {
       this.setState({
         snackbarOpen: true,
         snackbarMsg: `${event.name} link copied to clipboard!`,
-        linearProgressVisible: 'hidden',
       });
       e.clearSelection();
     });
@@ -305,7 +304,7 @@ class GuestInviteDrawer extends Component {
         onRequestChange={open => this.handleOnRequestChange(open)}
         containerStyle={inLineStyles.drawer.container}
       >
-        <LinearProgress style={inLineStyles.linearProgress} />
+        <LinearProgress style={inLineStyles.drawer.linearProgress} />
         <h3 styleName="header"> {event.name} </h3>
         <TextField
           id="fullUrl"
@@ -350,12 +349,11 @@ class GuestInviteDrawer extends Component {
           styleName="inviteButton"
           onTouchTap={this.handleInvite}
           fullWidth
-          primary
         />
         <Snackbar
           styleName="Snackbar"
-          bodyStyle={inLineStyles.snackbar.bodyStyle}
-          contentStyle={inLineStyles.snackbar.contentStyle}
+          bodyStyle={inLineStyles.drawer.snackbar.bodyStyle}
+          contentStyle={inLineStyles.drawer.snackbar.contentStyle}
           open={snackbarOpen}
           message={snackbarMsg}
           action="Dismiss"
