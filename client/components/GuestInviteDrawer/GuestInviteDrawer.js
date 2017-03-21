@@ -21,6 +21,11 @@ import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 
 class GuestInviteDrawer extends Component {
+  @autobind
+  static handleEventLinkClick(id) {
+    browserHistory.push(`/event/${id}`);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -51,7 +56,11 @@ class GuestInviteDrawer extends Component {
 
   async loadPastGuests() {
     nprogress.start();
-    const response = await fetch('/api/user/relatedUsers', { credentials: 'same-origin' });
+
+    const response = await fetch('/api/user/relatedUsers', {
+      credentials: 'same-origin',
+    });
+
     let guests;
     try {
       checkStatus(response);
@@ -89,7 +98,10 @@ class GuestInviteDrawer extends Component {
   }
 
   async loadUserData(_id) {
-    const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
+    const response = await fetch(`/api/user/${_id}`, {
+      credentials: 'same-origin',
+    });
+
     try {
       checkStatus(response);
       return await parseJSON(response);
@@ -97,7 +109,7 @@ class GuestInviteDrawer extends Component {
       console.log('loadUserData', err);
       this.setState({
         snackbarOpen: true,
-        snackbarMsg: 'Error!!, Failed to load user Data. Please try again later.',
+        snackbarMsg: 'Failed to load user data. Please try again later.',
       });
       return null;
     }
@@ -123,7 +135,9 @@ class GuestInviteDrawer extends Component {
   async sendEmailInvite(guestId) {
     this.setState({ linearProgressVisible: 'visible' });
     const { event, curUser } = this.state;
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
+    const fullUrl = `${location.protocol}//${location.hostname}\
+                     ${(location.port ? `:${location.port}` : '')}`;
+
     const guestData = await this.loadUserData(guestId);
     const msg = {
       guestName: guestData.name,
@@ -156,7 +170,8 @@ class GuestInviteDrawer extends Component {
       console.log('sendEmailOwner', err);
       this.setState({
         snackbarOpen: true,
-        snackbarMsg: `Error!!, Failed to send invite to ${curUser.name} Please try again later.`,
+        snackbarMsg: `Failed to send invite to ${curUser.name}.\
+                      Please try again later.`,
       });
     }
   }
@@ -194,11 +209,6 @@ class GuestInviteDrawer extends Component {
     this.props.cb(open);
   }
 
-  @autobind
-  handleEventLinkClick(id) {
-    browserHistory.push(`/event/${id}`);
-  }
-
   renderRows() {
     const { activeCheckboxes, guestsToDisplay } = this.state;
     const inLineStyles = {
@@ -210,7 +220,7 @@ class GuestInviteDrawer extends Component {
     guestsToDisplay.forEach((guest) => {
       const row = (
         <ListItem
-          style={inLineStyles.listItem}  
+          style={inLineStyles.listItem}
           key={`${guest._id}.listItem`}
           primaryText={guest.name}
           leftCheckbox={<Checkbox
@@ -226,8 +236,20 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible, guestsToDisplay } = this.state;
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+    const {
+      open,
+      event,
+      snackbarOpen,
+      searchText,
+      snackbarMsg,
+      linearProgressVisible,
+      guestsToDisplay,
+    } = this.state;
+
+    const fullUrl = `${location.protocol}//${location.hostname}\
+                     ${(location.port ? `:${location.port}` : '')}\
+                     /event/${event._id}`;
+
     let lines = 800;
     if (guestsToDisplay.length > 10) {
       lines = 450;
@@ -284,9 +306,11 @@ class GuestInviteDrawer extends Component {
         visibility: linearProgressVisible,
       },
     };
-    const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:
-    %0D%0A%0D%0A${fullUrl} 
-    %0D%0A%0D%0A All times will automatically be converted to your local timezone.`;
+    const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please \
+                       block your availability for ${event.name}:
+    %0D%0A%0D%0A${fullUrl}
+    %0D%0A%0D%0A All times will be automatically converted to your local \
+    timezone.`;
     return (
       <Drawer
         docked={false}
@@ -315,7 +339,10 @@ class GuestInviteDrawer extends Component {
             label="copy link"
           />
           <p styleName="subHeader">
-            or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
+            or send a
+            <a
+              href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}
+            >email</a>
           </p>
         </div>
         <Divider style={inLineStyles.drawer.divider} />
