@@ -67,20 +67,11 @@ class NavBar extends Component {
     this.props.cbFilter(isInputChecked);
   }
 
-  renderLastGroup() {
+  renderRightGroup() {
     const { toggleVisible } = this.state;
     const inLineStyles = {
-      button: {
-        fontSize: '15px',
-        margin: 0,
-        border: 0,
-        color: '#ffffff',
-      },
       TollbarGroup: {
         paddingRight: '5%',
-      },
-      block: {
-        maxWidth: 400,
       },
       menu: {
         iconStyle: {
@@ -112,7 +103,7 @@ class NavBar extends Component {
           <NotificationBar curUser={curUser} />
           {!toggleVisible ?
             <FlatButton
-              style={inLineStyles.button}
+              styleName="DashButton"
               onTouchTap={this.handleDashboardClick}
             >
               Dashboard
@@ -122,16 +113,16 @@ class NavBar extends Component {
           <IconMenu
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            styleName="menu"
+            styleName="iconMenu"
             iconStyle={inLineStyles.menu.iconStyle}
             listStyle={inLineStyles.menu.itens}
             iconButtonElement={
-              <IconButton style={{ paddingBottom: 55, paddingRight: 58 }}>
+              <IconButton style={{ padding: '25px 1% 56px 0px' }}>
                 <div>
                   <Avatar
                     src={userAvatar}
                   />
-                  <ArrowDown style={{ fontSize: '30px', color: '#ffffff' }} />
+                  <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
                 </div>
               </IconButton>}
           >
@@ -139,7 +130,7 @@ class NavBar extends Component {
               <Toggle
                 label={'Past Events'}
                 toggled={showPastEvents}
-                styleName="toggle"
+                styleName="Toggle"
                 labelStyle={inLineStyles.menu.toggle.label}
                 thumbSwitchedStyle={inLineStyles.menu.toggle.thumbSwitched}
                 onToggle={this.handleFilterToggle}
@@ -172,7 +163,7 @@ class NavBar extends Component {
       >
         <ToolbarGroup
           firstChild
-          style={{ paddingLeft: '2%' }}
+          styleName="leftToolbarGroup"
         >
           <FlatButton
             href={this.state.conditionalHomeLink}
@@ -181,7 +172,7 @@ class NavBar extends Component {
             Lets Meet
           </FlatButton>
         </ToolbarGroup >
-        {this.renderLastGroup()}
+        {this.renderRightGroup()}
       </Toolbar>
     );
   }

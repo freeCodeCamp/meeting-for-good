@@ -1,6 +1,9 @@
 .toolBar {
   height: 65px !important;
   background-color: #006400 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+
 }
 
 .logoButton {
@@ -9,11 +12,22 @@
   font-family: 'saxMono' !important;
 }
 
-.menu {
-  margin-right: 50px !important;
+.DashButton {
+  font-size: '15px' !important;
+  margin: 0 !important;
+  border: 0 !important;
+  color: #ffffff !important;
 }
 
- .toggle {
+.iconMenu {
+  margin: 0 50px 8px 0 !important;
+}
+
+.IconButton {
+  padding: 0px 58px 55px 0px;
+}
+
+.Toggle {
   vertical-align: 'center' !important;
   min-height: '100px' !important;
   margin-top: 20 !important;
@@ -27,6 +41,10 @@
   box-shadow: none !important;
 }
 
+.leftToolbarGroup {
+  padding-left: 1% !important; 
+}
+
 @media (min-width:550px) and (max-width:850px) {
   .logoButton {
     font-size: 25px !important;
@@ -37,7 +55,18 @@
   .logoButton {
     font-size: 20px !important;
   }
-  .menu {
-  margin-right: 20px !important;
-}
+  .IconMenu {
+    margin-right: 20px !important;
+  }
+
+  .toolBar {
+    margin: 0;
+  }
+
+  .leftToolbarGroup {
+    padding: 0 !important; 
+    margin: 0 !important;
+  }
+  
+
 }
