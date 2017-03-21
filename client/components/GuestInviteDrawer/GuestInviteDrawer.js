@@ -2,21 +2,20 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import Drawer from 'material-ui/Drawer';
 import autobind from 'autobind-decorator';
-import { List, ListItem } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import nprogress from 'nprogress';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
-import Copy from 'material-ui/svg-icons/content/content-copy';
-import IconButton from 'material-ui/IconButton';
 import Clipboard from 'clipboard';
 import { browserHistory } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
+import Infinite from 'react-infinite';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -34,6 +33,7 @@ class GuestInviteDrawer extends Component {
       snackbarOpen: false,
       snackbarMsg: '',
       linearProgressVisible: 'hidden',
+      rowsCount: 0,
     };
     this.timer = undefined;
   }
@@ -164,7 +164,7 @@ class GuestInviteDrawer extends Component {
   @autobind
   ClipBoard() {
     const { event } = this.state;
-    const clipboard = new Clipboard('.btn');
+    const clipboard = new Clipboard('.cpBtn');
     clipboard.on('success', (e) => {
       this.setState({
         snackbarOpen: true,
@@ -201,23 +201,24 @@ class GuestInviteDrawer extends Component {
 
   renderRows() {
     const { activeCheckboxes, guestsToDisplay } = this.state;
-    const styles = {
-      divider: {
-        width: '100%',
+    const inLineStyles = {
+      listItem: {
+        borderBottom: '1px solid #D4D4D4',
       },
     };
     const rows = [];
     guestsToDisplay.forEach((guest) => {
       const row = (
-        <div key={guest._id}>
-          <ListItem
-            key={`${guest._id}.listItem`}
-            primaryText={guest.name}
-            leftCheckbox={<Checkbox onCheck={() => this.handleCheck(guest.userId)} checked={activeCheckboxes.includes(guest.userId)} />}
-            rightAvatar={<Avatar src={guest.avatar} />}
-          />
-          <Divider key={`${guest._id}.divider`} style={styles.divider} />
-        </div>
+        <ListItem
+          style={inLineStyles.listItem}  
+          key={`${guest._id}.listItem`}
+          primaryText={guest.name}
+          leftCheckbox={<Checkbox
+            onCheck={() => this.handleCheck(guest.userId)}
+            checked={activeCheckboxes.includes(guest.userId)}
+          />}
+          rightAvatar={<Avatar src={guest.avatar} />}
+        />
       );
       rows.push(row);
     });
@@ -225,44 +226,48 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible } = this.state;
+    const { open, event, snackbarOpen, searchText, snackbarMsg, linearProgressVisible, guestsToDisplay } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+    let lines = 800;
+    if (guestsToDisplay.length > 10) {
+      lines = 450;
+    } else if (guestsToDisplay.length > 0) {
+      lines = guestsToDisplay.length * 58;
+    }
     const inLineStyles = {
       drawer: {
         container: {
-          paddingLeft: '7px',
-          paddingRight: '5px',
+          paddingLeft: '9px',
+          paddingRight: '10px',
         },
         textField: {
-          paddingTop: 0,
-          paddingBottom: 0,
-          margin: 0,
           floatingLabel: {
-            fontSize: '24px',
+            fontSize: '20px',
             paddingLeft: 8,
           },
         },
         divider: {
           width: '100%',
-          backgroundColor: '#000000',
+          backgroundColor: '#BDBDBD',
+          marginTop: 6,
+
+        },
+        textUrl: {
+          backgroundColor: '#F5F5F5',
+          maxHeight: 40,
+          minWidth: 275,
+          marginRight: 0,
         },
         copyButton: {
-          width: 28,
-          height: 28,
-          padding: 0,
-          marginBottom: '10px',
-          marginLeft: '7px',
-          marginRight: '7px',
-          icon: {
-            width: 22,
-            height: 22,
-            paddingBottom: '3px',
+          backgroundColor: 'white',
+          label: {
+            padding: 0,
+            margin: 0,
+            fontSize: '14px',
           },
         },
-        eventButton: {
-          width: 30,
-          padding: 0,
-          height: 28,
+        inviteButton: {
+          paddingTop: '15px',
         },
       },
       snackbar: {
@@ -285,59 +290,57 @@ class GuestInviteDrawer extends Component {
     return (
       <Drawer
         docked={false}
-        width={320}
+        width={350}
         open={open}
         onRequestChange={open => this.handleOnRequestChange(open)}
         containerStyle={inLineStyles.drawer.container}
       >
-        <h3 styleName="header"> This is event</h3>
+        <LinearProgress style={inLineStyles.linearProgress} />
         <h3 styleName="header"> {event.name} </h3>
-        <p styleName="subHeader"> You can invite new guests coping
-          <IconButton
-            className="btn"
-            style={inLineStyles.drawer.copyButton}
-            data-clipboard-text={fullUrl}
-            onTouchTap={this.ClipBoard}
-            iconStyle={inLineStyles.drawer.copyButton.icon}
-            tooltip="click to copy Url"
-            tooltipPosition="top-left"
-          >
-            <Copy />
-          </IconButton>
-          the url for:
-          <FlatButton
-            style={inLineStyles.drawer.eventButton}
-            onClick={() => this.handleEventLinkClick(event._id)}
-            primary
-            label={' '}
-          >
-            {event.name}
-          </FlatButton>
-          or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
-        </p>
-        <Divider style={inLineStyles.drawer.divider} />
-        <h6 styleName="InviteEventText"> That&#39;s yours recent guests. If you want, we can invite some for you </h6>
-        <RaisedButton
+        <TextField
+          id="fullUrl"
+          style={inLineStyles.drawer.textUrl}
+          value={fullUrl}
+          underlineShow={false}
           fullWidth
-          label="Invite"
-          primary
-          onTouchTap={this.handleInvite}
         />
         <div styleName="Row">
-          <SearchIcon />
+          <FlatButton
+            className="cpBtn"
+            styleName="copyButton"
+            style={inLineStyles.drawer.copyButton}
+            labelStyle={inLineStyles.drawer.copyButton.label}
+            data-clipboard-text={fullUrl}
+            onTouchTap={this.ClipBoard}
+            label="copy link"
+          />
+          <p styleName="subHeader">
+            or send a <a href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}>email</a>
+          </p>
+        </div>
+        <Divider style={inLineStyles.drawer.divider} />
+        <h6 styleName="InviteEventText"> Recent Guests </h6>
+        <div styleName="Row">
+          <SearchIcon styleName="searchIcon" />
           <TextField
             style={inLineStyles.drawer.textField}
             floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
-            fullWidth={false}
-            floatingLabelText="Search for Guests"
+            fullWidth
+            floatingLabelText="Search guests"
             value={searchText}
             onChange={this.handleSearchTextChange}
           />
         </div>
-        <LinearProgress style={inLineStyles.linearProgress} />
-        <List>
+        <Infinite elementHeight={58} containerHeight={lines}>
           {this.renderRows()}
-        </List>
+        </Infinite>
+        <RaisedButton
+          fullWidth
+          label="Invite"
+          primary
+          style={inLineStyles.drawer.inviteButton}
+          onTouchTap={this.handleInvite}
+        />
         <Snackbar
           style={inLineStyles.snackbar}
           bodyStyle={inLineStyles.snackbar.bodyStyle}

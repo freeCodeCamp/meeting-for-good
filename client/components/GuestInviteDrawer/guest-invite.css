@@ -3,22 +3,36 @@
 } 
 
 .subHeader {
-   text-align: left;
-   font-size: 18px;
-   line-height: 100%;
-   margin-bottom: 10px;
+   text-align: center;
+   font-size: 20px !important;
+   line-height: 100% !important;
+   margin-bottom: 10px !important;
+   margin-top: 5px !important;
 } 
 
 .Row {
   display: flex;
-  flex-flow: flex-start;
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: flex-end;
   height: flex;
+  justify-content: center;
 }
 
 .InviteEventText {
-  margin: 0 '1px' 0 0;
+  margin: 0;
+  padding-top: 20px;
+  padding-bottom: 0px;
   text-align: center;
-  font-size: 18px;
+  font-size: 22px;
+}
+a:hover {
+  color: blue;
+}
+
+.searchIcon {
+  margin-bottom: 9px !important;
+}
+
+.copyButton:hover {
+  background-color: #F5F5F5 !important;
 }
