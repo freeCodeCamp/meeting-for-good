@@ -266,6 +266,7 @@ class GuestInviteDrawer extends Component {
           label: {
             padding: 0,
             margin: 0,
+            fontSize: '14px',
           },
         },
         inviteButton: {
@@ -321,7 +322,7 @@ class GuestInviteDrawer extends Component {
           </p>
         </div>
         <Divider style={inLineStyles.drawer.divider} />
-        <h6 styleName="InviteEventText"> Recent guests. If you want, we can invite some for you </h6>
+        <h6 styleName="InviteEventText"> Recent Guests </h6>
         <div styleName="Row">
           <SearchIcon />
           <TextField
