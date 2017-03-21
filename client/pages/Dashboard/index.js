@@ -9,6 +9,7 @@ import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
+import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -101,10 +102,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { events, curUser, notifications, showNoScheduledMessage, openDrawer, eventToInvite } = this.state;
-    const styles = {
-      height: '80vh',
-    };
+    const { events, curUser, notifications, openDrawer, eventToInvite } = this.state;
     return (
       <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}
@@ -124,13 +122,12 @@ class Dashboard extends Component {
               />
             ))}
           </Masonry> :
-            showNoScheduledMessage ?
-              <div style={styles}>
-                <h4 styleName="no-select" >
-                  You have no scheduled events yet.
-                </h4>
-              </div> :
-            null
+          <div styleName="no-select-container">
+            <h4 styleName="no-select">
+              You have no current scheduled events.
+            </h4>
+            <DateRangeIcon styleName="no-selectIcon" />
+          </div>
         }
         <NotificationStack
           notifications={notifications.toArray()}
@@ -143,7 +140,6 @@ class Dashboard extends Component {
     );
   }
 }
-
 
 Dashboard.propTypes = {
   isAuthenticated: React.PropTypes.bool,
