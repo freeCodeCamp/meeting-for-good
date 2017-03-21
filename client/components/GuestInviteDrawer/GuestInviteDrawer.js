@@ -241,11 +241,8 @@ class GuestInviteDrawer extends Component {
           paddingRight: '10px',
         },
         textField: {
-          paddingTop: 0,
-          paddingBottom: 0,
-          marginTop: 0,
           floatingLabel: {
-            fontSize: '24px',
+            fontSize: '20px',
             paddingLeft: 8,
           },
         },
@@ -324,7 +321,7 @@ class GuestInviteDrawer extends Component {
         <Divider style={inLineStyles.drawer.divider} />
         <h6 styleName="InviteEventText"> Recent Guests </h6>
         <div styleName="Row">
-          <SearchIcon />
+          <SearchIcon styleName="searchIcon" />
           <TextField
             style={inLineStyles.drawer.textField}
             floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}

@@ -12,11 +12,9 @@
 
 .Row {
   display: flex;
-  flex-flow: flex-start;
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: flex-end;
   height: flex;
-  justify-content: center;
 }
 
 .InviteEventText {
@@ -24,10 +22,14 @@
   padding-top: 20px;
   padding-bottom: 0px;
   text-align: center;
-  font-size: 24px;
+  font-size: 22px;
 }
 a:hover {
   color: blue;
+}
+
+.searchIcon {
+  margin-bottom: 9px !important;
 }
 
 .copyButton:hover {
