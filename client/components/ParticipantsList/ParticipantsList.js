@@ -167,6 +167,7 @@ class ParticipantsList extends Component {
         content: {
           width: '22%',
           maxWidth: '22%',
+          minWidth: '300px',
         },
         bodyStyle: {
           paddingTop: 10,
