@@ -135,8 +135,7 @@ class GuestInviteDrawer extends Component {
   async sendEmailInvite(guestId) {
     this.setState({ linearProgressVisible: 'visible' });
     const { event, curUser } = this.state;
-    const fullUrl = `${location.protocol}//${location.hostname}\
-                     ${(location.port ? `:${location.port}` : '')}`;
+    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
 
     const guestData = await this.loadUserData(guestId);
     const msg = {
@@ -170,8 +169,7 @@ class GuestInviteDrawer extends Component {
       console.log('sendEmailOwner', err);
       this.setState({
         snackbarOpen: true,
-        snackbarMsg: `Failed to send invite to ${curUser.name}.\
-                      Please try again later.`,
+        snackbarMsg: `Failed to send invite to ${curUser.name}. Please try again later.`,
       });
     }
   }
@@ -246,9 +244,7 @@ class GuestInviteDrawer extends Component {
       guestsToDisplay,
     } = this.state;
 
-    const fullUrl = `${location.protocol}//${location.hostname}\
-                     ${(location.port ? `:${location.port}` : '')}\
-                     /event/${event._id}`;
+    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
 
     let lines = 800;
     if (guestsToDisplay.length > 10) {
@@ -264,7 +260,7 @@ class GuestInviteDrawer extends Component {
         },
         textField: {
           floatingLabel: {
-            fontSize: '20px',
+            fontSize: '15px',
             paddingLeft: 8,
           },
         },
@@ -306,11 +302,9 @@ class GuestInviteDrawer extends Component {
         visibility: linearProgressVisible,
       },
     };
-    const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please \
-                       block your availability for ${event.name}:
+    const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:
     %0D%0A%0D%0A${fullUrl}
-    %0D%0A%0D%0A All times will be automatically converted to your local \
-    timezone.`;
+    %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
     return (
       <Drawer
         docked={false}
