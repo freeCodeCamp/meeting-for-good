@@ -12,6 +12,6 @@
 }
 
 .aviabilityContainer {
-  display: flex !important;
-  justify-content: space-around !important;
+  display: flex;
+  justify-content: space-around;
 }
