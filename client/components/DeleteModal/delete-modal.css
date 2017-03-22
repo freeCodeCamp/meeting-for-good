@@ -1,11 +1,14 @@
 .delete-buttom {
   position: relative !important;
-  z-index: 100;
+  z-index: 10 !important;
   display: block;
   float: right;
   margin-right: -17px;
   margin-top: -20px;
+  box-shadow: rgba(0, 0, 0, 0.156863) 0px 1px 1px, rgba(0, 0, 0, 0.227451) 0px 1px 1px !important;
+
 }
 .delete-buttom :hover {
   background-color: #FF4025 !important;
+  box-shadow: rgba(0, 0, 0, 0.156863) 0px 10px 3px, rgba(0, 0, 0, 0.227451) 0px 10px 4px !important;
 }
