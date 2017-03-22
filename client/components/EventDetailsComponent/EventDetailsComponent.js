@@ -277,7 +277,7 @@ class EventDetailsComponent extends React.Component {
                 heatmap
               />
             </div> :
-            <div id="grid" className="aviabilityContainer" >
+            <div id="grid" styleName="aviabilityContainer" >
               <div style={inlineStyles.card.availabilityGrid}>
                 <AvailabilityGrid
                   dates={dates}
