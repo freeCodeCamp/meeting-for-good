@@ -80,7 +80,7 @@ class DeleteModal extends Component {
     return (
       <div>
         <FloatingActionButton
-          backgroundColor="#BDBDBD"
+          backgroundColor="#ECEFF1"
           onTouchTap={this.handleOpen}
           styleName="delete-buttom"
         >
