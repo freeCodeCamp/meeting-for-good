@@ -11,7 +11,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
 import Clipboard from 'clipboard';
 import { browserHistory } from 'react-router';
-import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
@@ -55,7 +54,7 @@ class GuestInviteDrawer extends Component {
   }
 
   async loadPastGuests() {
-    nprogress.start();
+    this.setState({ linearProgressVisible: 'visible' });
 
     const response = await fetch('/api/user/relatedUsers', {
       credentials: 'same-origin',
@@ -74,7 +73,7 @@ class GuestInviteDrawer extends Component {
       });
       return;
     } finally {
-      nprogress.done();
+      this.setState({ linearProgressVisible: 'hidden' });
     }
   }
 
@@ -163,7 +162,6 @@ class GuestInviteDrawer extends Component {
       this.timer = setTimeout(this.setState({
         snackbarOpen: true,
         snackbarMsg: `Info!!, ${guestData.name} invited! to ${event.name}`,
-        linearProgressVisible: 'hidden',
       }), 5000);
     } catch (err) {
       console.log('sendEmailOwner', err);
@@ -171,6 +169,8 @@ class GuestInviteDrawer extends Component {
         snackbarOpen: true,
         snackbarMsg: `Failed to send invite to ${curUser.name}. Please try again later.`,
       });
+    } finally {
+      this.setState({ linearProgressVisible: 'hidden' });
     }
   }
 
@@ -186,7 +186,6 @@ class GuestInviteDrawer extends Component {
       this.setState({
         snackbarOpen: true,
         snackbarMsg: `${event.name} link copied to clipboard!`,
-        linearProgressVisible: 'hidden',
       });
       e.clearSelection();
     });
@@ -268,33 +267,31 @@ class GuestInviteDrawer extends Component {
             paddingLeft: 8,
           },
         },
-        divider: {
-          width: '100%',
-          backgroundColor: '#BDBDBD',
-          marginTop: 6,
-
+        copyButton: {
+          label: {
+            padding: 0,
+            margin: 0,
+            fontSize: '14px',
+          },
         },
-        textUrl: {
-          backgroundColor: '#F5F5F5',
-          maxHeight: 40,
-          minWidth: 275,
-          marginRight: 0,
+        inviteButton: {
+          paddingTop: '15px',
         },
-      },
-      snackbar: {
-        height: 'flex',
-        bodyStyle: {
-          height: 'flex',
+        snackbar: {
+          bodyStyle: {
+            height: 'flex',
+          },
+          contentStyle: {
+            color: '#FF4081',
+            borderBottom: '0.2px solid',
+          },
         },
-        contentStyle: {
-          color: '#FF4081',
-          borderBottom: '0.2px solid',
+        linearProgress: {
+          visibility: linearProgressVisible,
         },
-      },
-      linearProgress: {
-        visibility: linearProgressVisible,
       },
     };
+
     const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:
     %0D%0A%0D%0A${fullUrl}
     %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
@@ -307,11 +304,11 @@ class GuestInviteDrawer extends Component {
         onRequestChange={open => this.handleOnRequestChange(open)}
         containerStyle={inLineStyles.drawer.container}
       >
-        <LinearProgress style={inLineStyles.linearProgress} />
+        <LinearProgress style={inLineStyles.drawer.linearProgress} />
         <h3 styleName="header"> {event.name} </h3>
         <TextField
           id="fullUrl"
-          style={inLineStyles.drawer.textUrl}
+          styleName="textUrl"
           value={fullUrl}
           underlineShow={false}
           fullWidth
@@ -331,12 +328,11 @@ class GuestInviteDrawer extends Component {
             primary
           />
         </div>
-        <Divider style={inLineStyles.drawer.divider} />
+        <Divider styleName="Divider" />
         <h6 styleName="inviteEventText">Recent Guests</h6>
         <div styleName="Row">
           <SearchIcon styleName="searchIcon" />
           <TextField
-            style={inLineStyles.drawer.textField}
             floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
             fullWidth
             floatingLabelText="Search guests"
@@ -349,15 +345,15 @@ class GuestInviteDrawer extends Component {
         </Infinite>
         <RaisedButton
           label="Invite"
+          primary
           styleName="inviteButton"
           onTouchTap={this.handleInvite}
           fullWidth
-          primary
         />
         <Snackbar
-          style={inLineStyles.snackbar}
-          bodyStyle={inLineStyles.snackbar.bodyStyle}
-          contentStyle={inLineStyles.snackbar.contentStyle}
+          styleName="Snackbar"
+          bodyStyle={inLineStyles.drawer.snackbar.bodyStyle}
+          contentStyle={inLineStyles.drawer.snackbar.contentStyle}
           open={snackbarOpen}
           message={snackbarMsg}
           action="Dismiss"

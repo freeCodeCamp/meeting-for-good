@@ -74,3 +74,47 @@ footer a:hover {
 	border-width: 0.2px;
 	border-color: lightgrey;
 }
+
+@media (min-width:550px) and (max-width:850px) {
+  .main img {
+    width: 600px;
+  }
+	.header h2 {
+		font-size: 60px !important;
+	}
+
+	.header h6 {
+		font-size: 30px !important;
+	}
+
+	.gif {
+		width: 500px !important;
+		height: 200px;
+	}
+
+	.timezones {
+		width: 600px !important;
+	}
+}
+
+@media (max-width:550px) {
+  .main img {
+    width: 300px;
+  }
+	.header h2 {
+		font-size: 46px !important;
+	}
+
+	.header h6 {
+		font-size: 10px !important;
+	}
+
+	.gif {
+		width: 300px !important;
+		height: 110px;
+	}
+
+	.timezones {
+		width: 370px !important;
+	}
+}

@@ -1,7 +1,6 @@
 import React from 'react';
 import update from 'react-addons-update';
 import autobind from 'autobind-decorator';
-import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
@@ -242,33 +241,11 @@ class EventDetailsComponent extends React.Component {
       event,
       user, showHeatmap, participants,
       myAvailability, eventParticipantsIds,
-      dates, showButtonAviability, showAvailabilityGrid } = this.state;
+      dates, showAvailabilityGrid } = this.state;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
     const inlineStyles = {
       card: {
-        width: '510px',
-        marginTop: '2%',
-        cardTitle: {
-          paddingBottom: 0,
-          fontSize: '24px',
-          paddingTop: 25,
-          fontWeight: 300,
-        },
-        cardActions: {
-          fontSize: '20px',
-          paddingLeft: '5%',
-          button: {
-            marginLeft: '70%',
-            color: '#F66036',
-          },
-        },
-        divider: {
-          width: '100%',
-        },
-        buttonAviability: {
-          display: showButtonAviability,
-        },
         availabilityGrid: {
           display: showAvailabilityGrid,
         },
@@ -285,9 +262,9 @@ class EventDetailsComponent extends React.Component {
     }];
 
     return (
-      <Card style={inlineStyles.card}>
+      <Card styleName="card">
         {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
-        <CardTitle style={inlineStyles.card.cardTitle}>{event.name}</CardTitle>
+        <CardTitle styleName="cardTitle">{event.name}</CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker />
           {(showHeatmap) ?
@@ -300,7 +277,7 @@ class EventDetailsComponent extends React.Component {
                 heatmap
               />
             </div> :
-            <div id="grid" className="center" >
+            <div id="grid" className="aviabilityContainer" >
               <div style={inlineStyles.card.availabilityGrid}>
                 <AvailabilityGrid
                   dates={dates}

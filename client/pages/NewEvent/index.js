@@ -3,9 +3,7 @@ import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import moment from 'moment';
-import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 import React from 'react';
-import fetch from 'isomorphic-fetch';
 import { browserHistory } from 'react-router';
 import { Notification } from 'react-notification';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
@@ -13,11 +11,11 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
+import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
 
-import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
 import { dateRangeReducer } from '../../util/dates.utils';
 
@@ -243,16 +241,7 @@ class NewEvent extends React.Component {
     const { ranges, eventName, selectedTimeRange, disableSubmit, notificationIsActive, notificationMessage } = this.state;
     const inLinestyles = {
       card: {
-        width: '700px',
-        cardTitle: {
-          textAlign: 'center',
-          paddingBottom: 0,
-          fontSize: '24px',
-          paddingTop: 20,
-          fontWeight: 300,
-        },
         textField: {
-          width: '100%',
           floatingLabelStyle: {
             color: '#000000',
             fontSize: '24px',
@@ -260,10 +249,6 @@ class NewEvent extends React.Component {
           floatingLabelFocusStyle: {
             color: '#26A69A',
           },
-        },
-        subHeader: {
-          textAlign: 'Center',
-          color: '#000000',
         },
       },
     };
@@ -275,76 +260,75 @@ class NewEvent extends React.Component {
     };
 
     const { from, to } = ranges[0];
+    const windowsSize = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const numOfMonthstoDisplay = windowsSize > 550 ? 2 : 1;
 
     return (
-      <div styleName="card">
-        <Card style={inLinestyles.card} >
-          <CardTitle style={inLinestyles.card.cardTitle}>Create a New Event</CardTitle>
-          <CardText>
-            <form>
-              <TextField
-                fullWidth
-                floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
-                floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
-                style={inLinestyles.card.textField}
-                id="event_name"
-                value={eventName}
-                onChange={this.handleEventNameChange}
-                floatingLabelText="Event Name"
-                hintText="Enter an event name..."
-                className="validate"
-                autoFocus
+      <Card styleName="card">
+        <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
+        <CardText styleName="cardText">
+          <form>
+            <TextField
+              fullWidth
+              floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
+              floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
+              styleName="textField"
+              id="event_name"
+              value={eventName}
+              onChange={this.handleEventNameChange}
+              floatingLabelText="Event Name"
+              hintText="Enter an event name..."
+              className="validate"
+              autoFocus
+            />
+            <div>
+              <h6 styleName="heading-dates">What dates might work for you?</h6>
+              <div styleName="reset-button">
+                {from && to &&
+                <FlatButton
+                  href="#reset"
+                  label="reset"
+                  onClick={this.handleResetClick}
+                />
+                }
+              </div>
+              <DayPicker
+                numberOfMonths={numOfMonthstoDisplay}
+                fromMonth={new Date()}
+                disabledDays={DateUtils.isPastDay}
+                modifiers={modifiers}
+                onDayClick={this.handleDayClick}
+                styleName="daypicker"
               />
-              <div>
-                <h6 styleName="heading-dates">What dates might work for you?</h6>
-                <div className="center" styleName="reset-button">
-                  {from && to &&
-                    <FlatButton
-                      href="#reset"
-                      label="reset"
-                      onClick={this.handleResetClick}
-                    />
-                  }
-                </div>
-                <DayPicker
-                  numberOfMonths={2}
-                  fromMonth={new Date()}
-                  disabledDays={DateUtils.isPastDay}
-                  modifiers={modifiers}
-                  onDayClick={this.handleDayClick}
-                  styleName="daypicker"
-                />
-              </div>
-              <Subheader style={inLinestyles.card.subHeader}>What times might work?</Subheader>
-              <div id="timeSlider" />
-              <br />
-              <Subheader style={inLinestyles.card.subHeader}>
-                No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
-              </Subheader>
-              <div className="center">
-                <RaisedButton
-                  labelColor="#9F9F9F"
-                  style={inLinestyles.card.createButton}
-                  label="Create Event"
-                  className="submit"
-                  disabled={disableSubmit}
-                  primary
-                  onClick={this.createEvent}
-                />
-              </div>
-            </form>
-          </CardText>
-          <Notification
-            isActive={notificationIsActive}
-            message={notificationMessage}
-            action="Dismiss"
-            title=" "
-            onDismiss={() => this.setState({ notificationIsActive: false })}
-            dismissAfter={10000}
-            activeClassName="notification-bar-is-active"
-          />
-        </Card>
-      </div>
+            </div>
+            <Subheader styleName="subHeader">What times might work?</Subheader>
+            <div id="timeSlider" />
+            <br />
+            <Subheader styleName="subHeader">
+              No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
+            </Subheader>
+            <div styleName="centerContainer">
+              <RaisedButton
+                labelColor="#9F9F9F"
+                label="Create Event"
+                className="submit"
+                disabled={disableSubmit}
+                primary
+                onClick={this.createEvent}
+              />
+            </div>
+          </form>
+        </CardText>
+        <Notification
+          isActive={notificationIsActive}
+          message={notificationMessage}
+          action="Dismiss"
+          title=" "
+          onDismiss={() => this.setState({ notificationIsActive: false })}
+          dismissAfter={10000}
+          activeClassName="notification-bar-is-active"
+        />
+      </Card>
     );
   }
 }

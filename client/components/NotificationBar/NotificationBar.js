@@ -9,8 +9,10 @@ import Badge from 'material-ui/Badge';
 import Divider from 'material-ui/Divider';
 import { browserHistory } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
+import cssModules from 'react-css-modules';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
+import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
   constructor(props) {
@@ -97,11 +99,6 @@ class NotificationBar extends Component {
     const rows = [];
     const inlineStyles = {
       flatButton: {
-        paddingLeft: 0,
-        paddingRight: 0,
-        marginLeft: 0,
-        borderLeft: 0,
-        textAlign: 'left',
         label: {
           paddingLeft: 0,
           textTransform: 'none',
@@ -124,12 +121,13 @@ class NotificationBar extends Component {
                 key={`${participant._id} first`}
                 value={participant._id}
                 style={{ backgroundColor: bkgColor }}
+                styleName="menuItem"
               >
                 {`${participant.name} accept your invite for `}
                 <FlatButton
                   onClick={() => this.handleEventLinkClick(notice._id)}
                   primary
-                  style={inlineStyles.flatButton}
+                  styleName="linkButton"
                   labelStyle={inlineStyles.flatButton.label}
                   label={notice.name}
                 />
@@ -156,15 +154,13 @@ class NotificationBar extends Component {
         fontSize: '15px',
         width: 20,
         height: 20,
-        iconButton: {
-          paddingBottom: 50,
-        },
       },
     };
     return (
       <IconMenu
         maxHeight={300}
         open={openMenu}
+        styleName="iconMenu"
         iconButtonElement={
           <Badge
             badgeContent={quantOwnerNotNotified}
@@ -174,7 +170,6 @@ class NotificationBar extends Component {
             <IconButton
               tooltip="Notifications"
               onClick={this.handleDismissAll}
-              style={inLineStyles.badge.iconButton}
             >
               <NotificationsIcon color="white" />
             </IconButton>
@@ -193,4 +188,4 @@ NotificationBar.propTypes = {
   curUser: React.PropTypes.object,
 };
 
-export default NotificationBar;
+export default cssModules(NotificationBar, styles);

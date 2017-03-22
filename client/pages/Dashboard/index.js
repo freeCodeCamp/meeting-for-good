@@ -1,5 +1,5 @@
 /* vendor dependencies */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
@@ -8,7 +8,9 @@ import { NotificationStack } from 'react-notification';
 import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Paper from 'material-ui/Paper';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
+
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
 import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDrawer';
@@ -73,7 +75,6 @@ class Dashboard extends Component {
     });
   }
 
-
   @autobind
   handleNewEvent() {
     browserHistory.push('/event/new');
@@ -101,11 +102,8 @@ class Dashboard extends Component {
 
   render() {
     const { events, curUser, notifications, openDrawer, eventToInvite } = this.state;
-    const styles = {
-      height: '80vh',
-    };
     return (
-      <div styleName="wrapper">
+      <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}
         <FloatingActionButton styleName="new-event-icon" secondary onClick={this.handleNewEvent} >
           <ContentAdd />
@@ -137,17 +135,17 @@ class Dashboard extends Component {
           })}
         />
         <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
-      </div>
+      </Paper>
     );
   }
 }
 
 Dashboard.propTypes = {
-  isAuthenticated: React.PropTypes.bool,
-  cbOpenLoginModal: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  events: React.PropTypes.array,
-  cbDeleteEvent: React.PropTypes.func,
+  isAuthenticated: PropTypes.bool,
+  cbOpenLoginModal: PropTypes.func,
+  curUser: PropTypes.object,
+  events: PropTypes.array,
+  cbDeleteEvent: PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

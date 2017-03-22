@@ -19,13 +19,9 @@
 }
 
 .inviteEventText {
-  margin: 35px 0 -15px 0;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 600;
-}
-a:hover {
-  color: blue;
+  margin: 20px 0 -15px 0 !important;
+  text-align: center !important;
+  font-size: 20px !important;
 }
 
 .copyAndEmailButton {
@@ -42,4 +38,28 @@ a:hover {
 
 .copyButton:hover {
   background-color: #F5F5F5 !important;
+}
+
+.copyButton {
+   background-color: 'white' !important;
+}
+
+.Divider {
+  width: 100% !important;
+  background-color: #BDBDBD !important;
+  margin-top: 6px !important;
+}
+
+.inviteButton {
+      margin: 15px 0 0 0 !important;
+  }
+
+.textUrl {
+  background-color: #F5F5F5 !important;
+  max-height: 40px !important;
+  margin:0 !important;
+}
+
+.Snackbar {
+    height: flex;
 }

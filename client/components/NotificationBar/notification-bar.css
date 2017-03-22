@@ -1,0 +1,19 @@
+
+.linkButton {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  border-left: 0 !important;
+  text-align: left !important;
+}
+
+.iconMenu {
+  margin: 0!important;
+  padding: 0 !important;
+}
+
+@media (max-width:550px) {
+  .menuItem {
+    font-size: 14px !important;
+  }
+}  

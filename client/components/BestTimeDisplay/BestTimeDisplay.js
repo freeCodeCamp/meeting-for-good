@@ -100,19 +100,10 @@ class BestTimeDisplay extends Component {
   }
 
   renderRows(hours) {
-    const inLineStyles = {
-      listItem: {
-        paddingLeft: 26,
-        paddingTop: 0,
-        paddingBottom: 0,
-        color: '#000000',
-        fontSize: '15px',
-      },
-    };
     const rows = [];
     hours.forEach((hour) => {
       const row = (
-        <ListItem key={hour} style={inLineStyles.listItem} disabled>
+        <ListItem key={hour} styleName="RowListItem" disabled>
           {hour}
         </ListItem>
       );
@@ -123,43 +114,14 @@ class BestTimeDisplay extends Component {
 
   renderBestTime() {
     const { displayTimes } = this.state;
-    const inLineStyles = {
-      listItem: {
-        paddingLeft: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-      },
-      list: {
-        paddingLeft: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-      },
-      subHeader: {
-        paddingLeft: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        marginTop: 0,
-        marginBottom: 7,
-        height: '22px',
-        fontSize: '18px',
-        color: '#000000',
-      },
-      icon: {
-        marginRight: 2,
-        marginTop: -8,
-      },
-      divider: {
-        width: '100%',
-      },
-    };
     return Object.keys(displayTimes).map(date => (
-      <List key={date} disabled style={inLineStyles.list}>
-        <Subheader style={inLineStyles.subHeader}><DateRangeIcon style={inLineStyles.icon} />{date}</Subheader>
-        <ListItem key={date} disabled style={inLineStyles.listItem}>
+      <List key={date} disabled styleName="BstTimeList">
+        <Subheader styleName="SubHeader"><DateRangeIcon styleName="DateRangeIcon" />{date}</Subheader>
+        <ListItem key={date} disabled styleName="BstTimeListItem">
           <List>
             {this.renderRows(displayTimes[date].hours)}
           </List>
-          <Divider style={inLineStyles.divider} />
+          <Divider styleName="Divider" />
         </ListItem>
       </List>
     ));
@@ -209,7 +171,7 @@ class BestTimeDisplay extends Component {
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
           <div>
-            <h6 styleName="bestTimeTitle"><strong>All participants so far are available at:</strong></h6>
+            <h6 styleName="bestTimeTitle">All participants so far are available at:</h6>
             {this.renderBestTime()}
           </div>
          :
