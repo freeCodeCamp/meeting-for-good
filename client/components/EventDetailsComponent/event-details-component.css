@@ -1,6 +1,7 @@
 .card {
    width: flex !important;
    margin-top: 2% !important;
+   min-width: 320px;
 }
 
 .cardTitle {
@@ -10,7 +11,7 @@
   font-weight: 300 !important;
 }
 
-aviabilityContainer {
+.aviabilityContainer {
   display: flex;
   justify-content: space-around;
 }
