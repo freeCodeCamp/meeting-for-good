@@ -6,7 +6,11 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
+if (process.env.ANALYSE_PACK) {
+    const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
+} else {
+    noVisualization = true;
+}
 console.log(noVisualization);
 const VENDOR_LIBS = [
   'autobind-decorator',

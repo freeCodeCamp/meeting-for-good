@@ -7,12 +7,12 @@
   "scripts": {
     "clean": "rimraf build",
     "build:server": "babel -d ./build ./server -s",
-    "build:client": "NODE_ENV=production babel-node ./tools/build.js",
+    "build:client": "cross-env NODE_ENV=production babel-node ./tools/build.js",
     "build": "npm run clean && npm run copy && npm run build:server && npm run build:client",
-    "start": "NODE_ENV=production node -r dotenv/config ./build/app.js",
+    "start": "cross-env NODE_ENV=production node -r dotenv/config ./build/app.js",
     "copy": "node tools/copy.js",
     "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
-    "dev": "NODE_ENV=development node -r dotenv/config ./build/app.js",
+    "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",
     "postinstall": "npm run build",
     "deploy": "git push heroku development:master"
   },
@@ -60,8 +60,8 @@
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.0.1",
     "cpy-cli": "^1.0.1",
+    "cross-env": "^3.2.4",
     "css-loader": "^0.26.4",
-
     "dialog-polyfill": "^0.4.6",
     "dotenv": "^4.0.0",
     "ejs": "^2.5.5",
