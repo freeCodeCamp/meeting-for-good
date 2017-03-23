@@ -286,7 +286,6 @@ class AvailabilityGrid extends React.Component {
 
     const patches = jsonpatch.generate(observerEvent);
     await this.props.submitAvail(patches);
-    this.setState({ availability });
   }
 
   @autobind
