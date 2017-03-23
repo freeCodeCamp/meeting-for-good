@@ -100,14 +100,12 @@ class ParticipantsList extends Component {
     };
     const { event, curUser } = this.state;
     const rows = [];
-    
     event.participants.forEach((participant) => {
       let row;
       const hasAvailability = () => {
         return (participant.availability.length === 0) ? '#fff7ff' : '#ECEFF1';
       };
 
-      //console.log(participant);
       if (curUser._id !== participant.userId && event.owner === curUser._id) {
         row = (
           <IconButton
@@ -247,7 +245,9 @@ class ParticipantsList extends Component {
             <ContentAdd />
           </IconButton >
         </div>
-        {this.renderGuestList()}
+        <div styleName="guestsContainer">
+          {this.renderGuestList()}
+        </div>
         {this.renderDeleteModal()}
         <Notification
           isActive={notificationIsActive}
