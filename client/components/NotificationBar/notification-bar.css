@@ -8,8 +8,8 @@
 }
 
 .iconMenu {
-  margin: 0!important;
-  padding: 0 !important;
+  margin: 0 0px 0 0!important;
+  padding: 0 9px 0 0 !important;
 }
 
 @media (max-width:550px) {

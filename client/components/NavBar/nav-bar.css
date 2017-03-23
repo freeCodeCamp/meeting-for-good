@@ -50,10 +50,6 @@
   padding-right: '5%',
 }
 
-.arrowDown {
-   padding: 25px 1% 56px 0px !important;
-}
-
 @media (min-width:550px) and (max-width:850px) {
   .logoButton {
     font-size: 25px !important;
