@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent, addEvent, deleteEvent } from '../util/events';
+import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent } from '../util/events';
 
 
 import '../styles/main.css';
@@ -51,7 +51,7 @@ class App extends Component {
     return event[0];
   }
 
- @autobind
+  @autobind
   async handleNewEvent(event) {
     const { events } = this.state;
     const nEvent = await addEvent(event);
@@ -66,6 +66,19 @@ class App extends Component {
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
+      return true;
+    }
+    return false;
+  }
+
+  @autobind
+  async handleEditEvent(patches, eventId) {
+    const { events } = this.state;
+    const response = await editEvent(patches, eventId);
+    if (response) {
+      const eventEdited  = await loadEvent(eventId);
+      const nEvents = events.filter(event => event._id !== eventId);
+      this.setState({ events: [...nEvents, eventEdited] });
       return true;
     }
     return false;
@@ -143,6 +156,7 @@ class App extends Component {
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbLoadEvent: this.handleLoadEvent,
             cbDeleteEvent: this.handleDeleteEvent,
+            cbEditEvent: this.handleEditEvent,
           });
         }
         if (child.type.displayName === 'NewEvent') {

@@ -95,6 +95,8 @@ export async function deleteEvent(id) {
 }
 
 export async function editEvent(patches, eventId) {
+  nprogress.configure({ showSpinner: false });
+  nprogress.start();
   const response = await fetch(`/api/events/${eventId}`, {
     headers: {
       Accept: 'application/json',
