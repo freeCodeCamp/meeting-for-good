@@ -82,12 +82,34 @@ export async function deleteEvent(id) {
       method: 'DELETE',
       credentials: 'same-origin',
     },
-);
+  );
   try {
     checkStatus(response);
     return true;
   } catch (err) {
     console.log('deleteEvent', err);
+    return false;
+  } finally {
+    nprogress.done();
+  }
+}
+
+export async function editEvent(patches, eventId) {
+  const response = await fetch(`/api/events/${eventId}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+    method: 'PATCH',
+    body: JSON.stringify(patches),
+  });
+
+  try {
+    checkStatus(response);
+    return true;
+  } catch (err) {
+    console.log('events editEvent', err);
     return false;
   } finally {
     nprogress.done();
