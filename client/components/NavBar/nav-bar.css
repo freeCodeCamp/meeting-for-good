@@ -14,8 +14,8 @@
 }
 
 .DashButton {
-  font-size: '15px' !important;
-  margin: 0 !important;
+  font-size: 16px !important;
+  margin: 0 12px 0 0 !important;
   border: 0 !important;
   color: #ffffff !important;
 }
@@ -48,6 +48,10 @@
 
 .rightToolbarGroup {
   padding-right: '5%',
+}
+
+.arrowDown {
+   padding: 25px 1% 56px 0px !important;
 }
 
 @media (min-width:550px) and (max-width:850px) {
