@@ -39,19 +39,6 @@
   align-items: center;   
 }
 
-@media (min-width:850px) and (max-width:1200px) {
-  
-}
-
-@media (min-width:550px) and (max-width:850px) {
-  .new-event-icon {
-    right: 0;
-    top: 0;
-    margin-top: 70px;
-    margin-left: 24px;
-    box-shadow: none !important;
-  }
-}
 
 @media (max-width:550px) {
   .new-event-icon {
