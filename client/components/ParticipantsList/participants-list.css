@@ -12,15 +12,20 @@
 .chip {
   margin: 0px !important;
   width: 100% !important;
+  border-radius: 25px 20px 20px 25px !important;
   border: 0.5px solid #E0E0E0 !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
+  background-color: #E0E0E0 !important;
+  padding: 0px !important;
 }
 
 .avatar {
   width: 40px !important;
   height: 40px !important;
+  margin: 0px !important;
+  padding: 0px !important;
 }
 
 .chipButtom {
