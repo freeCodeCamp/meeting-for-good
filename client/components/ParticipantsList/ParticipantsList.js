@@ -30,8 +30,8 @@ class ParticipantsList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { curUser } = nextProps;
-    this.setState({ curUser });
+    const { curUser, event } = nextProps;
+    this.setState({ curUser, event });
   }
 
   @autobind
