@@ -162,6 +162,11 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
+  closeGrid() {
+    this.setState({ showHeatmap: true, showAvailabilityGrid: 'none' });
+  }
+
+  @autobind
   editAvail() {
     this.setState({ showHeatmap: false, showButtonAviability: 'none', showAvailabilityGrid: 'block' });
   }
@@ -262,6 +267,7 @@ class EventDetailsComponent extends React.Component {
                   availability={availability}
                   myAvailability={myAvailability}
                   submitAvail={this.submitAvailability}
+                  closeGrid={this.closeGrid}
                   event={event}
                 />
               </div>
