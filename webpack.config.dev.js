@@ -5,13 +5,9 @@ const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-let noVisualization = false;
 
-if (!process.env.ANALYSE_PACK) {
-    noVisualization = true;
-}
+const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
 
-console.log(noVisualization);
 const VENDOR_LIBS = [
   'autobind-decorator',
   'bluebird',
