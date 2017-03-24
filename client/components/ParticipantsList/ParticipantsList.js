@@ -101,18 +101,18 @@ class ParticipantsList extends Component {
     const rows = [];
     event.participants.forEach((participant) => {
       let row;
-      const hasAvailability = () => {
-        if (participant.hasOwnProperty('availability')) {
-          return (participant.availability.length === 0) ? '#fff7ff' : '#ECEFF1';
-        }
-        return '#fff7ff';
-      };
-
       const showToolTip = () => {
-        if (participant.hasOwnProperty('availability')) {
+        if (Object.prototype.hasOwnProperty.call(participant, 'availability')) {
           return (participant.availability.length === 0) ? 'visible' : 'hidden';
         }
         return '#visible';
+      };
+
+      const noAvailability = () => {
+        if (Object.prototype.hasOwnProperty.call(participant, 'availability')) {
+          return (participant.availability.length === 0) ? ' 3px solid #ff8080' : '0.5px solid #E0E0E0';
+        }
+        return '0.5px solid #E0E0E0';
       };
 
       if (curUser._id !== participant.userId && event.owner === curUser._id) {
@@ -129,11 +129,13 @@ class ParticipantsList extends Component {
               styleName="chip"
               labelStyle={inLinestyles.chip.label}
               deleteHovered
-              backgroundColor={hasAvailability()}
               onTouchTap={() => this.handleTouchTap()}
               onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
             >
-              <Avatar src={participant.avatar} styleName="avatar" />
+              <Avatar src={participant.avatar}
+                styleName="avatar"
+                style={{ border: noAvailability() }}
+              />
               {participant.name}
             </Chip>
           </IconButton>
@@ -150,11 +152,11 @@ class ParticipantsList extends Component {
             <Chip
               key={participant._id}
               styleName="chip"
-              backgroundColor={hasAvailability()}
             >
               <Avatar
                 src={participant.avatar}
                 styleName="avatar"
+                style={{ border: noAvailability() }}
               />
               {participant.name}
             </Chip>
