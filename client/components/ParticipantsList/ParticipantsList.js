@@ -118,6 +118,7 @@ class ParticipantsList extends Component {
       if (curUser._id !== participant.userId && event.owner === curUser._id) {
         row = (
           <IconButton
+            key={`${participant._id}.button`}
             styleName="chipButtom"
             tooltipPosition="top-left"
             tooltip="This user has not added any hours yet."
@@ -140,6 +141,7 @@ class ParticipantsList extends Component {
       } else {
         row = (
           <IconButton
+            key={`${participant._id}.button`}
             styleName="chipButtom"
             tooltipPosition="top-left"
             tooltip="This user has not added any hours yet."
