@@ -102,16 +102,26 @@ class ParticipantsList extends Component {
     event.participants.forEach((participant) => {
       let row;
       const hasAvailability = () => {
-        return (participant.availability.length === 0) ? '#fff7ff' : '#ECEFF1';
+        if (participant.hasOwnProperty('availability')) {
+          return (participant.availability.length === 0) ? '#fff7ff' : '#ECEFF1';
+        }
+        return '#fff7ff';
+      };
+
+      const showToolTip = () => {
+        if (participant.hasOwnProperty('availability')) {
+          return (participant.availability.length === 0) ? 'visible' : 'hidden';
+        }
+        return '#visible';
       };
 
       if (curUser._id !== participant.userId && event.owner === curUser._id) {
         row = (
           <IconButton
             styleName="chipButtom"
-            tooltipPosition="center-right"
+            tooltipPosition="top-left"
             tooltip="This user has not added any hours yet."
-            tooltipStyles={{ visibility: (participant.availability.length === 0) ? 'visible' : 'hidden' }}
+            tooltipStyles={{ visibility: showToolTip() }}
           >
             <Chip
               key={participant._id}
@@ -131,16 +141,14 @@ class ParticipantsList extends Component {
         row = (
           <IconButton
             styleName="chipButtom"
-            tooltipPosition="center-right"
+            tooltipPosition="top-left"
             tooltip="This user has not added any hours yet."
-            tooltipStyles={{ visibility: (participant.availability.length === 0) ? 'visible' : 'hidden' }}
+            tooltipStyles={{ visibility: showToolTip() }}
           >
             <Chip
               key={participant._id}
               styleName="chip"
               backgroundColor={hasAvailability()}
-              onMouseEnter={this.showTooltip}
-              onMouseLeave={this.hideTooltip}
             >
               <Avatar
                 src={participant.avatar}
