@@ -171,6 +171,11 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
+  handleCancelBtnClick() {
+    this.props.closeGrid();
+  }
+
+  @autobind
   showAvailBox(ev) {
     if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
@@ -465,12 +470,21 @@ class AvailabilityGrid extends React.Component {
               onClick={this.editAvailability}
             />
             :
-            <RaisedButton
-              labelColor="#ffffff"
-              backgroundColor="#000000"
-              label="Submit"
-              onClick={this.submitAvailability}
-            />
+            <div>
+              <RaisedButton
+                labelColor="#ffffff"
+                backgroundColor="#000000"
+                label="Submit"
+                onClick={this.submitAvailability}
+              />
+              <RaisedButton
+                labelColor="#ffffff"
+                backgroundColor="#000000"
+                label="Cancel"
+                styleName="cancelButton"
+                onClick={this.handleCancelBtnClick}
+              />
+            </div>
           }
         </div>
         <div styleName="hover-container">
@@ -502,6 +516,7 @@ AvailabilityGrid.propTypes = {
   user: React.PropTypes.object,
   availability: React.PropTypes.array,
   submitAvail: React.PropTypes.func,
+  closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
   myAvailability: React.PropTypes.array,
   participants: React.PropTypes.array,

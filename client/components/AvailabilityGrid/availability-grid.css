@@ -80,3 +80,7 @@ a.info {
 {
     display: table-cell;
 }
+
+.cancelButton {
+  margin-left: 15px;
+}
