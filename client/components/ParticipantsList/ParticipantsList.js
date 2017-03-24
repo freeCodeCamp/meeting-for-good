@@ -128,7 +128,6 @@ class ParticipantsList extends Component {
               key={participant._id}
               styleName="chip"
               labelStyle={inLinestyles.chip.label}
-              deleteHovered
               backgroundColor={hasAvailability()}
               onTouchTap={() => this.handleTouchTap()}
               onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
