@@ -78,7 +78,7 @@ class App extends Component {
     if (response) {
       const eventEdited  = await loadEvent(eventId);
       const nEvents = events.filter(event => event._id !== eventId);
-      this.setState({ events: [...nEvents, eventEdited] });
+      this.setState({ events: [eventEdited, ...nEvents] });
       return true;
     }
     return false;
