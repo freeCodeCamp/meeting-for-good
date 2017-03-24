@@ -169,7 +169,7 @@ class NotificationBar extends Component {
           >
             <IconButton
               tooltip="Notifications"
-              onClick={this.handleDismissAll}
+              onTouchTap={this.handleDismissAll}
             >
               <NotificationsIcon color="white" />
             </IconButton>
