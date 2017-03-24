@@ -8,3 +8,29 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.chip {
+  margin: 0px !important;
+  width: 100% !important;
+  border: 0.5px solid #E0E0E0 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+.avatar {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.chipButtom {
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 0 0 0 !important;
+  height: 100% !important;
+  text-align: start !important;
+}
+
+.guestsContainer {
+  margin: 5px 0 0 0;
+}

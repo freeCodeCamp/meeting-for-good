@@ -92,48 +92,63 @@ class ParticipantsList extends Component {
   renderGuestList() {
     const inLinestyles = {
       chip: {
-        margin: 4,
-        width: '100%',
-        border: '0.5px solid #E0E0E0',
-        backgroundColor: '#ECEFF1',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
         label: {
           flexGrow: 100,
         },
-      },
-      wrapper: {
-        display: 'flex',
-        flexWrap: 'wrap',
-      },
-      avatar: {
-        width: '40px',
-        height: '40px',
       },
     };
     const { event, curUser } = this.state;
     const rows = [];
     event.participants.forEach((participant) => {
       let row;
+      const hasAvailability = () => {
+        return (participant.availability.length === 0) ? '#fff7ff' : '#ECEFF1';
+      };
+
       if (curUser._id !== participant.userId && event.owner === curUser._id) {
         row = (
-          <Chip
-            key={participant._id}
-            style={inLinestyles.chip}
-            labelStyle={inLinestyles.chip.label}
-            deleteHovered
-            onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
+          <IconButton
+            styleName="chipButtom"
+            tooltipPosition="center-right"
+            tooltip="This user has not added any hours yet."
+            tooltipStyles={{ visibility: (participant.availability.length === 0) ? 'visible' : 'hidden' }}
           >
-            <Avatar src={participant.avatar} style={inLinestyles.avatar} />
-            {participant.name}
-          </Chip>
+            <Chip
+              key={participant._id}
+              styleName="chip"
+              labelStyle={inLinestyles.chip.label}
+              deleteHovered
+              backgroundColor={hasAvailability()}
+              onTouchTap={() => this.handleTouchTap()}
+              onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
+            >
+              <Avatar src={participant.avatar} styleName="avatar" />
+              {participant.name}
+            </Chip>
+          </IconButton>
         );
       } else {
-        row = (<Chip key={participant._id} style={inLinestyles.chip} >
-          <Avatar src={participant.avatar} style={inLinestyles.avatar} />
-          {participant.name}
-        </Chip>
+        row = (
+          <IconButton
+            styleName="chipButtom"
+            tooltipPosition="center-right"
+            tooltip="This user has not added any hours yet."
+            tooltipStyles={{ visibility: (participant.availability.length === 0) ? 'visible' : 'hidden' }}
+          >
+            <Chip
+              key={participant._id}
+              styleName="chip"
+              backgroundColor={hasAvailability()}
+              onMouseEnter={this.showTooltip}
+              onMouseLeave={this.hideTooltip}
+            >
+              <Avatar
+                src={participant.avatar}
+                styleName="avatar"
+              />
+              {participant.name}
+            </Chip>
+          </IconButton>
         );
       }
       rows.push(row);
@@ -229,7 +244,9 @@ class ParticipantsList extends Component {
             <ContentAdd />
           </IconButton >
         </div>
-        {this.renderGuestList()}
+        <div styleName="guestsContainer">
+          {this.renderGuestList()}
+        </div>
         {this.renderDeleteModal()}
         <Notification
           isActive={notificationIsActive}
