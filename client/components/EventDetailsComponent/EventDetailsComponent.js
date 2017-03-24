@@ -3,7 +3,6 @@ import update from 'react-addons-update';
 import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
-import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -12,7 +11,6 @@ import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import Notification from '../../components/vendor/react-notification';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import { getCurrentUser } from '../../util/auth';
 import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
@@ -37,7 +35,6 @@ class EventDetailsComponent extends React.Component {
       event,
       ranges,
       dates,
-      user: {},
       eventParticipantsIds,
       participants: event.participants,
       showHeatmap: false,
@@ -51,13 +48,13 @@ class EventDetailsComponent extends React.Component {
   }
 
   async componentWillMount() {
-    const user = await getCurrentUser();
-    if (user) {
+    const { curUser } = this.props;
+    if (curUser) {
       let showHeatmap = false;
       let myAvailability = [];
 
       const me = this.state.participants.find(participant =>
-        participant.userId === user._id,
+        participant.userId === curUser._id,
       );
 
       if (me && me.availability) {
@@ -65,7 +62,7 @@ class EventDetailsComponent extends React.Component {
         myAvailability = me.availability;
       }
 
-      this.setState({ user, showHeatmap, myAvailability });
+      this.setState({ showHeatmap, myAvailability });
     }
   }
 
@@ -92,7 +89,8 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async joinEvent() {
-    const { name, avatar, _id: userId } = this.state.user;
+    const { curUser } = this.props;
+    const { name, avatar, _id: userId } = curUser;
     const participant = { name, avatar, userId };
     const event = update(this.state.event, { $set: this.state.event });
     const observerEvent = jsonpatch.observe(event);
@@ -100,39 +98,14 @@ class EventDetailsComponent extends React.Component {
     event.participants.push(participant);
 
     const eventParticipantsIds = update(this.state.eventParticipantsIds, {
-      $push: [this.state.user._id],
+      $push: [curUser._id],
     });
-
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-
     const patches = jsonpatch.generate(observerEvent);
-    const response = await fetch(`/api/events/${event._id}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'PATCH',
-      body: JSON.stringify(patches),
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log(err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to join event. Please try again later.',
-        notificationTitle: 'Error!',
-      });
-      return;
-    } finally {
-      nprogress.done();
+    const response = await this.props.cbEditEvent(patches, event._id);
+    if (response) {
       this.sendEmailOwner(event);
+      this.setState({ event, eventParticipantsIds, showAvailabilityGrid: 'block' });
     }
-
-    this.setState({ event, eventParticipantsIds, showAvailabilityGrid: 'block' });
   }
 
   async loadOwnerData(_id) {
@@ -148,7 +121,8 @@ class EventDetailsComponent extends React.Component {
   }
 
   async sendEmailOwner(event) {
-    const { name } = this.state.user;
+    const { curUser } = this.props;
+    const { name } = curUser;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
     const ownerData = await this.loadOwnerData(event.owner);
     const msg = {
@@ -193,35 +167,37 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  async submitAvailability(myAvailability) {
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
-    const response = await fetch(`/api/events/${this.state.event._id}`, {
-      credentials: 'same-origin',
-    });
-    let event;
+  async submitAvailability(patches) {
+    const { event, curUser } = this.props;
+    const responseEvent = await this.props.cbEditEvent(patches, event._id);
+    if (responseEvent) {
+      const response = await fetch(`/api/events/${this.state.event._id}`, {
+        credentials: 'same-origin',
+      });
+      let event;
+      try {
+        checkStatus(response);
+        event = await parseJSON(response);
+        const me = event.participants.find(participant =>
+          participant.userId === curUser._id,
+        );
+        this.setState({ showHeatmap: true, event, participants: event.participants, myAvailability: me.availability });
+      } catch (err) {
+        console.log(err);
+        this.setState({
+          notificationIsActive: true,
+          notificationMessage: 'Failed to update availability. Please try again later.',
+          notificationTitle: 'Error!',
+        });
+        return;
+      }
 
-    try {
-      checkStatus(response);
-      event = await parseJSON(response);
-      this.setState({ showHeatmap: true, myAvailability, event, participants: event.participants });
-    } catch (err) {
-      console.log(err);
       this.setState({
         notificationIsActive: true,
-        notificationMessage: 'Failed to update availability. Please try again later.',
-        notificationTitle: 'Error!',
+        notificationMessage: 'Saved availability successfully.',
+        notificationTitle: 'Success!',
       });
-      return;
-    } finally {
-      nprogress.done();
     }
-
-    this.setState({
-      notificationIsActive: true,
-      notificationMessage: 'Saved availability successfully.',
-      notificationTitle: 'Success!',
-    });
   }
 
   @autobind
@@ -239,9 +215,10 @@ class EventDetailsComponent extends React.Component {
   render() {
     const {
       event,
-      user, showHeatmap, participants,
+      showHeatmap, participants,
       myAvailability, eventParticipantsIds,
       dates, showAvailabilityGrid } = this.state;
+    const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
     const inlineStyles = {
@@ -252,8 +229,8 @@ class EventDetailsComponent extends React.Component {
       },
     };
 
-    if (user !== undefined) {
-      isOwner = event.owner === user._id;
+    if (curUser !== undefined) {
+      isOwner = event.owner === curUser._id;
     }
 
     const notifActions = [{
@@ -281,15 +258,15 @@ class EventDetailsComponent extends React.Component {
               <div style={inlineStyles.card.availabilityGrid}>
                 <AvailabilityGrid
                   dates={dates}
-                  user={user}
+                  user={curUser}
                   availability={availability}
                   myAvailability={myAvailability}
                   submitAvail={this.submitAvailability}
                   event={event}
                 />
               </div>
-              {(Object.keys(user).length > 0) ?
-                (eventParticipantsIds.indexOf(user._id) > -1) ?
+              {(Object.keys(curUser).length > 0) ?
+                (eventParticipantsIds.indexOf(curUser._id) > -1) ?
                   null
                   :
                   <RaisedButton
@@ -303,7 +280,7 @@ class EventDetailsComponent extends React.Component {
             </div>
           }
           <br />
-          <ParticipantsList event={event} curUser={user} showInviteGuests={this.handleShowInviteGuestsDrawer} />
+          <ParticipantsList event={event} curUser={curUser} showInviteGuests={this.handleShowInviteGuestsDrawer} />
         </CardText>
         <Notification
           isActive={this.state.notificationIsActive}
@@ -323,6 +300,8 @@ EventDetailsComponent.propTypes = {
   event: React.PropTypes.object,
   showInviteGuests: React.PropTypes.func,
   cbDeleteEvent: React.PropTypes.func,
+  cbEditEvent: React.PropTypes.func,
+  curUser: React.PropTypes.object,
 };
 
 export default cssModules(EventDetailsComponent, styles);

@@ -47,7 +47,12 @@ class EventDetails extends Component {
   }
 
   @autobind
-  handleCbGustInviteDrawer(open) {
+  handleEditEvent(patches, eventId) {
+    return this.props.cbEditEvent(patches, eventId);
+  }
+
+  @autobind
+  handleCbGuestInviteDrawer(open) {
     this.setState({ openDrawer: open });
   }
 
@@ -70,8 +75,14 @@ class EventDetails extends Component {
     if (event) {
       return (
         <div styleName="event">
-          <EventDetailsComponent event={event} showInviteGuests={this.handleInviteGuests} cbDeleteEvent={this.handleDeleteEvent} />
-          <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGustInviteDrawer} />
+          <EventDetailsComponent
+            event={event}
+            curUser={curUser}
+            showInviteGuests={this.handleInviteGuests}
+            cbDeleteEvent={this.handleDeleteEvent}
+            cbEditEvent={this.handleEditEvent}
+          />
+          <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
         </div>
       );
     }
@@ -97,6 +108,7 @@ EventDetails.propTypes = {
   curUser: React.PropTypes.object,
   cbLoadEvent: React.PropTypes.func,
   cbDeleteEvent: React.PropTypes.func,
+  cbEditEvent: React.PropTypes.func,
 };
 
 export default cssModules(EventDetails, styles);
