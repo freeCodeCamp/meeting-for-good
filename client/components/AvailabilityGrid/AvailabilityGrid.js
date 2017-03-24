@@ -3,9 +3,7 @@ import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
-import fetch from 'isomorphic-fetch';
 import colorsys from 'colorsys';
-import nprogress from 'nprogress';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
@@ -13,7 +11,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 
 import styles from './availability-grid.css';
-import { checkStatus } from '../../util/fetch.util';
 import { getHours, getMinutes, removeZero } from '../../util/time-format';
 import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
@@ -287,32 +284,8 @@ class AvailabilityGrid extends React.Component {
       return user;
     });
 
-    nprogress.configure({ showSpinner: false });
-    nprogress.start();
     const patches = jsonpatch.generate(observerEvent);
-    const response = await fetch(
-      `/api/events/${event._id}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'PATCH',
-        body: JSON.stringify(patches),
-        credentials: 'same-origin',
-      },
-    );
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('err at PATCH AvailabilityGrid', err);
-      return;
-    } finally {
-      nprogress.done();
-    }
-
-    this.props.submitAvail(availability);
+    await this.props.submitAvail(patches);
   }
 
   @autobind
@@ -428,7 +401,7 @@ class AvailabilityGrid extends React.Component {
       <div styleName="Column">
         <div styleName="row">
           <FlatButton
-            primary={true}
+            primary
             onClick={() => this.setState({ openModal: true })}
           >
             How do I use the grid?
