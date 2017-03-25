@@ -43,7 +43,6 @@ export async function loadEvent(id) {
 }
 
 export async function addEvent(event) {
-  console.log('addEvent', event);
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   const response = await fetch('/api/events', {
