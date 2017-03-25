@@ -247,7 +247,7 @@ class GuestInviteDrawer extends Component {
     } = this.state;
 
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-    const focusUrlInputField = (input) => {
+    const focusUrlTextField = (input) => {
       if (input) {
         setTimeout(() => input.focus(), 100);
       }
@@ -309,7 +309,7 @@ class GuestInviteDrawer extends Component {
           value={fullUrl}
           underlineShow={false}
           fullWidth
-          ref={focusUrlInputField}
+          ref={focusUrlTextField}
         />
         <div styleName="Row">
           <RaisedButton
