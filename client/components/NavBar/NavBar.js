@@ -115,10 +115,10 @@ class NavBar extends Component {
             iconStyle={inLineStyles.iconMenu.iconStyle}
             listStyle={inLineStyles.iconMenu.itens}
             iconButtonElement={
-              <IconButton style={{ padding: '25px 1% 56px 0px' }}>
+              <IconButton style={{ padding: 0 }}>
                 <div>
                   <Avatar
-                    size={36}  
+                    size={36}
                     src={userAvatar}
                   />
                   <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
@@ -149,7 +149,7 @@ class NavBar extends Component {
         lastChild
       >
         <RaisedButton styleName="loginButton" backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
-          Login
+          Sign In
         </RaisedButton>
       </ToolbarGroup>
     );

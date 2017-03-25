@@ -1,13 +1,15 @@
 .toolBar {
-  height: 45px !important;
+  height: 40px !important;
   background-color: #006400 !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
+  padding: 0 4% 0 0 !important;
+  border: 0px;
 }
 
 .logoButton {
-  font-size: 25px !important;
+  font-size: 22px !important;
   color: #ffffff !important;
   font-family: 'saxMono' !important;
 }
@@ -20,7 +22,7 @@
 }
 
 .iconMenu {
-  margin: 0 50px 8px 0 !important;
+  margin: 0 50px 0 0 !important;
 }
 
 .Toggle {
@@ -31,18 +33,29 @@
 
 .loginButton {
   color: #ffffff !important;
-  font-size: 22px !important;
+  font-size: 20px !important;
   width: 100px !important;
   background-color: #006400 !important;
   box-shadow: none !important;
+  line-height: 20px !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  width: 87px !important;
+  border: 0px;
+  font-weight: 400;
+}
+
+.loginButton :hover {
+  color: #006400 !important;
+  background-color: #ffffff !important;
 }
 
 .leftToolbarGroup {
-  padding-left: 1% !important; 
+  margin: 0 !important;
 }
 
 .rightToolbarGroup {
-  padding-right: '5%',
+  margin: 0 !important;
 }
 
 @media (min-width:550px) and (max-width:850px) {
