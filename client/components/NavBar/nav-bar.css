@@ -21,6 +21,11 @@
   color: #ffffff !important;
 }
 
+.DashButton :hover {
+  color: #006400 !important;
+  background-color: #ffffff !important;
+}
+
 .iconMenu {
   margin: 0 !important;
 }
