@@ -151,7 +151,7 @@ class NotificationBar extends Component {
         fontSize: '12px',
         width: 15,
         height: 15,
-        padding: 0,
+        padding: '0px',
       },
       iconButton: {
         width: '22px',

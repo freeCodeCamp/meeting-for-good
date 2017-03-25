@@ -4,8 +4,9 @@
 }
 
 .iconMenu {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0px !important;
+  padding: 0px !important;
+  width: 40px !important;
 }
 
 @media (max-width:550px) {
