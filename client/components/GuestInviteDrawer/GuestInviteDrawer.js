@@ -265,13 +265,6 @@ class GuestInviteDrawer extends Component {
             paddingLeft: 8,
           },
         },
-        copyButton: {
-          label: {
-            padding: 0,
-            margin: 0,
-            fontSize: '14px',
-          },
-        },
         inviteButton: {
           paddingTop: '15px',
         },
