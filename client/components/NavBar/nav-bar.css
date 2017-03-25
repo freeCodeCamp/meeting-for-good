@@ -1,14 +1,13 @@
 .toolBar {
-  height: 65px !important;
+  height: 45px !important;
   background-color: #006400 !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-
 }
 
 .logoButton {
-  font-size: 35px !important;
+  font-size: 25px !important;
   color: #ffffff !important;
   font-family: 'saxMono' !important;
 }
@@ -22,10 +21,6 @@
 
 .iconMenu {
   margin: 0 50px 8px 0 !important;
-}
-
-.IconButton {
-  padding: 0px 58px 55px 0px;
 }
 
 .Toggle {

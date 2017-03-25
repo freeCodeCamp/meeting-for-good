@@ -118,6 +118,7 @@ class NavBar extends Component {
               <IconButton style={{ padding: '25px 1% 56px 0px' }}>
                 <div>
                   <Avatar
+                    size={36}  
                     src={userAvatar}
                   />
                   <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
