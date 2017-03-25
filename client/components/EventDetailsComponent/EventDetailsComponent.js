@@ -43,14 +43,14 @@ class EventDetailsComponent extends React.Component {
       notificationMessage: '',
       notificationTitle: '',
       showButtonAviability: 'none',
-      showAvailabilityGrid: 'none',
+      showAvailabilityGrid: 'block',
     };
   }
 
   async componentWillMount() {
     const { curUser } = this.props;
     if (curUser) {
-      let showHeatmap = false;
+      // let showHeatmap = false;
       let myAvailability = [];
 
       const me = this.state.participants.find(participant =>
@@ -58,11 +58,11 @@ class EventDetailsComponent extends React.Component {
       );
 
       if (me && me.availability) {
-        showHeatmap = true;
+        // showHeatmap = true;
         myAvailability = me.availability;
       }
 
-      this.setState({ showHeatmap, myAvailability });
+      this.setState({ /* showHeatmap, */ myAvailability });
     }
   }
 
