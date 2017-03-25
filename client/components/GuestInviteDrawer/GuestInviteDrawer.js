@@ -52,6 +52,7 @@ class GuestInviteDrawer extends Component {
     this.setState({ event, open, curUser, activeCheckboxes: [] });
   }
 
+
   async loadPastGuests() {
     this.setState({ linearProgressVisible: 'visible' });
 
@@ -246,6 +247,11 @@ class GuestInviteDrawer extends Component {
     } = this.state;
 
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+    const focusUrlInputField = (input) => {
+      if (input) {
+        setTimeout(() => input.focus(), 100);
+      }
+    };
 
     let lines = 800;
     if (guestsToDisplay.length > 10) {
@@ -303,6 +309,7 @@ class GuestInviteDrawer extends Component {
           value={fullUrl}
           underlineShow={false}
           fullWidth
+          ref={focusUrlInputField}
         />
         <div styleName="Row">
           <RaisedButton
