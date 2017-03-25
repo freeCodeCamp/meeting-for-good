@@ -48,7 +48,7 @@ class Home extends React.Component {
         <footer>
           <div>
             <div styleName={'divider'} />
-            <p>Made with ❤ by &nbsp;
+            <p>Made with ❤ and lots of ☕ <br /> by &nbsp;
               <a href="https://github.com/AkiraLaine" target="_blank">Akira Laine</a>, &nbsp;
               <a href="https://github.com/awesomeaniruddh/" target="_blank">Aniruddh Agarwal</a>  and&nbsp;
               <a href="https://github.com/jrogatis/" target="_blank">Jean Philip de Rogatis</a>

@@ -11,12 +11,12 @@ h1 h2, h3, h4, h5, h6 {
 }
 
 .header {
-	color: darkblue;
 	text-transform: uppercase;
 	height: 87vh;
 }
 
 .header h2 {
+	color: #006400;
 	font-family: saxMono !important;
 	text-transform: none !important;
 	font-size: 80px !important;
@@ -56,14 +56,17 @@ footer {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: blue;
 }
 
 footer p {
-	color: blue;
 	margin: 0;
+	color: black;
+	font-size: 20px;
 }
 
+footer a {
+	color: #006400;
+}
 footer a:hover {
 	text-decoration: underline;
 }
@@ -117,4 +120,8 @@ footer a:hover {
 	.timezones {
 		width: 370px !important;
 	}
+	footer p {
+		font-size: 15px;
+	}
+
 }
