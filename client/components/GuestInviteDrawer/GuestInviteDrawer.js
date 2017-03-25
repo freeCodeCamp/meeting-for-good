@@ -258,12 +258,8 @@ class GuestInviteDrawer extends Component {
       }
     };
 
-    let lines = 800;
-    if (guestsToDisplay.length > 10) {
-      lines = 450;
-    } else if (guestsToDisplay.length > 0) {
-      lines = guestsToDisplay.length * 58;
-    }
+    const lines = 174;
+
     const inLineStyles = {
       drawer: {
         container: {
