@@ -247,9 +247,14 @@ class GuestInviteDrawer extends Component {
     } = this.state;
 
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+
     const focusUrlTextField = (input) => {
       if (input) {
-        setTimeout(() => input.focus(), 100);
+        setTimeout(() => {
+          input.focus();
+          input.select();
+        }
+          , 100);
       }
     };
 
