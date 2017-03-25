@@ -29,7 +29,7 @@
 }
 
 .copyAndEmailButton :hover {
-  background-color: #006400;
+  background-color: #006400 !important;
 }
 
 
@@ -48,7 +48,7 @@
 }
 
 .inviteButton :hover {
-  background-color: #006400; 
+  background-color: #006400 !important; 
 }
 
 .textUrl {
