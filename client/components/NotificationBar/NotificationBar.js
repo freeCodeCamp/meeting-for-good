@@ -146,7 +146,7 @@ class NotificationBar extends Component {
     const inLineStyles = {
       badge: {
         top: 22,
-        right: 20,
+        right: 36,
         visibility: visible,
         fontSize: '12px',
         width: 15,
