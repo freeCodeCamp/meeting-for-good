@@ -89,6 +89,12 @@ class NavBar extends Component {
           backgroundColor: 'white',
         },
       },
+      loginButton: {
+        label: {
+          fontWeight: 200,
+          fontSize: '20px',
+        },
+      },
     };
     const { isAuthenticated, curUser, userAvatar, showPastEvents } = this.state;
 
@@ -148,7 +154,12 @@ class NavBar extends Component {
       <ToolbarGroup
         lastChild
       >
-        <RaisedButton styleName="loginButton" backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
+        <RaisedButton
+          styleName="loginButton"
+          backgroundColor="transparent"
+          onTouchTap={this.handleAuthClick}
+          labelStyle={inLineStyles.loginButton.label}
+        >
           Sign In
         </RaisedButton>
       </ToolbarGroup>
