@@ -59,7 +59,6 @@ class EventDetailsComponent extends React.Component {
       );
 
       if (me && me.availability) {
-        // showHeatmap = true;
         myAvailability = me.availability;
         if (myAvailability.length) {
           showHeatmap = true;
