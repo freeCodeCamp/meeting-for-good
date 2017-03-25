@@ -26,12 +26,12 @@
 
 .copyAndEmailButton {
   margin: 10px 5px;
+}
+
+.copyAndEmailButton :hover {
   background-color: #006400;
 }
 
-.inviteButton {
-  margin-top: 15px;
-}
 
 .searchIcon {
   margin-bottom: 9px !important;
