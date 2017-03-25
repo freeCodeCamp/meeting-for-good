@@ -52,7 +52,6 @@ class GuestInviteDrawer extends Component {
     this.setState({ event, open, curUser, activeCheckboxes: [] });
   }
 
-
   async loadPastGuests() {
     this.setState({ linearProgressVisible: 'visible' });
 
