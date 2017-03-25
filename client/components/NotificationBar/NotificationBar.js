@@ -123,14 +123,11 @@ class NotificationBar extends Component {
                 style={{ backgroundColor: bkgColor }}
                 styleName="menuItem"
               >
-                {`${participant.name} accept your invite for `}
-                <FlatButton
-                  onClick={() => this.handleEventLinkClick(notice._id)}
-                  primary
-                  styleName="linkButton"
-                  labelStyle={inlineStyles.flatButton.label}
-                  label={notice.name}
-                />
+                {participant.name} accepted your invitation for<span>&#32;</span>
+                <a
+                  onTouchTap={() => this.handleEventLinkClick(notice._id)}
+                  styleName="eventLink"
+                >{notice.name}</a>.
               </MenuItem>
             );
             rows.push(row);

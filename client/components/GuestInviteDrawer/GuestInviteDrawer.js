@@ -292,7 +292,7 @@ class GuestInviteDrawer extends Component {
       },
     };
 
-    const emailText = `Hey there,%0D%0A%0D%0AUsing the following tool, please block your availability for ${event.name}:
+    const emailText = `Hey there,%0D%0A%0D%0AUse this tool to let me know your availablility for ${event.name}:
     %0D%0A%0D%0A${fullUrl}
     %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
 
@@ -316,6 +316,7 @@ class GuestInviteDrawer extends Component {
         <div styleName="Row">
           <RaisedButton
             styleName="copyAndEmailButton"
+            backgroundColor="#006400"
             className="cpBtn"
             onTouchTap={this.handleCopyButtonClick}
             label="Copy Link"
@@ -323,8 +324,9 @@ class GuestInviteDrawer extends Component {
           />
           <RaisedButton
             styleName="copyAndEmailButton"
+            backgroundColor="#006400"
             label="Send Email Invite"
-            href={`mailto:?subject=Schedule ${event.name}&body=${emailText}`}
+            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
             primary
           />
         </div>
