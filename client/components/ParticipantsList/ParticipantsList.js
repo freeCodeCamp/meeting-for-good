@@ -230,7 +230,7 @@ class ParticipantsList extends Component {
           borderRadius: '50%',
           width: 24,
           height: 24,
-          color: '#006400',
+          color: '#FFF',
         },
         hoveredStyle: {
           backgroundColor: '#006400',
