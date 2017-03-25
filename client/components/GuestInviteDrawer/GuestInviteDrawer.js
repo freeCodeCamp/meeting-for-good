@@ -4,7 +4,6 @@ import Drawer from 'material-ui/Drawer';
 import autobind from 'autobind-decorator';
 import { ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
-import nprogress from 'nprogress';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
