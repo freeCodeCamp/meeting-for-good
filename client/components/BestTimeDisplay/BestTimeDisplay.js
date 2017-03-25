@@ -171,7 +171,7 @@ class BestTimeDisplay extends Component {
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
           <div>
-            <h6 styleName="bestTimeTitle">All participants so far are available at:</h6>
+            <h6 styleName="bestTimeTitle">The following times work for everyone:</h6>
             {this.renderBestTime()}
           </div>
          :
