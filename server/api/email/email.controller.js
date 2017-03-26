@@ -5,7 +5,6 @@
  */
 import nodemailer from 'nodemailer';
 import path from 'path';
-import aws from 'aws-sdk';
 
 const EmailTemplate = require('email-templates').EmailTemplate;
 
