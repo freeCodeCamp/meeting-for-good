@@ -233,17 +233,9 @@ class EventDetailsComponent extends React.Component {
       showHeatmap, participants,
       myAvailability, eventParticipantsIds,
       dates, showAvailabilityGrid } = this.state;
-    console.log(showAvailabilityGrid);
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
-    const inlineStyles = {
-      card: {
-        availabilityGrid: {
-          display: showAvailabilityGrid,
-        },
-      },
-    };
 
     // check if the curUser is owner
     if (curUser !== undefined) {
