@@ -29,9 +29,7 @@
 }
 
 .Toggle {
-  vertical-align: 'center' !important;
-  min-height: '100px' !important;
-  margin-top: 20 !important;
+  margin: 11px 0 -14px 0 !important;
 }
 
 .loginButton {
