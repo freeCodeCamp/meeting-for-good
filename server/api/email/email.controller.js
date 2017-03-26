@@ -21,6 +21,7 @@ const respondWithResult = (res, statusCode) => {
 const handleError = (res, statusCode) => {
   statusCode = statusCode || 500;
   return (err) => {
+    console.log('handleError at email.controler', err);
     res.status(statusCode).send(err);
   };
 };
@@ -51,10 +52,7 @@ export const ownerNotification = (req, res) => {
     message.html = result.html;
     return sendEmail(message)
     .then(respondWithResult(res))
-    .catch((err) => {
-      console.log('err at ownerNotification', err);
-      handleError(res);
-    });
+    .catch(handleError(res));
   });
 };
 
@@ -73,9 +71,6 @@ export const sendInvite = (req, res) => {
     message.html = result.html;
     return sendEmail(message)
       .then(respondWithResult(res))
-      .catch((err) => {
-        console.log('err at ownerNotification', err);
-        handleError(err);
-      });
+      .catch(handleError(res));
   });
 };
