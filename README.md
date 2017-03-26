@@ -21,8 +21,8 @@ FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
 FACEBOOK_SECRET=[YOUR_FACEBOOK_SECRET]
 APP_URL= http://localhost:8080/
 NODE_ENV = 'development'
-AWSAccessKeyID='your mail user'
-AWSSecretKey='your mailgun  pass'
+AWSAccessKeyID='your AWS email user'
+AWSSecretKey='your AWS  email pass'
 emailFrom='default email from'
 ANALYSE_PACK=false
 ```
