@@ -33,7 +33,11 @@ class NavBar extends Component {
   }
 
   componentWillMount() {
-    const { location, curUser, isAuthenticated, showPastEvents } = this.props;
+    const { location, curUser, isAuthenticated } = this.props;
+    let showPastEvents;
+    if (sessionStorage.getItem('shoPastEvents')) {
+      showPastEvents = sessionStorage.getItem('shoPastEvents');
+    }
     this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents });
     this.MenuVisibility(location);
   }
