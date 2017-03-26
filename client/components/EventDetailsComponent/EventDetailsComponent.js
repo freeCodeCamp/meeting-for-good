@@ -54,18 +54,25 @@ class EventDetailsComponent extends React.Component {
       let showAvailabilityGrid = 'block';
       let myAvailability = [];
 
-      const me = this.state.participants.find(participant =>
+      // find actual user particant record
+      const isParticipant = this.state.participants.find(participant =>
         participant.userId === curUser._id,
       );
 
-      if (me && me.availability) {
-        myAvailability = me.availability;
-        if (myAvailability.length) {
-          showHeatmap = true;
-          showAvailabilityGrid = 'none';
+      // if curUser have aviability show heatMap
+      if (isParticipant) {
+        if (isParticipant.availability) {
+          myAvailability = isParticipant.availability;
+          if (myAvailability.length) {
+            showHeatmap = true;
+            showAvailabilityGrid = 'none';
+          }
         }
+      } else {
+        showHeatmap = false;
+        showAvailabilityGrid = 'none';
       }
-
+        
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
   }
@@ -227,6 +234,7 @@ class EventDetailsComponent extends React.Component {
       showHeatmap, participants,
       myAvailability, eventParticipantsIds,
       dates, showAvailabilityGrid } = this.state;
+    console.log(showAvailabilityGrid);
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
@@ -238,6 +246,7 @@ class EventDetailsComponent extends React.Component {
       },
     };
 
+    // check if the curUser is owner
     if (curUser !== undefined) {
       isOwner = event.owner === curUser._id;
     }
@@ -264,7 +273,7 @@ class EventDetailsComponent extends React.Component {
               />
             </div> :
             <div id="grid" styleName="aviabilityContainer" >
-              <div style={inlineStyles.card.availabilityGrid}>
+              <div style={{ display: showAvailabilityGrid }}>
                 <AvailabilityGrid
                   dates={dates}
                   user={curUser}
@@ -272,7 +281,6 @@ class EventDetailsComponent extends React.Component {
                   myAvailability={myAvailability}
                   submitAvail={this.submitAvailability}
                   closeGrid={this.closeGrid}
-                  event={event}
                 />
               </div>
               {(Object.keys(curUser).length > 0) ?
@@ -290,7 +298,11 @@ class EventDetailsComponent extends React.Component {
             </div>
           }
           <br />
-          <ParticipantsList event={event} curUser={curUser} showInviteGuests={this.handleShowInviteGuestsDrawer} />
+          <ParticipantsList
+            event={event}
+            curUser={curUser}
+            showInviteGuests={this.handleShowInviteGuestsDrawer}
+          />
         </CardText>
         <Notification
           isActive={this.state.notificationIsActive}
