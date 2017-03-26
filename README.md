@@ -11,7 +11,7 @@ A meeting coordination app for your team.
 - Fork the repo to your own account
 - Clone it to your computer:
 `git clone https://github.com/[your_account_name]/letsmeet.git && cd letsmeet`
-- Run `npm install`
+- Run `npm install` or `yarn install`
 - Create a `.env` file in the root directory of the app with the following contents:
 ```
 MONGO_URI=mongodb://localhost:27017/letsmeet
@@ -21,8 +21,8 @@ FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
 FACEBOOK_SECRET=[YOUR_FACEBOOK_SECRET]
 APP_URL= http://localhost:8080/
 NODE_ENV = 'development'
-mailgunLogin='your mail user'
-mailgunPassword='your mailgun  pass'
+AWSAccessKeyID='your mail user'
+AWSSecretKey='your mailgun  pass'
 emailFrom='default email from'
 ANALYSE_PACK=false
 ```
