@@ -72,7 +72,6 @@ class EventDetailsComponent extends React.Component {
         showHeatmap = false;
         showAvailabilityGrid = 'none';
       }
-        
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
   }
@@ -275,6 +274,7 @@ class EventDetailsComponent extends React.Component {
             <div id="grid" styleName="aviabilityContainer" >
               <div style={{ display: showAvailabilityGrid }}>
                 <AvailabilityGrid
+                  event={event}
                   dates={dates}
                   user={curUser}
                   availability={availability}
