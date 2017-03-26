@@ -5,6 +5,7 @@
  */
 import nodemailer from 'nodemailer';
 import path from 'path';
+import aws from 'aws-sdk';
 
 const EmailTemplate = require('email-templates').EmailTemplate;
 
@@ -27,10 +28,10 @@ const handleError = (res, statusCode) => {
 
 const sendEmail = (message) => {
   const transporter = nodemailer.createTransport({
-    service: 'Mailgun',
+    service: 'SES',
     auth: {
-      user: process.env.mailgunLogin,
-      pass: process.env.mailgunPassword,
+      user: process.env.AWSAccessKeyID,
+      pass: process.env.AWSSecretKey,
     },
   });
   return transporter.sendMail(message);
