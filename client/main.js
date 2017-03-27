@@ -5,7 +5,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Client from './client'; // App
-import { darkBlack } from '../node_modules/material-ui/styles/colors';
+import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -22,6 +22,11 @@ const muiTheme = getMuiTheme({
     primary1Color: '#3949AB',
     accent1Color: '#FF4025',
   },
+  snackbar: {
+    textColor: darkWhite,
+    backgroundColor: '#006400',
+  },
+
 });
 
 ReactDOM.render(

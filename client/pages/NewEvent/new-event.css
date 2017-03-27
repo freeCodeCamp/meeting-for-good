@@ -3,6 +3,16 @@
   width: 700px;
 }
 
+.wrapper {
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+}
+.noCurEventsMsg {
+   text-align: center;
+   font-size: 24px;
+   margin: 0px 0px 5% 0px;
+}
 .card:hover {
   box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3);
 }

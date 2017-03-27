@@ -4,8 +4,11 @@
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
+<<<<<<< HEAD
   padding: 0 4% 0 0 !important;
   border: 0px;
+=======
+>>>>>>> development
 }
 
 .logoButton {
@@ -31,9 +34,9 @@
 }
 
 .Toggle {
-  vertical-align: 'center' !important;
-  min-height: '100px' !important;
-  margin-top: 20 !important;
+  margin: 5px 0px 5px 0px !important;
+  height: 30px !important;
+  line-height: 30px !important;
 }
 
 .loginButton {
@@ -88,5 +91,4 @@
     margin: 0px !important;
   }
   
-
 }
