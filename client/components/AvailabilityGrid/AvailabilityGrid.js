@@ -201,43 +201,6 @@ class AvailabilityGrid extends React.Component {
     } else {
       $(e.target).css('background-color', 'white');
     }
-
-    if (this.state.startCell === null) this.setState({ startCell: $(e.target) });
-    else {
-      this.setState({ endCell: $(e.target) });
-
-      let startCell = this.state.startCell;
-      const endCell = this.state.endCell;
-
-      if (startCell.css('background-color') === 'rgb(128, 0, 128)' && endCell.css('background-color') === 'rgb(128, 0, 128)') {
-        if (startCell.index() < endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.next().css('background-color', 'rgb(128, 0, 128)');
-            startCell = startCell.next();
-          }
-        } else if (startCell.index() > endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.prev().css('background-color', 'rgb(128, 0, 128)');
-            startCell = startCell.prev();
-          }
-        }
-      } else if (startCell.css('background-color') === 'rgb(255, 255, 255)' && endCell.css('background-color') === 'rgb(255, 255, 255)') {
-        if (startCell.index() < endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.next().css('background-color', 'rgb(255, 255, 255)');
-            startCell = startCell.next();
-          }
-        } else if (startCell.index() > endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.prev().css('background-color', 'rgb(255, 255, 255)');
-            startCell = startCell.prev();
-          }
-        }
-      }
-
-      this.setState({ startCell: null });
-      this.setState({ endCell: null });
-    }
   }
 
   @autobind
