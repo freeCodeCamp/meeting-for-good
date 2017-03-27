@@ -64,7 +64,7 @@ class NavBar extends Component {
 
   @autobind
   handleFilterToggle(ev, isInputChecked) {
-    sessionStorage.setItem('shoPastEvents', isInputChecked);
+    sessionStorage.setItem('showPastEvents', isInputChecked);
     this.props.cbFilter(isInputChecked);
   }
 
