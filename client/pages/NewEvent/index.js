@@ -89,7 +89,6 @@ class NewEvent extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { noCurEvents } = nextProps;
-    console.log('noCurEvents', noCurEvents);
     if (noCurEvents) {
       this.setState({
         snackBarOpen: true,
@@ -267,8 +266,6 @@ class NewEvent extends React.Component {
       eventName, selectedTimeRange,
       disableSubmit, notificationIsActive,
       notificationMessage, snackBarOpen, snackBarMsg } = this.state;
-    const { noCurEvents } = this.props;
-    console.log('render', noCurEvents, snackBarOpen);
     const inLinestyles = {
       card: {
         textField: {
@@ -295,11 +292,6 @@ class NewEvent extends React.Component {
 
     return (
       <div styleName="wrapper">
-        {
-          (noCurEvents) ?
-            <p styleName="noCurEventsMsg"> You have no current scheduled events. </p>
-            : null
-        }
         <Card styleName="card">
           <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
           <CardText styleName="cardText">
