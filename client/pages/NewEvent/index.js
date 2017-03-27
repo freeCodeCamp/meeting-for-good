@@ -12,6 +12,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
+import Snackbar from 'material-ui/Snackbar';
 
 import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
@@ -42,13 +43,14 @@ class NewEvent extends React.Component {
       notificationIsActive: false,
       notificationMessage: '',
       curUser: {},
+      snackBarOpen: false,
+      snackBarMsg: '',
     };
   }
 
   componentWillMount() {
     const { isAuthenticated, curUser } = this.props;
     if (isAuthenticated === true) {
-      // find the current user aka possible owner
       this.setState({ curUser });
     } else {
       this.props.cbOpenLoginModal('/event/new');
@@ -83,6 +85,17 @@ class NewEvent extends React.Component {
     });
 
     $('input[type="text"]+label').addClass('active');
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { noCurEvents } = nextProps;
+    console.log('noCurEvents', noCurEvents);
+    if (noCurEvents) {
+      this.setState({
+        snackBarOpen: true,
+        snackBarMsg: 'You have no current scheduled events.',
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -241,13 +254,21 @@ class NewEvent extends React.Component {
     this.setState({ eventName: ev.target.value }, () => this.toggleSubmitDisabled());
   }
 
+  @autobind
+  handleSnackBarRequestClose() {
+    this.setState({
+      snackBarOpen: false,
+    });
+  }
+
   render() {
     const {
       ranges,
       eventName, selectedTimeRange,
       disableSubmit, notificationIsActive,
-      notificationMessage } = this.state;
+      notificationMessage, snackBarOpen, snackBarMsg } = this.state;
     const { noCurEvents } = this.props;
+    console.log('render', noCurEvents, snackBarOpen);
     const inLinestyles = {
       card: {
         textField: {
@@ -344,6 +365,13 @@ class NewEvent extends React.Component {
             activeClassName="notification-bar-is-active"
           />
         </Card>
+        <Snackbar
+          open={snackBarOpen}
+          message={snackBarMsg}
+          action="dismiss"
+          autoHideDuration={3000}
+          onRequestClose={this.handleSnackBarRequestClose}
+        />
       </div>
     );
   }

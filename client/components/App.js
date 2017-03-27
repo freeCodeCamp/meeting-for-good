@@ -149,6 +149,7 @@ class App extends Component {
       events,
       noCurEvents,
     } = this.state;
+
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (child.type.displayName === 'Dashboard') {
