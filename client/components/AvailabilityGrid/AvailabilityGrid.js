@@ -17,6 +17,14 @@ import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 
 class AvailabilityGrid extends React.Component {
+  static addCellToAvailability(e) {
+    $(e.target).css('background-color', 'purple');
+  }
+
+  static removeCellFromAvailability(e) {
+    $(e.target).css('background-color', 'white');
+  }
+
   constructor(props) {
     super(props);
 
@@ -146,7 +154,7 @@ class AvailabilityGrid extends React.Component {
   @autobind
   handleCellMouseDown(e) {
     if (!this.props.heatmap) {
-      this.addCellToAvail(e);
+      this.updateCellAvailability(e);
       this.setState({ mouseDownOnGrid: true });
     }
   }
@@ -158,7 +166,7 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseOver(ev) {
-    if (this.state.mouseDownOnGrid) this.addCellToAvail(ev);
+    if (this.state.mouseDownOnGrid) this.updateCellAvailability(ev);
     const cellCSS = getComputedStyle(ev.target);
     const cellIsSelected = cellCSS['background-color'] !== 'rgba(0, 0, 0, 0)';
     if (this.props.heatmap && cellIsSelected) {
@@ -206,11 +214,11 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  addCellToAvail(e) {
+  updateCellAvailability(e) {
     if ($(e.target).css('background-color') !== 'rgb(128, 0, 128)') {
-      $(e.target).css('background-color', 'purple');
+      this.constructor.addCellToAvailability(e);
     } else {
-      $(e.target).css('background-color', 'white');
+      this.constructor.removeCellFromAvailability(e);
     }
   }
 
