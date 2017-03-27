@@ -87,6 +87,12 @@ class NavBar extends Component {
           },
         },
       },
+      loginButton: {
+        label: {
+          fontWeight: 200,
+          fontSize: '20px',
+        },
+      },
     };
     const { isAuthenticated, curUser, userAvatar, showPastEvents } = this.state;
 
@@ -113,9 +119,10 @@ class NavBar extends Component {
             iconStyle={inLineStyles.iconMenu.iconStyle}
             menuItemStyle={{ height: '38px' }}
             iconButtonElement={
-              <IconButton style={{ padding: '25px 1% 56px 0px' }}>
+              <IconButton style={{ padding: 0 }}>
                 <div>
                   <Avatar
+                    size={34}
                     src={userAvatar}
                   />
                   <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
@@ -148,8 +155,13 @@ class NavBar extends Component {
       <ToolbarGroup
         lastChild
       >
-        <RaisedButton styleName="loginButton" backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
-          Login
+        <RaisedButton
+          styleName="loginButton"
+          backgroundColor="transparent"
+          onTouchTap={this.handleAuthClick}
+          labelStyle={inLineStyles.loginButton.label}
+        >
+          Sign In
         </RaisedButton>
       </ToolbarGroup>
     );
