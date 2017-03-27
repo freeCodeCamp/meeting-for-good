@@ -29,7 +29,9 @@
 }
 
 .Toggle {
-  margin: 11px 0 -14px 0 !important;
+  margin: 5px 0px 5px 0px !important;
+  height: 30px !important;
+  line-height: 30px !important;
 }
 
 .loginButton {
