@@ -22,6 +22,7 @@ class App extends Component {
       pathToGo: '/',
       loginModalDisable: false,
       events: [],
+      noCurEvents: false,
     };
   }
 
@@ -100,6 +101,7 @@ class App extends Component {
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
       if (redirectTo) {
         if (redirectTo === '/dashboard' && events.length === 0) {
+          this.setState({ noCurEvents: true });
           browserHistory.push('/event/new');
         } else {
           browserHistory.push(redirectTo);
@@ -139,6 +141,7 @@ class App extends Component {
       isAuthenticated,
       loginFail,
       events,
+      noCurEvents,
     } = this.state;
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
@@ -169,6 +172,7 @@ class App extends Component {
           return cloneElement(child, {
             curUser,
             isAuthenticated,
+            noCurEvents,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbNewEvent: this.handleNewEvent,
           });
