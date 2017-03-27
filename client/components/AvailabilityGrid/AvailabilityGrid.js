@@ -51,6 +51,7 @@ class AvailabilityGrid extends React.Component {
     this.state = {
       availability: [],
       selectedAvailability: [],
+      draggedAvailability: [],
       allTimes: [],
       allTimesRender: [],
       allDates: [],
@@ -160,21 +161,45 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
+  getFromToForEl(el) {
+    const {
+      allTimesRender,
+      allDatesRender,
+      allDates,
+      allTimes,
+    } = this.state;
+
+    const timeIndex = allTimesRender.indexOf(el.getAttribute('data-time'));
+    const dateIndex = allDatesRender.indexOf(el.getAttribute('data-date'));
+
+    const date = moment(allDates[dateIndex]).get('date');
+
+    const from = moment(allTimes[timeIndex]).set('date', date)._d;
+    const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
+
+    return [from, to];
+  }
+
+  @autobind
   addCellToAvailability(t) {
-    $(t).css('background-color', 'purple');
+    t.style.backgroundColor = 'purple';
+
+    const arr = this.getFromToForEl(t);
 
     this.setState({
-      selectedAvailability: [...this.state.selectedAvailability].concat([t]),
+      selectedAvailability: [...this.state.selectedAvailability].concat(arr),
     });
   }
 
   @autobind
   removeCellFromAvailability(t) {
-    $(t).css('background-color', 'white');
+    t.style.backgroundColor = 'white';
     const { selectedAvailability } = this.state;
 
+    const arr = this.getFromToForEl(t);
+
     this.setState({
-      selectedAvailability: [...selectedAvailability].filter(e => e !== t),
+      selectedAvailability: [...selectedAvailability].filter(e => e !== arr),
     });
   }
 
