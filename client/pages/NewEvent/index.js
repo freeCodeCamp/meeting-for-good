@@ -281,10 +281,6 @@ class NewEvent extends React.Component {
       },
       snackBar: {
         border: '5px solid #fffae6',
-        top: '70px',
-        bottom: 'auto',
-        left: (window.innerWidth - 410) / 2,
-        transform: 'translate3d(0, 0px, 0)',
         contentSyle: {
           fontSize: '20px',
           width: '360px',
