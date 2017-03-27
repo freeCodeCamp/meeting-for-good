@@ -166,46 +166,53 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseOver(ev) {
-    if (this.state.mouseDownOnGrid) this.updateCellAvailability(ev);
-    const cellCSS = getComputedStyle(ev.target);
-    const cellIsSelected = cellCSS['background-color'] !== 'rgba(0, 0, 0, 0)';
-    if (this.props.heatmap && cellIsSelected) {
-      const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
-      const formatStr = 'Do MMMM YYYY hh:mm a';
-      const availableOnDate = [];
-      const notAvailableOnDate = [];
+    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
+    const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
 
-      const participants = JSON.parse(JSON.stringify(this.props.participants))
-        .filter(participant => participant.availability)
-        .map((participant) => {
-          participant.availability = participant.availability
-            .map(avail => new Date(avail[0]))
-            .map(avail => moment(avail).format(formatStr));
-          return participant;
-        });
+    if (!this.props.heatmap || !cellIsSelected) return;
 
-      const timeIndex = allTimesRender.indexOf(
-        ev.target.getAttribute('data-time'),
-      );
+    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+    const formatStr = 'Do MMMM YYYY hh:mm a';
+    const availableOnDate = [];
+    const notAvailableOnDate = [];
 
-      const dateIndex = allDatesRender.indexOf(
-        ev.target.getAttribute('data-date'),
-      );
-
-      const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex])
-        .set('date', date)
-        .format(formatStr);
-
-      participants.forEach((participant) => {
-        if (participant.availability.indexOf(cellFormatted) > -1) {
-          availableOnDate.push(participant.userId.name);
-        } else {
-          notAvailableOnDate.push(participant.userId.name);
-        }
+    const participants = JSON.parse(JSON.stringify(this.props.participants))
+      .filter(participant => participant.availability)
+      .map((participant) => {
+        participant.availability = participant.availability
+          .map(avail => new Date(avail[0]))
+          .map(avail => moment(avail).format(formatStr));
+        return participant;
       });
-      this.setState({ availableOnDate, notAvailableOnDate });
-    }
+
+    const timeIndex = allTimesRender.indexOf(
+      ev.target.getAttribute('data-time'),
+    );
+
+    const dateIndex = allDatesRender.indexOf(
+      ev.target.getAttribute('data-date'),
+    );
+
+    const date = moment(allDates[dateIndex]).get('date');
+    const cellFormatted = moment(allTimes[timeIndex])
+      .set('date', date)
+      .format(formatStr);
+
+    participants.forEach((participant) => {
+      if (participant.availability.indexOf(cellFormatted) > -1) {
+        availableOnDate.push({
+          name: participant.userId.name,
+          _id: participant.userId._id,
+        });
+      } else {
+        notAvailableOnDate.push({
+          name: participant.userId.name,
+          _id: participant.userId._id,
+        });
+      }
+    });
+
+    this.setState({ availableOnDate, notAvailableOnDate });
   }
 
   @autobind
