@@ -20,15 +20,13 @@ class AvailabilityGrid extends React.Component {
   constructor(props) {
     super(props);
 
-    const dateFormatStr = 'Do MMM ddd';
-
     this.state = {
       availability: [],
       allTimes: [],
       allTimesRender: [],
       allDates: [],
       allDatesRender: [],
-      dateFormatStr,
+      dateFormatStr: 'Do MMM ddd',
       availableOnDate: [],
       notAvailableOnDate: [],
       hourTime: [],
