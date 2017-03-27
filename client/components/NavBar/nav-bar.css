@@ -4,7 +4,6 @@
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-
 }
 
 .logoButton {
@@ -29,9 +28,9 @@
 }
 
 .Toggle {
-  vertical-align: 'center' !important;
-  min-height: '100px' !important;
-  margin-top: 20 !important;
+  margin: 5px 0px 5px 0px !important;
+  height: 30px !important;
+  line-height: 30px !important;
 }
 
 .loginButton {
@@ -77,5 +76,4 @@
     margin: 0px !important;
   }
   
-
 }

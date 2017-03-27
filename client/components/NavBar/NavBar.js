@@ -86,9 +86,6 @@ class NavBar extends Component {
             backgroundColor: 'red',
           },
         },
-        itens: {
-          backgroundColor: 'white',
-        },
       },
     };
     const { isAuthenticated, curUser, userAvatar, showPastEvents } = this.state;
@@ -114,7 +111,7 @@ class NavBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             styleName="iconMenu"
             iconStyle={inLineStyles.iconMenu.iconStyle}
-            listStyle={inLineStyles.iconMenu.itens}
+            menuItemStyle={{ height: '38px' }}
             iconButtonElement={
               <IconButton style={{ padding: '25px 1% 56px 0px' }}>
                 <div>
@@ -125,7 +122,9 @@ class NavBar extends Component {
                 </div>
               </IconButton>}
           >
-            <MenuItem>
+            <MenuItem
+              style={{ maxHeight: '30px', minHeight: '20px' }}
+            >
               <Toggle
                 label={'Past Events'}
                 toggled={showPastEvents}
@@ -139,6 +138,7 @@ class NavBar extends Component {
             <MenuItem
               href={'/api/auth/logout'}
               primaryText="Logout"
+              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px', textAlign: 'center' }}
             />
           </IconMenu>
         </ToolbarGroup>
