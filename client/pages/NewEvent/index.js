@@ -85,6 +85,10 @@ class NewEvent extends React.Component {
     $('input[type="text"]+label').addClass('active');
   }
 
+  componentWillUnmount() {
+    this.props.cbNoCurEventsMsg();
+  }
+
   @autobind
   toggleSubmitDisabled() {
     // Checks whether the event name and dates/weekDays have been entered. If so, un-disable the
@@ -351,6 +355,7 @@ NewEvent.propTypes = {
   cbOpenLoginModal: React.PropTypes.func,
   curUser: React.PropTypes.object,
   cbNewEvent: React.PropTypes.func,
+  cbNoCurEventsMsg: React.PropTypes.func,
 };
 
 export default cssModules(NewEvent, styles);

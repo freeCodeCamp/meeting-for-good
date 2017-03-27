@@ -130,6 +130,10 @@ class App extends Component {
     }
     browserHistory.push('/');
   }
+  @autobind
+  handleNoCurEventsMessage() {
+    this.setState({ noCurEvents: false });
+  }
 
   render() {
     const { location } = this.props;
@@ -174,6 +178,7 @@ class App extends Component {
             noCurEvents,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbNewEvent: this.handleNewEvent,
+            cbNoCurEventsMsg: this.handleNoCurEventsMessage,
           });
         }
         return cloneElement(child, {
