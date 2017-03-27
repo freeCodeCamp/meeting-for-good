@@ -75,12 +75,17 @@ class AvailabilityGrid extends React.Component {
       getDaysBetween(fromDate, toDate),
     ));
 
-    const allTimes = _.flatten([this.props.dates[0]].map(({ fromDate, toDate }) =>
-      getTimesBetween(fromDate, toDate),
-    ));
+    const allTimes = _.flatten(
+      [this.props.dates[0]].map(({ fromDate, toDate }) =>
+        getTimesBetween(fromDate, toDate),
+      ),
+    );
 
-    const allDatesRender = allDates.map(date => moment(date).format(this.state.dateFormatStr));
-    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
+    const allDatesRender = allDates
+      .map(date => moment(date).format(this.state.dateFormatStr));
+
+    const allTimesRender = allTimes
+      .map(time => moment(time).format('hh:mm a'));
 
     allTimesRender.pop();
 
@@ -122,7 +127,7 @@ class AvailabilityGrid extends React.Component {
 
     // Change the border of the cell if it's minutes = 0 or 30 to help visually
     // separate 15 minute blocks from 30 minute and 1 hour blocks.
-    const cells = document.querySelectorAll('.cell');
+    const cells = Array.from(document.querySelectorAll('.cell'));
 
     cells.forEach((cell) => {
       if (getMinutes(cell.getAttribute('data-time')) === 0) {
@@ -182,9 +187,9 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   addCellToAvailability(t) {
-    t.style.backgroundColor = 'purple';
+    t.style.background = 'purple';
 
-    const arr = this.getFromToForEl(t);
+    const arr = [this.getFromToForEl(t)];
 
     this.setState({
       selectedAvailability: [...this.state.selectedAvailability].concat(arr),
@@ -193,10 +198,10 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   removeCellFromAvailability(t) {
-    t.style.backgroundColor = 'white';
+    t.style.background = 'white';
     const { selectedAvailability } = this.state;
 
-    const arr = this.getFromToForEl(t);
+    const arr = [this.getFromToForEl(t)];
 
     this.setState({
       selectedAvailability: [...selectedAvailability].filter(e => e !== arr),
@@ -204,7 +209,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   modifyHourTime(hourTime, date, i) {
-    // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
+    // inserts the formatted date object at the 'i+1'th index in
+    // this.state.hourTime.
     this.setState({
       hourTime: [
         ...hourTime.slice(0, i + 1),
@@ -359,22 +365,7 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   async submitAvailability() {
-    const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
-    const availability = [];
-
-    $('.cell').each((i, el) => {
-      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
-        const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
-        const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
-
-        const date = moment(allDates[dateIndex]).get('date');
-
-        const from = moment(allTimes[timeIndex]).set('date', date)._d;
-        const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
-
-        availability.push([from, to]);
-      }
-    });
+    const { selectedAvailability: availability } = this.state;
 
     const { _id } = this.props.user;
     const event = JSON.parse(JSON.stringify(this.props.event));
@@ -455,17 +446,25 @@ class AvailabilityGrid extends React.Component {
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
     const formatStr = 'Do MMMM YYYY hh:mm a';
     const myAvailabilityFrom = this.props.myAvailability
-                                    .map(avail => new Date(avail[0]))
-                                    .map(avail => moment(avail).format(formatStr));
+      .map(avail => new Date(avail[0]))
+      .map(avail => moment(avail).format(formatStr));
 
     cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
       const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+      const cellFormatted = moment(allTimes[timeIndex])
+        .set('date', date)
+        .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
+        const arr = [this.getFromToForEl(cell)];
+
+        this.setState({
+          selectedAvailability: this.state.selectedAvailability.concat(arr),
+        });
+
         cell.style.background = 'purple';
       }
     });
@@ -600,14 +599,18 @@ class AvailabilityGrid extends React.Component {
           {this.state.availableOnDate.length > 0 ?
             <div styleName="hover-available">
               <h5>Available</h5>
-              {this.state.availableOnDate.map((participant, i) => <h6 key={i}>{participant}</h6>)}
+              {this.state.availableOnDate.map((participant, i) =>
+                <h6 key={i}>{participant}</h6>,
+              )}
             </div> :
             null
           }
           {this.state.notAvailableOnDate.length > 0 ?
             <div styleName="hover-available">
               <h5>Unavailable</h5>
-              {this.state.notAvailableOnDate.map((participant, i) => <h6 key={i}>{participant}</h6>)}
+              {this.state.notAvailableOnDate.map((participant, i) =>
+                <h6 key={i}>{participant}</h6>,
+              )}
             </div> :
             null
           }
