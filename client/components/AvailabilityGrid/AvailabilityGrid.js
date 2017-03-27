@@ -73,10 +73,6 @@ class AvailabilityGrid extends React.Component {
     if (this.props.heatmap) this.renderHeatmap();
     if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
-    $('.cell').on('click', (e) => {
-      if (!this.props.heatmap) this.addCellToAvail(e);
-    });
-
     // Offset the grid-hour row if the event starts with a date that's offset by
     // 15/30/45 minutes.
     const gridHour = document.querySelector('.grid-hour');
@@ -144,6 +140,11 @@ class AvailabilityGrid extends React.Component {
   @autobind
   handleCancelBtnClick() {
     this.props.closeGrid();
+  }
+
+  @autobind
+  handleCellClick(e) {
+    if (!this.props.heatmap) this.addCellToAvail(e);
   }
 
   @autobind
@@ -409,6 +410,7 @@ class AvailabilityGrid extends React.Component {
                   className={`cell ${disabled}`}
                   onMouseOver={this.handleCellMouseOver}
                   onMouseLeave={this.handleCellMouseLeave}
+                  onClick={this.handleCellClick}
                 />
               );
             })}
