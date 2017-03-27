@@ -215,11 +215,11 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   updateCellAvailability(e) {
-    if ($(e.target).css('background-color') !== 'rgb(128, 0, 128)') {
-      this.constructor.addCellToAvailability(e);
-    } else {
-      this.constructor.removeCellFromAvailability(e);
-    }
+    const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
+    const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
+
+    if (cellIsSelected) this.constructor.addCellToAvailability(e);
+    else this.constructor.removeCellFromAvailability(e);
   }
 
   @autobind
