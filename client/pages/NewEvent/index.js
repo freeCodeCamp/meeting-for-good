@@ -280,10 +280,10 @@ class NewEvent extends React.Component {
         },
       },
       snackBar: {
-        top: 0,
+        top: '70px',
         bottom: 'auto',
         left: (window.innerWidth - 288) / 2,
-        transform: 'translate3d(0, -50px, 0)',
+        transform: 'translate3d(0, 0px, 0)',
       },
     };
 
@@ -369,7 +369,7 @@ class NewEvent extends React.Component {
           open={snackBarOpen}
           message={snackBarMsg}
           action="dismiss"
-          autoHideDuration={3000}
+          autoHideDuration={300000}
           onRequestClose={this.handleSnackBarRequestClose}
         />
       </div>
