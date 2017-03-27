@@ -64,6 +64,7 @@ class NavBar extends Component {
 
   @autobind
   handleFilterToggle(ev, isInputChecked) {
+    sessionStorage.setItem('showPastEvents', isInputChecked);
     this.props.cbFilter(isInputChecked);
   }
 
@@ -85,8 +86,11 @@ class NavBar extends Component {
             backgroundColor: 'red',
           },
         },
-        itens: {
-          backgroundColor: 'white',
+      },
+      loginButton: {
+        label: {
+          fontWeight: 200,
+          fontSize: '20px',
         },
       },
     };
@@ -113,18 +117,21 @@ class NavBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             styleName="iconMenu"
             iconStyle={inLineStyles.iconMenu.iconStyle}
-            listStyle={inLineStyles.iconMenu.itens}
+            menuItemStyle={{ height: '38px' }}
             iconButtonElement={
-              <IconButton style={{ padding: '25px 1% 56px 0px' }}>
+              <IconButton style={{ padding: 0 }}>
                 <div>
                   <Avatar
+                    size={34}
                     src={userAvatar}
                   />
                   <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
                 </div>
               </IconButton>}
           >
-            <MenuItem>
+            <MenuItem
+              style={{ maxHeight: '30px', minHeight: '20px' }}
+            >
               <Toggle
                 label={'Past Events'}
                 toggled={showPastEvents}
@@ -138,6 +145,7 @@ class NavBar extends Component {
             <MenuItem
               href={'/api/auth/logout'}
               primaryText="Logout"
+              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px', textAlign: 'center' }}
             />
           </IconMenu>
         </ToolbarGroup>
@@ -147,8 +155,13 @@ class NavBar extends Component {
       <ToolbarGroup
         lastChild
       >
-        <RaisedButton styleName="loginButton" backgroundColor="transparent" onTouchTap={this.handleAuthClick}>
-          Login
+        <RaisedButton
+          styleName="loginButton"
+          backgroundColor="transparent"
+          onTouchTap={this.handleAuthClick}
+          labelStyle={inLineStyles.loginButton.label}
+        >
+          Sign In
         </RaisedButton>
       </ToolbarGroup>
     );

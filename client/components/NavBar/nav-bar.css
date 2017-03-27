@@ -1,53 +1,64 @@
 .toolBar {
-  height: 65px !important;
+  height: 40px !important;
   background-color: #006400 !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-
+  padding: 0 4% 0 0 !important;
+  border: 0px;
 }
 
 .logoButton {
-  font-size: 35px !important;
+  font-size: 22px !important;
   color: #ffffff !important;
   font-family: 'saxMono' !important;
 }
 
 .DashButton {
   font-size: 16px !important;
-  margin: 0 12px 0 0 !important;
-  border: 0 !important;
+  margin: 0 11px 0 0 !important;
+  border: 0px  !important;
   color: #ffffff !important;
 }
 
-.iconMenu {
-  margin: 0 50px 8px 0 !important;
+.DashButton :hover {
+  color: #006400 !important;
+  background-color: #ffffff !important;
 }
 
-.IconButton {
-  padding: 0px 58px 55px 0px;
+.iconMenu {
+  margin: 0 !important;
 }
 
 .Toggle {
-  vertical-align: 'center' !important;
-  min-height: '100px' !important;
-  margin-top: 20 !important;
+  margin: 5px 0px 5px 0px !important;
+  height: 30px !important;
+  line-height: 30px !important;
 }
 
 .loginButton {
   color: #ffffff !important;
-  font-size: 22px !important;
   width: 100px !important;
   background-color: #006400 !important;
   box-shadow: none !important;
+  line-height: 20px !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  width: 87px !important;
+  border: 0px;
+}
+
+.loginButton :hover {
+  color: #006400 !important;
+  background-color: #ffffff !important;
 }
 
 .leftToolbarGroup {
-  padding-left: 1% !important; 
+  margin: 0 !important;
 }
 
 .rightToolbarGroup {
-  padding-right: '5%',
+  margin: 0 !important;
 }
 
 @media (min-width:550px) and (max-width:850px) {
@@ -77,5 +88,4 @@
     margin: 0px !important;
   }
   
-
 }

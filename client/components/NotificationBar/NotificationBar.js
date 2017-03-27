@@ -145,12 +145,24 @@ class NotificationBar extends Component {
     const openMenu = (notifications.length === 0) ? false : null;
     const inLineStyles = {
       badge: {
-        top: 25,
-        right: 30,
+        top: 22,
+        right: 36,
         visibility: visible,
-        fontSize: '15px',
-        width: 20,
-        height: 20,
+        fontSize: '12px',
+        width: 15,
+        height: 15,
+        padding: '0px',
+      },
+      iconButton: {
+        width: '22px',
+        height: '22px',
+        margin: '0 0 14px 0',
+        padding: 0,
+        icon: {
+          color: 'white',
+          width: '22px',
+
+        },
       },
     };
     return (
@@ -167,8 +179,10 @@ class NotificationBar extends Component {
             <IconButton
               tooltip="Notifications"
               onTouchTap={this.handleDismissAll}
+              style={inLineStyles.iconButton}
+              iconStyle={inLineStyles.iconButton.icon}
             >
-              <NotificationsIcon color="white" />
+              <NotificationsIcon />
             </IconButton>
           </Badge>
         }
