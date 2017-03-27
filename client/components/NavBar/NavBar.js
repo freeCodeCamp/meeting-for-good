@@ -77,8 +77,6 @@ class NavBar extends Component {
           flexDirection: 'row',
           alignItems: 'center',
         },
-        menuStyle: {
-        },
         toggle: {
           label: {
             fontSize: '18px',
@@ -112,7 +110,6 @@ class NavBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             styleName="iconMenu"
             iconStyle={inLineStyles.iconMenu.iconStyle}
-            menuStyle={inLineStyles.iconMenu.menuStyle}
             menuItemStyle={{ height: '38px' }}
             iconButtonElement={
               <IconButton style={{ padding: '25px 1% 56px 0px' }}>
