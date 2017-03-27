@@ -28,7 +28,7 @@ class App extends Component {
   async componentWillMount() {
     if (await isAuthenticated()) {
       let showPastEvents;
-      if (sessionStorage.getItem('shoPastEvents')) {
+      if (sessionStorage.getItem('showPastEvents')) {
         showPastEvents = sessionStorage.getItem('showPastEvents') === 'true';
       }
       const curUser = await getCurrentUser();
