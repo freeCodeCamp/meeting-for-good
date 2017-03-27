@@ -238,7 +238,12 @@ class NewEvent extends React.Component {
   }
 
   render() {
-    const { ranges, eventName, selectedTimeRange, disableSubmit, notificationIsActive, notificationMessage } = this.state;
+    const {
+      ranges,
+      eventName, selectedTimeRange,
+      disableSubmit, notificationIsActive,
+      notificationMessage } = this.state;
+    const { noCurEvents } = this.props;
     const inLinestyles = {
       card: {
         textField: {
@@ -264,77 +269,85 @@ class NewEvent extends React.Component {
     const numOfMonthstoDisplay = windowsSize > 550 ? 2 : 1;
 
     return (
-      <Card styleName="card">
-        <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
-        <CardText styleName="cardText">
-          <form>
-            <TextField
-              fullWidth
-              floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
-              floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
-              styleName="textField"
-              id="event_name"
-              value={eventName}
-              onChange={this.handleEventNameChange}
-              floatingLabelText="Event Name"
-              hintText="Enter an event name..."
-              className="validate"
-              autoFocus
-            />
-            <div>
-              <h6 styleName="heading-dates">What dates might work for you?</h6>
-              <div styleName="reset-button">
-                {from && to &&
-                <FlatButton
-                  href="#reset"
-                  label="reset"
-                  onClick={this.handleResetClick}
+      <div styleName="wrapper">
+        {
+          (noCurEvents) ?
+            <p styleName="noCurEventsMsg"> You have no current scheduled events. </p>
+            : null
+        }
+        <Card styleName="card">
+          <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
+          <CardText styleName="cardText">
+            <form>
+              <TextField
+                fullWidth
+                floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
+                floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
+                styleName="textField"
+                id="event_name"
+                value={eventName}
+                onChange={this.handleEventNameChange}
+                floatingLabelText="Event Name"
+                hintText="Enter an event name..."
+                className="validate"
+                autoFocus
+              />
+              <div>
+                <h6 styleName="heading-dates">What dates might work for you?</h6>
+                <div styleName="reset-button">
+                  {from && to &&
+                  <FlatButton
+                    href="#reset"
+                    label="reset"
+                    onClick={this.handleResetClick}
+                  />
+                  }
+                </div>
+                <DayPicker
+                  numberOfMonths={numOfMonthstoDisplay}
+                  fromMonth={new Date()}
+                  disabledDays={DateUtils.isPastDay}
+                  modifiers={modifiers}
+                  onDayClick={this.handleDayClick}
+                  styleName="daypicker"
                 />
-                }
               </div>
-              <DayPicker
-                numberOfMonths={numOfMonthstoDisplay}
-                fromMonth={new Date()}
-                disabledDays={DateUtils.isPastDay}
-                modifiers={modifiers}
-                onDayClick={this.handleDayClick}
-                styleName="daypicker"
-              />
-            </div>
-            <Subheader styleName="subHeader">What times might work?</Subheader>
-            <div id="timeSlider" />
-            <br />
-            <Subheader styleName="subHeader">
-              No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
-            </Subheader>
-            <div styleName="centerContainer">
-              <RaisedButton
-                labelColor="#9F9F9F"
-                label="Create Event"
-                className="submit"
-                disabled={disableSubmit}
-                primary
-                onClick={this.createEvent}
-              />
-            </div>
-          </form>
-        </CardText>
-        <Notification
-          isActive={notificationIsActive}
-          message={notificationMessage}
-          action="Dismiss"
-          title=" "
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={10000}
-          activeClassName="notification-bar-is-active"
-        />
-      </Card>
+              <Subheader styleName="subHeader">What times might work?</Subheader>
+              <div id="timeSlider" />
+              <br />
+              <Subheader styleName="subHeader">
+                No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
+              </Subheader>
+              <div styleName="centerContainer">
+                <RaisedButton
+                  labelColor="#9F9F9F"
+                  label="Create Event"
+                  className="submit"
+                  disabled={disableSubmit}
+                  primary
+                  onClick={this.createEvent}
+                />
+              </div>
+            </form>
+          </CardText>
+          <Notification
+            isActive={notificationIsActive}
+            message={notificationMessage}
+            action="Dismiss"
+            title=" "
+            onDismiss={() => this.setState({ notificationIsActive: false })}
+            dismissAfter={10000}
+            activeClassName="notification-bar-is-active"
+          />
+        </Card>
+      </div>
     );
   }
 }
 
 NewEvent.propTypes = {
   isAuthenticated: React.PropTypes.bool,
+  noCurEvents: React.PropTypes.bool,
   cbOpenLoginModal: React.PropTypes.func,
   curUser: React.PropTypes.object,
   cbNewEvent: React.PropTypes.func,

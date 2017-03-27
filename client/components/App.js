@@ -101,8 +101,7 @@ class App extends Component {
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
       if (redirectTo) {
         if (redirectTo === '/dashboard' && events.length === 0) {
-          this.setState({ noCurEvents: true });
-          browserHistory.push('/event/new');
+          this.setState({ noCurEvents: true }, browserHistory.push('/event/new'));
         } else {
           browserHistory.push(redirectTo);
         }
