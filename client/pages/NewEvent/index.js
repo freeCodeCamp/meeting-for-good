@@ -285,6 +285,12 @@ class NewEvent extends React.Component {
         bottom: 'auto',
         left: (window.innerWidth - 410) / 2,
         transform: 'translate3d(0, 0px, 0)',
+        contentSyle: {
+          fontSize: '20px',
+          width: '360px',
+          lineHeight: '30px',
+          textAlign: 'center',
+        },
       },
     };
 
@@ -368,7 +374,7 @@ class NewEvent extends React.Component {
         <Snackbar
           style={inLineStyles.snackBar}
           bodyStyle={{ height: 'flex' }}
-          contentStyle={{ fontSize: '20px', width: '360px', lineHeight: '30px', textAlign: 'center' }}
+          contentStyle={inLineStyles.snackBar.contentSyle}
           open={snackBarOpen}
           message={snackBarMsg}
           action="dismiss"
