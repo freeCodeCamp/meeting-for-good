@@ -33,6 +33,7 @@ class AvailabilityGrid extends React.Component {
       startCell: null,
       endCell: null,
       openModal: false,
+      mouseDownOnGrid: false,
     };
   }
 
@@ -143,12 +144,21 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  handleCellClick(e) {
-    if (!this.props.heatmap) this.addCellToAvail(e);
+  handleCellMouseDown(e) {
+    if (!this.props.heatmap) {
+      this.addCellToAvail(e);
+      this.setState({ mouseDownOnGrid: true });
+    }
+  }
+
+  @autobind
+  handleCellMouseUp() {
+    if (!this.props.heatmap) this.setState({ mouseDownOnGrid: false });
   }
 
   @autobind
   handleCellMouseOver(ev) {
+    if (this.state.mouseDownOnGrid) this.addCellToAvail(ev);
     const cellCSS = getComputedStyle(ev.target);
     const cellIsSelected = cellCSS['background-color'] !== 'rgba(0, 0, 0, 0)';
     if (this.props.heatmap && cellIsSelected) {
@@ -408,9 +418,10 @@ class AvailabilityGrid extends React.Component {
                   data-row={i}
                   data-col={j}
                   className={`cell ${disabled}`}
+                  onMouseDown={this.handleCellMouseDown}
+                  onMouseUp={this.handleCellMouseUp}
                   onMouseOver={this.handleCellMouseOver}
                   onMouseLeave={this.handleCellMouseLeave}
-                  onClick={this.handleCellClick}
                 />
               );
             })}
