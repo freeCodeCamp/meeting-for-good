@@ -104,7 +104,7 @@ class NewEvent extends React.Component {
   }
 
   @autobind
-  handleDayClick(e, day, { disabled }) {
+  handleDayClick(day, { disabled }) {
     if (disabled) return;
 
     // date ranges manipulation
