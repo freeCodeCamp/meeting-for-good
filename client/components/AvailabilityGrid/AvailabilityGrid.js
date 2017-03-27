@@ -172,7 +172,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  showAvailBox(ev) {
+  handleCellMouseOver(ev) {
     if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
       const formatStr = 'Do MMMM YYYY hh:mm a';
@@ -206,7 +206,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  hideAvailBox() {
+  handleCellMouseLeave() {
     this.setState({ availableOnDate: [], notAvailableOnDate: [] });
   }
 
@@ -460,8 +460,8 @@ class AvailabilityGrid extends React.Component {
                   data-row={i}
                   data-col={j}
                   className={`cell ${disabled}`}
-                  onMouseEnter={this.showAvailBox}
-                  onMouseLeave={this.hideAvailBox}
+                  onMouseOver={this.handleCellMouseOver}
+                  onMouseLeave={this.handleCellMouseLeave}
                 />
               );
             })}
