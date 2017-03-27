@@ -173,7 +173,9 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseOver(ev) {
-    if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
+    const cellCSS = getComputedStyle(ev.target);
+    const cellIsSelected = cellCSS['background-color'] !== 'rgba(0, 0, 0, 0)';
+    if (this.props.heatmap && cellIsSelected) {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
       const formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
@@ -188,11 +190,18 @@ class AvailabilityGrid extends React.Component {
           return participant;
         });
 
-      const timeIndex = allTimesRender.indexOf(ev.target.getAttribute('data-time'));
-      const dateIndex = allDatesRender.indexOf(ev.target.getAttribute('data-date'));
+      const timeIndex = allTimesRender.indexOf(
+        ev.target.getAttribute('data-time'),
+      );
+
+      const dateIndex = allDatesRender.indexOf(
+        ev.target.getAttribute('data-date'),
+      );
 
       const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+      const cellFormatted = moment(allTimes[timeIndex])
+        .set('date', date)
+        .format(formatStr);
 
       participants.forEach((participant) => {
         if (participant.availability.indexOf(cellFormatted) > -1) {
