@@ -95,9 +95,15 @@ class App extends Component {
   async handleAuthentication(result) {
     if (result) {
       const curUser = await getCurrentUser();
+      const events = await loadEvents(false);
+      const redirectTo = sessionStorage.getItem('redirectTo');
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
-      if (sessionStorage.getItem('redirectTo')) {
-        browserHistory.push(sessionStorage.getItem('redirectTo'));
+      if (redirectTo) {
+        if (redirectTo === '/dashboard' && events.length === 0) {
+          browserHistory.push('/event/new');
+        } else {
+          browserHistory.push(redirectTo);
+        }
         sessionStorage.removeItem('redirectTo');
       }
     } else {
