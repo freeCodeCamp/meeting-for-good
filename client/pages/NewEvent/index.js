@@ -266,7 +266,8 @@ class NewEvent extends React.Component {
       eventName, selectedTimeRange,
       disableSubmit, notificationIsActive,
       notificationMessage, snackBarOpen, snackBarMsg } = this.state;
-    const inLinestyles = {
+    
+    const inLineStyles = {
       card: {
         textField: {
           floatingLabelStyle: {
@@ -277,6 +278,12 @@ class NewEvent extends React.Component {
             color: '#26A69A',
           },
         },
+      },
+      snackBar: {
+        top: 0,
+        bottom: 'auto',
+        left: (window.innerWidth - 288) / 2,
+        transform: 'translate3d(0, -50px, 0)',
       },
     };
 
@@ -298,8 +305,8 @@ class NewEvent extends React.Component {
             <form>
               <TextField
                 fullWidth
-                floatingLabelStyle={inLinestyles.card.textField.floatingLabelStyle}
-                floatingLabelFocusStyle={inLinestyles.card.textField.floatingLabelFocusStyle}
+                floatingLabelStyle={inLineStyles.card.textField.floatingLabelStyle}
+                floatingLabelFocusStyle={inLineStyles.card.textField.floatingLabelFocusStyle}
                 styleName="textField"
                 id="event_name"
                 value={eventName}
@@ -358,6 +365,7 @@ class NewEvent extends React.Component {
           />
         </Card>
         <Snackbar
+          style={inLineStyles.snackBar}
           open={snackBarOpen}
           message={snackBarMsg}
           action="dismiss"
