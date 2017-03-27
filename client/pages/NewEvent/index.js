@@ -92,7 +92,7 @@ class NewEvent extends React.Component {
     if (noCurEvents) {
       this.setState({
         snackBarOpen: true,
-        snackBarMsg: 'You have no current scheduled events.',
+        snackBarMsg: 'You are redirect to New Event because you have no current scheduled events.',
       });
     }
   }
@@ -266,7 +266,7 @@ class NewEvent extends React.Component {
       eventName, selectedTimeRange,
       disableSubmit, notificationIsActive,
       notificationMessage, snackBarOpen, snackBarMsg } = this.state;
-    
+
     const inLineStyles = {
       card: {
         textField: {
@@ -280,9 +280,10 @@ class NewEvent extends React.Component {
         },
       },
       snackBar: {
+        border: '5px solid #fffae6',
         top: '70px',
         bottom: 'auto',
-        left: (window.innerWidth - 288) / 2,
+        left: (window.innerWidth - 410) / 2,
         transform: 'translate3d(0, 0px, 0)',
       },
     };
@@ -366,11 +367,14 @@ class NewEvent extends React.Component {
         </Card>
         <Snackbar
           style={inLineStyles.snackBar}
+          bodyStyle={{ height: 'flex' }}
+          contentStyle={{ fontSize: '20px', width: '360px', lineHeight: '30px', textAlign: 'center' }}
           open={snackBarOpen}
           message={snackBarMsg}
           action="dismiss"
-          autoHideDuration={300000}
+          autoHideDuration={3000}
           onRequestClose={this.handleSnackBarRequestClose}
+          onActionTouchTap={this.handleSnackBarRequestClose}
         />
       </div>
     );
