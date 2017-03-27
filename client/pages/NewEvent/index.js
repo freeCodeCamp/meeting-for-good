@@ -347,11 +347,11 @@ class NewEvent extends React.Component {
               </Subheader>
               <div styleName="centerContainer">
                 <RaisedButton
-                  labelColor="#9F9F9F"
+                  labelColor="white"
                   label="Create Event"
                   className="submit"
                   disabled={disableSubmit}
-                  primary
+                  backgroundColor="#006400"
                   onClick={this.createEvent}
                 />
               </div>
