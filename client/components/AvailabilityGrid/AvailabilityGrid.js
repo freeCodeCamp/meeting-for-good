@@ -17,12 +17,32 @@ import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 
 class AvailabilityGrid extends React.Component {
-  static addCellToAvailability(e) {
-    $(e.target).css('background-color', 'purple');
+  static generateRange(num1, num2) {
+    let rangeStart;
+    let rangeEnd;
+    const range = [];
+
+    if (num1 > num2) {
+      rangeStart = num2;
+      rangeEnd = num1;
+    } else {
+      rangeStart = num1;
+      rangeEnd = num2;
+    }
+
+    for (let i = rangeStart; i <= rangeEnd; i += 1) range.push(i);
+
+    return range;
   }
 
-  static removeCellFromAvailability(e) {
-    $(e.target).css('background-color', 'white');
+  static updateAvailabilityForRange(rowRange, colRange, updateAvail) {
+    rowRange.forEach((i) => {
+      colRange.forEach((j) => {
+        const query = `div[data-row="${i}"][data-col="${j}"]`;
+        const el = document.querySelector(query);
+        updateAvail(el);
+      });
+    });
   }
 
   constructor(props) {
@@ -30,6 +50,7 @@ class AvailabilityGrid extends React.Component {
 
     this.state = {
       availability: [],
+      selectedAvailability: [],
       allTimes: [],
       allTimesRender: [],
       allDates: [],
@@ -38,10 +59,13 @@ class AvailabilityGrid extends React.Component {
       availableOnDate: [],
       notAvailableOnDate: [],
       hourTime: [],
-      startCell: null,
-      endCell: null,
       openModal: false,
       mouseDownOnGrid: false,
+      mouseDownSelected: false,
+      mouseDownRow: null,
+      mouseDownCol: null,
+      prevMouseDownRow: null,
+      prevMouseDownCol: null,
     };
   }
 
@@ -135,6 +159,25 @@ class AvailabilityGrid extends React.Component {
     }
   }
 
+  @autobind
+  addCellToAvailability(t) {
+    $(t).css('background-color', 'purple');
+
+    this.setState({
+      selectedAvailability: [...this.state.selectedAvailability].concat([t]),
+    });
+  }
+
+  @autobind
+  removeCellFromAvailability(t) {
+    $(t).css('background-color', 'white');
+    const { selectedAvailability } = this.state;
+
+    this.setState({
+      selectedAvailability: [...selectedAvailability].filter(e => e !== t),
+    });
+  }
+
   modifyHourTime(hourTime, date, i) {
     // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
     this.setState({
@@ -154,8 +197,17 @@ class AvailabilityGrid extends React.Component {
   @autobind
   handleCellMouseDown(e) {
     if (!this.props.heatmap) {
+      const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
+      const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
+
       this.updateCellAvailability(e);
-      this.setState({ mouseDownOnGrid: true });
+
+      this.setState({
+        mouseDownOnGrid: true,
+        mouseDownRow: Number(e.target.getAttribute('data-row')),
+        mouseDownCol: Number(e.target.getAttribute('data-col')),
+        mouseDownSelected: cellIsSelected,
+      });
     }
   }
 
@@ -168,6 +220,57 @@ class AvailabilityGrid extends React.Component {
   handleCellMouseOver(ev) {
     const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
     const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
+    const {
+      mouseDownOnGrid,
+      mouseDownSelected,
+      prevMouseDownCol,
+      prevMouseDownRow,
+    } = this.state;
+
+    const {
+      generateRange,
+      updateAvailabilityForRange,
+    } = this.constructor;
+
+    if (mouseDownOnGrid) {
+      let updateAvail;
+
+      if (mouseDownSelected) {
+        updateAvail = this.removeCellFromAvailability;
+      } else {
+        updateAvail = this.addCellToAvailability;
+      }
+
+      const thisRow = Number(ev.target.getAttribute('data-row'));
+      const thisCol = Number(ev.target.getAttribute('data-col'));
+      const initialRow = this.state.mouseDownRow;
+      const initialCol = this.state.mouseDownCol;
+
+      let rowRange = generateRange(thisRow, initialRow);
+      let colRange = generateRange(thisCol, initialCol);
+
+      updateAvailabilityForRange(rowRange, colRange, updateAvail);
+
+      if (mouseDownSelected) {
+        updateAvail = this.addCellToAvailability;
+      } else {
+        updateAvail = this.removeCellFromAvailability;
+      }
+
+      if (thisRow < prevMouseDownRow) {
+        rowRange = generateRange(thisRow + 1, prevMouseDownRow);
+        updateAvailabilityForRange(rowRange, colRange, updateAvail);
+      } else if (thisCol < prevMouseDownCol) {
+        rowRange = generateRange(thisRow, initialRow);
+        colRange = generateRange(thisCol + 1, prevMouseDownCol);
+        updateAvailabilityForRange(rowRange, colRange, updateAvail);
+      }
+
+      this.setState({
+        prevMouseDownRow: thisRow,
+        prevMouseDownCol: thisCol,
+      });
+    }
 
     if (!this.props.heatmap || !cellIsSelected) return;
 
@@ -225,8 +328,8 @@ class AvailabilityGrid extends React.Component {
     const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
     const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
 
-    if (cellIsSelected) this.constructor.addCellToAvailability(e);
-    else this.constructor.removeCellFromAvailability(e);
+    if (cellIsSelected) this.addCellToAvailability(e.target);
+    else this.removeCellFromAvailability(e.target);
   }
 
   @autobind
