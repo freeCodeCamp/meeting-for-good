@@ -219,7 +219,7 @@ class AvailabilityGrid extends React.Component {
     const arr = [this.getFromToForEl(t)];
 
     this.setState({
-      selectedAvailability: [...selectedAvailability].filter(e => e !== arr),
+      selectedAvailability: selectedAvailability.filter(e => e !== arr),
     });
   }
 
