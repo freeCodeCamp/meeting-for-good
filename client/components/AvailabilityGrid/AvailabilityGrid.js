@@ -280,7 +280,6 @@ class AvailabilityGrid extends React.Component {
     });
 
     const { _id } = this.props.user;
-    console.log('submitAvailability', this.props.event);
     const event = JSON.parse(JSON.stringify(this.props.event));
     const observerEvent = jsonpatch.observe(event);
     /**
@@ -302,7 +301,6 @@ class AvailabilityGrid extends React.Component {
     });
 
     const patches = jsonpatch.generate(observerEvent);
-    console.log("patches at AvailabilityGrid", patches);
     await this.props.submitAvail(patches);
   }
 

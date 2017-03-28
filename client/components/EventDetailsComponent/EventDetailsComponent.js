@@ -167,7 +167,6 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async submitAvailability(patches) {
-    console.log('submitAvailability', patches);
     const { event, curUser } = this.props;
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
     if (responseEvent) {
@@ -181,7 +180,15 @@ class EventDetailsComponent extends React.Component {
         const me = event.participants.find(participant =>
           participant.userId === curUser._id,
         );
-        this.setState({ showHeatmap: true, event, participants: event.participants, myAvailability: me.availability });
+        this.setState({
+          showHeatmap: true,
+          event,
+          participants: event.participants,
+          myAvailability: me.availability,
+          notificationIsActive: true,
+          notificationMessage: 'Saved availability successfully.',
+          notificationTitle: 'Success!',
+        });
         return event;
       } catch (err) {
         console.log(err);
@@ -192,12 +199,6 @@ class EventDetailsComponent extends React.Component {
         });
         return;
       }
-
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Saved availability successfully.',
-        notificationTitle: 'Success!',
-      });
     }
   }
 
