@@ -112,6 +112,7 @@ class AvailabilityGrid extends React.Component {
       allDatesRender,
       allTimesRender,
       hourTime,
+      selectedAvailability: this.state.selectedAvailability.concat(this.props.myAvailability),
     });
   }
 
@@ -196,7 +197,7 @@ class AvailabilityGrid extends React.Component {
     const from = moment(allTimes[timeIndex]).set('date', date)._d;
     const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
 
-    return [from, to];
+    return [from.toISOString(), to.toISOString()];
   }
 
   @autobind
@@ -216,10 +217,10 @@ class AvailabilityGrid extends React.Component {
     t.style.background = 'white';
     const { selectedAvailability } = this.state;
 
-    const arr = [this.getFromToForEl(t)];
+    const arr = this.getFromToForEl(t);
 
     this.setState({
-      selectedAvailability: selectedAvailability.filter(e => e !== arr),
+      selectedAvailability: selectedAvailability.filter(e => !_.isEqual(e, arr)),
     });
   }
 
