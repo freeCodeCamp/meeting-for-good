@@ -464,22 +464,19 @@ class AvailabilityGrid extends React.Component {
         <div className="center">
           {this.props.heatmap ?
             <RaisedButton
-              labelColor="#ffffff"
-              backgroundColor="#006400"
+              primary
               label="Edit Availability"
               onClick={this.editAvailability}
             />
             :
             <div>
               <RaisedButton
-                labelColor="#ffffff"
-                backgroundColor="#006400"
+                primary
                 label="Submit"
                 onClick={this.submitAvailability}
               />
               <RaisedButton
-                labelColor="#ffffff"
-                backgroundColor="#006400"
+                primary
                 label="Cancel"
                 styleName="cancelButton"
                 onClick={this.handleCancelBtnClick}
