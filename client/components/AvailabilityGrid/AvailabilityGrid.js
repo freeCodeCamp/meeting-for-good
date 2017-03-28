@@ -375,8 +375,8 @@ class AvailabilityGrid extends React.Component {
     const inlineStyles = {
       modal: {
         content: {
-          width: '38%',
-          maxWidth: '38%',
+          width: '550px',
+          maxWidth: '550px',
         },
         bodyStyle: {
           paddingTop: 10,
@@ -464,22 +464,19 @@ class AvailabilityGrid extends React.Component {
         <div className="center">
           {this.props.heatmap ?
             <RaisedButton
-              labelColor="#ffffff"
-              backgroundColor="#000000"
+              primary
               label="Edit Availability"
               onClick={this.editAvailability}
             />
             :
             <div>
               <RaisedButton
-                labelColor="#ffffff"
-                backgroundColor="#000000"
+                primary
                 label="Submit"
                 onClick={this.submitAvailability}
               />
               <RaisedButton
-                labelColor="#ffffff"
-                backgroundColor="#000000"
+                primary
                 label="Cancel"
                 styleName="cancelButton"
                 onClick={this.handleCancelBtnClick}

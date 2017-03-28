@@ -282,7 +282,7 @@ class EventDetailsComponent extends React.Component {
                   <RaisedButton
                     onClick={this.joinEvent}
                     label={'Join Event'}
-                    backgroundColor="#000000"
+                    backgroundColor="#006400"
                     labelColor="#ffffff"
                   />
                 : null

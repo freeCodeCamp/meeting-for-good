@@ -19,7 +19,7 @@ const muiTheme = getMuiTheme({
   palette: {
     textColor: darkBlack,
     disabledColor: '#A7A7A7',
-    primary1Color: '#3949AB',
+    primary1Color: '#006400',
     accent1Color: '#FF4025',
   },
   snackbar: {
