@@ -96,16 +96,6 @@ class NotificationBar extends Component {
   renderMenuRows() {
     const { notifications, curUser } = this.state;
     const rows = [];
-    const inlineStyles = {
-      flatButton: {
-        label: {
-          paddingLeft: 0,
-          textTransform: 'none',
-          marginLeft: 0,
-          textAlign: 'left',
-        },
-      },
-    };
 
     if (notifications) {
       notifications.forEach((notice) => {
@@ -122,7 +112,7 @@ class NotificationBar extends Component {
                 style={{ backgroundColor: bkgColor }}
                 styleName="menuItem"
               >
-                {participant.name} accepted your invitation for<span>&#32;</span>
+                {participant.name} <span>accepted your invitation for &#32;</span>
                 <a
                   onTouchTap={() => this.handleEventLinkClick(notice._id)}
                   styleName="eventLink"
@@ -144,23 +134,17 @@ class NotificationBar extends Component {
     const openMenu = (notifications.length === 0) ? false : null;
     const inLineStyles = {
       badge: {
-        top: 22,
-        right: 36,
+        left: 28,
+        top: 8,
         visibility: visible,
         fontSize: '12px',
         width: 15,
         height: 15,
-        padding: '0px',
       },
       iconButton: {
-        width: '22px',
-        height: '22px',
-        margin: '0 0 14px 0',
-        padding: 0,
         icon: {
           color: 'white',
-          width: '22px',
-
+          width: '20px',
         },
       },
     };
@@ -168,7 +152,9 @@ class NotificationBar extends Component {
       <IconMenu
         maxHeight={300}
         open={openMenu}
+        iconStyle={inLineStyles.iconButton}
         styleName="iconMenu"
+        style={{ height: '40px', width: '40px', margin: '-50px 30px 0px 0px' }}
         iconButtonElement={
           <Badge
             badgeContent={quantOwnerNotNotified}
@@ -178,10 +164,10 @@ class NotificationBar extends Component {
             <IconButton
               tooltip="Notifications"
               onTouchTap={this.handleDismissAll}
-              style={inLineStyles.iconButton}
               iconStyle={inLineStyles.iconButton.icon}
+            
             >
-              <NotificationsIcon />
+              <NotificationsIcon size={10} />
             </IconButton>
           </Badge>
         }
