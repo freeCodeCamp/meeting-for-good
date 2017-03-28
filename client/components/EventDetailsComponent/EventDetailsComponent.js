@@ -1,9 +1,7 @@
 import React from 'react';
-import update from 'react-addons-update';
 import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
-import jsonpatch from 'fast-json-patch';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
@@ -80,27 +78,6 @@ class EventDetailsComponent extends React.Component {
     $('.notification-bar-action').on('click', () => {
       this.setState({ notificationIsActive: false });
     });
-  }
-
-  @autobind
-  async joinEvent() {
-    const { curUser } = this.props;
-    const { name, avatar, _id: userId } = curUser;
-    const participant = { name, avatar, userId };
-    const event = update(this.state.event, { $set: this.state.event });
-    const observerEvent = jsonpatch.observe(event);
-
-    event.participants.push(participant);
-
-    const eventParticipantsIds = update(this.state.eventParticipantsIds, {
-      $push: [curUser._id],
-    });
-    const patches = jsonpatch.generate(observerEvent);
-    const response = await this.props.cbEditEvent(patches, event._id);
-    if (response) {
-      this.sendEmailOwner(event);
-      this.setState({ event, eventParticipantsIds, showAvailabilityGrid: 'block' });
-    }
   }
 
   async loadOwnerData(_id) {

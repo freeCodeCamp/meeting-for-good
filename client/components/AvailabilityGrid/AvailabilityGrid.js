@@ -9,7 +9,6 @@ import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
-import update from 'react-addons-update';
 
 import styles from './availability-grid.css';
 import { getHours, getMinutes, removeZero } from '../../util/time-format';
