@@ -42,10 +42,6 @@
     margin: 15px 0 0 0 !important;
 }
 
-.inviteButton :hover {
-  background-color: #006400 !important; 
-}
-
 .textUrl {
   background-color: #F5F5F5 !important;
   max-height: 40px !important;

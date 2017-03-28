@@ -314,17 +314,15 @@ class GuestInviteDrawer extends Component {
         <div styleName="Row">
           <RaisedButton
             styleName="copyAndEmailButton"
-            backgroundColor="#006400"
-            labelStyle={{ color: '#ffffff' }}
             className="cpBtn"
+            primary
             onTouchTap={this.handleCopyButtonClick}
             label="Copy Link"
           />
           <RaisedButton
             styleName="copyAndEmailButton"
             label="Send Email Invite"
-            backgroundColor="#006400"
-            labelStyle={{ color: '#ffffff' }}
+            primary
             href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
           />
         </div>
@@ -345,11 +343,10 @@ class GuestInviteDrawer extends Component {
         </Infinite>
         <RaisedButton
           label="Invite"
-          backgroundColor="#006400"
-          labelStyle={{ color: '#ffffff' }}
           styleName="inviteButton"
           onTouchTap={this.handleInvite}
           fullWidth
+          primary
         />
         <Snackbar
           styleName="Snackbar"
