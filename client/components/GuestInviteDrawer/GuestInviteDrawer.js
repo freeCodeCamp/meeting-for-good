@@ -4,7 +4,6 @@ import Drawer from 'material-ui/Drawer';
 import autobind from 'autobind-decorator';
 import { ListItem } from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
-import nprogress from 'nprogress';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -177,7 +176,6 @@ class GuestInviteDrawer extends Component {
   @autobind
   handleCopyButtonClick(ev) {
     const { event } = this.state;
-    console.log(ev.target);
     const clipboard = new Clipboard(ev.target, {
       target: () => document.getElementById('fullUrl'),
     });
@@ -249,12 +247,18 @@ class GuestInviteDrawer extends Component {
 
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
 
-    let lines = 800;
-    if (guestsToDisplay.length > 10) {
-      lines = 450;
-    } else if (guestsToDisplay.length > 0) {
-      lines = guestsToDisplay.length * 58;
-    }
+    const focusUrlTextField = (input) => {
+      if (input) {
+        setTimeout(() => {
+          input.focus();
+          input.select();
+        }
+          , 100);
+      }
+    };
+
+    const lines = 174;
+
     const inLineStyles = {
       drawer: {
         container: {
@@ -267,13 +271,6 @@ class GuestInviteDrawer extends Component {
             paddingLeft: 8,
           },
         },
-        copyButton: {
-          label: {
-            padding: 0,
-            margin: 0,
-            fontSize: '14px',
-          },
-        },
         inviteButton: {
           paddingTop: '15px',
         },
@@ -282,7 +279,7 @@ class GuestInviteDrawer extends Component {
             height: 'flex',
           },
           contentStyle: {
-            color: '#FF4081',
+            color: '#ffffff',
             borderBottom: '0.2px solid',
           },
         },
@@ -312,22 +309,21 @@ class GuestInviteDrawer extends Component {
           value={fullUrl}
           underlineShow={false}
           fullWidth
+          ref={focusUrlTextField}
         />
         <div styleName="Row">
           <RaisedButton
             styleName="copyAndEmailButton"
-            backgroundColor="#006400"
             className="cpBtn"
+            primary
             onTouchTap={this.handleCopyButtonClick}
             label="Copy Link"
-            primary
           />
           <RaisedButton
             styleName="copyAndEmailButton"
-            backgroundColor="#006400"
             label="Send Email Invite"
-            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
             primary
+            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
           />
         </div>
         <Divider styleName="Divider" />
@@ -347,10 +343,10 @@ class GuestInviteDrawer extends Component {
         </Infinite>
         <RaisedButton
           label="Invite"
-          primary
           styleName="inviteButton"
           onTouchTap={this.handleInvite}
           fullWidth
+          primary
         />
         <Snackbar
           styleName="Snackbar"
