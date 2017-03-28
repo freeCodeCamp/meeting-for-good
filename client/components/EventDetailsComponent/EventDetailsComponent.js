@@ -213,12 +213,12 @@ class EventDetailsComponent extends React.Component {
     }];
 
     return (
-      <div styleName="wraper">
+      <div styleName="wrapper">
         {(!isParticipant) ?
           <h4 styleName="joinMsg"> Please Add your aviability to join the event </h4>
           : null
         }
-        <div styleName="cardWraper">
+        <div styleName="cardWrapper">
           <Card styleName="card">
             {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
             <CardTitle styleName="cardTitle">{event.name}</CardTitle>
