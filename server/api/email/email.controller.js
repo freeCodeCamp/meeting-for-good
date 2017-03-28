@@ -5,6 +5,7 @@
  */
 import nodemailer from 'nodemailer';
 import path from 'path';
+import sesTransport from 'nodemailer-ses-transport';
 
 const EmailTemplate = require('email-templates').EmailTemplate;
 
@@ -21,18 +22,16 @@ const respondWithResult = (res, statusCode) => {
 const handleError = (res, statusCode) => {
   statusCode = statusCode || 500;
   return (err) => {
+    console.log('handleError at email.controler', err);
     res.status(statusCode).send(err);
   };
 };
 
 const sendEmail = (message) => {
-  const transporter = nodemailer.createTransport({
-    service: 'Mailgun',
-    auth: {
-      user: process.env.mailgunLogin,
-      pass: process.env.mailgunPassword,
-    },
-  });
+  const transporter = nodemailer.createTransport(sesTransport({
+    accessKeyId: process.env.AWSAccessKeyID,
+    secretAccessKey: process.env.AWSSecretKey,
+  }));
   return transporter.sendMail(message);
 };
 
@@ -51,10 +50,7 @@ export const ownerNotification = (req, res) => {
     message.html = result.html;
     return sendEmail(message)
     .then(respondWithResult(res))
-    .catch((err) => {
-      console.log('err at ownerNotification', err);
-      handleError(res);
-    });
+    .catch(handleError(res));
   });
 };
 
@@ -73,9 +69,6 @@ export const sendInvite = (req, res) => {
     message.html = result.html;
     return sendEmail(message)
       .then(respondWithResult(res))
-      .catch((err) => {
-        console.log('err at ownerNotification', err);
-        handleError(err);
-      });
+      .catch(handleError(res));
   });
 };
