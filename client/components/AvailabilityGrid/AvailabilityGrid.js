@@ -17,6 +17,8 @@ import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 
 class AvailabilityGrid extends React.Component {
+  // Given two numbers num1 and num2, generates an array of all the numbers
+  // between the two. num1 doesn't necessarily have to be smaller than num2.
   static generateRange(num1, num2) {
     let rangeStart;
     let rangeEnd;
@@ -110,7 +112,10 @@ class AvailabilityGrid extends React.Component {
 
   componentDidMount() {
     if (this.props.heatmap) this.renderHeatmap();
-    if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
+
+    if (this.props.myAvailability && this.props.myAvailability.length > 0) {
+      this.renderAvail();
+    }
 
     // Offset the grid-hour row if the event starts with a date that's offset by
     // 15/30/45 minutes.
@@ -152,13 +157,17 @@ class AvailabilityGrid extends React.Component {
         nextDate.set('h', getHours(hourTime[i + 1]));
         nextDate.set('m', getMinutes(hourTime[i + 1]));
 
-        // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
-        // to the object again when it's inserted into this.state.hourTime.
+        // date.add (unfortunately) mutates the original moment object. Hence we
+        // don't add an hour to the object again when it's inserted into
+        // this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
-          $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
+          const query = `.cell[data-time='${nextDate.format('hh:mm a')}']`;
+          const cells = Array.from(document.querySelectorAll(query));
+          cells.forEach((cell) => { cell.style.marginLeft = '50px'; });
 
-          // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
-          // eslint. Using setState in componentDidMount couldn't be avoided in this case.
+          // 'hack' (the modifyHourTime function) to use setState in
+          // componentDidMount and bypass eslint. Using setState in
+          // componentDidMount couldn't be avoided in this case.
           this.modifyHourTime(hourTime, date, i);
         }
       }
@@ -190,10 +199,11 @@ class AvailabilityGrid extends React.Component {
     t.style.background = 'purple';
 
     const arr = [this.getFromToForEl(t)];
+    const selectedAvailability = Array.from(new Set(
+      this.state.selectedAvailability.concat(arr),
+    ));
 
-    this.setState({
-      selectedAvailability: [...this.state.selectedAvailability].concat(arr),
-    });
+    this.setState({ selectedAvailability });
   }
 
   @autobind
@@ -459,13 +469,7 @@ class AvailabilityGrid extends React.Component {
         .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        const arr = [this.getFromToForEl(cell)];
-
-        this.setState({
-          selectedAvailability: this.state.selectedAvailability.concat(arr),
-        });
-
-        cell.style.background = 'purple';
+        this.addCellToAvailability(cell);
       }
     });
   }
