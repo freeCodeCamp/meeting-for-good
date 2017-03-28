@@ -293,7 +293,7 @@ class EventDetailsComponent extends React.Component {
           open={snackBarOpen}
           message={snackBarMsg}
           action="dismiss"
-          autoHideDuration={3000}
+          autoHideDuration={5000}
           onRequestClose={this.handleSnackBarRequestClose}
           onActionTouchTap={this.handleSnackBarRequestClose}
         />
