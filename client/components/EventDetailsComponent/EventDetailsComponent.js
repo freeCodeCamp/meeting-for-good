@@ -5,7 +5,6 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import jsonpatch from 'fast-json-patch';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import Notification from '../../components/vendor/react-notification';
@@ -70,7 +69,7 @@ class EventDetailsComponent extends React.Component {
         }
       } else {
         showHeatmap = false;
-        showAvailabilityGrid = 'none';
+        showAvailabilityGrid = 'block';
       }
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
@@ -168,6 +167,7 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async submitAvailability(patches) {
+    console.log('submitAvailability', patches);
     const { event, curUser } = this.props;
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
     if (responseEvent) {
@@ -216,7 +216,7 @@ class EventDetailsComponent extends React.Component {
     const {
       event,
       showHeatmap, participants,
-      myAvailability, eventParticipantsIds,
+      myAvailability,
       dates, showAvailabilityGrid } = this.state;
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
@@ -260,18 +260,6 @@ class EventDetailsComponent extends React.Component {
                   closeGrid={this.closeGrid}
                 />
               </div>
-              {(Object.keys(curUser).length > 0) ?
-                (eventParticipantsIds.indexOf(curUser._id) > -1) ?
-                  null
-                  :
-                  <RaisedButton
-                    onClick={this.joinEvent}
-                    label={'Join Event'}
-                    backgroundColor="#000000"
-                    labelColor="#ffffff"
-                  />
-                : null
-            }
             </div>
           }
           <br />
