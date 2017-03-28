@@ -179,11 +179,9 @@ class AvailabilityGrid extends React.Component {
   showAvailBox(ev) {
     if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
-      let formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
       const notAvailableOnDate = [];
 
-      if (this.props.weekDays) formatStr = 'ddd hh:mm a';
       const participants = JSON.parse(JSON.stringify(this.props.participants))
         .filter(participant => participant.availability)
         .map((participant) => {
@@ -512,7 +510,6 @@ class AvailabilityGrid extends React.Component {
 AvailabilityGrid.propTypes = {
   dates: React.PropTypes.array.isRequired,
   heatmap: React.PropTypes.bool,
-  weekDays: React.PropTypes.bool,
   user: React.PropTypes.object,
   availability: React.PropTypes.array,
   submitAvail: React.PropTypes.func,
