@@ -144,7 +144,7 @@ class NotificationBar extends Component {
       iconButton: {
         icon: {
           color: 'white',
-          width: '20px',
+          width: '19px',
         },
       },
     };
@@ -153,8 +153,7 @@ class NotificationBar extends Component {
         maxHeight={300}
         open={openMenu}
         iconStyle={inLineStyles.iconButton}
-        styleName="iconMenu"
-        style={{ height: '40px', width: '40px', margin: '-50px 30px 0px 0px' }}
+        style={{ height: '40px', width: '40px', margin: '-54px 18px 0px 0px' }}
         iconButtonElement={
           <Badge
             badgeContent={quantOwnerNotNotified}
