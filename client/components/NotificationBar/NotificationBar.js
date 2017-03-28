@@ -134,12 +134,12 @@ class NotificationBar extends Component {
     const openMenu = (notifications.length === 0) ? false : null;
     const inLineStyles = {
       badge: {
-        left: 28,
-        top: 8,
+        right: 47,
+        top: 30,
         visibility: visible,
         fontSize: '12px',
-        width: 15,
-        height: 15,
+        width: 16,
+        height: 16,
       },
       iconButton: {
         icon: {
