@@ -43,6 +43,7 @@ class EventDetailsComponent extends React.Component {
       notificationTitle: '',
       showButtonAviability: 'none',
       showAvailabilityGrid: 'block',
+      isParticipant: true,
     };
   }
 
@@ -54,14 +55,13 @@ class EventDetailsComponent extends React.Component {
       let myAvailability = [];
 
       // find actual user particant record
-      const isParticipant = this.state.participants.find(participant =>
+      const isCurParticipant = this.state.participants.find(participant =>
         participant.userId === curUser._id,
       );
-
       // if curUser have aviability show heatMap
-      if (isParticipant) {
-        if (isParticipant.availability) {
-          myAvailability = isParticipant.availability;
+      if (isCurParticipant) {
+        if (isCurParticipant.availability) {
+          myAvailability = isCurParticipant.availability;
           if (myAvailability.length) {
             showHeatmap = true;
             showAvailabilityGrid = 'none';
@@ -70,6 +70,7 @@ class EventDetailsComponent extends React.Component {
       } else {
         showHeatmap = false;
         showAvailabilityGrid = 'block';
+        this.setState({ isParticipant: false });
       }
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
@@ -218,7 +219,7 @@ class EventDetailsComponent extends React.Component {
     const {
       event,
       showHeatmap, participants,
-      myAvailability,
+      myAvailability, isParticipant,
       dates, showAvailabilityGrid } = this.state;
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
@@ -235,42 +236,50 @@ class EventDetailsComponent extends React.Component {
     }];
 
     return (
-      <Card styleName="card">
-        {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
-        <CardTitle styleName="cardTitle">{event.name}</CardTitle>
-        <CardText>
-          <BestTimesDisplay event={event} disablePicker />
-          {(showHeatmap) ?
-            <div id="heatmap">
-              <AvailabilityGrid
-                dates={dates}
-                availability={availability}
-                editAvail={this.editAvail}
-                participants={participants}
-                heatmap
+      <div styleName="wraper">
+        {(!isParticipant) ?
+          <h4 styleName="joinMsg"> Please Add your aviability to join the event </h4>
+          : null
+        }
+        <div styleName="cardWraper">
+          <Card styleName="card">
+            {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
+            <CardTitle styleName="cardTitle">{event.name}</CardTitle>
+            <CardText>
+              <BestTimesDisplay event={event} disablePicker />
+              {(showHeatmap) ?
+                <div id="heatmap">
+                  <AvailabilityGrid
+                    dates={dates}
+                    availability={availability}
+                    editAvail={this.editAvail}
+                    participants={participants}
+                    heatmap
+                  />
+                </div> :
+                <div id="grid" styleName="aviabilityContainer" >
+                  <div style={{ display: showAvailabilityGrid }}>
+                    <AvailabilityGrid
+                      event={event}
+                      dates={dates}
+                      user={curUser}
+                      availability={availability}
+                      myAvailability={myAvailability}
+                      submitAvail={this.submitAvailability}
+                      closeGrid={this.closeGrid}
+                    />
+                  </div>
+                </div>
+              }
+              <br />
+              <ParticipantsList
+                event={event}
+                curUser={curUser}
+                showInviteGuests={this.handleShowInviteGuestsDrawer}
               />
-            </div> :
-            <div id="grid" styleName="aviabilityContainer" >
-              <div style={{ display: showAvailabilityGrid }}>
-                <AvailabilityGrid
-                  event={event}
-                  dates={dates}
-                  user={curUser}
-                  availability={availability}
-                  myAvailability={myAvailability}
-                  submitAvail={this.submitAvailability}
-                  closeGrid={this.closeGrid}
-                />
-              </div>
-            </div>
-          }
-          <br />
-          <ParticipantsList
-            event={event}
-            curUser={curUser}
-            showInviteGuests={this.handleShowInviteGuestsDrawer}
-          />
-        </CardText>
+            </CardText>
+          </Card>
+        </div>
         <Notification
           isActive={this.state.notificationIsActive}
           message={this.state.notificationMessage}
@@ -280,7 +289,7 @@ class EventDetailsComponent extends React.Component {
           dismissAfter={3000}
           activeClassName="notification-bar-is-active"
         />
-      </Card>
+      </div>
     );
   }
 }
