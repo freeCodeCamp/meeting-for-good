@@ -52,7 +52,30 @@ module.exports = {
       },
       {
         test: /\.(png|jp?g|gif|svg)$/,
-        loader: 'url-loader',
+        use: [
+          {
+            loader: 'url-loader',
+            options: { limit: 10000 },
+          },
+          {
+            loader: 'image-webpack-loader',
+            query: {
+              mozjpeg: {
+                progressive: true,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              optipng: {
+                optimizationLevel: 4,
+              },
+              pngquant: {
+                quality: '75-90',
+                speed: 3,
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,

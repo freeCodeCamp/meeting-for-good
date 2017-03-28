@@ -63,9 +63,26 @@ module.exports = {
         use: [
           {
             loader: 'url-loader',
-            options: { limit: 40000 },
+            options: { limit: 10000 },
           },
-          'image-webpack-loader',
+          {
+            loader: 'image-webpack-loader',
+            query: {
+              mozjpeg: {
+                progressive: true,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              optipng: {
+                optimizationLevel: 4,
+              },
+              pngquant: {
+                quality: '75-90',
+                speed: 3,
+              },
+            },
+          },
         ],
       },
       {
