@@ -3,6 +3,7 @@ import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
+import Snackbar from 'material-ui/Snackbar';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import Notification from '../../components/vendor/react-notification';
@@ -42,6 +43,8 @@ class EventDetailsComponent extends React.Component {
       showButtonAviability: 'none',
       showAvailabilityGrid: 'block',
       isParticipant: true,
+      snackBarOpen: false,
+      snackBarMsg: '',
     };
   }
 
@@ -68,7 +71,12 @@ class EventDetailsComponent extends React.Component {
       } else {
         showHeatmap = false;
         showAvailabilityGrid = 'block';
-        this.setState({ isParticipant: false });
+        this.setState({
+          isParticipant: false,
+          snackBarOpen: true,
+          snackBarMsg: 'Please add your availability to join the event.',
+        });
+
       }
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
@@ -192,20 +200,36 @@ class EventDetailsComponent extends React.Component {
     this.props.cbDeleteEvent(event._id);
   }
 
+  @autobind
+  handleSnackBarRequestClose() {
+    this.setState({
+      snackBarOpen: false,
+    });
+  }
+
   render() {
     const {
       event,
       showHeatmap, participants,
-      myAvailability, isParticipant,
-      dates, showAvailabilityGrid } = this.state;
+      myAvailability,
+      dates, showAvailabilityGrid, snackBarOpen, snackBarMsg } = this.state;
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
-
     // check if the curUser is owner
     if (curUser !== undefined) {
       isOwner = event.owner === curUser._id;
     }
+
+    const inLineStyles = {
+      snackBar: {
+        border: '5px solid #fffae6',
+        contentSyle: {
+          fontSize: '16px',
+          textAlign: 'center',
+        },
+      },
+    };
 
     const notifActions = [{
       text: 'Dismiss',
@@ -214,10 +238,6 @@ class EventDetailsComponent extends React.Component {
 
     return (
       <div styleName="wrapper">
-        {(!isParticipant) ?
-          <h4 styleName="joinMsg">Please add your availability to join the event. </h4>
-          : null
-        }
         <div styleName="cardWrapper">
           <Card styleName="card">
             {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
@@ -265,6 +285,17 @@ class EventDetailsComponent extends React.Component {
           onDismiss={() => this.setState({ notificationIsActive: false })}
           dismissAfter={3000}
           activeClassName="notification-bar-is-active"
+        />
+        <Snackbar
+          style={inLineStyles.snackBar}
+          bodyStyle={{ height: 'flex' }}
+          contentStyle={inLineStyles.snackBar.contentSyle}
+          open={snackBarOpen}
+          message={snackBarMsg}
+          action="dismiss"
+          autoHideDuration={3000}
+          onRequestClose={this.handleSnackBarRequestClose}
+          onActionTouchTap={this.handleSnackBarRequestClose}
         />
       </div>
     );
