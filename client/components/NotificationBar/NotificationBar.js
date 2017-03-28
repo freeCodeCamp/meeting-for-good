@@ -8,7 +8,6 @@ import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Badge from 'material-ui/Badge';
 import Divider from 'material-ui/Divider';
 import { browserHistory } from 'react-router';
-import FlatButton from 'material-ui/FlatButton';
 import cssModules from 'react-css-modules';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
