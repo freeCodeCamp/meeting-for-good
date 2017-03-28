@@ -5,6 +5,7 @@
  */
 import nodemailer from 'nodemailer';
 import path from 'path';
+import sesTransport from 'nodemailer-ses-transport';
 
 const EmailTemplate = require('email-templates').EmailTemplate;
 
@@ -27,13 +28,10 @@ const handleError = (res, statusCode) => {
 };
 
 const sendEmail = (message) => {
-  const transporter = nodemailer.createTransport({
-    service: 'SES',
-    auth: {
-      user: process.env.AWSAccessKeyID,
-      pass: process.env.AWSSecretKey,
-    },
-  });
+  const transporter = nodemailer.createTransport(sesTransport({
+    accessKeyId: process.env.AWSAccessKeyID,
+    secretAccessKey: process.env.AWSSecretKey,
+  }));
   return transporter.sendMail(message);
 };
 
