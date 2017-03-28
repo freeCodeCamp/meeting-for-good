@@ -27,6 +27,19 @@ main {
     font-family: Lato;
     src: url('../assets/fonts/lato/Lato-Regular.ttf');
 }
+
+@font-face {
+    font-family: Lato;
+    src: url('../assets/fonts/lato/Lato-Bold.ttf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url('../assets/fonts/lato/Lato-Bold.ttf');
+    font-weight: light;
+}
+
 @font-face {
     font-family: SaxMono;
     src: url('../assets/fonts/lato/Lato-Regular.ttf');
