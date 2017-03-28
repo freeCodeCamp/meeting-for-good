@@ -3,10 +3,6 @@
   color: #006400 !important;
 }
 
-.iconMenu {
-  background-color: black;
-}
-
 @media (max-width:550px) {
   .menuItem {
     font-size: 14px !important;
