@@ -351,7 +351,7 @@ class NewEvent extends React.Component {
                   label="Create Event"
                   className="submit"
                   disabled={disableSubmit}
-                  backgroundColor="#006400"
+                  primary
                   onClick={this.createEvent}
                 />
               </div>
