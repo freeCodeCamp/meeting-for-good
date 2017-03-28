@@ -215,7 +215,7 @@ class EventDetailsComponent extends React.Component {
     return (
       <div styleName="wrapper">
         {(!isParticipant) ?
-          <h4 styleName="joinMsg"> Please Add your aviability to join the event </h4>
+          <h4 styleName="joinMsg">Please add your availability to join the event. </h4>
           : null
         }
         <div styleName="cardWrapper">
