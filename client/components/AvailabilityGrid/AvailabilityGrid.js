@@ -107,7 +107,13 @@ class AvailabilityGrid extends React.Component {
       );
     }
 
-    this.setState({ allDates, allTimes, allDatesRender, allTimesRender, hourTime });
+    this.setState({
+      allDates,
+      allTimes,
+      allDatesRender,
+      allTimesRender,
+      hourTime,
+    });
   }
 
   componentDidMount() {
@@ -142,8 +148,8 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
-    // Check if two adjacent grid hours labels are consecutive or not. If not, then split the grid
-    // at this point.
+    // Check if two adjacent grid hours labels are consecutive or not. If not,
+    // then split the grid at this point.
     const hourTime = this.state.hourTime.slice(0);
 
     for (let i = 0; i < hourTime.length; i += 1) {
@@ -238,8 +244,8 @@ class AvailabilityGrid extends React.Component {
   @autobind
   handleCellMouseDown(e) {
     if (!this.props.heatmap) {
-      const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
-      const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
+      const cellBackground = getComputedStyle(e.target)['background-color'];
+      const cellIsSelected = cellBackground !== 'rgba(0, 0, 0, 0)';
 
       this.updateCellAvailability(e);
 
@@ -429,11 +435,10 @@ class AvailabilityGrid extends React.Component {
 
     let flattenedAvailability = _.flatten(this.props.availability);
 
-    flattenedAvailability = flattenedAvailability.filter(avail => avail).map(avail =>
-      new Date(avail[0]),
-    ).map(avail =>
-      moment(avail).format(formatStr),
-    );
+    flattenedAvailability = flattenedAvailability
+      .filter(avail => avail)
+      .map(avail => new Date(avail[0]))
+      .map(avail => moment(avail).format(formatStr));
 
     flattenedAvailability.forEach((avail) => {
       if (availabilityNum[avail]) availabilityNum[avail] += 1;
@@ -445,7 +450,9 @@ class AvailabilityGrid extends React.Component {
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
       const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+      const cellFormatted = moment(allTimes[timeIndex])
+        .set('date', date)
+        .format(formatStr);
 
       cell.style.background = colors[availabilityNum[cellFormatted]];
     });
@@ -543,13 +550,29 @@ class AvailabilityGrid extends React.Component {
               let styleName = 'cell';
 
               dates.forEach(({ fromDate, toDate }) => {
-                const fromDateFormatted = moment(fromDate).format('hh:mm a');
-                const toDateFormatted = moment(toDate).format('hh:mm a');
+                const { dateFormatStr } = this.state;
+                fromDate = moment(fromDate);
+                toDate = moment(toDate);
+                const fromDateFormatted = fromDate.format('hh:mm a');
+                const toDateFormatted = toDate.format('hh:mm a');
 
-                if (moment(fromDate).format(this.state.dateFormatStr) === date &&
-                    moment(fromDateFormatted, 'hh:mm a').isAfter(moment(time, 'hh:mm a')) ||
-                    moment(toDate).format(this.state.dateFormatStr) === date &&
-                    moment(toDateFormatted, 'hh:mm a').isBefore(moment(time, 'hh:mm a'))) {
+                const fromDateDateFormat = fromDate.format(dateFormatStr);
+                // Boolean: If date in fromDate === date => True; Else => False
+                const fromDateIsDate = fromDateDateFormat === date;
+
+                // Boolean: If time in fromDate > time => True; Else => False
+                const fromDateAfterTime = moment(fromDateFormatted, 'hh:mm a')
+                  .isAfter(moment(time, 'hh:mm a'));
+
+                const toDateDateFormat = toDate.format(dateFormatStr);
+                const toDateIsDate = toDateDateFormat === date;
+                const toDateBeforeTime = moment(toDateFormatted, 'hh:mm a')
+                  .isBefore(moment(time, 'hh:mm a'));
+
+                const fromDateInvalid = fromDateIsDate && fromDateAfterTime;
+                const toDateInvalid = toDateIsDate && toDateBeforeTime;
+
+                if (fromDateInvalid || toDateInvalid) {
                   disabled = 'disabled';
                   styleName = 'disabled';
                 }
@@ -573,8 +596,14 @@ class AvailabilityGrid extends React.Component {
             })}
           </div>
         ))}
-        <p styleName="info"><em>Each time slot represents 15 minutes.</em></p>
-        <p styleName="info"><em>Displaying all times in your local timezone: {jz.determine().name()}.</em></p>
+        <p styleName="info">
+          <em>Each time slot represents 15 minutes.</em>
+        </p>
+        <p styleName="info">
+          <em>
+            Displaying all times in your local timezone: {jz.determine().name()}
+          </em>
+        </p>
         <br />
         <div className="center">
           {this.props.heatmap ?
