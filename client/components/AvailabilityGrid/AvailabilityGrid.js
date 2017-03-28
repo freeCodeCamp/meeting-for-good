@@ -9,6 +9,7 @@ import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
+import update from 'react-addons-update';
 
 import styles from './availability-grid.css';
 import { getHours, getMinutes, removeZero } from '../../util/time-format';
@@ -20,9 +21,7 @@ class AvailabilityGrid extends React.Component {
   constructor(props) {
     super(props);
 
-    let dateFormatStr = 'Do MMM ddd';
-
-    if (props.weekDays) dateFormatStr = 'ddd';
+    const dateFormatStr = 'Do MMM ddd';
 
     this.state = {
       availability: [],
@@ -179,9 +178,10 @@ class AvailabilityGrid extends React.Component {
   showAvailBox(ev) {
     if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
       const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+      const formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
       const notAvailableOnDate = [];
-
+      
       const participants = JSON.parse(JSON.stringify(this.props.participants))
         .filter(participant => participant.availability)
         .map((participant) => {
@@ -280,14 +280,29 @@ class AvailabilityGrid extends React.Component {
     });
 
     const { _id } = this.props.user;
+    console.log('submitAvailability', this.props.event);
     const event = JSON.parse(JSON.stringify(this.props.event));
     const observerEvent = jsonpatch.observe(event);
+    /**
+     * first check if cur exists as a particpant
+     * if is not add the curUser as participant
+    **/
+    const isParticipant = event.participants.filter(participant => participant.userId === _id);
+    if (isParticipant.length === 0) {
+      const { user } = this.props;
+      const { name, avatar, _id: userId } = user;
+      const participant = { name, avatar, userId };
+      event.participants.push(participant);
+    }
     event.participants = event.participants.map((user) => {
-      if (user.userId === _id) user.availability = availability;
+      if (user.userId === _id) {
+        user.availability = availability;
+      }
       return user;
     });
 
     const patches = jsonpatch.generate(observerEvent);
+    console.log("patches at AvailabilityGrid", patches);
     await this.props.submitAvail(patches);
   }
 

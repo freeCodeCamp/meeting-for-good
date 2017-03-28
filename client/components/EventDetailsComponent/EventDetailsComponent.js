@@ -182,6 +182,7 @@ class EventDetailsComponent extends React.Component {
           participant.userId === curUser._id,
         );
         this.setState({ showHeatmap: true, event, participants: event.participants, myAvailability: me.availability });
+        return event;
       } catch (err) {
         console.log(err);
         this.setState({
