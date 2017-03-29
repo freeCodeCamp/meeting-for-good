@@ -61,14 +61,9 @@ class EventDetails extends Component {
     const response = await this.props.cbDeleteEvent(id);
     if (response) {
       browserHistory.push('/dashboard');
-    } else {
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Event Deleted fail, please try again latter.',
-        notificationTitle: 'Error!',
-      });
     }
   }
+
 
   render() {
     const { event, notificationIsActive, notificationMessage, notificationTitle, openDrawer, eventToInvite, curUser } = this.state;
