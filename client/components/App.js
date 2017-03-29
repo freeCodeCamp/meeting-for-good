@@ -139,8 +139,9 @@ class App extends Component {
   }
 
   @autobind
-  async handleDeleteGuest(guestToDelete, event) {
-    return deleteGuest(guestToDelete, event);
+  async handleDeleteGuest(guestToDelete) {
+    const response = await deleteGuest(guestToDelete);
+    return response;
   }
 
   render() {
@@ -164,7 +165,7 @@ class App extends Component {
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbDeleteEvent: this.handleDeleteEvent,
-            cbDeleteGuest: this.deteteGuest,
+            cbDeleteGuest: this.handleDeleteGuest,
             events,
           });
         }

@@ -44,7 +44,9 @@ class EventCard extends Component {
 
   @autobind
   async handleDeleteGuest(guestToDelete) {
-    return this.props.cbDeleteGuest(guestToDelete);
+    console.log('event card', guestToDelete);
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
   }
 
   render() {
@@ -96,7 +98,7 @@ EventCard.propTypes = {
   cb: React.PropTypes.func,
   showInviteGuests: React.PropTypes.func,
   curUser: React.PropTypes.object,
-  cbDeleteGuest: React.propTypes.func,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventCard, styles);

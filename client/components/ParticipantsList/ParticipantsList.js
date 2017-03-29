@@ -48,8 +48,7 @@ class ParticipantsList extends Component {
   async handleDeleteGuest() {
     const { guestToDelete, event } = this.state;
     const response = await this.props.cbDeleteGuest(guestToDelete);
-    try {
-      checkStatus(response);
+    if (response) {
       const newEvent = _.clone(event);
       newEvent.participants.forEach((participant, index) => {
         if (participant._id === guestToDelete) {
@@ -61,17 +60,15 @@ class ParticipantsList extends Component {
         notificationTitle: 'Alert',
         notificationIsActive: true,
         notificationMessage: 'Guest delete success!' });
-    } catch (err) {
+    } else {
       this.setState({
         notificationIsActive: true,
         notificationTitle: 'Error',
         notificationMessage: 'Failed to delete guest. Please try again later.',
       });
-      console.log('error at deleteEvent Modal', err);
-      return err;
-    } finally {
-      this.handleCloseDeleteModal();
+      console.log('error at deleteEvent Modal');
     }
+    this.handleCloseDeleteModal();
   }
 
   @autobind
