@@ -10,7 +10,6 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import IconButton from 'material-ui/IconButton';
 import cssModules from 'react-css-modules';
 
-import { checkStatus } from '../../util/fetch.util';
 import styles from './participants-list.css';
 
 class ParticipantsList extends Component {

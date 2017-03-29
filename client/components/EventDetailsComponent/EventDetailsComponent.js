@@ -227,6 +227,13 @@ class EventDetailsComponent extends React.Component {
     this.props.cbDeleteEvent(event._id);
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    console.log('eventDetailComponent', guestToDelete);
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+
   render() {
     const {
       event,
@@ -294,6 +301,7 @@ class EventDetailsComponent extends React.Component {
             event={event}
             curUser={curUser}
             showInviteGuests={this.handleShowInviteGuestsDrawer}
+            cbDeleteGuest={this.handleDeleteGuest}
           />
         </CardText>
         <Notification
@@ -316,6 +324,7 @@ EventDetailsComponent.propTypes = {
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventDetailsComponent, styles);

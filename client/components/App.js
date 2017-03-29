@@ -180,6 +180,7 @@ class App extends Component {
             cbLoadEvent: this.handleLoadEvent,
             cbDeleteEvent: this.handleDeleteEvent,
             cbEditEvent: this.handleEditEvent,
+            cbDeleteGuest: this.handleDeleteGuest,
           });
         }
         if (child.type.displayName === 'NewEvent') {
