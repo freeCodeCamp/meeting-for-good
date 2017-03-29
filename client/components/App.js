@@ -42,7 +42,7 @@ class App extends Component {
 
   /**
    * possible level values: info, success, error, warning
-   */  
+   */
   _addNotification(title, message, level, autoDismiss = 5) {
     this._notificationSystem.addNotification({
       title,
@@ -89,7 +89,7 @@ class App extends Component {
       this._addNotification('Events', 'Event deleted', 'success');
       return true;
     }
-    this._addNotification('Events', 'delete event error, please try again latter', 'error', 10);
+    this._addNotification('Error', 'delete event error, please try again latter', 'error', 10);
     return false;
   }
 
