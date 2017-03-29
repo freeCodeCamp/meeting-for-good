@@ -40,14 +40,15 @@ class App extends Component {
     }
   }
 
-
   _addNotification() {
     this._notificationSystem.addNotification({
+      title: 'Event',
       message: 'Notification message',
       level: 'success',
+      autoDismiss: 0,
+      position: 'tr',
     });
   }
-
 
   @autobind
   async toggleFilterPastEventsTo(value) {
@@ -163,6 +164,31 @@ class App extends Component {
       noCurEvents,
     } = this.state;
 
+    const style = {
+      NotificationItem: { // Override the notification item
+        DefaultStyle: { // Applied to every notification, regardless of the notification level
+          margin: '10px 5px 2px 1px',
+        },
+        success: { // Applied only to the success notification item
+          backgroundColor: 'white',
+          color: '#006400',
+        },
+        error: {
+          backgroundColor: 'white',
+          color: 'red',
+          borderTop: '2px solid red',
+        },
+      },
+      Containers: {
+        tr: {
+          top: '40px',
+          bottom: 'auto',
+          left: 'auto',
+          right: '0px',
+        },
+      },
+    };
+
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (child.type.displayName === 'Dashboard') {
@@ -207,12 +233,12 @@ class App extends Component {
 
     return (
       <div>
+        <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
         <LoginModal
           open={openLoginModal}
           logFail={loginFail}
           cbCancel={this.handleCancelLoginModal}
         />
-        <NotificationSystem ref={(ref) => { this.notifications = ref; }} />
         <NavBar
           location={location}
           cbFilter={this.toggleFilterPastEventsTo}
