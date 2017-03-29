@@ -82,12 +82,7 @@ class Dashboard extends Component {
 
   @autobind
   async handleDeleteEvent(id) {
-    const response = this.props.cbDeleteEvent(id);
-    if (response) {
-      this.addNotification('Info', 'Event Deleted');
-    } else {
-      this.addNotification('Alert!!!', 'Event Deleted fail, please try again latter.');
-    }
+    await this.props.cbDeleteEvent(id);
   }
 
   @autobind
