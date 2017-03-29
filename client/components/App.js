@@ -92,7 +92,7 @@ class App extends Component {
   @autobind
   async handleEmailOwner(event) {
     const { curUser } = this.state;
-    const ownerData = await loadOwnerData(event._id);
+    const ownerData = await loadOwnerData(event.owner);
     if (ownerData !== null) {
       const response = await sendEmailOwner(event, curUser, ownerData);
       if (response) {
@@ -188,6 +188,7 @@ class App extends Component {
             cbLoadEvent: this.handleLoadEvent,
             cbDeleteEvent: this.handleDeleteEvent,
             cbEditEvent: this.handleEditEvent,
+            cbEmailOwner: this.handleEmailOwner,
           });
         }
         if (child.type.displayName === 'NewEvent') {

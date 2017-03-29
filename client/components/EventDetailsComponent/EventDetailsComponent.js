@@ -113,51 +113,15 @@ class EventDetailsComponent extends React.Component {
     const patches = jsonpatch.generate(observerEvent);
     const response = await this.props.cbEditEvent(patches, event._id);
     if (response) {
-      this.sendEmailOwner(event);
+      await this.sendEmailOwner(event);
       this.setState({ event, eventParticipantsIds, showAvailabilityGrid: 'block' });
     }
   }
 
-  async loadOwnerData(_id) {
-    const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
-    try {
-      checkStatus(response);
-      return await parseJSON(response);
-    } catch (err) {
-      console.log('loadOwnerData', err);
-      this.addNotification('Error!!', 'Failed to load owner Data. Please try again later.');
-      return null;
-    }
-  }
-
   async sendEmailOwner(event) {
-    const { curUser } = this.props;
-    const { name } = curUser;
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
-    const ownerData = await this.loadOwnerData(event.owner);
-    const msg = {
-      guestName: name,
-      eventName: event.name,
-      eventId: event._id,
-      eventOwner: event.owner,
-      url: `${fullUrl}/event/${event._id}`,
-      to: ownerData.emails[0],
-      subject: 'Invite Accepted!!',
-    };
-    const response = await fetch('/api/email/ownerNotification', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'POST',
-      body: JSON.stringify(msg),
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('sendEmailOwner', err);
+    const response = this.props.cbHandleEmailOwner(event);
+    if (!response) {
+      console.log('sendEmailOwner error');
       this.setState({
         notificationIsActive: true,
         notificationMessage: 'Failed to send email for event Owner.',
@@ -316,6 +280,7 @@ EventDetailsComponent.propTypes = {
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbHandleEmailOwner: React.PropTypes.func,
 };
 
 export default cssModules(EventDetailsComponent, styles);

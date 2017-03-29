@@ -55,7 +55,7 @@ class EventDetails extends Component {
   handleCbGuestInviteDrawer(open) {
     this.setState({ openDrawer: open });
   }
-
+  
   @autobind
   async handleDeleteEvent(id) {
     const response = await this.props.cbDeleteEvent(id);
@@ -70,6 +70,11 @@ class EventDetails extends Component {
     }
   }
 
+  @autobind
+  async HandleEmailOwner(event) {
+    await this.props.cbEmailOwner(event);
+  }
+
   render() {
     const { event, notificationIsActive, notificationMessage, notificationTitle, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
@@ -81,6 +86,8 @@ class EventDetails extends Component {
             showInviteGuests={this.handleInviteGuests}
             cbDeleteEvent={this.handleDeleteEvent}
             cbEditEvent={this.handleEditEvent}
+            cbHandleEmailOwner={this.HandleEmailOwner}
+
           />
           <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
         </div>
@@ -109,6 +116,7 @@ EventDetails.propTypes = {
   cbLoadEvent: React.PropTypes.func,
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
+  cbEmailOwner: React.PropTypes.func,
 };
 
 export default cssModules(EventDetails, styles);
