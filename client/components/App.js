@@ -42,6 +42,7 @@ class App extends Component {
 
   /**
    * possible level values: info, success, error, warning
+   * autoDismiss time in seconds
    */
   _addNotification(title, message, level, autoDismiss = 5) {
     this._notificationSystem.addNotification({
@@ -86,7 +87,7 @@ class App extends Component {
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
-      this._addNotification('Success!', 'Event deleted', 'success');
+      this._addNotification('Success!', 'Event deleted', 'success', 30000);
       return true;
     }
     this._addNotification('Error!!', 'delete event error, please try again latter', 'error', 10);
@@ -174,10 +175,12 @@ class App extends Component {
       NotificationItem: { // Override the notification item
         DefaultStyle: { // Applied to every notification, regardless of the notification level
           margin: '10px 5px 2px 1px',
+          fontSize: '15px',
         },
         success: { // Applied only to the success notification item
           backgroundColor: 'white',
           color: '#006400',
+          borderTop: '4px solid #006400',
         },
         error: {
           backgroundColor: 'white',
@@ -196,6 +199,12 @@ class App extends Component {
           bottom: 'auto',
           left: 'auto',
           right: '0px',
+        },
+      },
+      Title: {
+        DefaultStyle: {
+          fontSize: '18px',
+          fontWeight: 'bold',
         },
       },
     };
