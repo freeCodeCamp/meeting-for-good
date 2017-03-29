@@ -5,7 +5,6 @@ import { browserHistory } from 'react-router';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
-import { Notification } from 'react-notification';
 import BestTimesDisplay from '../BestTimeDisplay/BestTimeDisplay';
 import ParticipantsList from '../ParticipantsList/ParticipantsList';
 import DeleteModal from '../DeleteModal/DeleteModal';
@@ -20,9 +19,6 @@ class EventCard extends Component {
       participants: props.event.participants,
       event,
       curUser,
-      notificationMessage: '',
-      notificationIsActive: false,
-      notificationTitle: '',
     };
   }
 
@@ -43,7 +39,7 @@ class EventCard extends Component {
   }
 
   render() {
-    const { event, curUser, notificationIsActive, notificationMessage, notificationTitle } = this.state;
+    const { event, curUser } = this.state;
     let isOwner;
 
     if (curUser !== undefined) {
@@ -66,15 +62,6 @@ class EventCard extends Component {
         <CardActions styleName="cardActions">
           <FlatButton styleName="viewDetailsButton" onClick={this.redirectToEvent}>View Details</FlatButton>
         </CardActions>
-        <Notification
-          isActive={notificationIsActive}
-          message={notificationMessage}
-          action="Dismiss"
-          title={notificationTitle}
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
-        />
       </Card>
     );
   }
