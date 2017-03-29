@@ -93,6 +93,33 @@ export async function deleteEvent(id) {
   }
 }
 
+export async function deleteGuest(guestToDelete, event) {
+  const response =  await fetch(
+    `/api/events/participant/${guestToDelete}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+      credentials: 'same-origin',
+    },
+  );
+  try {
+    checkStatus(response);
+    const newEvent = _.clone(event);
+    newEvent.participants.forEach((participant, index) => {
+      if (participant._id === guestToDelete) {
+        newEvent.participants.splice(index, 1);
+      }
+    });
+    return newEvent;
+  } catch (err) {
+    console.log('error at deleteEvent Modal', err);
+    return err;
+
+}
+
 export async function editEvent(patches, eventId) {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
