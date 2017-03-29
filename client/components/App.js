@@ -44,7 +44,7 @@ class App extends Component {
    * possible level values: info, success, error, warning
    * autoDismiss time in seconds
    */
-  _addNotification(title, message, level, autoDismiss = 5) {
+  _addNotification(title, message, level, autoDismiss = 4) {
     this._notificationSystem.addNotification({
       title,
       message,
@@ -66,7 +66,10 @@ class App extends Component {
     const event = events.filter(event => event._id === id);
     if (event.length === 0) {
       const event = await loadEvent(id);
-      this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 10);
+      if (event === null) {
+        this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 8);
+        return false;
+      }
       return event;
     }
     return event[0];
@@ -77,7 +80,7 @@ class App extends Component {
     const { events } = this.state;
     const nEvent = await addEvent(event);
     this.setState({ events: [nEvent, ...events] });
-    this._addNotification('Events', `Event ${nEvent.name} created`, 'success', 100);
+    this._addNotification('Events', `Event ${nEvent.name} created`, 'success');
     return nEvent;
   }
 
@@ -91,7 +94,7 @@ class App extends Component {
       this._addNotification('Success!', 'Event deleted', 'success');
       return true;
     }
-    this._addNotification('Error!!', 'delete event error, please try again latter', 'error', 10);
+    this._addNotification('Error!!', 'delete event error, please try again latter', 'error', 8);
     return false;
   }
 
