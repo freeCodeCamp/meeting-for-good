@@ -61,7 +61,6 @@ class EventDetails extends Component {
     }
   }
 
-
   render() {
     const { event, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
