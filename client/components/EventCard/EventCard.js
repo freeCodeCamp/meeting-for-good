@@ -44,7 +44,6 @@ class EventCard extends Component {
 
   @autobind
   async handleDeleteGuest(guestToDelete) {
-    console.log('event card', guestToDelete);
     const response = await this.props.cbDeleteGuest(guestToDelete);
     return response;
   }
