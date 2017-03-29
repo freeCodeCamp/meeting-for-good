@@ -47,17 +47,7 @@ class ParticipantsList extends Component {
   @autobind
   async handleDeleteGuest() {
     const { guestToDelete, event } = this.state;
-    const response =  await fetch(
-    `/api/events/participant/${guestToDelete}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-        credentials: 'same-origin',
-      },
-    );
+    const response = await this.props.cbDeleteGuest(guestToDelete);
     try {
       checkStatus(response);
       const newEvent = _.clone(event);
@@ -278,6 +268,7 @@ ParticipantsList.propTypes = {
   event: React.PropTypes.object,
   curUser: React.PropTypes.object,
   showInviteGuests: React.PropTypes.func,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(ParticipantsList, styles);

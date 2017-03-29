@@ -95,7 +95,7 @@ export async function deleteEvent(id) {
   }
 }
 
-export async function deleteGuest(guestToDelete, event) {
+export async function deleteGuest(guestToDelete) {
   nprogress.configure({ showSpinner: false });
   const response = await fetch(
     `/api/events/participant/${guestToDelete}`,
@@ -110,16 +110,10 @@ export async function deleteGuest(guestToDelete, event) {
   );
   try {
     checkStatus(response);
-    const newEvent = _.clone(event);
-    newEvent.participants.forEach((participant, index) => {
-      if (participant._id === guestToDelete) {
-        newEvent.participants.splice(index, 1);
-      }
-    });
-    return newEvent;
+    return true;
   } catch (err) {
     console.log('error at deleteEvent Modal', err);
-    return err;
+    return false;
   } finally {
     nprogress.done();
   }

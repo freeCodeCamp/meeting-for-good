@@ -100,6 +100,11 @@ class Dashboard extends Component {
     this.setState({ openDrawer: open });
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    return this.props.cbDeleteGuest(guestToDelete);
+  }
+
   render() {
     const { events, curUser, notifications, openDrawer, eventToInvite } = this.state;
     return (
@@ -118,6 +123,7 @@ class Dashboard extends Component {
                 cbDeleteEvent={this.handleDeleteEvent}
                 curUser={curUser}
                 showInviteGuests={this.handleInviteGuests}
+                cbDeleteGuest={this.handleDeleteGuest}
               />
             ))}
           </Masonry> :
@@ -146,6 +152,7 @@ Dashboard.propTypes = {
   curUser: PropTypes.object,
   events: PropTypes.array,
   cbDeleteEvent: PropTypes.func,
+  cbDeleteGuest: PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);
