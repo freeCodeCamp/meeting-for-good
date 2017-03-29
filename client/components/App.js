@@ -1,6 +1,7 @@
 import React, { Component, cloneElement } from 'react';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
+import NotificationSystem from 'react-notification-system';
 
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
@@ -24,6 +25,7 @@ class App extends Component {
       events: [],
       noCurEvents: false,
     };
+    this._notificationSystem = null;
   }
 
   async componentWillMount() {
@@ -37,6 +39,15 @@ class App extends Component {
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
+
+
+  _addNotification() {
+    this._notificationSystem.addNotification({
+      message: 'Notification message',
+      level: 'success',
+    });
+  }
+
 
   @autobind
   async toggleFilterPastEventsTo(value) {
@@ -60,6 +71,7 @@ class App extends Component {
     const { events } = this.state;
     const nEvent = await addEvent(event);
     this.setState({ events: [nEvent, ...events] });
+    this._addNotification();
     return nEvent;
   }
 
@@ -70,6 +82,7 @@ class App extends Component {
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
+      this._addNotification();
       return true;
     }
     return false;
@@ -199,6 +212,7 @@ class App extends Component {
           logFail={loginFail}
           cbCancel={this.handleCancelLoginModal}
         />
+        <NotificationSystem ref={(ref) => { this.notifications = ref; }} />
         <NavBar
           location={location}
           cbFilter={this.toggleFilterPastEventsTo}
