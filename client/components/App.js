@@ -66,6 +66,7 @@ class App extends Component {
     const event = events.filter(event => event._id === id);
     if (event.length === 0) {
       const event = await loadEvent(id);
+      this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 10);
       return event;
     }
     return event[0];
@@ -87,7 +88,7 @@ class App extends Component {
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
-      this._addNotification('Success!', 'Event deleted', 'success', 30000);
+      this._addNotification('Success!', 'Event deleted', 'success');
       return true;
     }
     this._addNotification('Error!!', 'delete event error, please try again latter', 'error', 10);
