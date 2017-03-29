@@ -40,12 +40,15 @@ class App extends Component {
     }
   }
 
-  _addNotification() {
+  /**
+   * possible level values: info, success, error, warning
+   */  
+  _addNotification(title, message, level, autoDismiss = 5) {
     this._notificationSystem.addNotification({
-      title: 'Event',
-      message: 'Notification message',
-      level: 'success',
-      autoDismiss: 0,
+      title,
+      message,
+      level,
+      autoDismiss,
       position: 'tr',
     });
   }
@@ -72,7 +75,7 @@ class App extends Component {
     const { events } = this.state;
     const nEvent = await addEvent(event);
     this.setState({ events: [nEvent, ...events] });
-    this._addNotification();
+    this._addNotification('Events', `Event ${nEvent.name} created`, 'success', 100);
     return nEvent;
   }
 
@@ -83,9 +86,10 @@ class App extends Component {
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
-      this._addNotification();
+      this._addNotification('Events', 'Event deleted', 'success');
       return true;
     }
+    this._addNotification('Events', 'delete event error, please try again latter', 'error', 10);
     return false;
   }
 
@@ -177,6 +181,11 @@ class App extends Component {
           backgroundColor: 'white',
           color: 'red',
           borderTop: '2px solid red',
+        },
+        info: {
+          backgroundColor: 'white',
+          color: 'blue',
+          borderTop: '2px solid blue',
         },
       },
       Containers: {
