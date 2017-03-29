@@ -86,10 +86,10 @@ class App extends Component {
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
-      this._addNotification('Events', 'Event deleted', 'success');
+      this._addNotification('Success!', 'Event deleted', 'success');
       return true;
     }
-    this._addNotification('Error', 'delete event error, please try again latter', 'error', 10);
+    this._addNotification('Error!!', 'delete event error, please try again latter', 'error', 10);
     return false;
   }
 
@@ -101,8 +101,10 @@ class App extends Component {
       const eventEdited  = await loadEvent(eventId);
       const nEvents = events.filter(event => event._id !== eventId);
       this.setState({ events: [eventEdited, ...nEvents] });
+      this._addNotification('Success', 'Saved availability successfully.', 'success');
       return true;
     }
+    this._addNotification('Error!!', 'Failed to update availability. Please try again later.', 'error');
     return false;
   }
 
