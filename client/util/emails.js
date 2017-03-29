@@ -2,12 +2,11 @@ import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
 import { checkStatus } from './fetch.util';
 
-export async function sendEmailOwner(event, curUser, fullUrl, ownerData) {
+export async function sendEmailOwner(event, curUser, ownerData) {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   const { name } = curUser;
-  // const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
-  // const ownerData = await this.loadOwnerData(event.owner);
+  const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
   const msg = {
     guestName: name,
     eventName: event.name,

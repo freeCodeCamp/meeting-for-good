@@ -5,7 +5,8 @@ import { browserHistory } from 'react-router';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent } from '../util/events';
+import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData } from '../util/events';
+import { sendEmailOwner } from '../util/emails';
 
 
 import '../styles/main.css';
@@ -89,6 +90,19 @@ class App extends Component {
   }
 
   @autobind
+  async handleEmailOwner(event) {
+    const { curUser } = this.state;
+    const ownerData = await loadOwnerData(event._id);
+    if (ownerData !== null) {
+      const response = await sendEmailOwner(event, curUser, ownerData);
+      if (response) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  @autobind
   handleLogin(curUser) {
     if (Object.keys(curUser).length > 0) {
       this.setState({ curUser, isAuthenticated: true });
@@ -133,6 +147,7 @@ class App extends Component {
     }
     browserHistory.push('/');
   }
+
   @autobind
   handleNoCurEventsMessage() {
     this.setState({ noCurEvents: false });
