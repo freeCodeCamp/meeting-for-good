@@ -8,7 +8,6 @@ import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Badge from 'material-ui/Badge';
 import Divider from 'material-ui/Divider';
 import { browserHistory } from 'react-router';
-import FlatButton from 'material-ui/FlatButton';
 import cssModules from 'react-css-modules';
 
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -97,16 +96,6 @@ class NotificationBar extends Component {
   renderMenuRows() {
     const { notifications, curUser } = this.state;
     const rows = [];
-    const inlineStyles = {
-      flatButton: {
-        label: {
-          paddingLeft: 0,
-          textTransform: 'none',
-          marginLeft: 0,
-          textAlign: 'left',
-        },
-      },
-    };
 
     if (notifications) {
       notifications.forEach((notice) => {
@@ -123,7 +112,7 @@ class NotificationBar extends Component {
                 style={{ backgroundColor: bkgColor }}
                 styleName="menuItem"
               >
-                {participant.name} accepted your invitation for<span>&#32;</span>
+                {participant.name} <span>accepted your invitation for &#32;</span>
                 <a
                   onTouchTap={() => this.handleEventLinkClick(notice._id)}
                   styleName="eventLink"
@@ -145,23 +134,17 @@ class NotificationBar extends Component {
     const openMenu = (notifications.length === 0) ? false : null;
     const inLineStyles = {
       badge: {
-        top: 22,
-        right: 36,
+        right: 47,
+        top: 30,
         visibility: visible,
         fontSize: '12px',
-        width: 15,
-        height: 15,
-        padding: '0px',
+        width: 16,
+        height: 16,
       },
       iconButton: {
-        width: '22px',
-        height: '22px',
-        margin: '0 0 14px 0',
-        padding: 0,
         icon: {
           color: 'white',
-          width: '22px',
-
+          width: '19px',
         },
       },
     };
@@ -169,7 +152,8 @@ class NotificationBar extends Component {
       <IconMenu
         maxHeight={300}
         open={openMenu}
-        styleName="iconMenu"
+        iconStyle={inLineStyles.iconButton}
+        style={{ height: '40px', width: '40px', margin: '-54px 18px 0px 0px' }}
         iconButtonElement={
           <Badge
             badgeContent={quantOwnerNotNotified}
@@ -179,10 +163,10 @@ class NotificationBar extends Component {
             <IconButton
               tooltip="Notifications"
               onTouchTap={this.handleDismissAll}
-              style={inLineStyles.iconButton}
               iconStyle={inLineStyles.iconButton.icon}
+            
             >
-              <NotificationsIcon />
+              <NotificationsIcon size={10} />
             </IconButton>
           </Badge>
         }
