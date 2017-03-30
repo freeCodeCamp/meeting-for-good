@@ -26,7 +26,12 @@ const muiTheme = getMuiTheme({
     textColor: darkWhite,
     backgroundColor: '#006400',
   },
-
+  raisedButton: {
+    fontWeight: 'regular',
+  },
+  flatButton: {
+    fontWeight: 'bold',
+  },
 });
 
 ReactDOM.render(
