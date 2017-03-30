@@ -242,7 +242,6 @@ class GuestInviteDrawer extends Component {
       searchText,
       snackbarMsg,
       linearProgressVisible,
-      guestsToDisplay,
     } = this.state;
 
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
