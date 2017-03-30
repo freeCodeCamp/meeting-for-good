@@ -279,6 +279,7 @@ class EventDetailsComponent extends React.Component {
                 event={event}
                 curUser={curUser}
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
+                cbDeleteGuest={this.handleDeleteGuest}
               />
             </CardText>
           </Card>
