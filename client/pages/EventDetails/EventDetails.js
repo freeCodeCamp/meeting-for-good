@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import { Notification } from 'react-notification';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 
@@ -13,8 +12,6 @@ class EventDetails extends Component {
     super(props);
     this.state = {
       event: null,
-      notificationMessage: '',
-      notificationIsActive: false,
       showLoginModal: false,
       openDrawer: false,
       eventToInvite: {},
@@ -61,17 +58,11 @@ class EventDetails extends Component {
     const response = await this.props.cbDeleteEvent(id);
     if (response) {
       browserHistory.push('/dashboard');
-    } else {
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Event Deleted fail, please try again latter.',
-        notificationTitle: 'Error!',
-      });
     }
   }
 
   render() {
-    const { event, notificationIsActive, notificationMessage, notificationTitle, openDrawer, eventToInvite, curUser } = this.state;
+    const { event, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
       return (
         <div styleName="event">
@@ -86,18 +77,6 @@ class EventDetails extends Component {
         </div>
       );
     }
-    return (
-      <Notification
-        isActive={notificationIsActive}
-        message={notificationMessage}
-        action="Dismiss"
-        title={notificationTitle}
-        onDismiss={() => this.setState({ notificationIsActive: false })}
-        onClick={() => this.setState({ notificationIsActive: false })}
-        activeClassName="notification-bar-is-active"
-        dismissAfter={6000}
-      />
-    );
   }
 }
 

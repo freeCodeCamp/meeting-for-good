@@ -171,19 +171,10 @@ class EventDetailsComponent extends React.Component {
           event,
           participants: event.participants,
           myAvailability: me.availability,
-          notificationIsActive: true,
-          notificationMessage: 'Saved availability successfully.',
-          notificationTitle: 'Success!',
         });
         return event;
       } catch (err) {
-        console.log(err);
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Failed to update availability. Please try again later.',
-          notificationTitle: 'Error!',
-        });
-        return;
+        console.log('EventDetailCompoent submitAvailability', err);
       }
     }
   }
