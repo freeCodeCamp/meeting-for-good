@@ -24,7 +24,7 @@ const VENDOR_LIBS = [
   'react-dom',
   'react-css-modules',
   'react-masonry-component',
-  'react-notification',
+  'react-notification-system',
   'react-router',
   'immutable',
   'material-ui',
