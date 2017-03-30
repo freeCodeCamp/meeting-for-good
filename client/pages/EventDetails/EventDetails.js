@@ -67,6 +67,7 @@ class EventDetails extends Component {
   }
 
   async handleDeleteGuest(guestToDelete) {
+    console.log(guestToDelete, this.props);
     const response = await this.props.cbDeleteGuest(guestToDelete);
     return response;
   }

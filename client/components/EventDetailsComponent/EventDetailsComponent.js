@@ -6,7 +6,6 @@ import { Card, CardTitle, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
-import Notification from '../../components/vendor/react-notification';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import styles from './event-details-component.css';
@@ -106,11 +105,6 @@ class EventDetailsComponent extends React.Component {
     const response = this.props.cbHandleEmailOwner(event);
     if (!response) {
       console.log('sendEmailOwner error');
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to send email for event Owner.',
-        notificationTitle: 'Error!',
-      });
     }
   }
 
@@ -210,11 +204,6 @@ class EventDetailsComponent extends React.Component {
       },
     };
 
-    const notifActions = [{
-      text: 'Dismiss',
-      handleClick: () => { this.setState({ notificationIsActive: false }); },
-    }];
-
     return (
       <div styleName="wrapper">
         <div styleName="cardWrapper">
@@ -257,15 +246,6 @@ class EventDetailsComponent extends React.Component {
             </CardText>
           </Card>
         </div>
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          actions={notifActions}
-          title={this.state.notificationTitle}
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={3000}
-          activeClassName="notification-bar-is-active"
-        />
         <Snackbar
           style={inLineStyles.snackBar}
           bodyStyle={{ height: 'flex' }}
