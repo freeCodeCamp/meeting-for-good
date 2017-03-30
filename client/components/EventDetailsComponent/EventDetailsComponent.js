@@ -212,11 +212,6 @@ class EventDetailsComponent extends React.Component {
       },
     };
 
-    const notifActions = [{
-      text: 'Dismiss',
-      handleClick: () => { this.setState({ notificationIsActive: false }); },
-    }];
-
     return (
       <div styleName="wrapper">
         <div styleName="cardWrapper">
