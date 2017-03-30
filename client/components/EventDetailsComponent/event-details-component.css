@@ -4,6 +4,10 @@
    min-width: 320px;
 }
 
+.cardWrapper:hover {
+  box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3);
+}
+
 .cardTitle {
   padding: 25px 10px 10px 10px !important;
   font-size: 36px !important;
@@ -16,3 +20,16 @@
   display: flex;
   justify-content: space-around;
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.joinMsg {
+  text-align: center;
+  width: 300px;
+  align-self: center;
+}
+
