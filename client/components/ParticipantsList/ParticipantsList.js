@@ -5,7 +5,6 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
 import _ from 'lodash';
-import { Notification } from 'react-notification';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import IconButton from 'material-ui/IconButton';
 import cssModules from 'react-css-modules';
@@ -22,9 +21,6 @@ class ParticipantsList extends Component {
       openDeleteModal: false,
       openDrawer: false,
       guestToDelete: '',
-      notificationMessage: '',
-      notificationIsActive: false,
-      notificationTitle: '',
     };
   }
 
@@ -54,17 +50,7 @@ class ParticipantsList extends Component {
           newEvent.participants.splice(index, 1);
         }
       });
-      this.setState({
-        event: newEvent,
-        notificationTitle: 'Alert',
-        notificationIsActive: true,
-        notificationMessage: 'Guest delete success!' });
     } else {
-      this.setState({
-        notificationIsActive: true,
-        notificationTitle: 'Error',
-        notificationMessage: 'Failed to delete guest. Please try again later.',
-      });
       console.log('error at deleteEvent Modal');
     }
     this.handleCloseDeleteModal();
@@ -117,7 +103,8 @@ class ParticipantsList extends Component {
               onTouchTap={() => this.handleTouchTap()}
               onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
             >
-              <Avatar src={participant.avatar}
+              <Avatar
+                src={participant.avatar}
                 styleName="avatar"
                 style={{ border: noAvailability() }}
               />
@@ -204,7 +191,6 @@ class ParticipantsList extends Component {
   }
 
   render() {
-    const { notificationIsActive, notificationMessage, notificationTitle } = this.state;
     const inLineStyles = {
       buttonAddGuest: {
         backgroundColor: '#e0e0e0',
@@ -245,15 +231,6 @@ class ParticipantsList extends Component {
           {this.renderGuestList()}
         </div>
         {this.renderDeleteModal()}
-        <Notification
-          isActive={notificationIsActive}
-          message={notificationMessage}
-          action="Dismiss"
-          title={notificationTitle}
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
-        />
       </div>
 
     );

@@ -52,7 +52,7 @@ class EventDetails extends Component {
   handleCbGuestInviteDrawer(open) {
     this.setState({ openDrawer: open });
   }
-  
+
   @autobind
   async handleDeleteEvent(id) {
     const response = await this.props.cbDeleteEvent(id);

@@ -179,7 +179,7 @@ class EventDetailsComponent extends React.Component {
     const response = await this.props.cbDeleteGuest(guestToDelete);
     return response;
   }
-  
+
   handleSnackBarRequestClose() {
     this.setState({
       snackBarOpen: false,
