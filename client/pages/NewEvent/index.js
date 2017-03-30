@@ -315,7 +315,6 @@ class NewEvent extends React.Component {
                 hintText="Enter an event name..."
                 className="validate"
                 autoFocus
-                errorText="This field is required"
               />
               <div>
                 <h6 styleName="heading-dates">What dates might work for you?</h6>

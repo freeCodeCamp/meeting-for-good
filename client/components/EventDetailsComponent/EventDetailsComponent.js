@@ -76,7 +76,6 @@ class EventDetailsComponent extends React.Component {
           snackBarOpen: true,
           snackBarMsg: 'Please add your availability to join the event.',
         });
-
       }
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
@@ -197,7 +196,7 @@ class EventDetailsComponent extends React.Component {
     const response = await this.props.cbDeleteGuest(guestToDelete);
     return response;
   }
-  
+
   handleSnackBarRequestClose() {
     this.setState({
       snackBarOpen: false,
