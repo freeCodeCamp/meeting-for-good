@@ -4,9 +4,7 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
-
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
-import Notification from '../../components/vendor/react-notification';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import styles from './event-details-component.css';
@@ -37,9 +35,6 @@ class EventDetailsComponent extends React.Component {
       participants: event.participants,
       showHeatmap: false,
       myAvailability: [],
-      notificationIsActive: false,
-      notificationMessage: '',
-      notificationTitle: '',
       showButtonAviability: 'none',
       showAvailabilityGrid: 'block',
       isParticipant: true,
@@ -81,11 +76,6 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
-  componentDidMount() {
-    $('.notification-bar-action').on('click', () => {
-      this.setState({ notificationIsActive: false });
-    });
-  }
 
   async loadOwnerData(_id) {
     const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
@@ -127,11 +117,6 @@ class EventDetailsComponent extends React.Component {
       checkStatus(response);
     } catch (err) {
       console.log('sendEmailOwner', err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to send email for event Owner.',
-        notificationTitle: 'Error!',
-      });
     }
   }
 
@@ -274,15 +259,6 @@ class EventDetailsComponent extends React.Component {
             </CardText>
           </Card>
         </div>
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          actions={notifActions}
-          title={this.state.notificationTitle}
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={3000}
-          activeClassName="notification-bar-is-active"
-        />
         <Snackbar
           style={inLineStyles.snackBar}
           bodyStyle={{ height: 'flex' }}
