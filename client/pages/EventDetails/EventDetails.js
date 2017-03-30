@@ -61,6 +61,13 @@ class EventDetails extends Component {
     }
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+
+
   render() {
     const { event, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
@@ -72,6 +79,7 @@ class EventDetails extends Component {
             showInviteGuests={this.handleInviteGuests}
             cbDeleteEvent={this.handleDeleteEvent}
             cbEditEvent={this.handleEditEvent}
+            cbDeleteGuest={this.handleDeleteGuest}
           />
           <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
         </div>
@@ -88,6 +96,7 @@ EventDetails.propTypes = {
   cbLoadEvent: React.PropTypes.func,
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventDetails, styles);

@@ -192,6 +192,12 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
+
+  async handleDeleteGuest(guestToDelete) {
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+  
   handleSnackBarRequestClose() {
     this.setState({
       snackBarOpen: false,
@@ -264,6 +270,7 @@ class EventDetailsComponent extends React.Component {
                 event={event}
                 curUser={curUser}
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
+                cbDeleteGuest={this.handleDeleteGuest}
               />
             </CardText>
           </Card>
@@ -299,6 +306,7 @@ EventDetailsComponent.propTypes = {
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventDetailsComponent, styles);

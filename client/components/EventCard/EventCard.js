@@ -38,6 +38,12 @@ class EventCard extends Component {
     this.props.showInviteGuests(event);
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+
   render() {
     const { event, curUser } = this.state;
     let isOwner;
@@ -56,7 +62,12 @@ class EventCard extends Component {
         </CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker={false} />
-          <ParticipantsList event={event} curUser={curUser} showInviteGuests={this.handleShowInviteGuestsDrawer} />
+          <ParticipantsList
+            event={event}
+            curUser={curUser}
+            showInviteGuests={this.handleShowInviteGuestsDrawer}
+            cbDeleteGuest={this.handleDeleteGuest}
+          />
         </CardText>
         <Divider style={styles.card.divider} />
         <CardActions styleName="cardActions">
@@ -73,6 +84,7 @@ EventCard.propTypes = {
   cb: React.PropTypes.func,
   showInviteGuests: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventCard, styles);

@@ -6,7 +6,7 @@ import NotificationSystem from 'react-notification-system';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent } from '../util/events';
+import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, deleteGuest } from '../util/events';
 
 
 import '../styles/main.css';
@@ -163,6 +163,12 @@ class App extends Component {
     this.setState({ noCurEvents: false });
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    const response = await deleteGuest(guestToDelete);
+    return response;
+  }
+
   render() {
     const { location } = this.props;
     const {
@@ -222,6 +228,7 @@ class App extends Component {
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbDeleteEvent: this.handleDeleteEvent,
+            cbDeleteGuest: this.handleDeleteGuest,
             events,
           });
         }
@@ -236,6 +243,7 @@ class App extends Component {
             cbLoadEvent: this.handleLoadEvent,
             cbDeleteEvent: this.handleDeleteEvent,
             cbEditEvent: this.handleEditEvent,
+            cbDeleteGuest: this.handleDeleteGuest,
           });
         }
         if (child.type.displayName === 'NewEvent') {

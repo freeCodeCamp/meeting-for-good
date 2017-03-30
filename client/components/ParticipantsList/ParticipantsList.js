@@ -10,7 +10,6 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import IconButton from 'material-ui/IconButton';
 import cssModules from 'react-css-modules';
 
-import { checkStatus } from '../../util/fetch.util';
 import styles from './participants-list.css';
 
 class ParticipantsList extends Component {
@@ -47,19 +46,8 @@ class ParticipantsList extends Component {
   @autobind
   async handleDeleteGuest() {
     const { guestToDelete, event } = this.state;
-    const response =  await fetch(
-    `/api/events/participant/${guestToDelete}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-        credentials: 'same-origin',
-      },
-    );
-    try {
-      checkStatus(response);
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    if (response) {
       const newEvent = _.clone(event);
       newEvent.participants.forEach((participant, index) => {
         if (participant._id === guestToDelete) {
@@ -71,17 +59,15 @@ class ParticipantsList extends Component {
         notificationTitle: 'Alert',
         notificationIsActive: true,
         notificationMessage: 'Guest delete success!' });
-    } catch (err) {
+    } else {
       this.setState({
         notificationIsActive: true,
         notificationTitle: 'Error',
         notificationMessage: 'Failed to delete guest. Please try again later.',
       });
-      console.log('error at deleteEvent Modal', err);
-      return err;
-    } finally {
-      this.handleCloseDeleteModal();
+      console.log('error at deleteEvent Modal');
     }
+    this.handleCloseDeleteModal();
   }
 
   @autobind
@@ -278,6 +264,7 @@ ParticipantsList.propTypes = {
   event: React.PropTypes.object,
   curUser: React.PropTypes.object,
   showInviteGuests: React.PropTypes.func,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(ParticipantsList, styles);
