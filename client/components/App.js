@@ -181,7 +181,6 @@ class App extends Component {
 
   @autobind
   async handleDeleteGuest(guestToDelete) {
-    console.log('no app');
     const response = await deleteGuest(guestToDelete);
     if (response) {
       this._addNotification('Success', 'Guest deleted successfully.', 'success');

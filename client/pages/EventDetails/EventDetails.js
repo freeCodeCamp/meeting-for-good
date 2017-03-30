@@ -66,6 +66,7 @@ class EventDetails extends Component {
     await this.props.cbEmailOwner(event);
   }
 
+  @autobind
   async handleDeleteGuest(guestToDelete) {
     console.log(guestToDelete, this.props);
     const response = await this.props.cbDeleteGuest(guestToDelete);
