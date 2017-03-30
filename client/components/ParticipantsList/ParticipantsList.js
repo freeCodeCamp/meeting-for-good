@@ -106,7 +106,8 @@ class ParticipantsList extends Component {
               onTouchTap={() => this.handleTouchTap()}
               onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
             >
-              <Avatar src={participant.avatar}
+              <Avatar
+                src={participant.avatar}
                 styleName="avatar"
                 style={{ border: noAvailability() }}
               />
