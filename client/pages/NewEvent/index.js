@@ -318,6 +318,7 @@ class NewEvent extends React.Component {
                 hintText="Enter an event name..."
                 className="validate"
                 autoFocus
+                inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
               />
               <div>
                 <h6 styleName="heading-dates">What dates might work for you?</h6>
