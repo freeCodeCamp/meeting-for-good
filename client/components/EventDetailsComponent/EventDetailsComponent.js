@@ -76,7 +76,6 @@ class EventDetailsComponent extends React.Component {
           snackBarOpen: true,
           snackBarMsg: 'Please add your availability to join the event.',
         });
-
       }
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
@@ -100,27 +99,6 @@ class EventDetailsComponent extends React.Component {
       range = document.body.createTextRange();
       range.moveToElementText(el);
       range.select();
-    }
-  }
-
-  @autobind
-  async joinEvent() {
-    const { curUser } = this.props;
-    const { name, avatar, _id: userId } = curUser;
-    const participant = { name, avatar, userId };
-    const event = update(this.state.event, { $set: this.state.event });
-    const observerEvent = jsonpatch.observe(event);
-
-    event.participants.push(participant);
-
-    const eventParticipantsIds = update(this.state.eventParticipantsIds, {
-      $push: [curUser._id],
-    });
-    const patches = jsonpatch.generate(observerEvent);
-    const response = await this.props.cbEditEvent(patches, event._id);
-    if (response) {
-      await this.sendEmailOwner(event);
-      this.setState({ event, eventParticipantsIds, showAvailabilityGrid: 'block' });
     }
   }
 
@@ -175,6 +153,10 @@ class EventDetailsComponent extends React.Component {
           notificationMessage: 'Saved availability successfully.',
           notificationTitle: 'Success!',
         });
+        if (curUser._id !== event.owner) {
+          await this.sendEmailOwner(event);
+        }
+
         return event;
       } catch (err) {
         console.log(err);
