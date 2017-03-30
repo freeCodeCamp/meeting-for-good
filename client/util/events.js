@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
+import _ from 'lodash';
+
 import { checkStatus, parseJSON } from './fetch.util';
 
 export async function loadEvents(showPastEvents) {
@@ -87,6 +89,30 @@ export async function deleteEvent(id) {
     return true;
   } catch (err) {
     console.log('deleteEvent', err);
+    return false;
+  } finally {
+    nprogress.done();
+  }
+}
+
+export async function deleteGuest(guestToDelete) {
+  nprogress.configure({ showSpinner: false });
+  const response = await fetch(
+    `/api/events/participant/${guestToDelete}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+      credentials: 'same-origin',
+    },
+  );
+  try {
+    checkStatus(response);
+    return true;
+  } catch (err) {
+    console.log('error at deleteEvent Modal', err);
     return false;
   } finally {
     nprogress.done();

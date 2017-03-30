@@ -5,7 +5,6 @@ import { browserHistory } from 'react-router';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
-import { Notification } from 'react-notification';
 import BestTimesDisplay from '../BestTimeDisplay/BestTimeDisplay';
 import ParticipantsList from '../ParticipantsList/ParticipantsList';
 import DeleteModal from '../DeleteModal/DeleteModal';
@@ -20,9 +19,6 @@ class EventCard extends Component {
       participants: props.event.participants,
       event,
       curUser,
-      notificationMessage: '',
-      notificationIsActive: false,
-      notificationTitle: '',
     };
   }
 
@@ -42,8 +38,14 @@ class EventCard extends Component {
     this.props.showInviteGuests(event);
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+
   render() {
-    const { event, curUser, notificationIsActive, notificationMessage, notificationTitle } = this.state;
+    const { event, curUser } = this.state;
     let isOwner;
 
     if (curUser !== undefined) {
@@ -60,21 +62,17 @@ class EventCard extends Component {
         </CardTitle>
         <CardText>
           <BestTimesDisplay event={event} disablePicker={false} />
-          <ParticipantsList event={event} curUser={curUser} showInviteGuests={this.handleShowInviteGuestsDrawer} />
+          <ParticipantsList
+            event={event}
+            curUser={curUser}
+            showInviteGuests={this.handleShowInviteGuestsDrawer}
+            cbDeleteGuest={this.handleDeleteGuest}
+          />
         </CardText>
         <Divider style={styles.card.divider} />
         <CardActions styleName="cardActions">
           <FlatButton styleName="viewDetailsButton" onClick={this.redirectToEvent}>View Details</FlatButton>
         </CardActions>
-        <Notification
-          isActive={notificationIsActive}
-          message={notificationMessage}
-          action="Dismiss"
-          title={notificationTitle}
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          onClick={() => this.setState({ notificationIsActive: false })}
-          activeClassName="notification-bar-is-active"
-        />
       </Card>
     );
   }
@@ -86,6 +84,7 @@ EventCard.propTypes = {
   cb: React.PropTypes.func,
   showInviteGuests: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventCard, styles);

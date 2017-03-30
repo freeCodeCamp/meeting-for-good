@@ -1,12 +1,14 @@
 import React, { Component, cloneElement } from 'react';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
+import NotificationSystem from 'react-notification-system';
 
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData } from '../util/events';
+import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest } from '../util/events';
 import { sendEmailOwner } from '../util/emails';
+
 
 
 import '../styles/main.css';
@@ -25,6 +27,7 @@ class App extends Component {
       events: [],
       noCurEvents: false,
     };
+    this._notificationSystem = null;
   }
 
   async componentWillMount() {
@@ -39,6 +42,20 @@ class App extends Component {
     }
   }
 
+  /**
+   * possible level values: info, success, error, warning
+   * autoDismiss time in seconds
+   */
+  _addNotification(title, message, level, autoDismiss = 4) {
+    this._notificationSystem.addNotification({
+      title,
+      message,
+      level,
+      autoDismiss,
+      position: 'tr',
+    });
+  }
+
   @autobind
   async toggleFilterPastEventsTo(value) {
     const events = await loadEvents(value);
@@ -51,6 +68,10 @@ class App extends Component {
     const event = events.filter(event => event._id === id);
     if (event.length === 0) {
       const event = await loadEvent(id);
+      if (event === null) {
+        this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 8);
+        return false;
+      }
       return event;
     }
     return event[0];
@@ -61,6 +82,7 @@ class App extends Component {
     const { events } = this.state;
     const nEvent = await addEvent(event);
     this.setState({ events: [nEvent, ...events] });
+    this._addNotification('Events', `Event ${nEvent.name} created`, 'success');
     return nEvent;
   }
 
@@ -71,8 +93,10 @@ class App extends Component {
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
+      this._addNotification('Success!', 'Event deleted', 'success');
       return true;
     }
+    this._addNotification('Error!!', 'delete event error, please try again latter', 'error', 8);
     return false;
   }
 
@@ -84,8 +108,10 @@ class App extends Component {
       const eventEdited  = await loadEvent(eventId);
       const nEvents = events.filter(event => event._id !== eventId);
       this.setState({ events: [eventEdited, ...nEvents] });
+      this._addNotification('Success', 'Saved availability successfully.', 'success');
       return true;
     }
+    this._addNotification('Error!!', 'Failed to update availability. Please try again later.', 'error');
     return false;
   }
 
@@ -153,6 +179,12 @@ class App extends Component {
     this.setState({ noCurEvents: false });
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    const response = await deleteGuest(guestToDelete);
+    return response;
+  }
+
   render() {
     const { location } = this.props;
     const {
@@ -165,6 +197,44 @@ class App extends Component {
       noCurEvents,
     } = this.state;
 
+    const style = {
+      NotificationItem: { // Override the notification item
+        DefaultStyle: { // Applied to every notification, regardless of the notification level
+          margin: '10px 5px 2px 1px',
+          fontSize: '15px',
+        },
+        success: { // Applied only to the success notification item
+          backgroundColor: 'white',
+          color: '#006400',
+          borderTop: '4px solid #006400',
+        },
+        error: {
+          backgroundColor: 'white',
+          color: 'red',
+          borderTop: '2px solid red',
+        },
+        info: {
+          backgroundColor: 'white',
+          color: 'blue',
+          borderTop: '2px solid blue',
+        },
+      },
+      Containers: {
+        tr: {
+          top: '40px',
+          bottom: 'auto',
+          left: 'auto',
+          right: '0px',
+        },
+      },
+      Title: {
+        DefaultStyle: {
+          fontSize: '18px',
+          fontWeight: 'bold',
+        },
+      },
+    };
+
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (child.type.displayName === 'Dashboard') {
@@ -174,6 +244,7 @@ class App extends Component {
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbDeleteEvent: this.handleDeleteEvent,
+            cbDeleteGuest: this.handleDeleteGuest,
             events,
           });
         }
@@ -189,6 +260,8 @@ class App extends Component {
             cbDeleteEvent: this.handleDeleteEvent,
             cbEditEvent: this.handleEditEvent,
             cbEmailOwner: this.handleEmailOwner,
+            cbDeleteGuest: this.handleDeleteGuest,
+
           });
         }
         if (child.type.displayName === 'NewEvent') {
@@ -210,6 +283,7 @@ class App extends Component {
 
     return (
       <div>
+        <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
         <LoginModal
           open={openLoginModal}
           logFail={loginFail}

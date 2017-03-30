@@ -149,9 +149,6 @@ class EventDetailsComponent extends React.Component {
           event,
           participants: event.participants,
           myAvailability: me.availability,
-          notificationIsActive: true,
-          notificationMessage: 'Saved availability successfully.',
-          notificationTitle: 'Success!',
         });
         if (curUser._id !== event.owner) {
           await this.sendEmailOwner(event);
@@ -159,13 +156,7 @@ class EventDetailsComponent extends React.Component {
 
         return event;
       } catch (err) {
-        console.log(err);
-        this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Failed to update availability. Please try again later.',
-          notificationTitle: 'Error!',
-        });
-        return;
+        console.log('EventDetailCompoent submitAvailability', err);
       }
     }
   }
@@ -183,6 +174,12 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
+
+  async handleDeleteGuest(guestToDelete) {
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+  
   handleSnackBarRequestClose() {
     this.setState({
       snackBarOpen: false,
@@ -255,6 +252,7 @@ class EventDetailsComponent extends React.Component {
                 event={event}
                 curUser={curUser}
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
+                cbDeleteGuest={this.handleDeleteGuest}
               />
             </CardText>
           </Card>
@@ -291,6 +289,7 @@ EventDetailsComponent.propTypes = {
   cbEditEvent: React.PropTypes.func,
   curUser: React.PropTypes.object,
   cbHandleEmailOwner: React.PropTypes.func,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventDetailsComponent, styles);

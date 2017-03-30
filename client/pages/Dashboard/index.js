@@ -4,8 +4,6 @@ import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
 import autobind from 'autobind-decorator';
-import { NotificationStack } from 'react-notification';
-import { OrderedSet } from 'immutable';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
@@ -23,7 +21,6 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       events: [],
-      notifications: OrderedSet(),
       count: 0,
       openDrawer: false,
       eventToInvite: {},
@@ -47,34 +44,6 @@ class Dashboard extends Component {
     }
   }
 
-  removeNotification(key) {
-    const { notifications } = this.state;
-    this.setState({
-      notifications: notifications.filter(n => n.key !== key),
-    });
-  }
-
-  addNotification(msgTitle, msg, participantId = 0, dismissTime = 6000) {
-    const { notifications, count } = this.state;
-    const newCount = count + 1;
-    let msgKey = count + 1;
-    // if was not a new event(no partipants yet)
-    if (participantId !== 0) {
-      msgKey = participantId;
-    }
-    return this.setState({
-      count: newCount,
-      notifications: notifications.add({
-        message: msg,
-        title: msgTitle,
-        key: msgKey,
-        action: 'Dismiss',
-        dismissAfter: dismissTime,
-        onClick: () => this.removeNotification(msgKey),
-      }),
-    });
-  }
-
   @autobind
   handleNewEvent() {
     browserHistory.push('/event/new');
@@ -82,12 +51,7 @@ class Dashboard extends Component {
 
   @autobind
   async handleDeleteEvent(id) {
-    const response = this.props.cbDeleteEvent(id);
-    if (response) {
-      this.addNotification('Info', 'Event Deleted');
-    } else {
-      this.addNotification('Alert!!!', 'Event Deleted fail, please try again latter.');
-    }
+    await this.props.cbDeleteEvent(id);
   }
 
   @autobind
@@ -100,8 +64,14 @@ class Dashboard extends Component {
     this.setState({ openDrawer: open });
   }
 
+  @autobind
+  async handleDeleteGuest(guestToDelete) {
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+
   render() {
-    const { events, curUser, notifications, openDrawer, eventToInvite } = this.state;
+    const { events, curUser, openDrawer, eventToInvite } = this.state;
     return (
       <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}
@@ -118,6 +88,7 @@ class Dashboard extends Component {
                 cbDeleteEvent={this.handleDeleteEvent}
                 curUser={curUser}
                 showInviteGuests={this.handleInviteGuests}
+                cbDeleteGuest={this.handleDeleteGuest}
               />
             ))}
           </Masonry> :
@@ -128,12 +99,6 @@ class Dashboard extends Component {
             <DateRangeIcon styleName="no-selectIcon" />
           </div>
         }
-        <NotificationStack
-          notifications={notifications.toArray()}
-          onDismiss={notification => this.setState({
-            notifications: notifications.delete(notification),
-          })}
-        />
         <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
       </Paper>
     );
@@ -146,6 +111,7 @@ Dashboard.propTypes = {
   curUser: PropTypes.object,
   events: PropTypes.array,
   cbDeleteEvent: PropTypes.func,
+  cbDeleteGuest: PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

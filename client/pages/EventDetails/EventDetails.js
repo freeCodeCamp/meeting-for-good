@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import { Notification } from 'react-notification';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 
@@ -13,8 +12,6 @@ class EventDetails extends Component {
     super(props);
     this.state = {
       event: null,
-      notificationMessage: '',
-      notificationIsActive: false,
       showLoginModal: false,
       openDrawer: false,
       eventToInvite: {},
@@ -61,12 +58,6 @@ class EventDetails extends Component {
     const response = await this.props.cbDeleteEvent(id);
     if (response) {
       browserHistory.push('/dashboard');
-    } else {
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Event Deleted fail, please try again latter.',
-        notificationTitle: 'Error!',
-      });
     }
   }
 
@@ -75,8 +66,13 @@ class EventDetails extends Component {
     await this.props.cbEmailOwner(event);
   }
 
+  async handleDeleteGuest(guestToDelete) {
+    const response = await this.props.cbDeleteGuest(guestToDelete);
+    return response;
+  }
+
   render() {
-    const { event, notificationIsActive, notificationMessage, notificationTitle, openDrawer, eventToInvite, curUser } = this.state;
+    const { event, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
       return (
         <div styleName="event">
@@ -87,24 +83,12 @@ class EventDetails extends Component {
             cbDeleteEvent={this.handleDeleteEvent}
             cbEditEvent={this.handleEditEvent}
             cbHandleEmailOwner={this.HandleEmailOwner}
-
+            cbDeleteGuest={this.handleDeleteGuest}
           />
           <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
         </div>
       );
     }
-    return (
-      <Notification
-        isActive={notificationIsActive}
-        message={notificationMessage}
-        action="Dismiss"
-        title={notificationTitle}
-        onDismiss={() => this.setState({ notificationIsActive: false })}
-        onClick={() => this.setState({ notificationIsActive: false })}
-        activeClassName="notification-bar-is-active"
-        dismissAfter={6000}
-      />
-    );
   }
 }
 
@@ -117,6 +101,7 @@ EventDetails.propTypes = {
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
   cbEmailOwner: React.PropTypes.func,
+  cbDeleteGuest: React.PropTypes.func,
 };
 
 export default cssModules(EventDetails, styles);
