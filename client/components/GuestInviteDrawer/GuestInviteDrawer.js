@@ -282,7 +282,6 @@ class GuestInviteDrawer extends Component {
             height: 'flex',
           },
           contentStyle: {
-            color: '#ffffff',
             borderBottom: '0.2px solid',
           },
         },
