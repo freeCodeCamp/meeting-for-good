@@ -6,7 +6,9 @@ import NotificationSystem from 'react-notification-system';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, deleteGuest } from '../util/events';
+import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest } from '../util/events';
+import { sendEmailOwner } from '../util/emails';
+
 
 
 import '../styles/main.css';
@@ -114,6 +116,19 @@ class App extends Component {
   }
 
   @autobind
+  async handleEmailOwner(event) {
+    const { curUser } = this.state;
+    const ownerData = await loadOwnerData(event.owner);
+    if (ownerData !== null) {
+      const response = await sendEmailOwner(event, curUser, ownerData);
+      if (response) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  @autobind
   handleLogin(curUser) {
     if (Object.keys(curUser).length > 0) {
       this.setState({ curUser, isAuthenticated: true });
@@ -158,6 +173,7 @@ class App extends Component {
     }
     browserHistory.push('/');
   }
+
   @autobind
   handleNoCurEventsMessage() {
     this.setState({ noCurEvents: false });
@@ -166,6 +182,11 @@ class App extends Component {
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const response = await deleteGuest(guestToDelete);
+    if (response) {
+      this._addNotification('Success', 'Guest deleted successfully.', 'success');
+    } else {
+      this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
+    }
     return response;
   }
 
@@ -243,7 +264,9 @@ class App extends Component {
             cbLoadEvent: this.handleLoadEvent,
             cbDeleteEvent: this.handleDeleteEvent,
             cbEditEvent: this.handleEditEvent,
+            cbEmailOwner: this.handleEmailOwner,
             cbDeleteGuest: this.handleDeleteGuest,
+
           });
         }
         if (child.type.displayName === 'NewEvent') {

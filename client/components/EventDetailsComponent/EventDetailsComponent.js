@@ -77,19 +77,23 @@ class EventDetailsComponent extends React.Component {
   }
 
 
-  async loadOwnerData(_id) {
-    const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
-    try {
-      checkStatus(response);
-      return await parseJSON(response);
-    } catch (err) {
-      console.log('loadOwnerData', err);
-      this.addNotification('Error!!', 'Failed to load owner Data. Please try again later.');
-      return null;
+  selectElementContents(el) {
+    let range;
+    if (window.getSelection && document.createRange) {
+      range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(el);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (document.body && document.body.createTextRange) {
+      range = document.body.createTextRange();
+      range.moveToElementText(el);
+      range.select();
     }
   }
 
   async sendEmailOwner(event) {
+<<<<<<< HEAD
     const { curUser } = this.props;
     const { name } = curUser;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
@@ -117,6 +121,11 @@ class EventDetailsComponent extends React.Component {
       checkStatus(response);
     } catch (err) {
       console.log('sendEmailOwner', err);
+=======
+    const response = this.props.cbHandleEmailOwner(event);
+    if (!response) {
+      console.log('sendEmailOwner error');
+>>>>>>> development
     }
   }
 
@@ -156,6 +165,10 @@ class EventDetailsComponent extends React.Component {
           participants: event.participants,
           myAvailability: me.availability,
         });
+        if (curUser._id !== event.owner) {
+          await this.sendEmailOwner(event);
+        }
+
         return event;
       } catch (err) {
         console.log('EventDetailCompoent submitAvailability', err);
@@ -276,6 +289,7 @@ EventDetailsComponent.propTypes = {
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbHandleEmailOwner: React.PropTypes.func,
   cbDeleteGuest: React.PropTypes.func,
 };
 

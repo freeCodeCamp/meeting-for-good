@@ -21,9 +21,6 @@ class ParticipantsList extends Component {
       openDeleteModal: false,
       openDrawer: false,
       guestToDelete: '',
-      notificationMessage: '',
-      notificationIsActive: false,
-      notificationTitle: '',
     };
   }
 
