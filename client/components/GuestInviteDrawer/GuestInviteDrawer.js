@@ -339,6 +339,7 @@ class GuestInviteDrawer extends Component {
             floatingLabelText="Search guests"
             value={searchText}
             onChange={this.handleSearchTextChange}
+            inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
           />
         </div>
         <Infinite elementHeight={58} containerHeight={lines}>
