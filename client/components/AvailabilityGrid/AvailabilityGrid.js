@@ -112,7 +112,6 @@ class AvailabilityGrid extends React.Component {
       allDatesRender,
       allTimesRender,
       hourTime,
-      selectedAvailability: this.state.selectedAvailability.concat(this.props.myAvailability),
     });
   }
 
@@ -205,23 +204,13 @@ class AvailabilityGrid extends React.Component {
     t.style.background = 'purple';
 
     const arr = [this.getFromToForEl(t)];
-    const selectedAvailability = Array.from(new Set(
-      this.state.selectedAvailability.concat(arr),
-    ));
-
-    this.setState({ selectedAvailability });
   }
 
   @autobind
   removeCellFromAvailability(t) {
     t.style.background = 'white';
-    const { selectedAvailability } = this.state;
 
     const arr = this.getFromToForEl(t);
-
-    this.setState({
-      selectedAvailability: selectedAvailability.filter(e => !_.isEqual(e, arr)),
-    });
   }
 
   modifyHourTime(hourTime, date, i) {
@@ -381,7 +370,22 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   async submitAvailability() {
-    const { selectedAvailability: availability } = this.state;
+    const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
+    const availability = [];
+
+    $('.cell').each((i, el) => {
+      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
+        const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
+        const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
+
+        const date = moment(allDates[dateIndex]).get('date');
+
+        const from = moment(allTimes[timeIndex]).set('date', date)._d;
+        const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
+
+        availability.push([from, to]);
+      }
+    });
 
     const { _id } = this.props.user;
     const event = JSON.parse(JSON.stringify(this.props.event));
