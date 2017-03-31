@@ -84,20 +84,6 @@ class NewEvent extends React.Component {
     $('input[type="text"]+label').addClass('active');
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { noCurEvents } = nextProps;
-    if (noCurEvents) {
-      this.setState({
-        snackBarOpen: true,
-        snackBarMsg: 'You are redirect to New Event because you have no current scheduled events.',
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.cbNoCurEventsMsg();
-  }
-
   @autobind
   toggleSubmitDisabled() {
     // Checks whether the event name and dates/weekDays have been entered. If so, un-disable the
@@ -374,11 +360,9 @@ class NewEvent extends React.Component {
 
 NewEvent.propTypes = {
   isAuthenticated: React.PropTypes.bool,
-  noCurEvents: React.PropTypes.bool,
   cbOpenLoginModal: React.PropTypes.func,
   curUser: React.PropTypes.object,
   cbNewEvent: React.PropTypes.func,
-  cbNoCurEventsMsg: React.PropTypes.func,
 };
 
 export default cssModules(NewEvent, styles);
