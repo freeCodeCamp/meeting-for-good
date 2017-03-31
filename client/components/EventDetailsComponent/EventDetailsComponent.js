@@ -6,7 +6,6 @@ import { Card, CardTitle, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
-import Notification from '../../components/vendor/react-notification';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import styles from './event-details-component.css';
@@ -37,9 +36,6 @@ class EventDetailsComponent extends React.Component {
       participants: event.participants,
       showHeatmap: false,
       myAvailability: [],
-      notificationIsActive: false,
-      notificationMessage: '',
-      notificationTitle: '',
       showButtonAviability: 'none',
       showAvailabilityGrid: 'block',
       isParticipant: true,
@@ -76,7 +72,6 @@ class EventDetailsComponent extends React.Component {
           snackBarOpen: true,
           snackBarMsg: 'Please add your availability to join the event.',
         });
-
       }
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
@@ -88,51 +83,25 @@ class EventDetailsComponent extends React.Component {
     });
   }
 
-  async loadOwnerData(_id) {
-    const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
-    try {
-      checkStatus(response);
-      return await parseJSON(response);
-    } catch (err) {
-      console.log('loadOwnerData', err);
-      this.addNotification('Error!!', 'Failed to load owner Data. Please try again later.');
-      return null;
+  selectElementContents(el) {
+    let range;
+    if (window.getSelection && document.createRange) {
+      range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(el);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (document.body && document.body.createTextRange) {
+      range = document.body.createTextRange();
+      range.moveToElementText(el);
+      range.select();
     }
   }
 
   async sendEmailOwner(event) {
-    const { curUser } = this.props;
-    const { name } = curUser;
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
-    const ownerData = await this.loadOwnerData(event.owner);
-    const msg = {
-      guestName: name,
-      eventName: event.name,
-      eventId: event._id,
-      eventOwner: event.owner,
-      url: `${fullUrl}/event/${event._id}`,
-      to: ownerData.emails[0],
-      subject: 'Invite Accepted!!',
-    };
-    const response = await fetch('/api/email/ownerNotification', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'POST',
-      body: JSON.stringify(msg),
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('sendEmailOwner', err);
-      this.setState({
-        notificationIsActive: true,
-        notificationMessage: 'Failed to send email for event Owner.',
-        notificationTitle: 'Error!',
-      });
+    const response = this.props.cbHandleEmailOwner(event);
+    if (!response) {
+      console.log('sendEmailOwner error');
     }
   }
 
@@ -172,6 +141,10 @@ class EventDetailsComponent extends React.Component {
           participants: event.participants,
           myAvailability: me.availability,
         });
+        if (curUser._id !== event.owner) {
+          await this.sendEmailOwner(event);
+        }
+
         return event;
       } catch (err) {
         console.log('EventDetailCompoent submitAvailability', err);
@@ -197,7 +170,7 @@ class EventDetailsComponent extends React.Component {
     const response = await this.props.cbDeleteGuest(guestToDelete);
     return response;
   }
-  
+
   handleSnackBarRequestClose() {
     this.setState({
       snackBarOpen: false,
@@ -227,11 +200,6 @@ class EventDetailsComponent extends React.Component {
         },
       },
     };
-
-    const notifActions = [{
-      text: 'Dismiss',
-      handleClick: () => { this.setState({ notificationIsActive: false }); },
-    }];
 
     return (
       <div styleName="wrapper">
@@ -275,15 +243,6 @@ class EventDetailsComponent extends React.Component {
             </CardText>
           </Card>
         </div>
-        <Notification
-          isActive={this.state.notificationIsActive}
-          message={this.state.notificationMessage}
-          actions={notifActions}
-          title={this.state.notificationTitle}
-          onDismiss={() => this.setState({ notificationIsActive: false })}
-          dismissAfter={3000}
-          activeClassName="notification-bar-is-active"
-        />
         <Snackbar
           style={inLineStyles.snackBar}
           bodyStyle={{ height: 'flex' }}
@@ -306,6 +265,7 @@ EventDetailsComponent.propTypes = {
   cbDeleteEvent: React.PropTypes.func,
   cbEditEvent: React.PropTypes.func,
   curUser: React.PropTypes.object,
+  cbHandleEmailOwner: React.PropTypes.func,
   cbDeleteGuest: React.PropTypes.func,
 };
 

@@ -142,3 +142,14 @@ export async function editEvent(patches, eventId) {
     nprogress.done();
   }
 }
+
+export async function loadOwnerData(_id) {
+  const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
+  try {
+    checkStatus(response);
+    return await parseJSON(response);
+  } catch (err) {
+    console.log('loadOwnerData', err);
+    return null;
+  }
+}
