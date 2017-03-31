@@ -4,7 +4,6 @@ import cssModules from 'react-css-modules';
 import fetch from 'isomorphic-fetch';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
-
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -77,11 +76,6 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
-  componentDidMount() {
-    $('.notification-bar-action').on('click', () => {
-      this.setState({ notificationIsActive: false });
-    });
-  }
 
   selectElementContents(el) {
     let range;

@@ -5,7 +5,6 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import moment from 'moment';
 import React from 'react';
 import { browserHistory } from 'react-router';
-import { Notification } from 'react-notification';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -40,8 +39,6 @@ class NewEvent extends React.Component {
       eventName: '',
       selectedTimeRange: [0, 23],
       disableSubmit: true,
-      notificationIsActive: false,
-      notificationMessage: '',
       curUser: {},
       snackBarOpen: false,
       snackBarMsg: '',
@@ -85,20 +82,6 @@ class NewEvent extends React.Component {
     });
 
     $('input[type="text"]+label').addClass('active');
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { noCurEvents } = nextProps;
-    if (noCurEvents) {
-      this.setState({
-        snackBarOpen: true,
-        snackBarMsg: 'You are redirect to New Event because you have no current scheduled events.',
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.cbNoCurEventsMsg();
   }
 
   @autobind
@@ -203,18 +186,18 @@ class NewEvent extends React.Component {
     if (ev.target.className.indexOf('disabled') > -1) {
       if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
         this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please select a date and enter an event name.',
+          snackBarOpen: true,
+          snackBarMsg: 'Please select a date and enter an event name.',
         });
       } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
         this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please select a date.',
+          snackBarOpen: true,
+          snackBarMsg: 'Please select a date.',
         });
       } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
         this.setState({
-          notificationIsActive: true,
-          notificationMessage: 'Please enter an event name.',
+          snackBarOpen: true,
+          snackBarMsg: 'Please enter an event name.',
         });
       }
       return;
@@ -264,8 +247,8 @@ class NewEvent extends React.Component {
     const {
       ranges,
       eventName, selectedTimeRange,
-      disableSubmit, notificationIsActive,
-      notificationMessage, snackBarOpen, snackBarMsg } = this.state;
+      disableSubmit,
+      snackBarOpen, snackBarMsg } = this.state;
 
     const inLineStyles = {
       card: {
@@ -358,15 +341,6 @@ class NewEvent extends React.Component {
               </div>
             </form>
           </CardText>
-          <Notification
-            isActive={notificationIsActive}
-            message={notificationMessage}
-            action="Dismiss"
-            title=" "
-            onDismiss={() => this.setState({ notificationIsActive: false })}
-            dismissAfter={10000}
-            activeClassName="notification-bar-is-active"
-          />
         </Card>
         <Snackbar
           style={inLineStyles.snackBar}
@@ -386,11 +360,9 @@ class NewEvent extends React.Component {
 
 NewEvent.propTypes = {
   isAuthenticated: React.PropTypes.bool,
-  noCurEvents: React.PropTypes.bool,
   cbOpenLoginModal: React.PropTypes.func,
   curUser: React.PropTypes.object,
   cbNewEvent: React.PropTypes.func,
-  cbNoCurEventsMsg: React.PropTypes.func,
 };
 
 export default cssModules(NewEvent, styles);

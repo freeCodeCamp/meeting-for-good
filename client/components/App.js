@@ -25,7 +25,6 @@ class App extends Component {
       pathToGo: '/',
       loginModalDisable: false,
       events: [],
-      noCurEvents: false,
     };
     this._notificationSystem = null;
   }
@@ -144,7 +143,8 @@ class App extends Component {
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
       if (redirectTo) {
         if (redirectTo === '/dashboard' && events.length === 0) {
-          this.setState({ noCurEvents: true }, browserHistory.push('/event/new'));
+          this._addNotification('Info', 'You are redirect to New Event because you have no current scheduled events.', 'success', 10);
+          browserHistory.push('/event/new');
         } else {
           browserHistory.push(redirectTo);
         }
@@ -175,11 +175,6 @@ class App extends Component {
   }
 
   @autobind
-  handleNoCurEventsMessage() {
-    this.setState({ noCurEvents: false });
-  }
-
-  @autobind
   async handleDeleteGuest(guestToDelete) {
     const response = await deleteGuest(guestToDelete);
     if (response) {
@@ -199,7 +194,6 @@ class App extends Component {
       isAuthenticated,
       loginFail,
       events,
-      noCurEvents,
     } = this.state;
 
     const style = {
@@ -273,10 +267,8 @@ class App extends Component {
           return cloneElement(child, {
             curUser,
             isAuthenticated,
-            noCurEvents,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbNewEvent: this.handleNewEvent,
-            cbNoCurEventsMsg: this.handleNoCurEventsMessage,
           });
         }
         return cloneElement(child, {
