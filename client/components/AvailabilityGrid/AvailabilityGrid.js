@@ -47,6 +47,16 @@ class AvailabilityGrid extends React.Component {
     });
   }
 
+  @autobind
+  static addCellToAvailability(t) {
+    t.style.background = 'purple';
+  }
+
+  @autobind
+  static removeCellFromAvailability(t) {
+    t.style.background = 'white';
+  }
+
   constructor(props) {
     super(props);
 
@@ -197,20 +207,6 @@ class AvailabilityGrid extends React.Component {
     return [from.toISOString(), to.toISOString()];
   }
 
-  @autobind
-  addCellToAvailability(t) {
-    t.style.background = 'purple';
-
-    const arr = [this.getFromToForEl(t)];
-  }
-
-  @autobind
-  removeCellFromAvailability(t) {
-    t.style.background = 'white';
-
-    const arr = this.getFromToForEl(t);
-  }
-
   modifyHourTime(hourTime, date, i) {
     // inserts the formatted date object at the 'i+1'th index in
     // this.state.hourTime.
@@ -270,9 +266,9 @@ class AvailabilityGrid extends React.Component {
       let updateAvail;
 
       if (mouseDownSelected) {
-        updateAvail = this.removeCellFromAvailability;
+        updateAvail = this.constructor.removeCellFromAvailability;
       } else {
-        updateAvail = this.addCellToAvailability;
+        updateAvail = this.constructor.addCellToAvailability;
       }
 
       const thisRow = Number(ev.target.getAttribute('data-row'));
@@ -286,9 +282,9 @@ class AvailabilityGrid extends React.Component {
       updateAvailabilityForRange(rowRange, colRange, updateAvail);
 
       if (mouseDownSelected) {
-        updateAvail = this.addCellToAvailability;
+        updateAvail = this.constructor.addCellToAvailability;
       } else {
-        updateAvail = this.removeCellFromAvailability;
+        updateAvail = this.constructor.removeCellFromAvailability;
       }
 
       if (thisRow < prevMouseDownRow) {
@@ -362,8 +358,8 @@ class AvailabilityGrid extends React.Component {
     const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
     const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
 
-    if (cellIsSelected) this.addCellToAvailability(e.target);
-    else this.removeCellFromAvailability(e.target);
+    if (cellIsSelected) this.constructor.addCellToAvailability(e.target);
+    else this.constructor.removeCellFromAvailability(e.target);
   }
 
   @autobind
@@ -478,7 +474,7 @@ class AvailabilityGrid extends React.Component {
         .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        this.addCellToAvailability(cell);
+        this.constructor.addCellToAvailability(cell);
       }
     });
   }
