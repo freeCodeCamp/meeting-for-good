@@ -37,6 +37,7 @@ class GuestInviteDrawer extends Component {
       snackbarMsg: '',
       linearProgressVisible: 'hidden',
       rowsCount: 0,
+      setFocusFullUrl: true,
     };
     this.timer = undefined;
   }
@@ -49,7 +50,7 @@ class GuestInviteDrawer extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { event, open, curUser } = nextProps;
-    this.setState({ event, open, curUser, activeCheckboxes: [] });
+    this.setState({ event, open, curUser, activeCheckboxes: [], setFocusFullUrl: true });
   }
 
   async loadPastGuests() {
@@ -248,11 +249,14 @@ class GuestInviteDrawer extends Component {
 
     const focusUrlTextField = (input) => {
       if (input) {
-        setTimeout(() => {
-          input.focus();
-          input.select();
+        if (this.state.setFocusFullUrl) {
+          this.setState({ setFocusFullUrl: false });
+          setTimeout(() => {
+            input.focus();
+            input.select();
+          }
+            , 100);
         }
-          , 100);
       }
     };
 
