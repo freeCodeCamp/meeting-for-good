@@ -14,7 +14,7 @@
     "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
     "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",
     "postinstall": "npm run build",
-    "deploy": "git push heroku development:master"
+    "deploy": "git pull --rebase upstream development && git push heroku development:master"
   },
   "repository": {
     "type": "git",
