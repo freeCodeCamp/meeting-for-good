@@ -93,39 +93,9 @@ class EventDetailsComponent extends React.Component {
   }
 
   async sendEmailOwner(event) {
-<<<<<<< HEAD
-    const { curUser } = this.props;
-    const { name } = curUser;
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
-    const ownerData = await this.loadOwnerData(event.owner);
-    const msg = {
-      guestName: name,
-      eventName: event.name,
-      eventId: event._id,
-      eventOwner: event.owner,
-      url: `${fullUrl}/event/${event._id}`,
-      to: ownerData.emails[0],
-      subject: 'Invite Accepted!!',
-    };
-    const response = await fetch('/api/email/ownerNotification', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'POST',
-      body: JSON.stringify(msg),
-    });
-
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('sendEmailOwner', err);
-=======
     const response = this.props.cbHandleEmailOwner(event);
     if (!response) {
       console.log('sendEmailOwner error');
->>>>>>> development
     }
   }
 
