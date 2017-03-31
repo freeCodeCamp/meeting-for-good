@@ -51,7 +51,6 @@ class AvailabilityGrid extends React.Component {
     super(props);
 
     this.state = {
-      draggedAvailability: [],
       allTimes: [],
       allTimesRender: [],
       allDates: [],
