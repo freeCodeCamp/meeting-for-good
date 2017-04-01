@@ -81,7 +81,6 @@ class App extends Component {
     const { events } = this.state;
     const nEvent = await addEvent(event);
     this.setState({ events: [nEvent, ...events] });
-    this._addNotification('Events', `Event ${nEvent.name} created`, 'success');
     return nEvent;
   }
 
