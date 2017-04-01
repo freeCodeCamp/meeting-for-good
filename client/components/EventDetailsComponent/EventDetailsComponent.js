@@ -159,12 +159,12 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-
   async handleDeleteGuest(guestToDelete) {
     const response = await this.props.cbDeleteGuest(guestToDelete);
     return response;
   }
 
+  @autobind
   handleSnackBarRequestClose() {
     this.setState({
       snackBarOpen: false,
