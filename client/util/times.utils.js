@@ -37,7 +37,11 @@ export const getTimesBetween = (start, end) => {
       times.push(currentTime);
     }
   } else {
-    end = moment(end).set('date', moment(start).get('date'));
+    end = moment(end)
+      .set('date', moment(start).get('date'))
+      .set('month', moment(start).get('month'))
+      .set('year', moment(start).get('year'))
+      ._d;
 
     while (moment(end).isAfter(moment(times.slice(-1)[0]))) {
       currentTime = moment(currentTime).add(15, 'm')._d;
