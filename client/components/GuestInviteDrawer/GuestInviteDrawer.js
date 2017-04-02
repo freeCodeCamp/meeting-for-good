@@ -225,8 +225,8 @@ class GuestInviteDrawer extends Component {
           key={`${guest._id}.listItem`}
           primaryText={guest.userId.name}
           leftCheckbox={<Checkbox
-            onCheck={() => this.handleCheck(guest.userId)}
-            checked={activeCheckboxes.includes(guest.userId)}
+            onCheck={() => this.handleCheck(guest.userId._id)}
+            checked={activeCheckboxes.includes(guest.userId._id)}
           />}
           rightAvatar={<Avatar src={guest.userId.avatar} />}
         />
@@ -260,9 +260,7 @@ class GuestInviteDrawer extends Component {
         }
       }
     };
-
     const lines = 174;
-
     const inLineStyles = {
       drawer: {
         container: {

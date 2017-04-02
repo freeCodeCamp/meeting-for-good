@@ -160,18 +160,20 @@ export const relatedUsers = (req, res) => {
       if (!events) {
         return res.status(401).end();
       }
-      const users = [];
+      const guests = [];
+      const listIds = [];
       events.forEach((event) => {
         event.participants.forEach((participant) => {
           const participantId = participant.userId._id.toString();
           if (participantId !== curUserId) {
-            if (users.indexOf(participantId) === -1) {
-              users.push(participant);
+            if (listIds.indexOf(participantId) === -1) {
+              listIds.push(participantId);
+              guests.push(participant);
             }
           }
         });
       });
-      return users;
+      return guests;
     })
     .then(respondWithResult(res))
     .catch((err) => {
