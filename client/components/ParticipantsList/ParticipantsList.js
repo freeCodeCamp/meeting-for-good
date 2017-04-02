@@ -46,7 +46,7 @@ class ParticipantsList extends Component {
     if (response) {
       const newEvent = _.clone(event);
       newEvent.participants.forEach((participant, index) => {
-        if (participant._id === guestToDelete) {
+        if (participant.userId._id === guestToDelete) {
           newEvent.participants.splice(index, 1);
         }
       });
@@ -87,7 +87,7 @@ class ParticipantsList extends Component {
         return '0.5px solid #E0E0E0';
       };
 
-      if (curUser._id !== participant.userId && event.owner === curUser._id) {
+      if (curUser._id !== participant.userId._id && event.owner === curUser._id) {
         row = (
           <IconButton
             key={`${participant._id}.button`}
@@ -104,11 +104,11 @@ class ParticipantsList extends Component {
               onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
             >
               <Avatar
-                src={participant.avatar}
+                src={participant.userId.avatar}
                 styleName="avatar"
                 style={{ border: noAvailability() }}
               />
-              {participant.name}
+              {participant.userId.name}
             </Chip>
           </IconButton>
         );
@@ -126,11 +126,11 @@ class ParticipantsList extends Component {
               styleName="chip"
             >
               <Avatar
-                src={participant.avatar}
+                src={participant.userId.avatar}
                 styleName="avatar"
                 style={{ border: noAvailability() }}
               />
-              {participant.name}
+              {participant.userId.name}
             </Chip>
           </IconButton>
         );

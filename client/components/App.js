@@ -9,8 +9,6 @@ import { getCurrentUser, isAuthenticated } from '../util/auth';
 import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest } from '../util/events';
 import { sendEmailOwner } from '../util/emails';
 
-
-
 import '../styles/main.css';
 
 class App extends Component {
