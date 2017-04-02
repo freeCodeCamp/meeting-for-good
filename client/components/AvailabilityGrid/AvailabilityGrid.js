@@ -293,7 +293,7 @@ class AvailabilityGrid extends React.Component {
       event.participants.push(participant);
     }
     event.participants = event.participants.map((user) => {
-      if (user.userId._id === _id) {
+      if (user.userId._id === _id || user.userId === _id) {
         user.availability = availability;
       }
       return user;

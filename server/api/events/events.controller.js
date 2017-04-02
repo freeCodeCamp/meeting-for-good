@@ -36,7 +36,6 @@ const patchUpdates = (patches) => {
       console.log('err at patches', err);
       return Promise.reject(err);
     }
-
     return entity.save();
   };
 };
@@ -134,10 +133,14 @@ export const patch = (req, res) => {
   }
 
   return Events.findById(req.params.id)
-    .populate('participants.userId', 'avatar emails name')
     .exec()
     .then(handleEntityNotFound(res))
     .then(patchUpdates(req.body))
+    .then((res) => {
+      return Events.findById(res._id)
+        .populate('participants.userId', 'avatar emails name')
+        .exec();
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };

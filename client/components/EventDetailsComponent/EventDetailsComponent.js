@@ -74,7 +74,6 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
-
   selectElementContents(el) {
     let range;
     if (window.getSelection && document.createRange) {
