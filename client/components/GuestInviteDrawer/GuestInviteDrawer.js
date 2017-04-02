@@ -64,7 +64,6 @@ class GuestInviteDrawer extends Component {
     try {
       checkStatus(response);
       guests = await parseJSON(response);
-      console.log(guests);
       this.setState({ guests, guestsToDisplay: guests });
     } catch (err) {
       console.log('loadPassGuests', err);
