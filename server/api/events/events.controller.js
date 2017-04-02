@@ -96,7 +96,8 @@ export const index = (req, res) => {
 // Gets that event
 export const indexById = (req, res) => {
   const uid = req.params.uid;
-  return Events.find({ uid, active: true }).exec()
+  return Events.find({ uid, active: true })
+    .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -110,6 +111,7 @@ export const indexByUser = (req, res) => {
     .where('active').equals(true)
     .where('dates.toDate')
     .gte(actualDate)
+    .populate('participants.userId', 'avatar emails name')
     .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -117,7 +119,9 @@ export const indexByUser = (req, res) => {
 
 // Gets a single Event from the DB
 export const show = (req, res) => {
-  return Events.findById(req.params.id).exec()
+  return Events.findById(req.params.id)
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -129,7 +133,9 @@ export const patch = (req, res) => {
     delete req.body._id;
   }
 
-  return Events.findById(req.params.id).exec()
+  return Events.findById(req.params.id)
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
     .then(handleEntityNotFound(res))
     .then(patchUpdates(req.body))
     .then(respondWithResult(res))
@@ -161,14 +167,20 @@ export const upsert = (req, res) => {
 
 // Creates a new Event in the DB
 export const create = (req, res) => {
-  const { name, avatar } = req.user;
   const { _id } = req.user;
   const userId = _id.toString();
-  req.body.participants = [{ name, avatar, userId }];
+  req.body.participants = [{ userId }];
   req.body.owner = userId;
   req.body.active = true;
 
   return Events.create(req.body)
+    .then((res) => {
+      // populate the userId
+      const nEvent = Events.findById({ _id: res._id })
+        .populate('participants.userId', 'avatar emails name')
+        .exec();
+      return nEvent;
+    })
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 };
