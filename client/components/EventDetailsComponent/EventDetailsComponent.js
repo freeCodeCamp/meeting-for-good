@@ -14,7 +14,7 @@ import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
-    const eventParticipantsIds = props.event.participants.map(participant => participant.userId);
+    const eventParticipantsIds = props.event.participants.map(participant => participant.userId._id);
     const { event } = props;
 
     const ranges = event.dates.map(({ fromDate, toDate }) => ({
@@ -52,7 +52,7 @@ class EventDetailsComponent extends React.Component {
 
       // find actual user particant record
       const isCurParticipant = this.state.participants.find(participant =>
-        participant.userId === curUser._id,
+        participant.userId._id === curUser._id,
       );
       // if curUser have aviability show heatMap
       if (isCurParticipant) {
@@ -127,7 +127,7 @@ class EventDetailsComponent extends React.Component {
         checkStatus(response);
         event = await parseJSON(response);
         const me = event.participants.find(participant =>
-          participant.userId === curUser._id,
+          participant.userId._id === curUser._id,
         );
         this.setState({
           showHeatmap: true,
@@ -174,8 +174,7 @@ class EventDetailsComponent extends React.Component {
   render() {
     const {
       event,
-      showHeatmap, participants,
-      myAvailability,
+      showHeatmap, participants, myAvailability,
       dates, showAvailabilityGrid, snackBarOpen, snackBarMsg } = this.state;
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
