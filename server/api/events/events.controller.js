@@ -230,29 +230,17 @@ export const GuestNotificationDismiss = (req, res) => {
 };
 // set the owner notification for that particpants._id as true
 export const setGuestFalse = (req, res) => {
-  return Events.findOne({
-    'participants._id': req.params.id,
-  })
+  return Events.findOne({ 'participants._id': req.params.id })
     .exec()
-    .then(handleEntityNotFound(res))
     .then((event) => {
-      event.participants.forEach((participant, index) => {
-        if (participant._id.toString() === req.params.id) {
-          event.participants.splice(index, 1);
-          event.save((err) => {
-            if (err) {
-              console.log('err at setGuestFalse', err);
-              return res.status(500).send(err);
-            }
-            return res.status(200).Events.findOne({
-              'participants._id': req.params.id,
-            })
-            .populate('participants.userId', 'avatar emails name')
-            .exec();
-          });
-        }
-      });
+      event.participants.id(req.params.id).remove();
+      return event.save();
     })
+    .then((res) => {
+      return Events.findById({ _id: res._id })
+        .populate('participants.userId', 'avatar emails name')
+        .exec();
+    })
+    .then(respondWithResult(res))
     .catch(handleError(res));
 };
-

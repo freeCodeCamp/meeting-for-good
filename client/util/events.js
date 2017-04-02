@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
-import _ from 'lodash';
 
 import { checkStatus, parseJSON } from './fetch.util';
 
@@ -110,7 +109,8 @@ export async function deleteGuest(guestToDelete) {
   );
   try {
     checkStatus(response);
-    return true;
+    const editEvent = await parseJSON(response);
+    return editEvent;
   } catch (err) {
     console.log('error at deleteEvent Modal', err);
     return false;
