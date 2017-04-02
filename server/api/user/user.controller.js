@@ -151,7 +151,9 @@ export const me = (req, res, next) => {
 export const relatedUsers = (req, res) => {
   // find all events that this user partipated
   const userId = req.user._id.toString();
-  return Events.find({ 'participants.userId': userId }).exec()
+  return Events.find({ 'participants.userId._id': userId })
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
     .then((events) => {
       if (!events) {
         return res.status(401).end();
@@ -160,7 +162,7 @@ export const relatedUsers = (req, res) => {
       const users = [];
       for (const ev of events) {
         for (const participant of ev.participants) {
-          const participantId = participant.userId.toString();
+          const participantId = participant.userId._id.toString();
           if (participantId !== userId) {
               // check if exists at array.
             if (response.indexOf(participantId) === -1) {
