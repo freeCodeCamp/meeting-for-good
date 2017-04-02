@@ -22,18 +22,17 @@ class BestTimeDisplay extends Component {
 
   componentWillMount() {
     const { event, disablePicker } = this.props;
-    const displayTimes = this.buildBestTimes();
+    const displayTimes = this.buildBestTimes(event);
     this.setState({ event, displayTimes, disablePicker });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, disablePicker } = nextProps;
-    const displayTimes = this.buildBestTimes();
+    const displayTimes = this.buildBestTimes(event);
     this.setState({ event, displayTimes, disablePicker });
   }
 
-  buildBestTimes() {
-    const { event } = this.state;
+  buildBestTimes(event) {
     const availability = [];
     const overlaps = [];
     const displayTimes = {};

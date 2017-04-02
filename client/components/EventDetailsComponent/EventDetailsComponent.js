@@ -116,7 +116,6 @@ class EventDetailsComponent extends React.Component {
   async submitAvailability(patches) {
     const { event, curUser } = this.props;
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
-    console.log('responseEvent', responseEvent);
     if (responseEvent) {
       const me = responseEvent.participants.find(participant =>
         participant.userId._id === curUser._id,
@@ -128,11 +127,11 @@ class EventDetailsComponent extends React.Component {
         myAvailability: me.availability,
       });
       if (curUser._id !== event.owner) {
-        await this.sendEmailOwner(event);
+        await this.sendEmailOwner(responseEvent);
       }
-      return event;
+      return responseEvent;
     }
-    console.log('EventDetailCompoent submitAvailability');
+    console.log('Error at EventDetailComponent submitAvailability');
   }
 
   @autobind

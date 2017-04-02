@@ -180,7 +180,7 @@ class AvailabilityGrid extends React.Component {
       const formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
       const notAvailableOnDate = [];
-      
+
       const participants = JSON.parse(JSON.stringify(this.props.participants))
         .filter(participant => participant.availability)
         .map((participant) => {
