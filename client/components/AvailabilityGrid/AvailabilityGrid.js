@@ -285,15 +285,15 @@ class AvailabilityGrid extends React.Component {
      * first check if cur exists as a particpant
      * if is not add the curUser as participant
     **/
-    const isParticipant = event.participants.filter(participant => participant.userId === _id);
+    const isParticipant = event.participants.filter(participant => participant.userId._id === _id);
     if (isParticipant.length === 0) {
       const { user } = this.props;
-      const { name, avatar, _id: userId } = user;
-      const participant = { name, avatar, userId };
+      const { _id: userId } = user;
+      const participant = { userId };
       event.participants.push(participant);
     }
     event.participants = event.participants.map((user) => {
-      if (user.userId === _id) {
+      if (user.userId._id === _id) {
         user.availability = availability;
       }
       return user;
