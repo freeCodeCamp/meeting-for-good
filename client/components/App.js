@@ -37,6 +37,7 @@ class App extends Component {
       }
       const curUser = await getCurrentUser();
       const events = await loadEvents(showPastEvents);
+      console.log('events at APP', events);
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
@@ -102,13 +103,13 @@ class App extends Component {
   @autobind
   async handleEditEvent(patches, eventId) {
     const { events } = this.state;
-    const response = await editEvent(patches, eventId);
-    if (response) {
-      const eventEdited  = await loadEvent(eventId);
+    const eventEdited = await editEvent(patches, eventId);
+    if (eventEdited) {
       const nEvents = events.filter(event => event._id !== eventId);
       this.setState({ events: [eventEdited, ...nEvents] });
       this._addNotification('Success', 'Saved availability successfully.', 'success');
-      return true;
+      console.log('App handleEditEvent', eventEdited);
+      return eventEdited;
     }
     this._addNotification('Error!!', 'Failed to update availability. Please try again later.', 'error');
     return false;
