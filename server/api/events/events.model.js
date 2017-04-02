@@ -3,10 +3,8 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const participantsSchema = new Schema({
-  name: { type: String, required: true },
-  avatar: { type: String, required: true },
   availability: Array,
-  userId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'User' },
   ownerNotified: { type: Boolean, required: true, default: false },
   emailUpdate: { type: Boolean, required: true, default: false },
 });
