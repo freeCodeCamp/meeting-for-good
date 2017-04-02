@@ -64,6 +64,7 @@ class GuestInviteDrawer extends Component {
     try {
       checkStatus(response);
       guests = await parseJSON(response);
+      console.log(guests);
       this.setState({ guests, guestsToDisplay: guests });
     } catch (err) {
       console.log('loadPassGuests', err);
@@ -136,7 +137,7 @@ class GuestInviteDrawer extends Component {
     const { event, curUser } = this.state;
     const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
 
-    const guestData = await this.loadUserData(guestId);
+    const guestData = await this.loadUserData(guestId._id);
     const msg = {
       guestName: guestData.name,
       eventName: event.name,
@@ -197,7 +198,7 @@ class GuestInviteDrawer extends Component {
     let newGuests = guests.slice(0);
     if (searchString.length > 0) {
       newGuests = newGuests.filter((guest) => {
-        return guest.name.toLowerCase().match(searchString);
+        return guest.userId.name.toLowerCase().match(searchString);
       });
     }
     this.setState({ guestsToDisplay: newGuests });
@@ -222,12 +223,12 @@ class GuestInviteDrawer extends Component {
         <ListItem
           style={inLineStyles.listItem}
           key={`${guest._id}.listItem`}
-          primaryText={guest.name}
+          primaryText={guest.userId.name}
           leftCheckbox={<Checkbox
             onCheck={() => this.handleCheck(guest.userId)}
             checked={activeCheckboxes.includes(guest.userId)}
           />}
-          rightAvatar={<Avatar src={guest.avatar} />}
+          rightAvatar={<Avatar src={guest.userId.avatar} />}
         />
       );
       rows.push(row);

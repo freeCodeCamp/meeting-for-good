@@ -35,7 +35,6 @@ class App extends Component {
       }
       const curUser = await getCurrentUser();
       const events = await loadEvents(showPastEvents);
-      console.log('events at APP', events);
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
@@ -106,7 +105,6 @@ class App extends Component {
       const nEvents = events.filter(event => event._id !== eventId);
       this.setState({ events: [eventEdited, ...nEvents] });
       this._addNotification('Success', 'Saved availability successfully.', 'success');
-      console.log('App handleEditEvent', eventEdited);
       return eventEdited;
     }
     this._addNotification('Error!!', 'Failed to update availability. Please try again later.', 'error');

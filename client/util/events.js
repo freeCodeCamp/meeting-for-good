@@ -135,7 +135,6 @@ export async function editEvent(patches, eventId) {
   try {
     checkStatus(response);
     const EditEvent = await parseJSON(response);
-    console.log('events editEvent', EditEvent);
     return EditEvent;
   } catch (err) {
     console.log('events editEvent', err);
