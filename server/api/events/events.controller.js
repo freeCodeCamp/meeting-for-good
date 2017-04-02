@@ -244,7 +244,11 @@ export const setGuestFalse = (req, res) => {
               console.log('err at setGuestFalse', err);
               return res.status(500).send(err);
             }
-            return res.status(200).json(event);
+            return res.status(200).Events.findOne({
+              'participants._id': req.params.id,
+            })
+            .populate('participants.userId', 'avatar emails name')
+            .exec();
           });
         }
       });
