@@ -628,17 +628,34 @@ class AvailabilityGrid extends React.Component {
   }
 }
 
+AvailabilityGrid.defaultProps = {
+  heatmap: false,
+  user: {},
+  event: {},
+  myAvailability: [],
+  participants: [],
+  submitAvail: () => { console.log('submitAvail func not passed in!'); },
+  editAvail: () => { console.log('ediAvail func not passed in!'); },
+  closeGrid: () => { console.log('closeGrid func not passed in!'); },
+};
+
 AvailabilityGrid.propTypes = {
-  dates: React.PropTypes.array.isRequired,
+  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
   heatmap: React.PropTypes.bool,
-  user: React.PropTypes.object,
-  availability: React.PropTypes.array,
+  user: React.PropTypes.shape({
+    _id: React.PropTypes.string,
+    name: React.PropTypes.string,
+    avatar: React.PropTypes.string,
+  }),
+  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
-  myAvailability: React.PropTypes.array,
-  participants: React.PropTypes.array,
-  event: React.PropTypes.object,
+  myAvailability: React.PropTypes.arrayOf(React.PropTypes.string),
+  participants: React.PropTypes.arrayOf(React.PropTypes.object),
+  event: React.PropTypes.shape({
+    participants: React.PropTypes.array,
+  }),
 };
 
 export default cssModules(AvailabilityGrid, styles);
