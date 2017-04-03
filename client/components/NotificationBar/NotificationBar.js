@@ -14,6 +14,28 @@ import { checkStatus, parseJSON } from '../../util/fetch.util';
 import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
+
+  static async handleDismiss(participantId) {
+    const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      method: 'PATCH',
+    });
+    try {
+      checkStatus(response);
+    } catch (err) {
+      console.log('handleDismiss', err);
+    }
+  }
+
+  @autobind
+  static handleEventLinkClick(id) {
+    browserHistory.push(`/event/${id}`);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -41,22 +63,6 @@ class NotificationBar extends Component {
     this.loadNotifications();
   }
 
-  async handleDismiss(participantId) {
-    const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'PATCH',
-    });
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('handleDismiss', err);
-    }
-  }
-
   async loadNotifications() {
     const response = await fetch('/api/events/getGuestNotifications', { credentials: 'same-origin' });
     try {
@@ -68,11 +74,6 @@ class NotificationBar extends Component {
       console.log('loadNotifications', err);
       return null;
     }
-  }
-
-  @autobind
-  handleEventLinkClick(id) {
-    browserHistory.push(`/event/${id}`);
   }
 
   IconButtonColor() {
@@ -114,7 +115,7 @@ class NotificationBar extends Component {
               >
                 {participant.name} <span>accepted your invitation for &#32;</span>
                 <a
-                  onTouchTap={() => this.handleEventLinkClick(notice._id)}
+                  onTouchTap={() => this.constructor.handleEventLinkClick(notice._id)}
                   styleName="eventLink"
                 >{notice.name}</a>.
               </MenuItem>
@@ -162,9 +163,8 @@ class NotificationBar extends Component {
           >
             <IconButton
               tooltip="Notifications"
-              onTouchTap={this.handleDismissAll}
+              onTouchTap={this.constructor.handleDismissAll}
               iconStyle={inLineStyles.iconButton.icon}
-            
             >
               <NotificationsIcon size={10} />
             </IconButton>

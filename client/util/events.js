@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
-import _ from 'lodash';
 
 import { checkStatus, parseJSON } from './fetch.util';
 
