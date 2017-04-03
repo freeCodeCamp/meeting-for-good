@@ -77,7 +77,6 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
-
   async sendEmailOwner(event) {
     const response = this.props.cbHandleEmailOwner(event);
     if (!response) {

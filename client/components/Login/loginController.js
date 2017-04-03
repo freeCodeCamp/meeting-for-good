@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import { isAuthenticated } from '../../util/auth';
 
 class LoginController extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   async componentWillMount() {
     if (await isAuthenticated()) {
