@@ -197,7 +197,7 @@ class GuestInviteDrawer extends Component {
     let newGuests = guests.slice(0);
     if (searchString.length > 0) {
       newGuests = newGuests.filter((guest) => {
-        return guest.name.toLowerCase().match(searchString);
+        return guest.userId.name.toLowerCase().match(searchString);
       });
     }
     this.setState({ guestsToDisplay: newGuests });
@@ -222,12 +222,12 @@ class GuestInviteDrawer extends Component {
         <ListItem
           style={inLineStyles.listItem}
           key={`${guest._id}.listItem`}
-          primaryText={guest.name}
+          primaryText={guest.userId.name}
           leftCheckbox={<Checkbox
-            onCheck={() => this.handleCheck(guest.userId)}
-            checked={activeCheckboxes.includes(guest.userId)}
+            onCheck={() => this.handleCheck(guest.userId._id)}
+            checked={activeCheckboxes.includes(guest.userId._id)}
           />}
-          rightAvatar={<Avatar src={guest.avatar} />}
+          rightAvatar={<Avatar src={guest.userId.avatar} />}
         />
       );
       rows.push(row);
@@ -259,9 +259,7 @@ class GuestInviteDrawer extends Component {
         }
       }
     };
-
     const lines = 174;
-
     const inLineStyles = {
       drawer: {
         container: {

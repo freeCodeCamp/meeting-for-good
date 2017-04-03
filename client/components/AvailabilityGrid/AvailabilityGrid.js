@@ -180,7 +180,7 @@ class AvailabilityGrid extends React.Component {
       const formatStr = 'Do MMMM YYYY hh:mm a';
       const availableOnDate = [];
       const notAvailableOnDate = [];
-      
+
       const participants = JSON.parse(JSON.stringify(this.props.participants))
         .filter(participant => participant.availability)
         .map((participant) => {
@@ -198,12 +198,11 @@ class AvailabilityGrid extends React.Component {
 
       participants.forEach((participant) => {
         if (participant.availability.indexOf(cellFormatted) > -1) {
-          availableOnDate.push(participant.name);
+          availableOnDate.push(participant.userId.name);
         } else {
-          notAvailableOnDate.push(participant.name);
+          notAvailableOnDate.push(participant.userId.name);
         }
       });
-
       this.setState({ availableOnDate, notAvailableOnDate });
     }
   }
@@ -285,15 +284,15 @@ class AvailabilityGrid extends React.Component {
      * first check if cur exists as a particpant
      * if is not add the curUser as participant
     **/
-    const isParticipant = event.participants.filter(participant => participant.userId === _id);
+    const isParticipant = event.participants.filter(participant => participant.userId._id === _id);
     if (isParticipant.length === 0) {
       const { user } = this.props;
-      const { name, avatar, _id: userId } = user;
-      const participant = { name, avatar, userId };
+      const { _id: userId } = user;
+      const participant = { userId };
       event.participants.push(participant);
     }
     event.participants = event.participants.map((user) => {
-      if (user.userId === _id) {
+      if (user.userId._id === _id || user.userId === _id) {
         user.availability = availability;
       }
       return user;

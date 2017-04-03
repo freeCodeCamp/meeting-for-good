@@ -1,12 +1,10 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
-import fetch from 'isomorphic-fetch';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
-import { checkStatus, parseJSON } from '../../util/fetch.util';
 import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
@@ -14,7 +12,7 @@ import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
-    const eventParticipantsIds = props.event.participants.map(participant => participant.userId);
+    const eventParticipantsIds = props.event.participants.map(participant => participant.userId._id);
     const { event } = props;
 
     const ranges = event.dates.map(({ fromDate, toDate }) => ({
@@ -52,7 +50,7 @@ class EventDetailsComponent extends React.Component {
 
       // find actual user particant record
       const isCurParticipant = this.state.participants.find(participant =>
-        participant.userId === curUser._id,
+        participant.userId._id === curUser._id,
       );
       // if curUser have aviability show heatMap
       if (isCurParticipant) {
@@ -75,7 +73,6 @@ class EventDetailsComponent extends React.Component {
       this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
     }
   }
-
 
   selectElementContents(el) {
     let range;
@@ -119,31 +116,21 @@ class EventDetailsComponent extends React.Component {
     const { event, curUser } = this.props;
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
     if (responseEvent) {
-      const response = await fetch(`/api/events/${this.state.event._id}`, {
-        credentials: 'same-origin',
+      const me = responseEvent.participants.find(participant =>
+        participant.userId._id === curUser._id,
+      );
+      this.setState({
+        showHeatmap: true,
+        event: responseEvent,
+        participants: responseEvent.participants,
+        myAvailability: me.availability,
       });
-      let event;
-      try {
-        checkStatus(response);
-        event = await parseJSON(response);
-        const me = event.participants.find(participant =>
-          participant.userId === curUser._id,
-        );
-        this.setState({
-          showHeatmap: true,
-          event,
-          participants: event.participants,
-          myAvailability: me.availability,
-        });
-        if (curUser._id !== event.owner) {
-          await this.sendEmailOwner(event);
-        }
-
-        return event;
-      } catch (err) {
-        console.log('EventDetailCompoent submitAvailability', err);
+      if (curUser._id !== event.owner) {
+        await this.sendEmailOwner(responseEvent);
       }
+      return responseEvent;
     }
+    console.log('Error at EventDetailComponent submitAvailability');
   }
 
   @autobind
@@ -174,8 +161,7 @@ class EventDetailsComponent extends React.Component {
   render() {
     const {
       event,
-      showHeatmap, participants,
-      myAvailability,
+      showHeatmap, participants, myAvailability,
       dates, showAvailabilityGrid, snackBarOpen, snackBarMsg } = this.state;
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);

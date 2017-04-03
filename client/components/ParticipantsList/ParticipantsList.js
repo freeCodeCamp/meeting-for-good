@@ -4,7 +4,6 @@ import Chip from 'material-ui/Chip';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
-import _ from 'lodash';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import IconButton from 'material-ui/IconButton';
 import cssModules from 'react-css-modules';
@@ -41,15 +40,10 @@ class ParticipantsList extends Component {
 
   @autobind
   async handleDeleteGuest() {
-    const { guestToDelete, event } = this.state;
+    const { guestToDelete } = this.state;
     const response = await this.props.cbDeleteGuest(guestToDelete);
     if (response) {
-      const newEvent = _.clone(event);
-      newEvent.participants.forEach((participant, index) => {
-        if (participant._id === guestToDelete) {
-          newEvent.participants.splice(index, 1);
-        }
-      });
+      this.setState({ event: response });
     } else {
       console.log('error at deleteEvent Modal');
     }
@@ -87,7 +81,7 @@ class ParticipantsList extends Component {
         return '0.5px solid #E0E0E0';
       };
 
-      if (curUser._id !== participant.userId && event.owner === curUser._id) {
+      if (curUser._id !== participant.userId._id && event.owner === curUser._id) {
         row = (
           <IconButton
             key={`${participant._id}.button`}
@@ -104,11 +98,11 @@ class ParticipantsList extends Component {
               onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
             >
               <Avatar
-                src={participant.avatar}
+                src={participant.userId.avatar}
                 styleName="avatar"
                 style={{ border: noAvailability() }}
               />
-              {participant.name}
+              {participant.userId.name}
             </Chip>
           </IconButton>
         );
@@ -126,11 +120,11 @@ class ParticipantsList extends Component {
               styleName="chip"
             >
               <Avatar
-                src={participant.avatar}
+                src={participant.userId.avatar}
                 styleName="avatar"
                 style={{ border: noAvailability() }}
               />
-              {participant.name}
+              {participant.userId.name}
             </Chip>
           </IconButton>
         );
