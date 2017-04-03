@@ -198,12 +198,11 @@ class AvailabilityGrid extends React.Component {
 
       participants.forEach((participant) => {
         if (participant.availability.indexOf(cellFormatted) > -1) {
-          availableOnDate.push(participant.name);
+          availableOnDate.push(participant.userId.name);
         } else {
-          notAvailableOnDate.push(participant.name);
+          notAvailableOnDate.push(participant.userId.name);
         }
       });
-
       this.setState({ availableOnDate, notAvailableOnDate });
     }
   }
