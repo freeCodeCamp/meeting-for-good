@@ -12,7 +12,6 @@ import ParticipantsList from '../../components/ParticipantsList/ParticipantsList
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 
 class EventDetailsComponent extends React.Component {
-
   constructor(props) {
     super(props);
     const eventParticipantsIds = props.event.participants.map(participant => participant.userId);
