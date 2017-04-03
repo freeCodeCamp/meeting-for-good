@@ -15,6 +15,11 @@ import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
 
+  @autobind
+  static handleEventLinkClick(id) {
+    browserHistory.push(`/event/${id}`);
+  }
+
   static async handleDismiss(participantId) {
     const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
       headers: {
@@ -29,11 +34,6 @@ class NotificationBar extends Component {
     } catch (err) {
       console.log('handleDismiss', err);
     }
-  }
-
-  @autobind
-  static handleEventLinkClick(id) {
-    browserHistory.push(`/event/${id}`);
   }
 
   constructor(props) {
@@ -56,7 +56,7 @@ class NotificationBar extends Component {
     notifications.forEach((notice) => {
       notice.participants.forEach((participant) => {
         if (participant.ownerNotified === false) {
-          this.handleDismiss(participant._id);
+          this.constructor.handleDismiss(participant._id);
         }
       });
     });
@@ -163,7 +163,7 @@ class NotificationBar extends Component {
           >
             <IconButton
               tooltip="Notifications"
-              onTouchTap={this.constructor.handleDismissAll}
+              onTouchTap={this.handleDismissAll}
               iconStyle={inLineStyles.iconButton.icon}
             >
               <NotificationsIcon size={10} />
