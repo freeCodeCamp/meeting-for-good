@@ -173,13 +173,16 @@ class App extends Component {
 
   @autobind
   async handleDeleteGuest(guestToDelete) {
-    const response = await deleteGuest(guestToDelete);
-    if (response) {
+    const { events } = this.state;
+    const eventEdited = await deleteGuest(guestToDelete);
+    if (eventEdited) {
+      const nEvents = events.filter(event => event._id !== eventEdited._id);
+      this.setState({ events: [eventEdited, ...nEvents] });
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
-    } else {
-      this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
+      return eventEdited;
     }
-    return response;
+    this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
+    return eventEdited;
   }
 
   render() {

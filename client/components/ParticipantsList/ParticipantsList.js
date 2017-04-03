@@ -4,7 +4,6 @@ import Chip from 'material-ui/Chip';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
-import _ from 'lodash';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import IconButton from 'material-ui/IconButton';
 import cssModules from 'react-css-modules';
@@ -42,7 +41,6 @@ class ParticipantsList extends Component {
   @autobind
   async handleDeleteGuest() {
     const { guestToDelete } = this.state;
-    
     const response = await this.props.cbDeleteGuest(guestToDelete);
     if (response) {
       this.setState({ event: response });
