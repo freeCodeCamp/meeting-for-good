@@ -17,24 +17,63 @@ import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 
 class AvailabilityGrid extends React.Component {
+  // Given two numbers num1 and num2, generates an array of all the numbers
+  // between the two. num1 doesn't necessarily have to be smaller than num2.
+  static generateRange(num1, num2) {
+    let rangeStart;
+    let rangeEnd;
+    const range = [];
+
+    if (num1 > num2) {
+      rangeStart = num2;
+      rangeEnd = num1;
+    } else {
+      rangeStart = num1;
+      rangeEnd = num2;
+    }
+
+    for (let i = rangeStart; i <= rangeEnd; i += 1) range.push(i);
+
+    return range;
+  }
+
+  static updateAvailabilityForRange(rowRange, colRange, updateAvail) {
+    rowRange.forEach((i) => {
+      colRange.forEach((j) => {
+        const query = `div[data-row="${i}"][data-col="${j}"]`;
+        const el = document.querySelector(query);
+        updateAvail(el);
+      });
+    });
+  }
+
+  @autobind
+  static addCellToAvailability(t) {
+    t.style.background = 'purple';
+  }
+
+  @autobind
+  static removeCellFromAvailability(t) {
+    t.style.background = 'white';
+  }
+
   constructor(props) {
     super(props);
 
-    const dateFormatStr = 'Do MMM ddd';
-
     this.state = {
-      availability: [],
       allTimes: [],
       allTimesRender: [],
       allDates: [],
       allDatesRender: [],
-      dateFormatStr,
+      dateFormatStr: 'Do MMM ddd',
       availableOnDate: [],
       notAvailableOnDate: [],
       hourTime: [],
-      startCell: null,
-      endCell: null,
       openModal: false,
+      rangeSelected: false,
+      startSelection: false,
+      mouseDownRow: null,
+      mouseDownCol: null,
     };
   }
 
@@ -43,12 +82,17 @@ class AvailabilityGrid extends React.Component {
       getDaysBetween(fromDate, toDate),
     ));
 
-    const allTimes = _.flatten([this.props.dates[0]].map(({ fromDate, toDate }) =>
-      getTimesBetween(fromDate, toDate),
-    ));
+    const allTimes = _.flatten(
+      [this.props.dates[0]].map(({ fromDate, toDate }) =>
+        getTimesBetween(fromDate, toDate),
+      ),
+    );
 
-    const allDatesRender = allDates.map(date => moment(date).format(this.state.dateFormatStr));
-    const allTimesRender = allTimes.map(time => moment(time).format('hh:mm a'));
+    const allDatesRender = allDates
+      .map(date => moment(date).format(this.state.dateFormatStr));
+
+    const allTimesRender = allTimes
+      .map(time => moment(time).format('hh:mm a'));
 
     allTimesRender.pop();
 
@@ -68,16 +112,21 @@ class AvailabilityGrid extends React.Component {
       );
     }
 
-    this.setState({ allDates, allTimes, allDatesRender, allTimesRender, hourTime });
+    this.setState({
+      allDates,
+      allTimes,
+      allDatesRender,
+      allTimesRender,
+      hourTime,
+    });
   }
 
   componentDidMount() {
     if (this.props.heatmap) this.renderHeatmap();
-    if (this.props.myAvailability && this.props.myAvailability.length > 0) this.renderAvail();
 
-    $('.cell').on('click', (e) => {
-      if (!this.props.heatmap) this.addCellToAvail(e);
-    });
+    if (this.props.myAvailability && this.props.myAvailability.length > 0) {
+      this.renderAvail();
+    }
 
     // Offset the grid-hour row if the event starts with a date that's offset by
     // 15/30/45 minutes.
@@ -94,7 +143,7 @@ class AvailabilityGrid extends React.Component {
 
     // Change the border of the cell if it's minutes = 0 or 30 to help visually
     // separate 15 minute blocks from 30 minute and 1 hour blocks.
-    const cells = document.querySelectorAll('.cell');
+    const cells = Array.from(document.querySelectorAll('.cell'));
 
     cells.forEach((cell) => {
       if (getMinutes(cell.getAttribute('data-time')) === 0) {
@@ -104,8 +153,8 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
-    // Check if two adjacent grid hours labels are consecutive or not. If not, then split the grid
-    // at this point.
+    // Check if two adjacent grid hours labels are consecutive or not. If not,
+    // then split the grid at this point.
     const hourTime = this.state.hourTime.slice(0);
 
     for (let i = 0; i < hourTime.length; i += 1) {
@@ -119,46 +168,46 @@ class AvailabilityGrid extends React.Component {
         nextDate.set('h', getHours(hourTime[i + 1]));
         nextDate.set('m', getMinutes(hourTime[i + 1]));
 
-        // date.add (unfortunately) mutates the original moment object. Hence we don't add an hour
-        // to the object again when it's inserted into this.state.hourTime.
+        // date.add (unfortunately) mutates the original moment object. Hence we
+        // don't add an hour to the object again when it's inserted into
+        // this.state.hourTime.
         if (date.add(1, 'h').format('hh:mm') !== nextDate.format('hh:mm')) {
-          $(`.cell[data-time='${nextDate.format('hh:mm a')}']`).css('margin-left', '50px');
+          const query = `.cell[data-time='${nextDate.format('hh:mm a')}']`;
+          const cells = Array.from(document.querySelectorAll(query));
+          cells.forEach((cell) => { cell.style.marginLeft = '50px'; });
 
-          // 'hack' (the modifyHourTime function) to use setState in componentDidMount and bypass
-          // eslint. Using setState in componentDidMount couldn't be avoided in this case.
+          // 'hack' (the modifyHourTime function) to use setState in
+          // componentDidMount and bypass eslint. Using setState in
+          // componentDidMount couldn't be avoided in this case.
           this.modifyHourTime(hourTime, date, i);
         }
       }
     }
   }
 
-  getPosition(el) {
-    let xPosition = 0;
-    let yPosition = 0;
-    let xScrollPos;
-    let yScrollPos;
+  @autobind
+  getFromToForEl(el) {
+    const {
+      allTimesRender,
+      allDatesRender,
+      allDates,
+      allTimes,
+    } = this.state;
 
-    while (el) {
-      if (el.tagName === 'BODY') {
-        // deal with browser quirks with body/window/document and page scroll
-        xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
-        yScrollPos = el.scrollTop || document.documentElement.scrollTop;
-        xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
-        yPosition += (el.offsetTop - yScrollPos + el.clientTop);
-      } else {
-        xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-        yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
-      }
-      el = el.offsetParent;
-    }
-    return {
-      x: xPosition,
-      y: yPosition,
-    };
+    const timeIndex = allTimesRender.indexOf(el.getAttribute('data-time'));
+    const dateIndex = allDatesRender.indexOf(el.getAttribute('data-date'));
+
+    const date = moment(allDates[dateIndex]).get('date');
+
+    const from = moment(allTimes[timeIndex]).set('date', date)._d;
+    const to = moment(allTimes[timeIndex + 1]).set('date', date)._d;
+
+    return [from.toISOString(), to.toISOString()];
   }
 
   modifyHourTime(hourTime, date, i) {
-    // inserts the formatted date object at the 'i+1'th index in this.state.hourTime.
+    // inserts the formatted date object at the 'i+1'th index in
+    // this.state.hourTime.
     this.setState({
       hourTime: [
         ...hourTime.slice(0, i + 1),
@@ -174,88 +223,121 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  showAvailBox(ev) {
-    if (this.props.heatmap && $(ev.target).css('background-color') !== 'rgba(0, 0, 0, 0)') {
-      const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
-      const formatStr = 'Do MMMM YYYY hh:mm a';
-      const availableOnDate = [];
-      const notAvailableOnDate = [];
+  handleCellMouseDown(ev) {
+    if (this.props.heatmap) return;
 
-      const participants = JSON.parse(JSON.stringify(this.props.participants))
-        .filter(participant => participant.availability)
-        .map((participant) => {
-          participant.availability = participant.availability
-            .map(avail => new Date(avail[0]))
-            .map(avail => moment(avail).format(formatStr));
-          return participant;
-        });
+    let { startSelection } = this.state;
+    const {
+      rangeSelected,
+    } = this.state;
+    const cellBackground = getComputedStyle(ev.target)['background-color'];
+    const cellIsSelected = cellBackground !== 'rgba(0, 0, 0, 0)';
 
-      const timeIndex = allTimesRender.indexOf(ev.target.getAttribute('data-time'));
-      const dateIndex = allDatesRender.indexOf(ev.target.getAttribute('data-date'));
+    if (!startSelection) {
+      this.updateCellAvailability(ev);
+    } else {
+      const {
+        generateRange,
+        updateAvailabilityForRange,
+      } = this.constructor;
 
-      const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+      let updateAvail;
+      if (rangeSelected) {
+        updateAvail = this.constructor.removeCellFromAvailability;
+      } else {
+        updateAvail = this.constructor.addCellToAvailability;
+      }
 
-      participants.forEach((participant) => {
-        if (participant.availability.indexOf(cellFormatted) > -1) {
-          availableOnDate.push(participant.userId.name);
-        } else {
-          notAvailableOnDate.push(participant.userId.name);
-        }
+      const thisRow = Number(ev.target.getAttribute('data-row'));
+      const thisCol = Number(ev.target.getAttribute('data-col'));
+      const initialRow = this.state.mouseDownRow;
+      const initialCol = this.state.mouseDownCol;
+
+      const rowRange = generateRange(thisRow, initialRow);
+      const colRange = generateRange(thisCol, initialCol);
+
+      updateAvailabilityForRange(rowRange, colRange, updateAvail);
+
+      this.setState({
+        lastMouseDownRow: thisRow,
+        lastMouseDownCol: thisCol,
       });
-      this.setState({ availableOnDate, notAvailableOnDate });
     }
+
+    startSelection = !startSelection;
+
+    this.setState({
+      startSelection,
+      mouseDownRow: Number(ev.target.getAttribute('data-row')),
+      mouseDownCol: Number(ev.target.getAttribute('data-col')),
+      rangeSelected: cellIsSelected,
+    });
   }
 
   @autobind
-  hideAvailBox() {
+  handleCellMouseOver(ev) {
+    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
+    const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
+
+    if (!this.props.heatmap || !cellIsSelected) return;
+
+    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+    const formatStr = 'Do MMMM YYYY hh:mm a';
+    const availableOnDate = [];
+    const notAvailableOnDate = [];
+
+    const participants = JSON.parse(JSON.stringify(this.props.participants))
+      .filter(participant => participant.availability)
+      .map((participant) => {
+        participant.availability = participant.availability
+          .map(avail => new Date(avail[0]))
+          .map(avail => moment(avail).format(formatStr));
+        return participant;
+      });
+
+    const timeIndex = allTimesRender.indexOf(
+      ev.target.getAttribute('data-time'),
+    );
+
+    const dateIndex = allDatesRender.indexOf(
+      ev.target.getAttribute('data-date'),
+    );
+
+    const date = moment(allDates[dateIndex]).get('date');
+    const cellFormatted = moment(allTimes[timeIndex])
+      .set('date', date)
+      .format(formatStr);
+
+    participants.forEach((participant) => {
+      console.log(participant);
+      if (participant.availability.indexOf(cellFormatted) > -1) {
+        availableOnDate.push({
+          name: participant.userId.name,
+          _id: participant.userId._id,
+        });
+      } else {
+        notAvailableOnDate.push({
+          name: participant.userId.name,
+          _id: participant.userId._id,
+        });
+      }
+    });
+
+    this.setState({ availableOnDate, notAvailableOnDate });
+  }
+
+  @autobind
+  handleCellMouseLeave() {
     this.setState({ availableOnDate: [], notAvailableOnDate: [] });
   }
 
   @autobind
-  addCellToAvail(e) {
-    if ($(e.target).css('background-color') !== 'rgb(128, 0, 128)') {
-      $(e.target).css('background-color', 'purple');
-    } else {
-      $(e.target).css('background-color', 'white');
-    }
+  updateCellAvailability(e) {
+    const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
+    const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
 
-    if (this.state.startCell === null) this.setState({ startCell: $(e.target) });
-    else {
-      this.setState({ endCell: $(e.target) });
-
-      let startCell = this.state.startCell;
-      const endCell = this.state.endCell;
-
-      if (startCell.css('background-color') === 'rgb(128, 0, 128)' && endCell.css('background-color') === 'rgb(128, 0, 128)') {
-        if (startCell.index() < endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.next().css('background-color', 'rgb(128, 0, 128)');
-            startCell = startCell.next();
-          }
-        } else if (startCell.index() > endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.prev().css('background-color', 'rgb(128, 0, 128)');
-            startCell = startCell.prev();
-          }
-        }
-      } else if (startCell.css('background-color') === 'rgb(255, 255, 255)' && endCell.css('background-color') === 'rgb(255, 255, 255)') {
-        if (startCell.index() < endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.next().css('background-color', 'rgb(255, 255, 255)');
-            startCell = startCell.next();
-          }
-        } else if (startCell.index() > endCell.index()) {
-          while (startCell.attr('data-time') !== endCell.attr('data-time')) {
-            startCell.prev().css('background-color', 'rgb(255, 255, 255)');
-            startCell = startCell.prev();
-          }
-        }
-      }
-
-      this.setState({ startCell: null });
-      this.setState({ endCell: null });
-    }
+    if (cellIsSelected) this.constructor.addCellToAvailability(e.target);
+    else this.constructor.removeCellFromAvailability(e.target);
   }
 
   @autobind
@@ -277,7 +359,7 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
-    const { _id } = this.props.user;
+    const { _id } = this.props.curUser;
     const event = JSON.parse(JSON.stringify(this.props.event));
     const observerEvent = jsonpatch.observe(event);
     /**
@@ -286,16 +368,16 @@ class AvailabilityGrid extends React.Component {
     **/
     const isParticipant = event.participants.filter(participant => participant.userId._id === _id);
     if (isParticipant.length === 0) {
-      const { user } = this.props;
-      const { _id: userId } = user;
+      const { curUser } = this.props;
+      const { _id: userId } = curUser;
       const participant = { userId };
       event.participants.push(participant);
     }
-    event.participants = event.participants.map((user) => {
-      if (user.userId._id === _id || user.userId === _id) {
-        user.availability = availability;
+    event.participants = event.participants.map((curUser) => {
+      if (curUser.userId._id === _id || curUser.userId === _id) {
+        curUser.availability = availability;
       }
-      return user;
+      return curUser;
     });
 
     const patches = jsonpatch.generate(observerEvent);
@@ -329,11 +411,10 @@ class AvailabilityGrid extends React.Component {
 
     let flattenedAvailability = _.flatten(this.props.availability);
 
-    flattenedAvailability = flattenedAvailability.filter(avail => avail).map(avail =>
-      new Date(avail[0]),
-    ).map(avail =>
-      moment(avail).format(formatStr),
-    );
+    flattenedAvailability = flattenedAvailability
+      .filter(avail => avail)
+      .map(avail => new Date(avail[0]))
+      .map(avail => moment(avail).format(formatStr));
 
     flattenedAvailability.forEach((avail) => {
       if (availabilityNum[avail]) availabilityNum[avail] += 1;
@@ -345,7 +426,9 @@ class AvailabilityGrid extends React.Component {
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
       const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+      const cellFormatted = moment(allTimes[timeIndex])
+        .set('date', date)
+        .format(formatStr);
 
       cell.style.background = colors[availabilityNum[cellFormatted]];
     });
@@ -356,18 +439,20 @@ class AvailabilityGrid extends React.Component {
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
     const formatStr = 'Do MMMM YYYY hh:mm a';
     const myAvailabilityFrom = this.props.myAvailability
-                                    .map(avail => new Date(avail[0]))
-                                    .map(avail => moment(avail).format(formatStr));
+      .map(avail => new Date(avail[0]))
+      .map(avail => moment(avail).format(formatStr));
 
     cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
       const date = moment(allDates[dateIndex]).get('date');
-      const cellFormatted = moment(allTimes[timeIndex]).set('date', date).format(formatStr);
+      const cellFormatted = moment(allTimes[timeIndex])
+        .set('date', date)
+        .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        cell.style.background = 'purple';
+        this.constructor.addCellToAvailability(cell);
       }
     });
   }
@@ -422,32 +507,46 @@ class AvailabilityGrid extends React.Component {
           </FlatButton>
         </div>
         <div styleName="selectbox" id="selectbox" />
-        {hourTime.map((time, i) => {
-          return (
-            <p
-              key={i}
-              className="grid-hour"
-              styleName="grid-hour"
-            >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
-          );
-        })}
+        {hourTime.map(time => (
+          <p
+            key={time}
+            className="grid-hour"
+            styleName="grid-hour"
+          >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
+        ))}
         {allDatesRender.map((date, i) => (
-          <div key={i} className="grid-row" styleName="row">
+          <div key={date} className="grid-row" styleName="row">
             <div styleName="cell-aside">
               {date}
             </div>
-            {allTimesRender.map((time, i) => {
+            {allTimesRender.map((time, j) => {
               let disabled = '';
               let styleName = 'cell';
 
               dates.forEach(({ fromDate, toDate }) => {
-                const fromDateFormatted = moment(fromDate).format('hh:mm a');
-                const toDateFormatted = moment(toDate).format('hh:mm a');
+                const { dateFormatStr } = this.state;
+                fromDate = moment(fromDate);
+                toDate = moment(toDate);
+                const fromDateFormatted = fromDate.format('hh:mm a');
+                const toDateFormatted = toDate.format('hh:mm a');
 
-                if (moment(fromDate).format(this.state.dateFormatStr) === date &&
-                    moment(fromDateFormatted, 'hh:mm a').isAfter(moment(time, 'hh:mm a')) ||
-                    moment(toDate).format(this.state.dateFormatStr) === date &&
-                    moment(toDateFormatted, 'hh:mm a').isBefore(moment(time, 'hh:mm a'))) {
+                const fromDateDateFormat = fromDate.format(dateFormatStr);
+                // Boolean: If date in fromDate === date => True; Else => False
+                const fromDateIsDate = fromDateDateFormat === date;
+
+                // Boolean: If time in fromDate > time => True; Else => False
+                const fromDateAfterTime = moment(fromDateFormatted, 'hh:mm a')
+                  .isAfter(moment(time, 'hh:mm a'));
+
+                const toDateDateFormat = toDate.format(dateFormatStr);
+                const toDateIsDate = toDateDateFormat === date;
+                const toDateBeforeTime = moment(toDateFormatted, 'hh:mm a')
+                  .isBefore(moment(time, 'hh:mm a'));
+
+                const fromDateInvalid = fromDateIsDate && fromDateAfterTime;
+                const toDateInvalid = toDateIsDate && toDateBeforeTime;
+
+                if (fromDateInvalid || toDateInvalid) {
                   disabled = 'disabled';
                   styleName = 'disabled';
                 }
@@ -455,20 +554,29 @@ class AvailabilityGrid extends React.Component {
 
               return (
                 <div
-                  key={i}
+                  key={`${date} ${time}`}
                   styleName={`${styleName}`}
                   data-time={time}
                   data-date={date}
+                  data-row={i}
+                  data-col={j}
                   className={`cell ${disabled}`}
-                  onMouseEnter={this.showAvailBox}
-                  onMouseLeave={this.hideAvailBox}
+                  onMouseDown={this.handleCellMouseDown}
+                  onMouseOver={this.handleCellMouseOver}
+                  onMouseLeave={this.handleCellMouseLeave}
                 />
               );
             })}
           </div>
         ))}
-        <p styleName="info"><em>Each time slot represents 15 minutes.</em></p>
-        <p styleName="info"><em>Displaying all times in your local timezone: {jz.determine().name()}.</em></p>
+        <p styleName="info">
+          <em>Each time slot represents 15 minutes.</em>
+        </p>
+        <p styleName="info">
+          <em>
+            Displaying all times in your local timezone: {jz.determine().name()}
+          </em>
+        </p>
         <br />
         <div className="center">
           {this.props.heatmap ?
@@ -497,14 +605,18 @@ class AvailabilityGrid extends React.Component {
           {this.state.availableOnDate.length > 0 ?
             <div styleName="hover-available">
               <h5>Available</h5>
-              {this.state.availableOnDate.map((participant, i) => <h6 key={i}>{participant}</h6>)}
+              {this.state.availableOnDate.map(participant =>
+                <h6 key={participant._id}>{participant.name}</h6>,
+              )}
             </div> :
             null
           }
           {this.state.notAvailableOnDate.length > 0 ?
             <div styleName="hover-available">
               <h5>Unavailable</h5>
-              {this.state.notAvailableOnDate.map((participant, i) => <h6 key={i}>{participant}</h6>)}
+              {this.state.notAvailableOnDate.map(participant =>
+                <h6 key={participant._id}>{participant.name}</h6>,
+              )}
             </div> :
             null
           }
@@ -515,17 +627,34 @@ class AvailabilityGrid extends React.Component {
   }
 }
 
+AvailabilityGrid.defaultProps = {
+  heatmap: false,
+  curUser: {},
+  event: {},
+  myAvailability: [],
+  participants: [],
+  submitAvail: () => { console.log('submitAvail func not passed in!'); },
+  editAvail: () => { console.log('ediAvail func not passed in!'); },
+  closeGrid: () => { console.log('closeGrid func not passed in!'); },
+};
+
 AvailabilityGrid.propTypes = {
-  dates: React.PropTypes.array.isRequired,
+  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
   heatmap: React.PropTypes.bool,
-  user: React.PropTypes.object,
-  availability: React.PropTypes.array,
+  curUser: React.PropTypes.shape({
+    _id: React.PropTypes.string,
+    name: React.PropTypes.string,
+    avatar: React.PropTypes.string,
+  }),
+  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
-  myAvailability: React.PropTypes.array,
-  participants: React.PropTypes.array,
-  event: React.PropTypes.object,
+  myAvailability: React.PropTypes.arrayOf(React.PropTypes.string),
+  participants: React.PropTypes.arrayOf(React.PropTypes.object),
+  event: React.PropTypes.shape({
+    participants: React.PropTypes.array,
+  }),
 };
 
 export default cssModules(AvailabilityGrid, styles);
