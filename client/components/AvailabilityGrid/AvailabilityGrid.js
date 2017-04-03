@@ -309,6 +309,7 @@ class AvailabilityGrid extends React.Component {
       .format(formatStr);
 
     participants.forEach((participant) => {
+      console.log(participant);
       if (participant.availability.indexOf(cellFormatted) > -1) {
         availableOnDate.push({
           name: participant.userId.name,
@@ -506,17 +507,15 @@ class AvailabilityGrid extends React.Component {
           </FlatButton>
         </div>
         <div styleName="selectbox" id="selectbox" />
-        {hourTime.map((time, i) => {
-          return (
-            <p
-              key={i}
-              className="grid-hour"
-              styleName="grid-hour"
-            >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
-          );
-        })}
+        {hourTime.map(time => (
+          <p
+            key={time}
+            className="grid-hour"
+            styleName="grid-hour"
+          >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
+        ))}
         {allDatesRender.map((date, i) => (
-          <div key={i} className="grid-row" styleName="row">
+          <div key={date} className="grid-row" styleName="row">
             <div styleName="cell-aside">
               {date}
             </div>
@@ -555,7 +554,7 @@ class AvailabilityGrid extends React.Component {
 
               return (
                 <div
-                  key={j}
+                  key={`${date} ${time}`}
                   styleName={`${styleName}`}
                   data-time={time}
                   data-date={date}
@@ -606,8 +605,8 @@ class AvailabilityGrid extends React.Component {
           {this.state.availableOnDate.length > 0 ?
             <div styleName="hover-available">
               <h5>Available</h5>
-              {this.state.availableOnDate.map((participant, i) =>
-                <h6 key={i}>{participant}</h6>,
+              {this.state.availableOnDate.map(participant =>
+                <h6 key={participant._id}>{participant.name}</h6>,
               )}
             </div> :
             null
@@ -615,8 +614,8 @@ class AvailabilityGrid extends React.Component {
           {this.state.notAvailableOnDate.length > 0 ?
             <div styleName="hover-available">
               <h5>Unavailable</h5>
-              {this.state.notAvailableOnDate.map((participant, i) =>
-                <h6 key={i}>{participant}</h6>,
+              {this.state.notAvailableOnDate.map(participant =>
+                <h6 key={participant._id}>{participant.name}</h6>,
               )}
             </div> :
             null
