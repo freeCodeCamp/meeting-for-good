@@ -71,11 +71,11 @@ class AvailabilityGrid extends React.Component {
       hourTime: [],
       openModal: false,
       mouseDownOnGrid: false,
-      mouseDownSelected: false,
+      rangeSelected: false,
       mouseDownRow: null,
       mouseDownCol: null,
-      prevMouseDownRow: null,
-      prevMouseDownCol: null,
+      lastMouseDownRow: null,
+      lastMouseDownCol: null,
     };
   }
 
@@ -236,7 +236,7 @@ class AvailabilityGrid extends React.Component {
         mouseDownOnGrid: true,
         mouseDownRow: Number(e.target.getAttribute('data-row')),
         mouseDownCol: Number(e.target.getAttribute('data-col')),
-        mouseDownSelected: cellIsSelected,
+        rangeSelected: cellIsSelected,
       });
     }
   }
@@ -252,9 +252,9 @@ class AvailabilityGrid extends React.Component {
     const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
     const {
       mouseDownOnGrid,
-      mouseDownSelected,
-      prevMouseDownCol,
-      prevMouseDownRow,
+      rangeSelected,
+      lastMouseDownCol,
+      lastMouseDownRow,
     } = this.state;
 
     const {
@@ -265,7 +265,7 @@ class AvailabilityGrid extends React.Component {
     if (mouseDownOnGrid) {
       let updateAvail;
 
-      if (mouseDownSelected) {
+      if (rangeSelected) {
         updateAvail = this.constructor.removeCellFromAvailability;
       } else {
         updateAvail = this.constructor.addCellToAvailability;
@@ -281,24 +281,24 @@ class AvailabilityGrid extends React.Component {
 
       updateAvailabilityForRange(rowRange, colRange, updateAvail);
 
-      if (mouseDownSelected) {
+      if (rangeSelected) {
         updateAvail = this.constructor.addCellToAvailability;
       } else {
         updateAvail = this.constructor.removeCellFromAvailability;
       }
 
-      if (thisRow < prevMouseDownRow) {
-        rowRange = generateRange(thisRow + 1, prevMouseDownRow);
+      if (thisRow < lastMouseDownRow) {
+        rowRange = generateRange(thisRow + 1, lastMouseDownRow);
         updateAvailabilityForRange(rowRange, colRange, updateAvail);
-      } else if (thisCol < prevMouseDownCol) {
+      } else if (thisCol < lastMouseDownCol) {
         rowRange = generateRange(thisRow, initialRow);
-        colRange = generateRange(thisCol + 1, prevMouseDownCol);
+        colRange = generateRange(thisCol + 1, lastMouseDownCol);
         updateAvailabilityForRange(rowRange, colRange, updateAvail);
       }
 
       this.setState({
-        prevMouseDownRow: thisRow,
-        prevMouseDownCol: thisCol,
+        lastMouseDownRow: thisRow,
+        lastMouseDownCol: thisCol,
       });
     }
 
