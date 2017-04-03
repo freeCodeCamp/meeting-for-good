@@ -12,6 +12,7 @@ import ParticipantsList from '../../components/ParticipantsList/ParticipantsList
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 
 class EventDetailsComponent extends React.Component {
+
   constructor(props) {
     super(props);
     const eventParticipantsIds = props.event.participants.map(participant => participant.userId);
@@ -76,21 +77,6 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
-
-  selectElementContents(el) {
-    let range;
-    if (window.getSelection && document.createRange) {
-      range = document.createRange();
-      const sel = window.getSelection();
-      range.selectNodeContents(el);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } else if (document.body && document.body.createTextRange) {
-      range = document.body.createTextRange();
-      range.moveToElementText(el);
-      range.select();
-    }
-  }
 
   async sendEmailOwner(event) {
     const response = this.props.cbHandleEmailOwner(event);
