@@ -359,7 +359,7 @@ class AvailabilityGrid extends React.Component {
       }
     });
 
-    const { _id } = this.props.user;
+    const { _id } = this.props.curUser;
     const event = JSON.parse(JSON.stringify(this.props.event));
     const observerEvent = jsonpatch.observe(event);
     /**
@@ -368,16 +368,16 @@ class AvailabilityGrid extends React.Component {
     **/
     const isParticipant = event.participants.filter(participant => participant.userId._id === _id);
     if (isParticipant.length === 0) {
-      const { user } = this.props;
-      const { _id: userId } = user;
+      const { curUser } = this.props;
+      const { _id: userId } = curUser;
       const participant = { userId };
       event.participants.push(participant);
     }
-    event.participants = event.participants.map((user) => {
-      if (user.userId._id === _id || user.userId === _id) {
-        user.availability = availability;
+    event.participants = event.participants.map((curUser) => {
+      if (curUser.userId._id === _id || curUser.userId === _id) {
+        curUser.availability = availability;
       }
-      return user;
+      return curUser;
     });
 
     const patches = jsonpatch.generate(observerEvent);
@@ -629,7 +629,7 @@ class AvailabilityGrid extends React.Component {
 
 AvailabilityGrid.defaultProps = {
   heatmap: false,
-  user: {},
+  curUser: {},
   event: {},
   myAvailability: [],
   participants: [],
@@ -641,7 +641,7 @@ AvailabilityGrid.defaultProps = {
 AvailabilityGrid.propTypes = {
   dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
   heatmap: React.PropTypes.bool,
-  user: React.PropTypes.shape({
+  curUser: React.PropTypes.shape({
     _id: React.PropTypes.string,
     name: React.PropTypes.string,
     avatar: React.PropTypes.string,

@@ -204,7 +204,7 @@ class EventDetailsComponent extends React.Component {
                     <AvailabilityGrid
                       event={event}
                       dates={dates}
-                      user={curUser}
+                      curUser={curUser}
                       availability={availability}
                       myAvailability={myAvailability}
                       submitAvail={this.submitAvailability}
