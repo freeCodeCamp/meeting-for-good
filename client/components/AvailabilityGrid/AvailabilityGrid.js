@@ -70,12 +70,10 @@ class AvailabilityGrid extends React.Component {
       notAvailableOnDate: [],
       hourTime: [],
       openModal: false,
-      mouseDownOnGrid: false,
       rangeSelected: false,
+      startSelection: false,
       mouseDownRow: null,
       mouseDownCol: null,
-      lastMouseDownRow: null,
-      lastMouseDownCol: null,
     };
   }
 
@@ -225,46 +223,25 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  handleCellMouseDown(e) {
-    if (!this.props.heatmap) {
-      const cellBackground = getComputedStyle(e.target)['background-color'];
-      const cellIsSelected = cellBackground !== 'rgba(0, 0, 0, 0)';
+  handleCellMouseDown(ev) {
+    if (this.props.heatmap) return;
 
-      this.updateCellAvailability(e);
-
-      this.setState({
-        mouseDownOnGrid: true,
-        mouseDownRow: Number(e.target.getAttribute('data-row')),
-        mouseDownCol: Number(e.target.getAttribute('data-col')),
-        rangeSelected: cellIsSelected,
-      });
-    }
-  }
-
-  @autobind
-  handleCellMouseUp() {
-    if (!this.props.heatmap) this.setState({ mouseDownOnGrid: false });
-  }
-
-  @autobind
-  handleCellMouseOver(ev) {
-    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
+    let { startSelection } = this.state;
     const {
-      mouseDownOnGrid,
       rangeSelected,
-      lastMouseDownCol,
-      lastMouseDownRow,
     } = this.state;
+    const cellBackground = getComputedStyle(ev.target)['background-color'];
+    const cellIsSelected = cellBackground !== 'rgba(0, 0, 0, 0)';
 
-    const {
-      generateRange,
-      updateAvailabilityForRange,
-    } = this.constructor;
+    if (!startSelection) {
+      this.updateCellAvailability(ev);
+    } else {
+      const {
+        generateRange,
+        updateAvailabilityForRange,
+      } = this.constructor;
 
-    if (mouseDownOnGrid) {
       let updateAvail;
-
       if (rangeSelected) {
         updateAvail = this.constructor.removeCellFromAvailability;
       } else {
@@ -276,31 +253,31 @@ class AvailabilityGrid extends React.Component {
       const initialRow = this.state.mouseDownRow;
       const initialCol = this.state.mouseDownCol;
 
-      let rowRange = generateRange(thisRow, initialRow);
-      let colRange = generateRange(thisCol, initialCol);
+      const rowRange = generateRange(thisRow, initialRow);
+      const colRange = generateRange(thisCol, initialCol);
 
       updateAvailabilityForRange(rowRange, colRange, updateAvail);
-
-      if (rangeSelected) {
-        updateAvail = this.constructor.addCellToAvailability;
-      } else {
-        updateAvail = this.constructor.removeCellFromAvailability;
-      }
-
-      if (thisRow < lastMouseDownRow) {
-        rowRange = generateRange(thisRow + 1, lastMouseDownRow);
-        updateAvailabilityForRange(rowRange, colRange, updateAvail);
-      } else if (thisCol < lastMouseDownCol) {
-        rowRange = generateRange(thisRow, initialRow);
-        colRange = generateRange(thisCol + 1, lastMouseDownCol);
-        updateAvailabilityForRange(rowRange, colRange, updateAvail);
-      }
 
       this.setState({
         lastMouseDownRow: thisRow,
         lastMouseDownCol: thisCol,
       });
     }
+
+    startSelection = !startSelection;
+
+    this.setState({
+      startSelection,
+      mouseDownRow: Number(ev.target.getAttribute('data-row')),
+      mouseDownCol: Number(ev.target.getAttribute('data-col')),
+      rangeSelected: cellIsSelected,
+    });
+  }
+
+  @autobind
+  handleCellMouseOver(ev) {
+    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
+    const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
 
     if (!this.props.heatmap || !cellIsSelected) return;
 
@@ -586,7 +563,6 @@ class AvailabilityGrid extends React.Component {
                   data-col={j}
                   className={`cell ${disabled}`}
                   onMouseDown={this.handleCellMouseDown}
-                  onMouseUp={this.handleCellMouseUp}
                   onMouseOver={this.handleCellMouseOver}
                   onMouseLeave={this.handleCellMouseLeave}
                 />
