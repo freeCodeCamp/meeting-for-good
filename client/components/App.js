@@ -81,7 +81,6 @@ class App extends Component {
     const { events } = this.state;
     const nEvent = await addEvent(event);
     this.setState({ events: [nEvent, ...events] });
-    this._addNotification('Events', `Event ${nEvent.name} created`, 'success');
     return nEvent;
   }
 
@@ -143,7 +142,6 @@ class App extends Component {
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
       if (redirectTo) {
         if (redirectTo === '/dashboard' && events.length === 0) {
-          this._addNotification('Info', 'You are redirect to New Event because you have no current scheduled events.', 'success', 10);
           browserHistory.push('/event/new');
         } else {
           browserHistory.push(redirectTo);
