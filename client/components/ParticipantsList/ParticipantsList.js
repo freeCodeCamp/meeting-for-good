@@ -123,11 +123,9 @@ class ParticipantsList extends Component {
     const { event } = this.state;
     const rows = [];
     event.participants.forEach((participant) => {
-      if (participant.status !== 0) {
-        const row = this.renderChip(participant);
-        rows.push(row);
-      }
-    }); 
+      const row = this.renderChip(participant);
+      rows.push(row);
+    });
     return rows;
   }
 

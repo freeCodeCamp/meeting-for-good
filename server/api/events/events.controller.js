@@ -105,15 +105,17 @@ export const indexById = (req, res) => {
 export const indexByUser = (req, res) => {
   const actualDate = (req.params.actualDate) ? req.params.actualDate : new Date(1970, 1, 1);
   return Events.find({
-    'participants.userId': req.user._id.toString(),
+    $and: [
+      { 'participants.userId': req.user._id.toString() },
+      { 'participants.status': { $ne: 0 } },
+      { active: true },
+      { 'dates.toDate': { $gte: actualDate } },
+    ],
   })
-    .where('active').equals(true)
-    .where('dates.toDate')
-    .gte(actualDate)
-    .populate('participants.userId', 'avatar emails name')
-    .exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+  .populate('participants.userId', 'avatar emails name')
+  .exec()
+  .then(respondWithResult(res))
+  .catch(handleError(res));
 };
 
 // Gets a single Event from the DB

@@ -15,7 +15,7 @@ const participantsSchema = new Schema({
    *  2 joined the Event - --default--
    *  3 has added hes time table
    */
-  status: { type: Number, enum: [0, 1, 2, 3], default: 2, required: true },
+  status: { type: Number, min: 0, max: 3, default: 2, required: true },
 });
 
 const datesSchema =  new Schema({
