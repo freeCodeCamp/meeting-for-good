@@ -96,24 +96,6 @@ class GuestInviteDrawer extends Component {
     }
   }
 
-  async loadUserData(_id) {
-    const response = await fetch(`/api/user/${_id}`, {
-      credentials: 'same-origin',
-    });
-
-    try {
-      checkStatus(response);
-      return await parseJSON(response);
-    } catch (err) {
-      console.log('loadUserData', err);
-      this.setState({
-        snackbarOpen: true,
-        snackbarMsg: 'Failed to load user data. Please try again later.',
-      });
-      return null;
-    }
-  }
-
   @autobind
   handleInvite() {
     this.timer = undefined;
