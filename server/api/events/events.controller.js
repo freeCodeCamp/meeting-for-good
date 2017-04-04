@@ -196,7 +196,8 @@ export const GuestNotifications = (req, res) => {
     owner: _id.toString(),
     active: true,
   })
-    .select('name participants.userId participants.name participants._id participants.ownerNotified')
+    .select('name participants.userId  participants._id participants.ownerNotified')
+    .populate('participants.userId', '_id name')
     .sort({ _id: 'descending' })
     .exec()
     .then(respondWithResult(res))

@@ -62,6 +62,7 @@ class NotificationBar extends Component {
     try {
       checkStatus(response);
       const notifications = await parseJSON(response);
+      console.log(notifications);
       this.setState({ notifications });
       this.IconButtonColor();
     } catch (err) {
@@ -83,7 +84,7 @@ class NotificationBar extends Component {
       notificationColor = '#ffffff';
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
-          if (participant.userId !== curUser._id && participant.ownerNotified === false) {
+          if (participant.userId._id.toString() !== curUser._id && participant.ownerNotified === false) {
             notificationColor = '#ff0000';
             quantOwnerNotNotified += 1;
           }
