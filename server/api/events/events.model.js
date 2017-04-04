@@ -12,10 +12,10 @@ const participantsSchema = new Schema({
    *  relaction to this Event
    *  0 inactive - when the guest is deleted from the Event
    *  1 invited
-   *  2 joined the Event
+   *  2 joined the Event - --default--
    *  3 has added hes time table
    */
-  status: { type: Number, enum: [0, 1, 2, 3], default: 2 },
+  status: { type: Number, enum: [0, 1, 2, 3], default: 2, required: true },
 });
 
 const datesSchema =  new Schema({

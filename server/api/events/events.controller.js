@@ -233,7 +233,7 @@ export const setGuestFalse = (req, res) => {
   return Events.findOne({ 'participants._id': req.params.id })
     .exec()
     .then((event) => {
-      event.participants.id(req.params.id).remove();
+      event.participants.id(req.params.id).status = 0;
       return event.save();
     })
     .then((res) => {

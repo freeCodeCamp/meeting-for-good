@@ -55,7 +55,8 @@ class ParticipantsList extends Component {
     this.props.showInviteGuests();
   }
 
-  renderGuestList() {
+  renderChip(participant) {
+    const { curUser, event } = this.state;
     const inLinestyles = {
       chip: {
         label: {
@@ -63,74 +64,68 @@ class ParticipantsList extends Component {
         },
       },
     };
-    const { event, curUser } = this.state;
+    let borderColor;
+    let text;
+    switch (participant.status) {
+      case 1:
+        borderColor = '3px solid #ff8080';
+        text = 'invited';
+        break;
+      case 2:
+        borderColor = '3px solid blue';
+        text = 'joined';
+        break;
+      case 3:
+        borderColor = '0.5px solid #E0E0E0';
+        text = 'table time set';
+        break;
+      default:
+        break;
+    }
+    return (
+    (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
+      <Chip
+        key={participant._id}
+        styleName="chip"
+        labelStyle={inLinestyles.chip.label}
+        onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
+      >
+        <Avatar
+          src={participant.userId.avatar}
+          styleName="avatar"
+          style={{ border: borderColor }}
+        />
+        <div styleName="chipTextWrapper">
+          <span>{participant.userId.name}</span>
+          <span>{text}</span>
+        </div>
+      </Chip>
+    :
+      <Chip
+        key={participant._id}
+        styleName="chip"
+        labelStyle={inLinestyles.chip.label}
+      >
+        <Avatar
+          src={participant.userId.avatar}
+          styleName="avatar"
+          style={{ border: borderColor }}
+        />
+        <div styleName="chipTextWrapper">
+          <span styleName="chipTextName">{participant.userId.name}</span>
+          <span>{text}</span>
+        </div>
+      </Chip>
+    );
+  }
+
+  renderGuestList() {
+    const { event } = this.state;
     const rows = [];
     event.participants.forEach((participant) => {
-      let row;
-      const showToolTip = () => {
-        if (Object.prototype.hasOwnProperty.call(participant, 'availability')) {
-          return (participant.availability.length === 0) ? 'visible' : 'hidden';
-        }
-        return '#visible';
-      };
-
-      const noAvailability = () => {
-        if (Object.prototype.hasOwnProperty.call(participant, 'availability')) {
-          return (participant.availability.length === 0) ? ' 3px solid #ff8080' : '0.5px solid #E0E0E0';
-        }
-        return '0.5px solid #E0E0E0';
-      };
-
-      if (curUser._id !== participant.userId._id && event.owner === curUser._id) {
-        row = (
-          <IconButton
-            key={`${participant._id}.button`}
-            styleName="chipButtom"
-            tooltipPosition="top-left"
-            tooltip="This user has not added any hours yet."
-            tooltipStyles={{ visibility: showToolTip() }}
-          >
-            <Chip
-              key={participant._id}
-              styleName="chip"
-              labelStyle={inLinestyles.chip.label}
-              onTouchTap={() => this.handleTouchTap()}
-              onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
-            >
-              <Avatar
-                src={participant.userId.avatar}
-                styleName="avatar"
-                style={{ border: noAvailability() }}
-              />
-              {participant.userId.name}
-            </Chip>
-          </IconButton>
-        );
-      } else {
-        row = (
-          <IconButton
-            key={`${participant._id}.button`}
-            styleName="chipButtom"
-            tooltipPosition="top-left"
-            tooltip="This user has not added any hours yet."
-            tooltipStyles={{ visibility: showToolTip() }}
-          >
-            <Chip
-              key={participant._id}
-              styleName="chip"
-            >
-              <Avatar
-                src={participant.userId.avatar}
-                styleName="avatar"
-                style={{ border: noAvailability() }}
-              />
-              {participant.userId.name}
-            </Chip>
-          </IconButton>
-        );
-      }
+      const row = this.renderChip(participant);
       rows.push(row);
-    });
+    }); 
     return rows;
   }
 
