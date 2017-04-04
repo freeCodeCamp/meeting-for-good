@@ -70,6 +70,11 @@ class Dashboard extends Component {
     return response;
   }
 
+  @autobind
+  HandleInviteEmail(guestId, event, curUser) {
+    return this.props.cbInviteEmail(guestId, event, curUser);
+  }
+
   render() {
     const { events, curUser, openDrawer, eventToInvite } = this.state;
     return (
@@ -99,7 +104,13 @@ class Dashboard extends Component {
             <DateRangeIcon styleName="no-selectIcon" />
           </div>
         }
-        <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
+        <GuestInviteDrawer
+          open={openDrawer}
+          event={eventToInvite}
+          curUser={curUser}
+          cb={this.handleCbGuestInviteDrawer}
+          cbInviteEmail={this.HandleInviteEmail}
+        />
       </Paper>
     );
   }
@@ -112,6 +123,7 @@ Dashboard.propTypes = {
   events: PropTypes.array,
   cbDeleteEvent: PropTypes.func,
   cbDeleteGuest: PropTypes.func,
+  cbInviteEmail: React.PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

@@ -7,7 +7,7 @@ import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
 import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest } from '../util/events';
-import { sendEmailOwner } from '../util/emails';
+import { sendEmailOwner, sendEmailInvite } from '../util/emails';
 
 import '../styles/main.css';
 
@@ -183,6 +183,17 @@ class App extends Component {
     return eventEdited;
   }
 
+  @autobind
+  async handleInviteEmail(guestId, event, curUser) {
+    const result = sendEmailInvite(guestId, event, curUser);
+    if (result) {
+      this._addNotification('Success', 'Invite send successfully.', 'success');
+      return result;
+    }
+    this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
+    return result;
+  }
+
   render() {
     const { location } = this.props;
     const {
@@ -242,6 +253,7 @@ class App extends Component {
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbDeleteEvent: this.handleDeleteEvent,
             cbDeleteGuest: this.handleDeleteGuest,
+            cbInviteEmail: this.handleInviteEmail,
             events,
           });
         }

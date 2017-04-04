@@ -132,45 +132,10 @@ class GuestInviteDrawer extends Component {
   }
 
   async sendEmailInvite(guestId) {
-    this.setState({ linearProgressVisible: 'visible' });
-    const { event, curUser } = this.state;
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}`;
-
-    const guestData = await this.loadUserData(guestId);
-    const msg = {
-      guestName: guestData.name,
-      eventName: event.name,
-      eventId: event._id,
-      eventOwner: event.owner,
-      eventOwnerName: curUser.name,
-      url: `${fullUrl}/event/${event._id}`,
-      to: guestData.emails[0],
-      subject: `Invite for ${event.name}!!`,
-    };
-    const response = await fetch('/api/email/sendInvite', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'POST',
-      body: JSON.stringify(msg),
-    });
-
-    try {
-      checkStatus(response);
-      this.timer = setTimeout(this.setState({
-        snackbarOpen: true,
-        snackbarMsg: `Info!!, ${guestData.name} invited! to ${event.name}`,
-      }), 5000);
-    } catch (err) {
-      console.log('sendEmailOwner', err);
-      this.setState({
-        snackbarOpen: true,
-        snackbarMsg: `Failed to send invite to ${curUser.name}. Please try again later.`,
-      });
-    } finally {
-      this.setState({ linearProgressVisible: 'hidden' });
+    const { curUser, event } = this.state;
+    const result = this.props.cbInviteEmail(guestId, event, curUser);
+    if (!result) { 
+      console.log('sendEmailOwner Error');
     }
   }
 
@@ -370,6 +335,7 @@ GuestInviteDrawer.propTypes = {
   curUser: React.PropTypes.object,
   open: React.PropTypes.bool,
   cb: React.PropTypes.func,
+  cbInviteEmail: React.PropTypes.func,
 };
 
 export default cssModules(GuestInviteDrawer, styles);
