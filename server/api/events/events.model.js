@@ -7,7 +7,15 @@ const participantsSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   ownerNotified: { type: Boolean, required: true, default: false },
   emailUpdate: { type: Boolean, required: true, default: false },
-  status: { type: String, enum: ['inactive', 'invited', 'joined', 'timeAdded'], default: 'joined' },
+  /**
+   *  here whe define the status os the user-guest in
+   *  relaction to this Event
+   *  0 inactive - when the guest is deleted from the Event
+   *  1 invited
+   *  2 joined the Event
+   *  3 has added hes time table
+   */
+  status: { type: Number, enum: [0, 1, 2, 3], default: 2 },
 });
 
 const datesSchema =  new Schema({
