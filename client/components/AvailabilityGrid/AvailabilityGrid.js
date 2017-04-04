@@ -309,7 +309,6 @@ class AvailabilityGrid extends React.Component {
       .format(formatStr);
 
     participants.forEach((participant) => {
-      console.log(participant);
       if (participant.availability.indexOf(cellFormatted) > -1) {
         availableOnDate.push({
           name: participant.userId.name,
@@ -373,11 +372,16 @@ class AvailabilityGrid extends React.Component {
       const participant = { userId };
       event.participants.push(participant);
     }
-    event.participants = event.participants.map((curUser) => {
-      if (curUser.userId._id === _id || curUser.userId === _id) {
-        curUser.availability = availability;
+    event.participants = event.participants.map((participant) => {
+      if (participant.userId._id === _id || participant.userId === _id) {
+        participant.availability = availability;
+        if (availability.length === 0) {
+          participant.status = 2;
+        } else {
+          participant.status = 3;
+        }
       }
-      return curUser;
+      return participant;
     });
 
     const patches = jsonpatch.generate(observerEvent);

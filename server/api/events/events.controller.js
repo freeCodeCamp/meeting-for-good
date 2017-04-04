@@ -201,7 +201,7 @@ export const GuestNotifications = (req, res) => {
     .exec()
     .then(respondWithResult(res))
     .catch((err) => {
-      console.log('err no GuestNotifications', err);
+      console.log('err at GuestNotifications', err);
       handleError(res);
     });
 };
