@@ -19,7 +19,7 @@ router.post('/', isAuthenticated, controller.create);
 router.put('/:id', isAuthenticated, controller.upsert);
 router.patch('/GuestNotificationDismiss/:id', isAuthenticated, controller.GuestNotificationDismiss);
 router.patch('/:id', isAuthenticated, controller.patch);
-router.delete('/participant/:id', isAuthenticated, controller.setGuestFalse);
+router.delete('/participant/:id', isAuthenticated, controller.setGuestInactive);
 router.delete('/:id', isAuthenticated, controller.setFalse);
 
 module.exports = router;

@@ -10,13 +10,15 @@
  * PATCH   /api/events/:id                            ->  patch
  * PATCH   /api/events/GuestNotificationDismiss/:id   ->  GuestNotificationDismiss
  * DELETE  /api/events/:id                            ->  setFalse
- * DELETE  /api/events/participant:id                 ->  setGuestFalse
+ * DELETE  /api/events/participant:id                 ->  setGuestInactive
  */
 
 'use strict';
 
 import jsonpatch from 'fast-json-patch';
+import _ from 'lodash';
 import Events from './events.model';
+
 
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
@@ -97,6 +99,15 @@ export const indexById = (req, res) => {
   const uid = req.params.uid;
   return Events.find({ uid, active: true })
     .exec()
+    .then((event) => {
+      const nEvent = _.clone(event);
+      event.participants.forEach((participant, indexParticipant) => {
+        if (participant.status === 0) {
+          nEvent.participants.splice(indexParticipant, 1);
+        }
+      });
+      return nEvent;
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -105,17 +116,28 @@ export const indexById = (req, res) => {
 export const indexByUser = (req, res) => {
   const actualDate = (req.params.actualDate) ? req.params.actualDate : new Date(1970, 1, 1);
   return Events.find({
-    $and: [
-      { 'participants.userId': req.user._id.toString() },
-      { 'participants.status': { $ne: 0 } },
-      { active: true },
-      { 'dates.toDate': { $gte: actualDate } },
-    ],
+    'participants.userId': req.user._id.toString(),
   })
-  .populate('participants.userId', 'avatar emails name')
-  .exec()
-  .then(respondWithResult(res))
-  .catch(handleError(res));
+    .where('active').equals(true)
+    .where('dates.toDate')
+    .gte(actualDate)
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
+    .then((events) => {
+      const nEvents = _.clone(events);
+      events.forEach((event, index) => {
+        event.participants.forEach((participant, indexParticipant) => {
+          if (participant.status === 0 && participant.userId._id.toString() === req.user._id.toString()) {
+            nEvents.splice(index, 1);
+          } else if (participant.status === 0) {
+            nEvents[index].participants.splice(indexParticipant, 1);
+          }
+        });
+      });
+      return nEvents;
+    })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
 };
 
 // Gets a single Event from the DB
@@ -230,18 +252,28 @@ export const GuestNotificationDismiss = (req, res) => {
       });
     });
 };
-// set the owner notification for that particpants._id as true
-export const setGuestFalse = (req, res) => {
+// set the guest as inactive
+export const setGuestInactive = (req, res) => {
   return Events.findOne({ 'participants._id': req.params.id })
     .exec()
     .then((event) => {
       event.participants.id(req.params.id).status = 0;
+      event.participants.id(req.params.id).availability = [];
       return event.save();
     })
     .then((res) => {
       return Events.findById({ _id: res._id })
         .populate('participants.userId', 'avatar emails name')
         .exec();
+    })
+    .then((event) => {
+      const nEvent = _.clone(event);
+      event.participants.forEach((participant, indexParticipant) => {
+        if (participant.status === 0) {
+          nEvent.participants.splice(indexParticipant, 1);
+        }
+      });
+      return nEvent;
     })
     .then(respondWithResult(res))
     .catch(handleError(res));

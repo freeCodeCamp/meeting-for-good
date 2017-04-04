@@ -41,9 +41,10 @@ class ParticipantsList extends Component {
   @autobind
   async handleDeleteGuest() {
     const { guestToDelete } = this.state;
-    const response = await this.props.cbDeleteGuest(guestToDelete);
-    if (response) {
-      this.setState({ event: response });
+    const nEvent = await this.props.cbDeleteGuest(guestToDelete);
+    console.log(nEvent);
+    if (nEvent) {
+      this.setState({ event: nEvent });
     } else {
       console.log('error at deleteEvent Modal');
     }
