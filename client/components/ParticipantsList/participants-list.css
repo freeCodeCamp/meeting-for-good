@@ -12,7 +12,7 @@
 .chip {
   margin: 0px 0px 3px 0px !important;
   width: 100% !important;
-  border-radius: 25px 20px 20px 25px !important;
+  border-radius: 30px 20px 20px 30px !important;
   border: 0.5px solid #E0E0E0 !important;
   display: flex !important;
   flex-direction: row !important;
@@ -22,8 +22,8 @@
 }
 
 .avatar {
-  width: 40px !important;
-  height: 40px !important;
+  width: 36px !important;
+  height: 36px !important;
   margin: 0px !important;
   padding: 0px !important;
 }

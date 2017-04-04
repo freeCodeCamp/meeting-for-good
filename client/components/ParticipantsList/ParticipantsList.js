@@ -72,7 +72,7 @@ class ParticipantsList extends Component {
         text = 'invited';
         break;
       case 2:
-        borderColor = '3px solid blue';
+        borderColor = '3px solid #A0C2FF';
         text = 'joined';
         break;
       case 3:
