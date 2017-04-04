@@ -185,7 +185,7 @@ class App extends Component {
 
   @autobind
   async handleInviteEmail(guestId, event, curUser) {
-    const result = sendEmailInvite(guestId, event, curUser);
+    const result = await sendEmailInvite(guestId, event, curUser);
     if (result) {
       this._addNotification('Success', 'Invite send successfully.', 'success');
       return result;

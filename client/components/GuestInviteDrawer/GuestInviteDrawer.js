@@ -98,7 +98,6 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleInvite() {
-    this.timer = undefined;
     const { activeCheckboxes } = this.state;
     if (activeCheckboxes.length > 0) {
       activeCheckboxes.forEach((guest) => {
