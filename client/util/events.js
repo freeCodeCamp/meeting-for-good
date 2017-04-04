@@ -109,7 +109,8 @@ export async function deleteGuest(guestToDelete) {
   );
   try {
     checkStatus(response);
-    return true;
+    const editEvent = await parseJSON(response);
+    return editEvent;
   } catch (err) {
     console.log('error at deleteEvent Modal', err);
     return false;
@@ -133,7 +134,8 @@ export async function editEvent(patches, eventId) {
 
   try {
     checkStatus(response);
-    return true;
+    const EditEvent = await parseJSON(response);
+    return EditEvent;
   } catch (err) {
     console.log('events editEvent', err);
     return false;

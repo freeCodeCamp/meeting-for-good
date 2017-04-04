@@ -36,7 +36,6 @@ const patchUpdates = (patches) => {
       console.log('err at patches', err);
       return Promise.reject(err);
     }
-
     return entity.save();
   };
 };
@@ -96,7 +95,8 @@ export const index = (req, res) => {
 // Gets that event
 export const indexById = (req, res) => {
   const uid = req.params.uid;
-  return Events.find({ uid, active: true }).exec()
+  return Events.find({ uid, active: true })
+    .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -110,6 +110,7 @@ export const indexByUser = (req, res) => {
     .where('active').equals(true)
     .where('dates.toDate')
     .gte(actualDate)
+    .populate('participants.userId', 'avatar emails name')
     .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -117,7 +118,9 @@ export const indexByUser = (req, res) => {
 
 // Gets a single Event from the DB
 export const show = (req, res) => {
-  return Events.findById(req.params.id).exec()
+  return Events.findById(req.params.id)
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -129,9 +132,15 @@ export const patch = (req, res) => {
     delete req.body._id;
   }
 
-  return Events.findById(req.params.id).exec()
+  return Events.findById(req.params.id)
+    .exec()
     .then(handleEntityNotFound(res))
     .then(patchUpdates(req.body))
+    .then((res) => {
+      return Events.findById(res._id)
+        .populate('participants.userId', 'avatar emails name')
+        .exec();
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -161,14 +170,20 @@ export const upsert = (req, res) => {
 
 // Creates a new Event in the DB
 export const create = (req, res) => {
-  const { name, avatar } = req.user;
   const { _id } = req.user;
   const userId = _id.toString();
-  req.body.participants = [{ name, avatar, userId }];
+  req.body.participants = [{ userId }];
   req.body.owner = userId;
   req.body.active = true;
 
   return Events.create(req.body)
+    .then((res) => {
+      // populate the userId
+      const nEvent = Events.findById({ _id: res._id })
+        .populate('participants.userId', 'avatar emails name')
+        .exec();
+      return nEvent;
+    })
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 };
@@ -215,25 +230,17 @@ export const GuestNotificationDismiss = (req, res) => {
 };
 // set the owner notification for that particpants._id as true
 export const setGuestFalse = (req, res) => {
-  return Events.findOne({
-    'participants._id': req.params.id,
-  })
+  return Events.findOne({ 'participants._id': req.params.id })
     .exec()
-    .then(handleEntityNotFound(res))
     .then((event) => {
-      event.participants.forEach((participant, index) => {
-        if (participant._id.toString() === req.params.id) {
-          event.participants.splice(index, 1);
-          event.save((err) => {
-            if (err) {
-              console.log('err at setGuestFalse', err);
-              return res.status(500).send(err);
-            }
-            return res.status(200).json(event);
-          });
-        }
-      });
+      event.participants.id(req.params.id).remove();
+      return event.save();
     })
+    .then((res) => {
+      return Events.findById({ _id: res._id })
+        .populate('participants.userId', 'avatar emails name')
+        .exec();
+    })
+    .then(respondWithResult(res))
     .catch(handleError(res));
 };
-

@@ -27,6 +27,7 @@ const respondWithResult = (res, statusCode) => {
 
 const handleError = (res, statusCode) => {
   statusCode = statusCode || 500;
+  // console.log('handleError userController', res);
   return (err) => {
     res.status(statusCode).send(err);
   };
@@ -150,30 +151,35 @@ export const me = (req, res, next) => {
 // find all users that i alredy meet.
 export const relatedUsers = (req, res) => {
   // find all events that this user partipated
-  const userId = req.user._id.toString();
-  return Events.find({ 'participants.userId': userId }).exec()
+  const curUserId = req.user._id.toString();
+  return Events.find()
+    .where('participants.userId').equals(curUserId)
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
     .then((events) => {
       if (!events) {
         return res.status(401).end();
       }
-      const response = [];
-      const users = [];
-      for (const ev of events) {
-        for (const participant of ev.participants) {
-          const participantId = participant.userId.toString();
-          if (participantId !== userId) {
-              // check if exists at array.
-            if (response.indexOf(participantId) === -1) {
-              response.push(participantId);
-              users.push(participant);
+      const guests = [];
+      const listIds = [];
+      events.forEach((event) => {
+        event.participants.forEach((participant) => {
+          const participantId = participant.userId._id.toString();
+          if (participantId !== curUserId) {
+            if (listIds.indexOf(participantId) === -1) {
+              listIds.push(participantId);
+              guests.push(participant);
             }
           }
-        }
-      }
-      return users;
+        });
+      });
+      return guests;
     })
     .then(respondWithResult(res))
-    .catch(handleError(res));
+    .catch((err) => {
+      console.log('error at relatedUsers', err);
+      return handleError(res);
+    });
 };
 
 export const isAuthenticated = (req, res) => {

@@ -9,8 +9,6 @@ import { getCurrentUser, isAuthenticated } from '../util/auth';
 import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest } from '../util/events';
 import { sendEmailOwner } from '../util/emails';
 
-
-
 import '../styles/main.css';
 
 class App extends Component {
@@ -101,13 +99,12 @@ class App extends Component {
   @autobind
   async handleEditEvent(patches, eventId) {
     const { events } = this.state;
-    const response = await editEvent(patches, eventId);
-    if (response) {
-      const eventEdited  = await loadEvent(eventId);
+    const eventEdited = await editEvent(patches, eventId);
+    if (eventEdited) {
       const nEvents = events.filter(event => event._id !== eventId);
       this.setState({ events: [eventEdited, ...nEvents] });
       this._addNotification('Success', 'Saved availability successfully.', 'success');
-      return true;
+      return eventEdited;
     }
     this._addNotification('Error!!', 'Failed to update availability. Please try again later.', 'error');
     return false;
@@ -174,13 +171,16 @@ class App extends Component {
 
   @autobind
   async handleDeleteGuest(guestToDelete) {
-    const response = await deleteGuest(guestToDelete);
-    if (response) {
+    const { events } = this.state;
+    const eventEdited = await deleteGuest(guestToDelete);
+    if (eventEdited) {
+      const nEvents = events.filter(event => event._id !== eventEdited._id);
+      this.setState({ events: [eventEdited, ...nEvents] });
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
-    } else {
-      this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
+      return eventEdited;
     }
-    return response;
+    this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
+    return eventEdited;
   }
 
   render() {
