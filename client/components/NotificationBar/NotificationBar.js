@@ -62,7 +62,6 @@ class NotificationBar extends Component {
     try {
       checkStatus(response);
       const notifications = await parseJSON(response);
-      console.log(notifications);
       this.setState({ notifications });
       this.IconButtonColor();
     } catch (err) {
