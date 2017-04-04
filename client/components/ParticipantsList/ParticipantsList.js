@@ -42,7 +42,6 @@ class ParticipantsList extends Component {
   async handleDeleteGuest() {
     const { guestToDelete } = this.state;
     const nEvent = await this.props.cbDeleteGuest(guestToDelete);
-    console.log(nEvent);
     if (nEvent) {
       this.setState({ event: nEvent });
     } else {
