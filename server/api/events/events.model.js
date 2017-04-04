@@ -7,6 +7,7 @@ const participantsSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   ownerNotified: { type: Boolean, required: true, default: false },
   emailUpdate: { type: Boolean, required: true, default: false },
+  status: { type: String, enum: ['inactive', 'invited', 'joined', 'timeAdded'], default: 'joined' },
 });
 
 const datesSchema =  new Schema({
