@@ -133,8 +133,8 @@ class GuestInviteDrawer extends Component {
 
   async sendEmailInvite(guestId) {
     const { curUser, event } = this.state;
-    const result = this.props.cbInviteEmail(guestId, event, curUser);
-    if (!result) { 
+    const result = await this.props.cbInviteEmail(guestId, event, curUser);
+    if (!result) {
       console.log('sendEmailOwner Error');
     }
   }

@@ -71,8 +71,9 @@ class Dashboard extends Component {
   }
 
   @autobind
-  HandleInviteEmail(guestId, event, curUser) {
-    return this.props.cbInviteEmail(guestId, event, curUser);
+  async HandleInviteEmail(guestId, event, curUser) {
+    const response = await this.props.cbInviteEmail(guestId, event, curUser);
+    return response;
   }
 
   render() {

@@ -270,6 +270,7 @@ class App extends Component {
             cbEditEvent: this.handleEditEvent,
             cbEmailOwner: this.handleEmailOwner,
             cbDeleteGuest: this.handleDeleteGuest,
+            cbInviteEmail: this.handleInviteEmail,
 
           });
         }
