@@ -8,7 +8,7 @@ import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
 import {
   loadEvents, loadEvent, EditStatusParticipantEvent, AddEventParticipant,
-  addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest, loadEventFull
+  addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest, loadEventFull,
 } from '../util/events';
 import { sendEmailOwner, sendEmailInvite } from '../util/emails';
 
