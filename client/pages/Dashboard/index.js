@@ -17,6 +17,12 @@ import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDra
 import styles from './dashboard.css';
 
 class Dashboard extends Component {
+
+  @autobind
+  static handleNewEvent() {
+    browserHistory.push('/event/new');
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,11 +51,6 @@ class Dashboard extends Component {
   }
 
   @autobind
-  handleNewEvent() {
-    browserHistory.push('/event/new');
-  }
-
-  @autobind
   async handleDeleteEvent(id) {
     await this.props.cbDeleteEvent(id);
   }
@@ -70,12 +71,18 @@ class Dashboard extends Component {
     return response;
   }
 
+  @autobind
+  async HandleInviteEmail(guestId, event, curUser) {
+    const response = await this.props.cbInviteEmail(guestId, event, curUser);
+    return response;
+  }
+
   render() {
     const { events, curUser, openDrawer, eventToInvite } = this.state;
     return (
       <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}
-        <FloatingActionButton styleName="new-event-icon" secondary onClick={this.handleNewEvent} >
+        <FloatingActionButton styleName="new-event-icon" secondary onClick={this.constructor.handleNewEvent} >
           <ContentAdd />
         </FloatingActionButton>
         {/* Card Template */}
@@ -99,7 +106,13 @@ class Dashboard extends Component {
             <DateRangeIcon styleName="no-selectIcon" />
           </div>
         }
-        <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
+        <GuestInviteDrawer
+          open={openDrawer}
+          event={eventToInvite}
+          curUser={curUser}
+          cb={this.handleCbGuestInviteDrawer}
+          cbInviteEmail={this.HandleInviteEmail}
+        />
       </Paper>
     );
   }
@@ -112,6 +125,7 @@ Dashboard.propTypes = {
   events: PropTypes.array,
   cbDeleteEvent: PropTypes.func,
   cbDeleteGuest: PropTypes.func,
+  cbInviteEmail: React.PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

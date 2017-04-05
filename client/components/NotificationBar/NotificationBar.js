@@ -14,6 +14,28 @@ import { checkStatus, parseJSON } from '../../util/fetch.util';
 import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
+
+  @autobind
+  static handleEventLinkClick(id) {
+    browserHistory.push(`/event/${id}`);
+  }
+
+  static async handleDismiss(participantId) {
+    const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      method: 'PATCH',
+    });
+    try {
+      checkStatus(response);
+    } catch (err) {
+      console.log('handleDismiss', err);
+    }
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -34,27 +56,11 @@ class NotificationBar extends Component {
     notifications.forEach((notice) => {
       notice.participants.forEach((participant) => {
         if (participant.ownerNotified === false) {
-          this.handleDismiss(participant._id);
+          this.constructor.handleDismiss(participant._id);
         }
       });
     });
     this.loadNotifications();
-  }
-
-  async handleDismiss(participantId) {
-    const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'PATCH',
-    });
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.log('handleDismiss', err);
-    }
   }
 
   async loadNotifications() {
@@ -70,11 +76,6 @@ class NotificationBar extends Component {
     }
   }
 
-  @autobind
-  handleEventLinkClick(id) {
-    browserHistory.push(`/event/${id}`);
-  }
-
   IconButtonColor() {
     const { notifications, curUser } = this.state;
     let notificationColor;
@@ -83,7 +84,7 @@ class NotificationBar extends Component {
       notificationColor = '#ffffff';
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
-          if (participant.userId !== curUser._id && participant.ownerNotified === false) {
+          if (participant.userId._id.toString() !== curUser._id && participant.ownerNotified === false) {
             notificationColor = '#ff0000';
             quantOwnerNotNotified += 1;
           }
@@ -112,9 +113,9 @@ class NotificationBar extends Component {
                 style={{ backgroundColor: bkgColor }}
                 styleName="menuItem"
               >
-                {participant.name} <span>accepted your invitation for &#32;</span>
+                {participant.userId.name} <span>accepted your invitation for &#32;</span>
                 <a
-                  onTouchTap={() => this.handleEventLinkClick(notice._id)}
+                  onTouchTap={() => this.constructor.handleEventLinkClick(notice._id)}
                   styleName="eventLink"
                 >{notice.name}</a>.
               </MenuItem>
@@ -164,7 +165,6 @@ class NotificationBar extends Component {
               tooltip="Notifications"
               onTouchTap={this.handleDismissAll}
               iconStyle={inLineStyles.iconButton.icon}
-            
             >
               <NotificationsIcon size={10} />
             </IconButton>
