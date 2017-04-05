@@ -5,6 +5,7 @@
  * GET    /api/events/getGhestsNotifications          ->  GuestNotifications
  * GET    /api/events/getbyUser                       ->  indexByUser
  * POST    /api/events                                ->  create
+ * GET     /api/events/getFull/:id                    ->  showFull
  * GET     /api/events/:id                            ->  show
  * PUT     /api/events/:id                            ->  upsert
  * PATCH   /api/events/:id                            ->  patch
@@ -145,6 +146,15 @@ export const show = (req, res) => {
   return Events.findById(req.params.id)
     .populate('participants.userId', 'avatar emails name')
     .exec()
+    .then((event) => {
+      const nEvent = _.clone(event);
+      event.participants.forEach((participant, indexParticipant) => {
+        if (participant.status === 0) {
+          nEvent.participants.splice(indexParticipant, 1);
+        }
+      });
+      return nEvent;
+    })
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -276,6 +286,14 @@ export const setGuestInactive = (req, res) => {
       });
       return nEvent;
     })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+};
+
+export const showFull = (req, res) => {
+  return Events.findById({ _id: req.params.id })
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };

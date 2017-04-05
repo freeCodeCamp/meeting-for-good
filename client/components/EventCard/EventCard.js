@@ -22,6 +22,10 @@ class EventCard extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ event: nextProps.event });
+  }
+
   @autobind
   redirectToEvent() {
     browserHistory.push(`/event/${this.state.event._id}`);

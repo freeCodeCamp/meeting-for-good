@@ -654,7 +654,7 @@ AvailabilityGrid.propTypes = {
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
-  myAvailability: React.PropTypes.arrayOf(React.PropTypes.string),
+  myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
   participants: React.PropTypes.arrayOf(React.PropTypes.object),
   event: React.PropTypes.shape({
     participants: React.PropTypes.array,
