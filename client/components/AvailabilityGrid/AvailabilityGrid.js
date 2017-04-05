@@ -15,6 +15,7 @@ import { getHours, getMinutes, removeZero } from '../../util/time-format';
 import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
+import { loadEventFull } from '../../util/events';
 
 class AvailabilityGrid extends React.Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
@@ -359,7 +360,10 @@ class AvailabilityGrid extends React.Component {
     });
 
     const { _id } = this.props.curUser;
-    const event = JSON.parse(JSON.stringify(this.props.event));
+    // again i need to call the full event to edit... since he dont the
+    // info that maybe have a guest "deleted"
+    const eventToEdit = await loadEventFull(this.props.event._id);
+    const event = JSON.parse(JSON.stringify(eventToEdit));
     const observerEvent = jsonpatch.observe(event);
     /**
      * first check if cur exists as a particpant
