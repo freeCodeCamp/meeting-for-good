@@ -77,7 +77,7 @@ class ParticipantsList extends Component {
         break;
       case 3:
         borderColor = '0.5px solid #E0E0E0';
-        text = 'table time set';
+        text = 'time table set';
         break;
       default:
         break;

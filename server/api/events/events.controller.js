@@ -128,9 +128,10 @@ export const indexByUser = (req, res) => {
       const nEvents = _.clone(events);
       events.forEach((event, index) => {
         event.participants.forEach((participant, indexParticipant) => {
+          // if he is the owner then dont show the event.
           if (participant.status === 0 && participant.userId._id.toString() === req.user._id.toString()) {
             nEvents.splice(index, 1);
-          } else if (participant.status === 0) {
+          } else if (participant.status === 0 && participant.userId._id.toString() !== req.user._id.toString()) {
             nEvents[index].participants.splice(indexParticipant, 1);
           }
         });
