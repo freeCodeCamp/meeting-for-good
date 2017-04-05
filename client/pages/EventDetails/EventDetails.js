@@ -72,6 +72,12 @@ class EventDetails extends Component {
     return response;
   }
 
+  @autobind
+  async HandleInviteEmail(guestId, event, curUser) {
+    const response = await this.props.cbInviteEmail(guestId, event, curUser);
+    return response;
+  }
+
   render() {
     const { event, openDrawer, eventToInvite, curUser } = this.state;
     if (event) {
@@ -86,7 +92,13 @@ class EventDetails extends Component {
             cbHandleEmailOwner={this.HandleEmailOwner}
             cbDeleteGuest={this.handleDeleteGuest}
           />
-          <GuestInviteDrawer open={openDrawer} event={eventToInvite} curUser={curUser} cb={this.handleCbGuestInviteDrawer} />
+          <GuestInviteDrawer
+            open={openDrawer}
+            event={eventToInvite}
+            curUser={curUser}
+            cb={this.handleCbGuestInviteDrawer}
+            cbInviteEmail={this.HandleInviteEmail}
+          />
         </div>
       );
     }
@@ -103,6 +115,7 @@ EventDetails.propTypes = {
   cbEditEvent: React.PropTypes.func,
   cbEmailOwner: React.PropTypes.func,
   cbDeleteGuest: React.PropTypes.func,
+  cbInviteEmail: React.PropTypes.func,
 };
 
 export default cssModules(EventDetails, styles);
