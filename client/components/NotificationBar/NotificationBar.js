@@ -83,7 +83,7 @@ class NotificationBar extends Component {
       notificationColor = '#ffffff';
       notifications.forEach((notice) => {
         notice.participants.forEach((participant) => {
-          if (participant.userId !== curUser._id && participant.ownerNotified === false) {
+          if (participant.userId._id.toString() !== curUser._id && participant.ownerNotified === false) {
             notificationColor = '#ff0000';
             quantOwnerNotNotified += 1;
           }
@@ -112,7 +112,7 @@ class NotificationBar extends Component {
                 style={{ backgroundColor: bkgColor }}
                 styleName="menuItem"
               >
-                {participant.name} <span>accepted your invitation for &#32;</span>
+                {participant.userId.name} <span>accepted your invitation for &#32;</span>
                 <a
                   onTouchTap={() => this.handleEventLinkClick(notice._id)}
                   styleName="eventLink"
