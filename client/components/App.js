@@ -217,7 +217,6 @@ class App extends Component {
     });
     if (indexOfGuest > -1) {
       const status = event.participants[indexOfGuest].status;
-      console.log('indexOfGuest', indexOfGuest, event.participants[indexOfGuest].status);
       if (status === 0) {
         const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
         if (nEvent) {
