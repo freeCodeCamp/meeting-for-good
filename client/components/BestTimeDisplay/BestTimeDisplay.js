@@ -12,6 +12,20 @@ import 'react-day-picker/lib/style.css';
 import styles from './best-times-display.css';
 
 class BestTimeDisplay extends Component {
+
+  static renderRows(hours) {
+    const rows = [];
+    hours.forEach((hour) => {
+      const row = (
+        <ListItem key={hour} styleName="RowListItem" disabled>
+          {hour}
+        </ListItem>
+      );
+      rows.push(row);
+    });
+    return rows;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -98,19 +112,6 @@ class BestTimeDisplay extends Component {
     return isBestTime;
   }
 
-  renderRows(hours) {
-    const rows = [];
-    hours.forEach((hour) => {
-      const row = (
-        <ListItem key={hour} styleName="RowListItem" disabled>
-          {hour}
-        </ListItem>
-      );
-      rows.push(row);
-    });
-    return rows;
-  }
-
   renderBestTime() {
     const { displayTimes } = this.state;
     return Object.keys(displayTimes).map(date => (
@@ -118,7 +119,7 @@ class BestTimeDisplay extends Component {
         <Subheader styleName="SubHeader"><DateRangeIcon styleName="DateRangeIcon" />{date}</Subheader>
         <ListItem key={date} disabled styleName="BstTimeListItem">
           <List>
-            {this.renderRows(displayTimes[date].hours)}
+            {this.constructor.renderRows(displayTimes[date].hours)}
           </List>
           <Divider styleName="Divider" />
         </ListItem>

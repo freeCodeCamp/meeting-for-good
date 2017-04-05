@@ -17,6 +17,12 @@ import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDra
 import styles from './dashboard.css';
 
 class Dashboard extends Component {
+
+  @autobind
+  static handleNewEvent() {
+    browserHistory.push('/event/new');
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -42,11 +48,6 @@ class Dashboard extends Component {
     if (isAuthenticated) {
       this.setState({ showPastEvents, events, curUser });
     }
-  }
-
-  @autobind
-  handleNewEvent() {
-    browserHistory.push('/event/new');
   }
 
   @autobind
@@ -81,7 +82,7 @@ class Dashboard extends Component {
     return (
       <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}
-        <FloatingActionButton styleName="new-event-icon" secondary onClick={this.handleNewEvent} >
+        <FloatingActionButton styleName="new-event-icon" secondary onClick={this.constructor.handleNewEvent} >
           <ContentAdd />
         </FloatingActionButton>
         {/* Card Template */}

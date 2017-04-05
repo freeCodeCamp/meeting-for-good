@@ -18,6 +18,12 @@ import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png
 import styles from './nav-bar.css';
 
 class NavBar extends Component {
+
+  @autobind
+  static handleDashboardClick() {
+    browserHistory.push('/dashboard');
+  }
+
   constructor(props) {
     super(props);
     const { isAuthenticated, curUser, showPastEvents } = this.props;
@@ -55,11 +61,6 @@ class NavBar extends Component {
   @autobind
   handleAuthClick() {
     this.props.cbOpenLoginModal('/dashboard');
-  }
-
-  @autobind
-  handleDashboardClick() {
-    browserHistory.push('/dashboard');
   }
 
   @autobind
@@ -106,7 +107,7 @@ class NavBar extends Component {
           {!toggleVisible ?
             <FlatButton
               styleName="DashButton"
-              onTouchTap={this.handleDashboardClick}
+              onTouchTap={this.constructor.handleDashboardClick}
             >
               Dashboard
             </FlatButton>
