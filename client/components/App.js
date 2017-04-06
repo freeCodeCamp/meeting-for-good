@@ -67,7 +67,6 @@ class App extends Component {
     const { events } = this.state;
     const event = events.filter(event => event._id.toString() === id.toString());
     if (event.length === 0) {
-      console.log('e zero');
       const event = await loadEvent(id);
       if (event === null) {
         this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 8);
