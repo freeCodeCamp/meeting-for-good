@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
+import jsonpatch from 'fast-json-patch';
 
 import { checkStatus, parseJSON } from './fetch.util';
 
@@ -36,7 +37,7 @@ export async function loadEvent(id) {
     const event = await parseJSON(response);
     return event;
   } catch (err) {
-    console.log('err at componentWillMount EventDetail', err);
+    console.log('err at loadEvent EventDetail', err);
     return null;
   } finally {
     nprogress.done();
@@ -152,5 +153,47 @@ export async function loadOwnerData(_id) {
   } catch (err) {
     console.log('loadOwnerData', err);
     return null;
+  }
+}
+/**
+ * @param {*} guestId user id to edit as participant
+ * @param {*} event to add the user as participant
+ * @param {*} status to set at participant
+ */
+export async function EditStatusParticipantEvent(guestId, event, status) {
+  const observe = jsonpatch.observe(event);
+  event.participants.map((participant) => {
+    if (participant.userId._id.toString() === guestId) {
+      participant.status = status;
+    }
+    return participant;
+  });
+  const patch = jsonpatch.generate(observe);
+  return editEvent(patch, event._id);
+}
+
+export async function AddEventParticipant(guestId, event) {
+  const observe = jsonpatch.observe(event);
+  event.participants.push({ userId: guestId, status: 1 });
+  const patch = jsonpatch.generate(observe);
+  const response = await editEvent(patch, event._id);
+  return response;
+}
+
+export async function loadEventFull(id) {
+  nprogress.configure({ showSpinner: false });
+  nprogress.start();
+  const response = await fetch(`/api/events/getFull/${id}`, {
+    credentials: 'same-origin',
+  });
+  try {
+    checkStatus(response);
+    const event = await parseJSON(response);
+    return event;
+  } catch (err) {
+    console.log('err at loadEventFull', err);
+    return null;
+  } finally {
+    nprogress.done();
   }
 }

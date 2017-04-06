@@ -74,6 +74,10 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ event: nextProps.event });
+  }
+
   async sendEmailOwner(event) {
     const response = this.props.cbHandleEmailOwner(event);
     if (!response) {
@@ -132,8 +136,9 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async handleDeleteGuest(guestToDelete) {
-    const response = await this.props.cbDeleteGuest(guestToDelete);
-    return response;
+    const nEvent = await this.props.cbDeleteGuest(guestToDelete);
+    this.setState({ event: nEvent });
+    return nEvent;
   }
 
   @autobind

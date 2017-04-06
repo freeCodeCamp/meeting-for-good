@@ -14,12 +14,13 @@ router.get('/', isAuthenticated, controller.index);
 router.get('/getByUser/:actualDate?', isAuthenticated, controller.indexByUser);
 router.get('/getGuestNotifications', isAuthenticated, controller.GuestNotifications);
 router.get('/getbyuid/:uid', isAuthenticated, controller.indexById);
+router.get('/getFull/:id', isAuthenticated, controller.showFull);
 router.get('/:id', isAuthenticated, controller.show);
 router.post('/', isAuthenticated, controller.create);
 router.put('/:id', isAuthenticated, controller.upsert);
 router.patch('/GuestNotificationDismiss/:id', isAuthenticated, controller.GuestNotificationDismiss);
 router.patch('/:id', isAuthenticated, controller.patch);
-router.delete('/participant/:id', isAuthenticated, controller.setGuestFalse);
+router.delete('/participant/:id', isAuthenticated, controller.setGuestInactive);
 router.delete('/:id', isAuthenticated, controller.setFalse);
 
 module.exports = router;

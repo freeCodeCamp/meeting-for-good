@@ -15,6 +15,7 @@ import { getHours, getMinutes, removeZero } from '../../util/time-format';
 import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
+import { loadEventFull } from '../../util/events';
 
 class AvailabilityGrid extends React.Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
@@ -309,7 +310,6 @@ class AvailabilityGrid extends React.Component {
       .format(formatStr);
 
     participants.forEach((participant) => {
-      console.log(participant);
       if (participant.availability.indexOf(cellFormatted) > -1) {
         availableOnDate.push({
           name: participant.userId.name,
@@ -360,7 +360,10 @@ class AvailabilityGrid extends React.Component {
     });
 
     const { _id } = this.props.curUser;
-    const event = JSON.parse(JSON.stringify(this.props.event));
+    // again i need to call the full event to edit... since he dont the
+    // info that maybe have a guest "deleted"
+    const eventToEdit = await loadEventFull(this.props.event._id);
+    const event = JSON.parse(JSON.stringify(eventToEdit));
     const observerEvent = jsonpatch.observe(event);
     /**
      * first check if cur exists as a particpant
@@ -373,11 +376,16 @@ class AvailabilityGrid extends React.Component {
       const participant = { userId };
       event.participants.push(participant);
     }
-    event.participants = event.participants.map((curUser) => {
-      if (curUser.userId._id === _id || curUser.userId === _id) {
-        curUser.availability = availability;
+    event.participants = event.participants.map((participant) => {
+      if (participant.userId._id === _id || participant.userId === _id) {
+        participant.availability = availability;
+        if (availability.length === 0) {
+          participant.status = 2;
+        } else {
+          participant.status = 3;
+        }
       }
-      return curUser;
+      return participant;
     });
 
     const patches = jsonpatch.generate(observerEvent);
@@ -650,7 +658,7 @@ AvailabilityGrid.propTypes = {
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
-  myAvailability: React.PropTypes.arrayOf(React.PropTypes.string),
+  myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
   participants: React.PropTypes.arrayOf(React.PropTypes.object),
   event: React.PropTypes.shape({
     participants: React.PropTypes.array,

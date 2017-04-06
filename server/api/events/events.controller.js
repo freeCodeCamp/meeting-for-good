@@ -5,18 +5,21 @@
  * GET    /api/events/getGhestsNotifications          ->  GuestNotifications
  * GET    /api/events/getbyUser                       ->  indexByUser
  * POST    /api/events                                ->  create
+ * GET     /api/events/getFull/:id                    ->  showFull
  * GET     /api/events/:id                            ->  show
  * PUT     /api/events/:id                            ->  upsert
  * PATCH   /api/events/:id                            ->  patch
  * PATCH   /api/events/GuestNotificationDismiss/:id   ->  GuestNotificationDismiss
  * DELETE  /api/events/:id                            ->  setFalse
- * DELETE  /api/events/participant:id                 ->  setGuestFalse
+ * DELETE  /api/events/participant:id                 ->  setGuestInactive
  */
 
 'use strict';
 
 import jsonpatch from 'fast-json-patch';
+import _ from 'lodash';
 import Events from './events.model';
+
 
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
@@ -97,6 +100,15 @@ export const indexById = (req, res) => {
   const uid = req.params.uid;
   return Events.find({ uid, active: true })
     .exec()
+    .then((event) => {
+      const nEvent = _.clone(event);
+      event.participants.forEach((participant, indexParticipant) => {
+        if (participant.status === 0) {
+          nEvent.participants.splice(indexParticipant, 1);
+        }
+      });
+      return nEvent;
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -112,6 +124,20 @@ export const indexByUser = (req, res) => {
     .gte(actualDate)
     .populate('participants.userId', 'avatar emails name')
     .exec()
+    .then((events) => {
+      const nEvents = _.clone(events);
+      events.forEach((event, index) => {
+        event.participants.forEach((participant, indexParticipant) => {
+          // if he is the owner then dont show the event.
+          if (participant.status === 0 && participant.userId._id.toString() === req.user._id.toString()) {
+            nEvents.splice(index, 1);
+          } else if (participant.status === 0 && participant.userId._id.toString() !== req.user._id.toString()) {
+            nEvents[index].participants.splice(indexParticipant, 1);
+          }
+        });
+      });
+      return nEvents;
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -121,6 +147,15 @@ export const show = (req, res) => {
   return Events.findById(req.params.id)
     .populate('participants.userId', 'avatar emails name')
     .exec()
+    .then((event) => {
+      const nEvent = _.clone(event);
+      event.participants.forEach((participant, indexParticipant) => {
+        if (participant.status === 0) {
+          nEvent.participants.splice(indexParticipant, 1);
+        }
+      });
+      return nEvent;
+    })
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -202,7 +237,7 @@ export const GuestNotifications = (req, res) => {
     .exec()
     .then(respondWithResult(res))
     .catch((err) => {
-      console.log('err no GuestNotifications', err);
+      console.log('err at GuestNotifications', err);
       handleError(res);
     });
 };
@@ -229,12 +264,13 @@ export const GuestNotificationDismiss = (req, res) => {
       });
     });
 };
-// set the owner notification for that particpants._id as true
-export const setGuestFalse = (req, res) => {
+// set the guest as inactive
+export const setGuestInactive = (req, res) => {
   return Events.findOne({ 'participants._id': req.params.id })
     .exec()
     .then((event) => {
-      event.participants.id(req.params.id).remove();
+      event.participants.id(req.params.id).status = 0;
+      event.participants.id(req.params.id).availability = [];
       return event.save();
     })
     .then((res) => {
@@ -242,6 +278,23 @@ export const setGuestFalse = (req, res) => {
         .populate('participants.userId', 'avatar emails name')
         .exec();
     })
+    .then((event) => {
+      const nEvent = _.clone(event);
+      event.participants.forEach((participant, indexParticipant) => {
+        if (participant.status === 0) {
+          nEvent.participants.splice(indexParticipant, 1);
+        }
+      });
+      return nEvent;
+    })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+};
+
+export const showFull = (req, res) => {
+  return Events.findById({ _id: req.params.id })
+    .populate('participants.userId', 'avatar emails name')
+    .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 };

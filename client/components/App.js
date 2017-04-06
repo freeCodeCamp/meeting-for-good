@@ -6,7 +6,10 @@ import NotificationSystem from 'react-notification-system';
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
-import { loadEvents, loadEvent, addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest } from '../util/events';
+import {
+  loadEvents, loadEvent, EditStatusParticipantEvent, AddEventParticipant,
+  addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest, loadEventFull,
+} from '../util/events';
 import { sendEmailOwner, sendEmailInvite } from '../util/emails';
 
 import '../styles/main.css';
@@ -62,7 +65,7 @@ class App extends Component {
   @autobind
   async handleLoadEvent(id) {
     const { events } = this.state;
-    const event = events.filter(event => event._id === id);
+    const event = events.filter(event => event._id.toString() === id.toString());
     if (event.length === 0) {
       const event = await loadEvent(id);
       if (event === null) {
@@ -169,6 +172,10 @@ class App extends Component {
     browserHistory.push('/');
   }
 
+  /**
+  *
+  * @param {*} guestToDelete the Id of the document content the guest
+  */
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const { events } = this.state;
@@ -183,8 +190,77 @@ class App extends Component {
     return eventEdited;
   }
 
+  /**
+   *
+   * @param {*} guestId the id of the guest to be invited
+   * @param {*} event object contening the event
+   * @param {*} curUser current user
+   *
+   * using the invite issued at the inviteDrawer
+   * fist chech if the guestId is alredy at the event
+   * if was not update the event at the db with a new guest
+   * status 1 as invited
+   * then send a inivte email
+   */
   @autobind
   async handleInviteEmail(guestId, event, curUser) {
+    const { events } = this.state;
+    // find if the guest alredy exists as participant
+    // ask at DB because guests sets as 0 its not load as default
+    let indexOfGuest = -1;
+    event = await loadEventFull(event._id);
+    event.participants.forEach((participant, index) => {
+      if (participant.userId._id.toString() === guestId.toString()) {
+        indexOfGuest = index;
+      }
+    });
+    if (indexOfGuest > -1) {
+      const status = event.participants[indexOfGuest].status;
+      if (status === 0) {
+        const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
+        if (nEvent) {
+          const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
+          if (responseEmail) {
+            this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
+            const nEvents = events.filter(event => event._id !== nEvent._id);
+            this.setState({ events: [nEvent, ...nEvents] });
+            return true;
+          }
+          this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
+          return false;
+        }
+        this._addNotification('Error!!', 'Error updating the guest status, please try again later', 'error');
+        return false;
+      } else if (status === 1) {
+        const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
+        if (responseEmail) {
+          this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
+          return true;
+        }
+        return false;
+      } else if (status === 2) {
+        this._addNotification('Info', 'Guest alredy join this event.', 'info');
+        return true;
+      } else if (status === 3) {
+        this._addNotification('Info', 'Guest alredy set a time table for this event.', 'info');
+        return true;
+      }
+    }
+    // if wasn't a participant then add
+    const nEvent = await AddEventParticipant(guestId, event);
+    if (nEvent) {
+      const nEvents = events.filter(event => event._id !== nEvent._id);
+      this.setState({ events: [nEvent, ...nEvents] });
+      const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
+      if (responseEmail) {
+        return nEvent;
+      }
+      this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
+      return false;
+    }
+  }
+
+  async sendInviteEmail(guestId, event, curUser) {
     const result = await sendEmailInvite(guestId, event, curUser);
     if (result) {
       this._addNotification('Success', 'Invite send successfully.', 'success');
