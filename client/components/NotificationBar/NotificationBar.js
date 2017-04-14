@@ -74,8 +74,8 @@ class NotificationBar extends Component {
     let quantOwnerNotNotified = 0;
     if (events.length > 0) {
       notificationColor = '#ffffff';
-      events.forEach((notice) => {
-        notice.participants.forEach((participant) => {
+      events.forEach((event) => {
+        event.participants.forEach((participant) => {
           if (participant.userId._id.toString() !== curUser._id && participant.ownerNotified === false) {
             notificationColor = '#ff0000';
             quantOwnerNotNotified += 1;
@@ -91,9 +91,9 @@ class NotificationBar extends Component {
     const rows = [];
 
     if (events) {
-      events.forEach((notice) => {
-        notice.participants.forEach((participant) => {
-          if (participant.userId !== curUser._id) {
+      events.forEach((event) => {
+        event.participants.forEach((participant) => {
+          if (participant.userId._id !== curUser._id) {
             let bkgColor = '#ffffff';
             if (!participant.ownerNotified) {
               bkgColor = '#EEEEFF';
@@ -107,9 +107,9 @@ class NotificationBar extends Component {
               >
                 {participant.userId.name} <span>accepted your invitation for &#32;</span>
                 <a
-                  onTouchTap={() => this.constructor.handleEventLinkClick(notice._id)}
+                  onTouchTap={() => this.constructor.handleEventLinkClick(event._id)}
                   styleName="eventLink"
-                >{notice.name}</a>.
+                >{event.name}</a>.
               </MenuItem>
             );
             rows.push(row);

@@ -2,7 +2,6 @@
  * Using Rails-like standard naming convention for endpoints.
  * GET     /api/events                                ->  index
  * GET     /api/events/getbyuid/:uid'                 ->  indexById
- * GET    /api/events/getGhestsNotifications          ->  GuestNotifications
  * GET    /api/events/getbyUser                       ->  indexByUser
  * POST    /api/events                                ->  create
  * GET     /api/events/getFull/:id                    ->  showFull
@@ -221,25 +220,6 @@ export const create = (req, res) => {
     })
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
-};
-
-// get all new guests that dont have notification
-// for that event owner
-export const GuestNotifications = (req, res) => {
-  const { _id } = req.user;
-  return Events.find({
-    owner: _id.toString(),
-    active: true,
-  })
-    .select('name participants.userId  participants._id participants.ownerNotified')
-    .populate('participants.userId', '_id name')
-    .sort({ _id: 'descending' })
-    .exec()
-    .then(respondWithResult(res))
-    .catch((err) => {
-      console.log('err at GuestNotifications', err);
-      handleError(res);
-    });
 };
 
 // set the owner notification for that particpants._id as true
