@@ -26,7 +26,7 @@ class NavBar extends Component {
 
   constructor(props) {
     super(props);
-    const { isAuthenticated, curUser, showPastEvents } = this.props;
+    const { isAuthenticated, curUser, showPastEvents, events } = this.props;
     this.state = {
       userAvatar: avatarPlaceHolder,
       isAuthenticated,
@@ -34,20 +34,26 @@ class NavBar extends Component {
       conditionalHomeLink: '/',
       toggleVisible: true,
       showPastEvents,
-
+      events,
     };
   }
 
   componentWillMount() {
-    const { location, curUser, isAuthenticated, showPastEvents } = this.props;
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents });
+    const { location, curUser, isAuthenticated, showPastEvents, events } = this.props;
+    this.setState({
+      curUser,
+      isAuthenticated,
+      userAvatar: curUser.Avatar,
+      showPastEvents,
+      events,
+    });
     this.MenuVisibility(location);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location, curUser, isAuthenticated, showPastEvents } = nextProps;
+    const { location, curUser, isAuthenticated, showPastEvents, events } = nextProps;
     this.MenuVisibility(location);
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar, showPastEvents });
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar, showPastEvents, events });
   }
 
   MenuVisibility(location) {
@@ -95,7 +101,7 @@ class NavBar extends Component {
         },
       },
     };
-    const { isAuthenticated, curUser, userAvatar, showPastEvents } = this.state;
+    const { isAuthenticated, curUser, userAvatar, showPastEvents, events } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -103,7 +109,7 @@ class NavBar extends Component {
           lastChild
           styleName="rightToolbarGroup"
         >
-          <NotificationBar curUser={curUser} />
+          <NotificationBar curUser={curUser} events={events} />
           {!toggleVisible ?
             <FlatButton
               styleName="DashButton"
@@ -197,6 +203,7 @@ NavBar.propTypes = {
   curUser: React.PropTypes.object,
   cbOpenLoginModal: React.PropTypes.func,
   showPastEvents: React.PropTypes.bool,
+  events: React.PropTypes.array,
 };
 
 export default cssModules(NavBar, styles);

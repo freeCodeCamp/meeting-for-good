@@ -379,6 +379,7 @@ class App extends Component {
           isAuthenticated={isAuthenticated}
           curUser={curUser}
           cbOpenLoginModal={this.handleOpenLoginModal}
+          events={events}
           showPastEvents={showPastEvents}
         />
         <main className="main">

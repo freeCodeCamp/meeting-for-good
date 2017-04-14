@@ -10,7 +10,7 @@ import Divider from 'material-ui/Divider';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 
-import { checkStatus, parseJSON } from '../../util/fetch.util';
+import { checkStatus } from '../../util/fetch.util';
 import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
@@ -32,57 +32,49 @@ class NotificationBar extends Component {
     try {
       checkStatus(response);
     } catch (err) {
-      console.log('handleDismiss', err);
+      console.error('handleDismiss', err);
     }
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      notifications: [],
+      events: this.props.events,
       notificationColor: '#A7A7A7',
       curUser: this.props.curUser,
       quantOwnerNotNotified: 0,
     };
   }
 
-  async componentWillMount() {
-    await this.loadNotifications();
+  componentWillMount() {
+    const { events, curUser } = this.props;
+    this.setState({ events, curUser });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { events } = nextProps;
+    this.setState({ events });
   }
 
   @autobind
   async handleDismissAll() {
-    const { notifications } = this.state;
-    notifications.forEach((notice) => {
+    const { events } = this.state;
+    events.forEach((notice) => {
       notice.participants.forEach((participant) => {
         if (participant.ownerNotified === false) {
           this.constructor.handleDismiss(participant._id);
         }
       });
     });
-    this.loadNotifications();
-  }
-
-  async loadNotifications() {
-    const response = await fetch('/api/events/getGuestNotifications', { credentials: 'same-origin' });
-    try {
-      checkStatus(response);
-      const notifications = await parseJSON(response);
-      this.setState({ notifications });
-      this.IconButtonColor();
-    } catch (err) {
-      console.log('loadNotifications', err);
-      return null;
-    }
   }
 
   IconButtonColor() {
-    const { notifications, curUser } = this.state;
+    const { events, curUser } = this.state;
     let notificationColor;
     let quantOwnerNotNotified = 0;
-    if (notifications.length > 0) {
+    if (events.length > 0) {
       notificationColor = '#ffffff';
-      notifications.forEach((notice) => {
+      events.forEach((notice) => {
         notice.participants.forEach((participant) => {
           if (participant.userId._id.toString() !== curUser._id && participant.ownerNotified === false) {
             notificationColor = '#ff0000';
@@ -95,11 +87,11 @@ class NotificationBar extends Component {
   }
 
   renderMenuRows() {
-    const { notifications, curUser } = this.state;
+    const { events, curUser } = this.state;
     const rows = [];
 
-    if (notifications) {
-      notifications.forEach((notice) => {
+    if (events) {
+      events.forEach((notice) => {
         notice.participants.forEach((participant) => {
           if (participant.userId !== curUser._id) {
             let bkgColor = '#ffffff';
@@ -130,9 +122,9 @@ class NotificationBar extends Component {
   }
 
   render() {
-    const { quantOwnerNotNotified, notifications } = this.state;
+    const { quantOwnerNotNotified, events } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
-    const openMenu = (notifications.length === 0) ? false : null;
+    const openMenu = (events.length === 0) ? false : null;
     const inLineStyles = {
       badge: {
         right: 47,
@@ -181,6 +173,7 @@ class NotificationBar extends Component {
 
 NotificationBar.propTypes = {
   curUser: React.PropTypes.object,
+  events: React.PropTypes.array,
 };
 
 export default cssModules(NotificationBar, styles);

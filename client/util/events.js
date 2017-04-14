@@ -19,7 +19,7 @@ export async function loadEvents(showPastEvents) {
     events = await parseJSON(response);
     return events;
   } catch (err) {
-    console.log('loadEvents, at events.js', err);
+    console.error('loadEvents, at events.js', err);
     return err;
   } finally {
     nprogress.done();
@@ -37,7 +37,7 @@ export async function loadEvent(id) {
     const event = await parseJSON(response);
     return event;
   } catch (err) {
-    console.log('err at loadEvent EventDetail', err);
+    console.error('err at loadEvent EventDetail', err);
     return null;
   } finally {
     nprogress.done();
@@ -97,6 +97,7 @@ export async function deleteEvent(id) {
 
 export async function deleteGuest(guestToDelete) {
   nprogress.configure({ showSpinner: false });
+  nprogress.start();
   const response = await fetch(
     `/api/events/participant/${guestToDelete}`,
     {
@@ -191,7 +192,7 @@ export async function loadEventFull(id) {
     const event = await parseJSON(response);
     return event;
   } catch (err) {
-    console.log('err at loadEventFull', err);
+    console.error('err at loadEventFull', err);
     return null;
   } finally {
     nprogress.done();
