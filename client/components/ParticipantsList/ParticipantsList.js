@@ -69,15 +69,15 @@ class ParticipantsList extends Component {
     switch (participant.status) {
       case 1:
         borderColor = '3px solid #ff8080';
-        text = 'invited';
+        text = 'Invited';
         break;
       case 2:
         borderColor = '3px solid #A0C2FF';
-        text = 'joined';
+        text = 'Joined';
         break;
       case 3:
         borderColor = '0.5px solid #E0E0E0';
-        text = 'time table set';
+        text = 'Availability Submitted';
         break;
       default:
         break;
