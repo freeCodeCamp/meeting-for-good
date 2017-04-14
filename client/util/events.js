@@ -198,3 +198,22 @@ export async function loadEventFull(id) {
     nprogress.done();
   }
 }
+
+export async function handleDismiss(participantId) {
+  const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+    method: 'PATCH',
+  });
+  try {
+    checkStatus(response);
+    const nEvent = await parseJSON(response);
+    return nEvent;
+  } catch (err) {
+    console.error('handleDismiss', err);
+    return null;
+  }
+}

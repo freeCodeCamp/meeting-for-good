@@ -49,23 +49,26 @@ class NotificationBar extends Component {
   componentWillMount() {
     const { events, curUser } = this.props;
     this.setState({ events, curUser });
+    this.IconButtonColor();
   }
 
   componentWillReceiveProps(nextProps) {
     const { events } = nextProps;
     this.setState({ events });
+    this.IconButtonColor();
   }
 
   @autobind
   async handleDismissAll() {
     const { events } = this.state;
-    events.forEach((notice) => {
-      notice.participants.forEach((participant) => {
+    events.forEach((event) => {
+      event.participants.forEach((participant) => {
         if (participant.ownerNotified === false) {
-          this.constructor.handleDismiss(participant._id);
+          this.props.cbHandleDismissGuest(participant._id);
         }
       });
     });
+    this.setState({ notificationColor: '#ffffff', quantOwnerNotNotified: 0 });
   }
 
   IconButtonColor() {
@@ -174,6 +177,7 @@ class NotificationBar extends Component {
 NotificationBar.propTypes = {
   curUser: React.PropTypes.object,
   events: React.PropTypes.array,
+  cbHandleDismissGuest: React.PropTypes.func,
 };
 
 export default cssModules(NotificationBar, styles);

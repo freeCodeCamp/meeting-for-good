@@ -222,7 +222,7 @@ export const create = (req, res) => {
     .catch(handleError(res));
 };
 
-// set the owner notification for that particpants._id as true
+// set the owner notification for that participants._id as true
 export const GuestNotificationDismiss = (req, res) => {
   return Events.findOne({
     'participants._id': req.params.id,
@@ -230,20 +230,18 @@ export const GuestNotificationDismiss = (req, res) => {
     .exec()
     .then(handleEntityNotFound(res))
     .then((event) => {
-      event.participants.forEach((participant) => {
-        if (participant._id.toString() === req.params.id) {
-          participant.ownerNotified = true;
-          event.save((err) => {
-            if (err) {
-              console.log('err at GuestNotificationDismiss', err);
-              return res.status(500).send(err);
-            }
-            return res.status(200).json(event);
-          });
-        }
-      });
-    });
+      event.participants.id(req.params.id).ownerNotified = true;
+      return event.save();
+    })
+    .then((res) => {
+      return Events.findById({ _id: res._id })
+        .populate('participants.userId', 'avatar emails name')
+        .exec();
+    })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
 };
+
 // set the guest as inactive
 export const setGuestInactive = (req, res) => {
   return Events.findOne({ 'participants._id': req.params.id })

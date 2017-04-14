@@ -75,6 +75,11 @@ class NavBar extends Component {
     this.props.cbFilter(isInputChecked);
   }
 
+ @autobind
+  HandleDismissGuest(participantId) {
+    this.props.cbHandleDismissGuest(participantId);
+ }
+
   renderRightGroup() {
     const { toggleVisible } = this.state;
     const inLineStyles = {
@@ -109,7 +114,11 @@ class NavBar extends Component {
           lastChild
           styleName="rightToolbarGroup"
         >
-          <NotificationBar curUser={curUser} events={events} />
+          <NotificationBar
+            curUser={curUser}
+            events={events}
+            cbHandleDismissGuest={this.HandleDismissGuest}
+          />
           {!toggleVisible ?
             <FlatButton
               styleName="DashButton"
@@ -173,7 +182,7 @@ class NavBar extends Component {
       </ToolbarGroup>
     );
   }
-
+  
   render() {
     return (
       <Toolbar
@@ -204,6 +213,7 @@ NavBar.propTypes = {
   cbOpenLoginModal: React.PropTypes.func,
   showPastEvents: React.PropTypes.bool,
   events: React.PropTypes.array,
+  cbHandleDismissGuest: React.PropTypes.func,
 };
 
 export default cssModules(NavBar, styles);
