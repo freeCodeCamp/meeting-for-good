@@ -9,6 +9,7 @@ import { getCurrentUser, isAuthenticated } from '../util/auth';
 import {
   loadEvents, loadEvent, EditStatusParticipantEvent, AddEventParticipant,
   addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest, loadEventFull,
+  handleDismiss,
 } from '../util/events';
 import { sendEmailOwner, sendEmailInvite } from '../util/emails';
 
@@ -270,6 +271,20 @@ class App extends Component {
     return result;
   }
 
+  @autobind
+  async handleGuestNotificationsDismiss(participantId) {
+    const { events } = this.state;
+    const nEvent = await handleDismiss(participantId);
+    console.log('nEvent', nEvent);
+    if (nEvent) {
+      const nEvents = events.filter(event => event._id !== nEvent._id);
+      this.setState({ events: [nEvent, ...nEvents] });
+      return nEvent;
+    }
+    this._addNotification('Error!', 'Failed to dismiss guest. Please try again later.', 'error');
+    return nEvent;
+  }
+
   render() {
     const { location } = this.props;
     const {
@@ -379,6 +394,8 @@ class App extends Component {
           isAuthenticated={isAuthenticated}
           curUser={curUser}
           cbOpenLoginModal={this.handleOpenLoginModal}
+          cbHandleDismissGuest={this.handleGuestNotificationsDismiss}
+          events={events}
           showPastEvents={showPastEvents}
         />
         <main className="main">
