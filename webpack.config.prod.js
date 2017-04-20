@@ -120,17 +120,17 @@ module.exports = {
       filename: '../index.html',
       inject: 'body',
     }),
-     new WebpackAssetsManifest({
-        done: function(manifest) {
-          console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
-        },
-        apply: function(manifest) {
-          manifest.set('short_name', 'LetsMeet');
-          manifest.set('name', 'LetsMeet');
-          manifest.set('background_color', '#FBFFFB');
-          manifest.set('theme_color', '#FBFFFB');
-        }
-      }),
+    new WebpackAssetsManifest({
+      done(manifest) {
+        console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
+      },
+      apply(manifest) {
+        manifest.set('short_name', 'LetsMeet');
+        manifest.set('name', 'LetsMeet');
+        manifest.set('background_color', '#FBFFFB');
+        manifest.set('theme_color', '#FBFFFB');
+      },
+    }),
     new OfflinePlugin(),
   ],
   resolve: {
