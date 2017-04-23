@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
+const OfflinePlugin = require('offline-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -118,6 +120,18 @@ module.exports = {
       filename: '../index.html',
       inject: 'body',
     }),
+    new WebpackAssetsManifest({
+      done(manifest) {
+        console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
+      },
+      apply(manifest) {
+        manifest.set('short_name', 'LetsMeet');
+        manifest.set('name', 'LetsMeet');
+        manifest.set('background_color', '#FBFFFB');
+        manifest.set('theme_color', '#FBFFFB');
+      },
+    }),
+    new OfflinePlugin(),
   ],
   resolve: {
     extensions: ['.js', '.css'],

@@ -6,6 +6,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Client from './client'; // App
 import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
+import * as OfflinePluginRuntime from 'offline-plugin/runtime';
+OfflinePluginRuntime.install();
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
