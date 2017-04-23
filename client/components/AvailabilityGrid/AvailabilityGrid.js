@@ -241,10 +241,11 @@ class AvailabilityGrid extends React.Component {
     const cellIsSelected = (cellBackgroundColor === "rgb(128, 0, 128)");
 
     let updateAvail;
-    if (cellIsSelected)
+    if (cellIsSelected) {
       updateAvail = this.constructor.removeCellFromAvailability;
-    else
+    } else {
       updateAvail = this.constructor.addCellToAvailability;
+    }
     const rowRange = generateRange(thisRow, thisRow);
     const colRange = generateRange(thisCol, thisCol);
     updateAvailabilityForRange(rowRange, colRange, updateAvail);
@@ -256,10 +257,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  handleCellMouseUp(ev)
-  {
-    if (this.props.heatmap) 
-      return;
+  handleCellMouseUp(ev) {
+    if (this.props.heatmap) { return; }
 
     this.setState({
       mouseDownRow: null,
