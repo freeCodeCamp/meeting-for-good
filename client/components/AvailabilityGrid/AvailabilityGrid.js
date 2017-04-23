@@ -75,6 +75,8 @@ class AvailabilityGrid extends React.Component {
       startSelection: false,
       mouseDownRow: null,
       mouseDownCol: null,
+      oldRowRange: null,
+      oldColRange: null,
     };
   }
 
@@ -227,60 +229,79 @@ class AvailabilityGrid extends React.Component {
   handleCellMouseDown(ev) {
     if (this.props.heatmap) return;
 
-    let { startSelection } = this.state;
     const {
-      rangeSelected,
-    } = this.state;
-    const cellBackground = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = cellBackground !== 'rgba(0, 0, 0, 0)';
-
-    if (!startSelection) {
-      this.updateCellAvailability(ev);
-    } else {
-      const {
         generateRange,
         updateAvailabilityForRange,
-      } = this.constructor;
+    } = this.constructor;
 
-      let updateAvail;
-      if (rangeSelected) {
-        updateAvail = this.constructor.removeCellFromAvailability;
-      } else {
-        updateAvail = this.constructor.addCellToAvailability;
-      }
+    const thisRow = Number(ev.target.getAttribute('data-row'));
+    const thisCol = Number(ev.target.getAttribute('data-col'));
 
-      const thisRow = Number(ev.target.getAttribute('data-row'));
-      const thisCol = Number(ev.target.getAttribute('data-col'));
-      const initialRow = this.state.mouseDownRow;
-      const initialCol = this.state.mouseDownCol;
+    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
+    const cellIsSelected = (cellBackgroundColor === "rgb(128, 0, 128)");
 
-      const rowRange = generateRange(thisRow, initialRow);
-      const colRange = generateRange(thisCol, initialCol);
-
-      updateAvailabilityForRange(rowRange, colRange, updateAvail);
-
-      this.setState({
-        lastMouseDownRow: thisRow,
-        lastMouseDownCol: thisCol,
-      });
-    }
-
-    startSelection = !startSelection;
+    let updateAvail;
+    if (cellIsSelected)
+      updateAvail = this.constructor.removeCellFromAvailability;
+    else
+      updateAvail = this.constructor.addCellToAvailability;
+    const rowRange = generateRange(thisRow, thisRow);
+    const colRange = generateRange(thisCol, thisCol);
+    updateAvailabilityForRange(rowRange, colRange, updateAvail);
 
     this.setState({
-      startSelection,
-      mouseDownRow: Number(ev.target.getAttribute('data-row')),
-      mouseDownCol: Number(ev.target.getAttribute('data-col')),
-      rangeSelected: cellIsSelected,
+      mouseDownRow: thisRow,
+      mouseDownCol: thisCol,
+    });
+  }
+
+  @autobind
+  handleCellMouseUp(ev)
+  {
+    if (this.props.heatmap) 
+      return;
+
+    this.setState({
+      mouseDownRow: null,
+      mouseDownCol: null,
+      oldRowRange: null,
+      oldColRange: null,
     });
   }
 
   @autobind
   handleCellMouseOver(ev) {
-    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = cellBackgroundColor !== 'rgba(0, 0, 0, 0)';
 
-    if (!this.props.heatmap || !cellIsSelected) return;
+    const {
+        generateRange,
+        updateAvailabilityForRange,
+    } = this.constructor;
+
+    if (!this.props.heatmap)
+    {
+      const thisRow = Number(ev.target.getAttribute('data-row'));
+      const thisCol = Number(ev.target.getAttribute('data-col'));
+
+      if (this.state.mouseDownRow !== null && this.state.mouseDownCol !== null)
+      {
+		if (this.state.oldRowRange != null && this.state.oldColRange != null)
+        {
+          const updateAvail = this.constructor.removeCellFromAvailability;
+          updateAvailabilityForRange(this.state.oldRowRange, this.state.oldColRange, updateAvail);
+        }
+
+        const updateAvail = this.constructor.addCellToAvailability;
+        const rowRange = generateRange(this.state.mouseDownRow, thisRow);
+        const colRange = generateRange(this.state.mouseDownCol, thisCol);
+        updateAvailabilityForRange(rowRange, colRange, updateAvail);
+
+        this.setState({
+          oldRowRange: rowRange,
+          oldColRange: colRange
+        });
+      }
+      return;
+    }
 
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
     const formatStr = 'Do MMMM YYYY hh:mm a';
@@ -570,6 +591,7 @@ class AvailabilityGrid extends React.Component {
                   data-col={j}
                   className={`cell ${disabled}`}
                   onMouseDown={this.handleCellMouseDown}
+                  onMouseUp={this.handleCellMouseUp}
                   onMouseOver={this.handleCellMouseOver}
                   onMouseLeave={this.handleCellMouseLeave}
                 />
@@ -666,3 +688,4 @@ AvailabilityGrid.propTypes = {
 };
 
 export default cssModules(AvailabilityGrid, styles);
+
