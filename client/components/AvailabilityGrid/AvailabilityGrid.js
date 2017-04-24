@@ -127,8 +127,8 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.heatmap) { 
-      this.renderHeatmap(); 
+    if (this.props.heatmap) {
+      this.renderHeatmap();
     }
 
     if (this.props.myAvailability && this.props.myAvailability.length > 0) {
@@ -231,9 +231,9 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseDown(ev) {
-    if (this.props.heatmap) { 
-      return 
-    };
+    if (this.props.heatmap) {
+      return;
+    }
 
     const {
         generateRange,
@@ -244,7 +244,7 @@ class AvailabilityGrid extends React.Component {
     const thisCol = Number(ev.target.getAttribute('data-col'));
 
     const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = (cellBackgroundColor === "rgb(128, 0, 128)");
+    const cellIsSelected = (cellBackgroundColor === 'rgb(128, 0, 128)');
 
     let updateAvail;
     if (cellIsSelected) {
@@ -263,9 +263,9 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  handleCellMouseUp(ev) {
+  handleCellMouseUp(/* ev */) {
     if (this.props.heatmap) {
-       return; 
+      return;
     }
 
     this.setState({
@@ -278,7 +278,6 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseOver(ev) {
-
     const {
         generateRange,
         updateAvailabilityForRange,
@@ -303,7 +302,7 @@ class AvailabilityGrid extends React.Component {
 
         this.setState({
           oldRowRange: rowRange,
-          oldColRange: colRange
+          oldColRange: colRange,
         });
       }
       return;
@@ -363,10 +362,10 @@ class AvailabilityGrid extends React.Component {
     const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
     const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
 
-    if (cellIsSelected) { 
+    if (cellIsSelected) {
       this.constructor.addCellToAvailability(e.target);
-    } else { 
-      this.constructor.removeCellFromAvailability(e.target); 
+    } else {
+      this.constructor.removeCellFromAvailability(e.target);
     }
   }
 
