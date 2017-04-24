@@ -33,7 +33,9 @@ class AvailabilityGrid extends React.Component {
       rangeEnd = num2;
     }
 
-    for (let i = rangeStart; i <= rangeEnd; i += 1) range.push(i);
+    for (let i = rangeStart; i <= rangeEnd; i += 1) {
+      range.push(i);
+    }
 
     return range;
   }
@@ -125,7 +127,9 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.heatmap) this.renderHeatmap();
+    if (this.props.heatmap) { 
+      this.renderHeatmap(); 
+    }
 
     if (this.props.myAvailability && this.props.myAvailability.length > 0) {
       this.renderAvail();
@@ -227,7 +231,9 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseDown(ev) {
-    if (this.props.heatmap) { return };
+    if (this.props.heatmap) { 
+      return 
+    };
 
     const {
         generateRange,
@@ -258,7 +264,9 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseUp(ev) {
-    if (this.props.heatmap) { return; }
+    if (this.props.heatmap) {
+       return; 
+    }
 
     this.setState({
       mouseDownRow: null,
@@ -355,8 +363,11 @@ class AvailabilityGrid extends React.Component {
     const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
     const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
 
-    if (cellIsSelected) this.constructor.addCellToAvailability(e.target);
-    else this.constructor.removeCellFromAvailability(e.target);
+    if (cellIsSelected) { 
+      this.constructor.addCellToAvailability(e.target);
+    } else { 
+      this.constructor.removeCellFromAvailability(e.target); 
+    }
   }
 
   @autobind
@@ -444,8 +455,11 @@ class AvailabilityGrid extends React.Component {
       .map(avail => moment(avail).format(formatStr));
 
     flattenedAvailability.forEach((avail) => {
-      if (availabilityNum[avail]) availabilityNum[avail] += 1;
-      else availabilityNum[avail] = 1;
+      if (availabilityNum[avail]) {
+        availabilityNum[avail] += 1;
+      } else {
+        availabilityNum[avail] = 1;
+      }
     });
 
     cells.forEach((cell) => {
