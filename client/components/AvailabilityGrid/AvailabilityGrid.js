@@ -291,7 +291,7 @@ class AvailabilityGrid extends React.Component {
         this.state.mouseDownCol !== null) {
         if (this.state.oldRowRange != null && this.state.oldColRange != null) {
           const updateAvail = this.constructor.removeCellFromAvailability;
-          updateAvailabilityForRange(this.state.oldRowRange, 
+          updateAvailabilityForRange(this.state.oldRowRange,
             this.state.oldColRange, updateAvail);
         }
 
