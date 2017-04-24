@@ -227,7 +227,7 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseDown(ev) {
-    if (this.props.heatmap) return;
+    if (this.props.heatmap) { return };
 
     const {
         generateRange,
@@ -276,17 +276,16 @@ class AvailabilityGrid extends React.Component {
         updateAvailabilityForRange,
     } = this.constructor;
 
-    if (!this.props.heatmap)
-    {
+    if (!this.props.heatmap) {
       const thisRow = Number(ev.target.getAttribute('data-row'));
       const thisCol = Number(ev.target.getAttribute('data-col'));
 
-      if (this.state.mouseDownRow !== null && this.state.mouseDownCol !== null)
-      {
-		if (this.state.oldRowRange != null && this.state.oldColRange != null)
-        {
+      if (this.state.mouseDownRow !== null &&
+        this.state.mouseDownCol !== null) {
+        if (this.state.oldRowRange != null && this.state.oldColRange != null) {
           const updateAvail = this.constructor.removeCellFromAvailability;
-          updateAvailabilityForRange(this.state.oldRowRange, this.state.oldColRange, updateAvail);
+          updateAvailabilityForRange(this.state.oldRowRange, 
+            this.state.oldColRange, updateAvail);
         }
 
         const updateAvail = this.constructor.addCellToAvailability;
