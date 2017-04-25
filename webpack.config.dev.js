@@ -97,7 +97,7 @@ module.exports = {
         test: /\.css$/,
         include: [/node_modules/, /no-css-modules/],
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader?sourceMap',
+          fallback: 'style-loader?sourceMap',
           loader: 'css-loader',
         }),
       },
