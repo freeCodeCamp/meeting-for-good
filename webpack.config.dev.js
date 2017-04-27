@@ -5,7 +5,8 @@ const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const OfflinePlugin = require('offline-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
 
 const VENDOR_LIBS = [
@@ -132,6 +133,18 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new WebpackAssetsManifest({
+      done(manifest) {
+        console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
+      },
+      apply(manifest) {
+        manifest.set('short_name', 'LetsMeet');
+        manifest.set('name', 'LetsMeet');
+        manifest.set('background_color', '#FBFFFB');
+        manifest.set('theme_color', '#FBFFFB');
+      },
+    }),
+    new OfflinePlugin(),
   ].filter(p => p),
   resolve: {
     extensions: ['.js', '.css'],
