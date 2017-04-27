@@ -110,10 +110,6 @@ module.exports = {
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.[chunkhash].js',
-    }),
     new ChunkManifestPlugin({
       filename: 'manifest.json',
       manifestVariable: 'webpackManifest',
