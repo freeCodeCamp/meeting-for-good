@@ -4,9 +4,10 @@ import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 import Client from './client'; // App
 import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
-import * as OfflinePluginRuntime from 'offline-plugin/runtime';
+
 OfflinePluginRuntime.install();
 
 // Needed for onTouchTap
