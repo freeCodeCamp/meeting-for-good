@@ -6,13 +6,13 @@ import Home from './pages/home/';
 
 require('es6-promise').polyfill();
 
-function loadRoute(cb) {
+const loadRoute = (cb) => {
   return module => cb(null, module.default);
-}
+};
 
-function errorLoading(err) {
+const errorLoading = (err) => {
   console.error('Dynamic page loading failed', err);
-}
+};
 
 const componentRoutes = {
   component: App,
@@ -48,15 +48,16 @@ const componentRoutes = {
           },
         },
       ],
+    }, {
+      path: '*',
+      onEnter: (nextState, replace) => replace('/'),
     },
   ],
 };
 
 const Routes = () => {
   return (
-    <Router history={browserHistory} routes={componentRoutes}>
-      <Redirect from="*" to="/" />
-    </Router>
+    <Router history={browserHistory} routes={componentRoutes} />
   );
 };
 
