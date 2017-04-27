@@ -5,6 +5,9 @@ const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const OfflinePlugin = require('offline-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+const ChunkManifestPlugin = require('chunk-manifest-webpack2-plugin');
 
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
 
@@ -121,11 +124,17 @@ module.exports = {
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
+    new ChunkManifestPlugin({
+      filename: 'manifest.json',
+      manifestVariable: 'webpackManifest',
     }),
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
+    }),
+    new ChunkManifestPlugin({
+      filename: 'manifest.json',
+      manifestVariable: 'webpackManifest',
+      inlineManifest: true,
     }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
@@ -136,6 +145,20 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new WebpackAssetsManifest({
+      writeToDisk: true,
+      merge: true,
+      done(manifest) {
+        console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
+      },
+      apply(manifest) {
+        manifest.set('short_name', 'LetsMeet');
+        manifest.set('name', 'LetsMeet');
+        manifest.set('background_color', '#FBFFFB');
+        manifest.set('theme_color', '#FBFFFB');
+      },
+    }),
+    new OfflinePlugin(),
   ].filter(p => p),
   resolve: {
     extensions: ['.js', '.css'],
