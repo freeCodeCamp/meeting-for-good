@@ -244,13 +244,13 @@ class AvailabilityGrid extends React.Component {
     const thisCol = Number(ev.target.getAttribute('data-col'));
 
     const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = (cellBackgroundColor === 'rgb(128, 0, 128)');
+    const cellIsSelected = (cellBackgroundColor !== 'rgb(128, 0, 128)');
 
     let updateAvail;
     if (cellIsSelected) {
-      updateAvail = this.constructor.removeCellFromAvailability;
-    } else {
       updateAvail = this.constructor.addCellToAvailability;
+    } else {
+      updateAvail = this.constructor.removeCellFromAvailability;
     }
     const rowRange = generateRange(thisRow, thisRow);
     const colRange = generateRange(thisCol, thisCol);
@@ -374,10 +374,14 @@ class AvailabilityGrid extends React.Component {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const availability = [];
 
-    $('.cell').each((i, el) => {
-      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
-        const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
-        const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
+    let classes = document.getElementsByClassName('cell');
+    for (let i = 0; i < classes.length; i++) {
+      let el = classes[i];
+
+      if (getComputedStyle(el)['background-color'] === 'rgb(128, 0, 128)') {
+
+        const timeIndex = allTimesRender.indexOf(el.getAttribute('data-time'));
+        const dateIndex = allDatesRender.indexOf(el.getAttribute('data-date'));
 
         const date = moment(allDates[dateIndex]).get('date');
 
@@ -386,7 +390,7 @@ class AvailabilityGrid extends React.Component {
 
         availability.push([from, to]);
       }
-    });
+    }
 
     const { _id } = this.props.curUser;
     // again i need to call the full event to edit... since he dont the
