@@ -6,6 +6,14 @@ import Home from './pages/home/';
 
 require('es6-promise').polyfill();
 
+function loadRoute(cb) {
+  return module => cb(null, module.default);
+}
+
+function errorLoading(err) {
+  console.error('Dynamic page loading failed', err);
+}
+
 const componentRoutes = {
   component: App,
   path: '/',
@@ -15,13 +23,13 @@ const componentRoutes = {
       path: 'loginController',
       getComponent(location, cb) {
         System.import('./components/Login/loginController')
-          .then(module => cb(null, module.default));
+          .then(loadRoute(cb)).catch(errorLoading);
       },
     }, {
       path: 'dashboard',
       getComponent(location, cb) {
         System.import('./pages/Dashboard')
-          .then(module => cb(null, module.default));
+          .then(loadRoute(cb)).catch(errorLoading);
       },
     }, {
       path: 'event',
@@ -30,13 +38,13 @@ const componentRoutes = {
           path: 'new',
           getComponent(location, cb) {
             System.import('./pages/NewEvent/')
-              .then(module => cb(null, module.default));
+              .then(loadRoute(cb)).catch(errorLoading);
           },
         }, {
           path: ':uid',
           getComponent(location, cb) {
             System.import('./pages/EventDetails/EventDetails')
-              .then(module => cb(null, module.default));
+              .then(loadRoute(cb)).catch(errorLoading);
           },
         },
       ],

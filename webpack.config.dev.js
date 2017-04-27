@@ -124,10 +124,6 @@ module.exports = {
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new ChunkManifestPlugin({
-      filename: 'manifest.json',
-      manifestVariable: 'webpackManifest',
-    }),
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
     }),
@@ -153,7 +149,7 @@ module.exports = {
         manifest.set('theme_color', '#FBFFFB');
       },
     }),
-    //new OfflinePlugin(),
+    new OfflinePlugin(),
   ].filter(p => p),
   resolve: {
     extensions: ['.js', '.css'],
