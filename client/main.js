@@ -5,7 +5,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
-import Client from './client'; // App
+import Routes from './routes'; // App
 import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
 
 OfflinePluginRuntime.install();
@@ -40,7 +40,7 @@ const muiTheme = getMuiTheme({
 ReactDOM.render(
   <AppContainer>
     <MuiThemeProvider muiTheme={muiTheme}>
-      <Client />
+      <Routes />
     </MuiThemeProvider>
   </AppContainer>,
   mountApp,
@@ -52,7 +52,7 @@ if (module.hot) {
 
       <AppContainer>
         <MuiThemeProvider muiTheme={muiTheme}>
-          <Client />
+          <Routes />
         </MuiThemeProvider>
       </AppContainer>,
       mountApp,

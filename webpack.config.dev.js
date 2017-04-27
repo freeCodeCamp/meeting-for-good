@@ -131,11 +131,6 @@ module.exports = {
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
     }),
-    new ChunkManifestPlugin({
-      filename: 'manifest.json',
-      manifestVariable: 'webpackManifest',
-      inlineManifest: true,
-    }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',

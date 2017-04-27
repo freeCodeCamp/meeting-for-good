@@ -16,22 +16,21 @@ import './styles/no-css-modules/react-notifications.css';
 
 require('es6-promise').polyfill();
 
-export default class Client extends Component {
-
-  render() {
-    return (
-      <Router history={browserHistory}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Home} />
-          <Route path="loginController" component={LoginController} />
-          <Route path="dashboard" component={Dashboard} />
-          <Route path="event">
-            <Route path="new" component={NewEvent} />
-            <Route path=":uid" component={EventDetails} />
-          </Route>
+const Routes = () => {
+  return (
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Home} />
+        <Route path="loginController" component={LoginController} />
+        <Route path="dashboard" component={Dashboard} />
+        <Route path="event">
+          <Route path="new" component={NewEvent} />
+          <Route path=":uid" component={EventDetails} />
         </Route>
-        <Redirect from="*" to="/" />
-      </Router>
-    );
-  }
-}
+      </Route>
+      <Redirect from="*" to="/" />
+    </Router>
+  );
+};
+
+export default Routes;
