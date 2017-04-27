@@ -153,7 +153,7 @@ module.exports = {
         manifest.set('theme_color', '#FBFFFB');
       },
     }),
-    new OfflinePlugin(),
+    //new OfflinePlugin(),
   ].filter(p => p),
   resolve: {
     extensions: ['.js', '.css'],

@@ -5,8 +5,12 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
-import Routes from './routes'; // App
+import Routes from './router'; // App
 import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
+
+// Vendor Dependencies
+import './styles/no-css-modules/nprogress.css';
+import './styles/no-css-modules/react-notifications.css';
 
 OfflinePluginRuntime.install();
 
@@ -47,7 +51,7 @@ ReactDOM.render(
 );
 
 if (module.hot) {
-  module.hot.accept('./client', () => {
+  module.hot.accept('./router', () => {
     ReactDOM.render(
 
       <AppContainer>
