@@ -7,7 +7,6 @@ const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
-const ChunkManifestPlugin = require('chunk-manifest-webpack2-plugin');
 
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
 

@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const ChunkManifestPlugin = require('chunk-manifest-webpack2-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -108,6 +107,10 @@ module.exports = {
     new ExtractTextPlugin('vendor.css'),
     new OptimizeCSS({
       cssProcessorOptions: { discardComments: { removeAll: true } },
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.[chunkhash].js',
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
