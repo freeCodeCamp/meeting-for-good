@@ -122,6 +122,10 @@ module.exports = {
     new OptimizeCSS({
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.[hash].js',
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
