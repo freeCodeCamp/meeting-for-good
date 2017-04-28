@@ -51,13 +51,17 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
-  static addCellToAvailability(t) {
+  addCellToAvailability(t) {
     t.style.background = 'purple';
+    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
+    this.state.availabilityMap[key] = true;
   }
 
   @autobind
-  static removeCellFromAvailability(t) {
+  removeCellFromAvailability(t) {
     t.style.background = 'white';
+    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
+    delete this.state.availabilityMap[key];
   }
 
   constructor(props) {
@@ -79,6 +83,7 @@ class AvailabilityGrid extends React.Component {
       mouseDownCol: null,
       oldRowRange: null,
       oldColRange: null,
+      availabilityMap: {},
     };
   }
 
@@ -230,6 +235,13 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
+  cellIsAvailable(comp) {
+    let key = comp.getAttribute('data-time') + '-' + 
+      comp.getAttribute('data-date');
+    return !this.state.availabilityMap[key];
+  }
+
+  @autobind
   handleCellMouseDown(ev) {
     if (this.props.heatmap) {
       return;
@@ -243,14 +255,12 @@ class AvailabilityGrid extends React.Component {
     const thisRow = Number(ev.target.getAttribute('data-row'));
     const thisCol = Number(ev.target.getAttribute('data-col'));
 
-    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = (cellBackgroundColor !== 'rgb(128, 0, 128)');
 
     let updateAvail;
-    if (cellIsSelected) {
-      updateAvail = this.constructor.addCellToAvailability;
+    if (this.cellIsAvailable(ev.target)) {
+      updateAvail = this.addCellToAvailability;
     } else {
-      updateAvail = this.constructor.removeCellFromAvailability;
+      updateAvail = this.removeCellFromAvailability;
     }
     const rowRange = generateRange(thisRow, thisRow);
     const colRange = generateRange(thisCol, thisCol);
@@ -290,12 +300,12 @@ class AvailabilityGrid extends React.Component {
       if (this.state.mouseDownRow !== null &&
         this.state.mouseDownCol !== null) {
         if (this.state.oldRowRange != null && this.state.oldColRange != null) {
-          const updateAvail = this.constructor.removeCellFromAvailability;
+          const updateAvail = this.removeCellFromAvailability;
           updateAvailabilityForRange(this.state.oldRowRange,
             this.state.oldColRange, updateAvail);
         }
 
-        const updateAvail = this.constructor.addCellToAvailability;
+        const updateAvail = this.addCellToAvailability;
         const rowRange = generateRange(this.state.mouseDownRow, thisRow);
         const colRange = generateRange(this.state.mouseDownCol, thisCol);
         updateAvailabilityForRange(rowRange, colRange, updateAvail);
@@ -359,13 +369,10 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   updateCellAvailability(e) {
-    const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
-    const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
-
-    if (cellIsSelected) {
-      this.constructor.addCellToAvailability(e.target);
+    if (this.cellIsAvailable(e.target)) {
+      this.addCellToAvailability(e.target);
     } else {
-      this.constructor.removeCellFromAvailability(e.target);
+      this.removeCellFromAvailability(e.target);
     }
   }
 
@@ -378,8 +385,7 @@ class AvailabilityGrid extends React.Component {
     for (let i = 0; i < classes.length; i++) {
       let el = classes[i];
 
-      if (getComputedStyle(el)['background-color'] === 'rgb(128, 0, 128)') {
-
+      if (!this.cellIsAvailable(el)) {
         const timeIndex = allTimesRender.indexOf(el.getAttribute('data-time'));
         const dateIndex = allDatesRender.indexOf(el.getAttribute('data-date'));
 
@@ -496,7 +502,7 @@ class AvailabilityGrid extends React.Component {
         .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        this.constructor.addCellToAvailability(cell);
+        this.addCellToAvailability(cell);
       }
     });
   }
