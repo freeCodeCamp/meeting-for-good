@@ -10,6 +10,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const ChunkManifestPlugin = require('chunk-manifest-webpack2-plugin');
 
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
+const lintCode = process.env.LINT_CODE.toString() === 'false';
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -52,6 +53,16 @@ module.exports = {
   },
   module: {
     rules: [
+      (!lintCode ?
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+
+        loader: 'eslint-loader',
+        options: {
+          emitWarning: true,
+        },
+      } : {}),
       {
         test: /\.js$/,
         use: 'babel-loader',
