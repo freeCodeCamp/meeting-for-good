@@ -50,18 +50,15 @@ class AvailabilityGrid extends React.Component {
     });
   }
 
-  @autobind
-  addCellToAvailability(t) {
-    t.style.background = 'purple';
-    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
-    this.state.availabilityMap[key] = true;
-  }
+  static shallowObjectCopy(obj)
+  {
+    let newObj = {};
+    let keys = Object.keys(obj);
+    for (let i = 0; i < keys.length; i++) {
+      newObj[keys[i]] = obj[keys[i]];
+    }
 
-  @autobind
-  removeCellFromAvailability(t) {
-    t.style.background = 'white';
-    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
-    delete this.state.availabilityMap[key];
+    return newObj;
   }
 
   constructor(props) {
@@ -195,6 +192,27 @@ class AvailabilityGrid extends React.Component {
         }
       }
     }
+  }
+
+  @autobind
+  addCellToAvailability(t) {
+
+    t.style.background = 'purple';
+
+    let newMap = this.constructor.shallowObjectCopy(this.state.availabilityMap);
+    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
+    newMap[key] = true;
+    this.setState({ availabilityMap: newMap });
+  }
+
+  @autobind
+  removeCellFromAvailability(t) {
+    t.style.background = 'white';
+
+    let newMap = this.constructor.shallowObjectCopy(this.state.availabilityMap);
+    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
+    delete newMap[key];
+    this.setState({ availabilityMap: newMap });
   }
 
   @autobind
