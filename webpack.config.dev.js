@@ -125,6 +125,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.[hash].js',
+      minChunks: 'Infinity',
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new WriteFilePlugin({
