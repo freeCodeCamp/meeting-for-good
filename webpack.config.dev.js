@@ -7,7 +7,6 @@ const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
-const ChunkManifestPlugin = require('chunk-manifest-webpack2-plugin');
 
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
 
@@ -123,18 +122,13 @@ module.exports = {
     new OptimizeCSS({
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new ChunkManifestPlugin({
-      filename: 'manifest.json',
-      manifestVariable: 'webpackManifest',
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.[hash].js',
     }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
-    }),
-    new ChunkManifestPlugin({
-      filename: 'manifest.json',
-      manifestVariable: 'webpackManifest',
-      inlineManifest: true,
     }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
