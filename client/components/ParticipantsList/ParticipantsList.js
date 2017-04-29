@@ -94,6 +94,7 @@ class ParticipantsList extends Component {
           src={participant.userId.avatar}
           styleName="avatar"
           style={{ border: borderColor }}
+          alt={participant.userId.name}
         />
         <div styleName="chipTextWrapper">
           <span>{participant.userId.name}</span>
@@ -110,6 +111,7 @@ class ParticipantsList extends Component {
           src={participant.userId.avatar}
           styleName="avatar"
           style={{ border: borderColor }}
+          alt={participant.userId.name}
         />
         <div styleName="chipTextWrapper">
           <span styleName="chipTextName">{participant.userId.name}</span>

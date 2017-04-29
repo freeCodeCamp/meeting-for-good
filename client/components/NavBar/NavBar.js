@@ -140,6 +140,7 @@ class NavBar extends Component {
                   <Avatar
                     size={34}
                     src={userAvatar}
+                    alt={curUser.name}
                   />
                   <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
                 </div>

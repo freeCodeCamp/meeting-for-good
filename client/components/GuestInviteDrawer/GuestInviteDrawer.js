@@ -173,7 +173,10 @@ class GuestInviteDrawer extends Component {
             onCheck={() => this.handleCheck(guest.userId._id)}
             checked={activeCheckboxes.includes(guest.userId._id)}
           />}
-          rightAvatar={<Avatar src={guest.userId.avatar} />}
+          rightAvatar={<Avatar
+            src={guest.userId.avatar}
+            alt={guest.userId.name}
+          />}
         />
       );
       rows.push(row);
