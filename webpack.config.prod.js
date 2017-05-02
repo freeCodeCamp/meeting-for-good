@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const ChunkManifestPlugin = require('chunk-manifest-webpack2-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -45,12 +44,12 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        use: 'babel-loader',
         exclude: /node_modules/,
       },
       {
         test: /\.(ttf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader: 'file-loader',
+        use: 'file-loader',
       },
       {
         test: /\.(png|jp?g|gif|svg)$/,
@@ -82,16 +81,20 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: [/node_modules/, /no-css-modules/],
-        loaders: [
-          'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+          },
         ],
       },
       {
         test: /\.css$/,
         include: [/node_modules/, /no-css-modules/],
-        loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
           loader: 'css-loader',
         }),
       },
@@ -105,15 +108,12 @@ module.exports = {
     new OptimizeCSS({
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.[chunkhash].js',
+      minChunks: 'Infinity',
     }),
-    new ChunkManifestPlugin({
-      filename: 'manifest.json',
-      manifestVariable: 'webpackManifest',
-    }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',

@@ -4,9 +4,14 @@ import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Client from './client'; // App
-import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
+import Routes from './router'; // App
+import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
+
+// Vendor Dependencies
+import './styles/no-css-modules/nprogress.css';
+import './styles/no-css-modules/react-notifications.css';
+
 OfflinePluginRuntime.install();
 
 // Needed for onTouchTap
@@ -39,19 +44,19 @@ const muiTheme = getMuiTheme({
 ReactDOM.render(
   <AppContainer>
     <MuiThemeProvider muiTheme={muiTheme}>
-      <Client />
+      <Routes />
     </MuiThemeProvider>
   </AppContainer>,
   mountApp,
 );
 
 if (module.hot) {
-  module.hot.accept('./client', () => {
+  module.hot.accept('./router', () => {
     ReactDOM.render(
 
       <AppContainer>
         <MuiThemeProvider muiTheme={muiTheme}>
-          <Client />
+          <Routes />
         </MuiThemeProvider>
       </AppContainer>,
       mountApp,

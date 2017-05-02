@@ -173,7 +173,10 @@ class GuestInviteDrawer extends Component {
             onCheck={() => this.handleCheck(guest.userId._id)}
             checked={activeCheckboxes.includes(guest.userId._id)}
           />}
-          rightAvatar={<Avatar src={guest.userId.avatar} />}
+          rightAvatar={<Avatar
+            src={guest.userId.avatar}
+            alt={guest.userId.name}
+          />}
         />
       );
       rows.push(row);
@@ -255,6 +258,7 @@ class GuestInviteDrawer extends Component {
           value={fullUrl}
           underlineShow={false}
           fullWidth
+          label="Full Url"
           ref={focusUrlTextField}
         />
         <div styleName="Row">
@@ -279,6 +283,7 @@ class GuestInviteDrawer extends Component {
           <TextField
             floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
             fullWidth
+            label="Search Guests"
             floatingLabelText="Search guests"
             value={searchText}
             onChange={this.handleSearchTextChange}

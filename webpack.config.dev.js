@@ -5,8 +5,11 @@ const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const OfflinePlugin = require('offline-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
+const lintCode = process.env.LINT_CODE.toString() === 'false';
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -49,14 +52,24 @@ module.exports = {
   },
   module: {
     rules: [
+      (!lintCode ?
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        enforce: 'pre',
+
+        loader: 'eslint-loader',
+        options: {
+          emitWarning: true,
+        },
+      } : {}),
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
         exclude: /node_modules/,
       },
       {
         test: /\.(ttf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader: 'file-loader',
+        use: 'file-loader',
       },
       {
         test: /\.(png|jp?g|gif|svg)$/,
@@ -88,17 +101,21 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: [/node_modules/, /no-css-modules/],
-        loaders: [
-          'style-loader?sourceMap',
-          'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+        use: [
+          {
+            loader: 'style-loader?sourceMap',
+          },
+          {
+            loader: 'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+          },
         ],
       },
       {
         test: /\.css$/,
         include: [/node_modules/, /no-css-modules/],
-        loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader?sourceMap',
-          loader: 'css-loader',
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader?sourceMap',
+          use: 'css-loader',
         }),
       },
     ],
@@ -116,10 +133,12 @@ module.exports = {
     new OptimizeCSS({
       cssProcessorOptions: { discardComments: { removeAll: true } },
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
+      name: 'vendor',
+      filename: 'vendor.[hash].js',
+      minChunks: 'Infinity',
     }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
     }),
@@ -132,6 +151,20 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new WebpackAssetsManifest({
+      writeToDisk: true,
+      merge: true,
+      done(manifest) {
+        console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
+      },
+      apply(manifest) {
+        manifest.set('short_name', 'LetsMeet');
+        manifest.set('name', 'LetsMeet');
+        manifest.set('background_color', '#FBFFFB');
+        manifest.set('theme_color', '#FBFFFB');
+      },
+    }),
+    new OfflinePlugin(),
   ].filter(p => p),
   resolve: {
     extensions: ['.js', '.css'],
