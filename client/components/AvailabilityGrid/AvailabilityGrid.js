@@ -708,19 +708,38 @@ AvailabilityGrid.defaultProps = {
 };
 
 AvailabilityGrid.propTypes = {
+  // List of dates ranges for event
   dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+
+  // True if grid is showing heat map
   heatmap: React.PropTypes.bool,
+
+  // Current user
   curUser: React.PropTypes.shape({
-    _id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    avatar: React.PropTypes.string,
+    _id: React.PropTypes.string,      // Unique user id
+    name: React.PropTypes.string,     // User name
+    avatar: React.PropTypes.string,   // URL to image representing user(?)
   }),
+
+  // List of list of availability times used for heat map
   availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+
+  // Function to run when availability for current user is ready to be updated
   submitAvail: React.PropTypes.func,
+
+  // Function to run when user wishes to cancel availability editing
   closeGrid: React.PropTypes.func,
+
+  // Function to run to switch from heat map to availability editing
   editAvail: React.PropTypes.func,
+
+  // Current user's availability array
   myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
+
+  // List of participants in event
   participants: React.PropTypes.arrayOf(React.PropTypes.object),
+
+  // Appears to be dead code (can't check for sure yet)
   event: React.PropTypes.shape({
     participants: React.PropTypes.array,
   }),
