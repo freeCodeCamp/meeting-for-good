@@ -736,10 +736,10 @@ AvailabilityGrid.propTypes = {
   // Current user's availability array
   myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
 
-  // List of participants in event
+  // List of participants in event (dup of contents of event?)
   participants: React.PropTypes.arrayOf(React.PropTypes.object),
 
-  // Appears to be dead code (can't check for sure yet)
+  // Event containing list of event participants
   event: React.PropTypes.shape({
     participants: React.PropTypes.array,
   }),
