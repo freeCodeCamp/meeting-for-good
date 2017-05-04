@@ -17,6 +17,8 @@ import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 
+import PropTypes from 'prop-types';
+
 class AvailabilityGrid extends React.Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
   // between the two. num1 doesn't necessarily have to be smaller than num2.
@@ -709,40 +711,81 @@ AvailabilityGrid.defaultProps = {
 
 AvailabilityGrid.propTypes = {
   // List of dates ranges for event
-  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.instanceOf(Date),
+      toDate: PropTypes.instanceOf(Date),
+    })).isRequired,
 
   // True if grid is showing heat map
-  heatmap: React.PropTypes.bool,
+  heatmap: PropTypes.bool,
 
   // Current user
-  curUser: React.PropTypes.shape({
-    _id: React.PropTypes.string,      // Unique user id
-    name: React.PropTypes.string,     // User name
-    avatar: React.PropTypes.string,   // URL to image representing user(?)
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
   }),
 
   // List of list of availability times used for heat map
-  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  availability: PropTypes.arrayOf(PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.string))).isRequired,
 
   // Function to run when availability for current user is ready to be updated
-  submitAvail: React.PropTypes.func,
+  submitAvail: PropTypes.func,
 
   // Function to run when user wishes to cancel availability editing
-  closeGrid: React.PropTypes.func,
+  closeGrid: PropTypes.func,
 
   // Function to run to switch from heat map to availability editing
-  editAvail: React.PropTypes.func,
+  editAvail: PropTypes.func,
 
   // Current user's availability array
-  myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
+  myAvailability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
 
   // List of participants in event (dup of contents of event?)
-  participants: React.PropTypes.arrayOf(React.PropTypes.object),
+  participants: PropTypes.arrayOf(PropTypes.shape({
+    userId: PropTypes.shape({
+      id: PropTypes.string,
+      avatar: PropTypes.string,
+      name: PropTypes.string,
+      emails: PropTypes.arrayOf(PropTypes.string),
+    }),
+    _id: PropTypes.string,
+    status: PropTypes.number,
+    emailUpdate: PropTypes.bool,
+    ownerNotified: PropTypes.bool,
+    availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  })),
 
   // Event containing list of event participants
-  event: React.PropTypes.shape({
-    participants: React.PropTypes.array,
-  }),
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.number,
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+
+  })
+
 };
 
 export default cssModules(AvailabilityGrid, styles);
