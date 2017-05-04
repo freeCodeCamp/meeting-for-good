@@ -17,6 +17,8 @@ import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 
+import PropTypes from 'prop-types';
+
 class AvailabilityGrid extends React.Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
   // between the two. num1 doesn't necessarily have to be smaller than num2.
@@ -50,14 +52,15 @@ class AvailabilityGrid extends React.Component {
     });
   }
 
-  @autobind
-  static addCellToAvailability(t) {
-    t.style.background = 'purple';
-  }
+  static shallowObjectCopy(obj)
+  {
+    let newObj = {};
+    let keys = Object.keys(obj);
+    for (let i = 0; i < keys.length; i++) {
+      newObj[keys[i]] = obj[keys[i]];
+    }
 
-  @autobind
-  static removeCellFromAvailability(t) {
-    t.style.background = 'white';
+    return newObj;
   }
 
   constructor(props) {
@@ -79,6 +82,7 @@ class AvailabilityGrid extends React.Component {
       mouseDownCol: null,
       oldRowRange: null,
       oldColRange: null,
+      availabilityMap: {},
     };
   }
 
@@ -193,6 +197,27 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
+  addCellToAvailability(t) {
+
+    t.style.background = 'purple';
+
+    let newMap = this.constructor.shallowObjectCopy(this.state.availabilityMap);
+    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
+    newMap[key] = true;
+    this.setState({ availabilityMap: newMap });
+  }
+
+  @autobind
+  removeCellFromAvailability(t) {
+    t.style.background = 'white';
+
+    let newMap = this.constructor.shallowObjectCopy(this.state.availabilityMap);
+    let key = t.getAttribute('data-time') + '-' + t.getAttribute('data-date');
+    delete newMap[key];
+    this.setState({ availabilityMap: newMap });
+  }
+
+  @autobind
   getFromToForEl(el) {
     const {
       allTimesRender,
@@ -230,6 +255,13 @@ class AvailabilityGrid extends React.Component {
   }
 
   @autobind
+  cellIsAvailable(comp) {
+    let key = comp.getAttribute('data-time') + '-' + 
+      comp.getAttribute('data-date');
+    return !this.state.availabilityMap[key];
+  }
+
+  @autobind
   handleCellMouseDown(ev) {
     if (this.props.heatmap) {
       return;
@@ -243,14 +275,12 @@ class AvailabilityGrid extends React.Component {
     const thisRow = Number(ev.target.getAttribute('data-row'));
     const thisCol = Number(ev.target.getAttribute('data-col'));
 
-    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = (cellBackgroundColor === 'rgb(128, 0, 128)');
 
     let updateAvail;
-    if (cellIsSelected) {
-      updateAvail = this.constructor.removeCellFromAvailability;
+    if (this.cellIsAvailable(ev.target)) {
+      updateAvail = this.addCellToAvailability;
     } else {
-      updateAvail = this.constructor.addCellToAvailability;
+      updateAvail = this.removeCellFromAvailability;
     }
     const rowRange = generateRange(thisRow, thisRow);
     const colRange = generateRange(thisCol, thisCol);
@@ -290,12 +320,12 @@ class AvailabilityGrid extends React.Component {
       if (this.state.mouseDownRow !== null &&
         this.state.mouseDownCol !== null) {
         if (this.state.oldRowRange != null && this.state.oldColRange != null) {
-          const updateAvail = this.constructor.removeCellFromAvailability;
+          const updateAvail = this.removeCellFromAvailability;
           updateAvailabilityForRange(this.state.oldRowRange,
             this.state.oldColRange, updateAvail);
         }
 
-        const updateAvail = this.constructor.addCellToAvailability;
+        const updateAvail = this.addCellToAvailability;
         const rowRange = generateRange(this.state.mouseDownRow, thisRow);
         const colRange = generateRange(this.state.mouseDownCol, thisCol);
         updateAvailabilityForRange(rowRange, colRange, updateAvail);
@@ -359,13 +389,10 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   updateCellAvailability(e) {
-    const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
-    const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
-
-    if (cellIsSelected) {
-      this.constructor.addCellToAvailability(e.target);
+    if (this.cellIsAvailable(e.target)) {
+      this.addCellToAvailability(e.target);
     } else {
-      this.constructor.removeCellFromAvailability(e.target);
+      this.removeCellFromAvailability(e.target);
     }
   }
 
@@ -374,10 +401,13 @@ class AvailabilityGrid extends React.Component {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const availability = [];
 
-    $('.cell').each((i, el) => {
-      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
-        const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
-        const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
+    let classes = document.getElementsByClassName('cell');
+    for (let i = 0; i < classes.length; i++) {
+      let el = classes[i];
+
+      if (!this.cellIsAvailable(el)) {
+        const timeIndex = allTimesRender.indexOf(el.getAttribute('data-time'));
+        const dateIndex = allDatesRender.indexOf(el.getAttribute('data-date'));
 
         const date = moment(allDates[dateIndex]).get('date');
 
@@ -386,7 +416,7 @@ class AvailabilityGrid extends React.Component {
 
         availability.push([from, to]);
       }
-    });
+    }
 
     const { _id } = this.props.curUser;
     // again i need to call the full event to edit... since he dont the
@@ -492,7 +522,7 @@ class AvailabilityGrid extends React.Component {
         .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        this.constructor.addCellToAvailability(cell);
+        this.addCellToAvailability(cell);
       }
     });
   }
@@ -680,22 +710,82 @@ AvailabilityGrid.defaultProps = {
 };
 
 AvailabilityGrid.propTypes = {
-  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-  heatmap: React.PropTypes.bool,
-  curUser: React.PropTypes.shape({
-    _id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    avatar: React.PropTypes.string,
+  // List of dates ranges for event
+  dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.instanceOf(Date),
+      toDate: PropTypes.instanceOf(Date),
+    })).isRequired,
+
+  // True if grid is showing heat map
+  heatmap: PropTypes.bool,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
   }),
-  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
-  submitAvail: React.PropTypes.func,
-  closeGrid: React.PropTypes.func,
-  editAvail: React.PropTypes.func,
-  myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
-  participants: React.PropTypes.arrayOf(React.PropTypes.object),
-  event: React.PropTypes.shape({
-    participants: React.PropTypes.array,
-  }),
+
+  // List of list of availability times used for heat map
+  availability: PropTypes.arrayOf(PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.string))).isRequired,
+
+  // Function to run when availability for current user is ready to be updated
+  submitAvail: PropTypes.func,
+
+  // Function to run when user wishes to cancel availability editing
+  closeGrid: PropTypes.func,
+
+  // Function to run to switch from heat map to availability editing
+  editAvail: PropTypes.func,
+
+  // Current user's availability array
+  myAvailability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+
+  // List of participants in event (dup of contents of event?)
+  participants: PropTypes.arrayOf(PropTypes.shape({
+    userId: PropTypes.shape({
+      id: PropTypes.string,
+      avatar: PropTypes.string,
+      name: PropTypes.string,
+      emails: PropTypes.arrayOf(PropTypes.string),
+    }),
+    _id: PropTypes.string,
+    status: PropTypes.number,
+    emailUpdate: PropTypes.bool,
+    ownerNotified: PropTypes.bool,
+    availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  })),
+
+  // Event containing list of event participants
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.number,
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+
+  })
+
 };
 
 export default cssModules(AvailabilityGrid, styles);
