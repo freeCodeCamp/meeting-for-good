@@ -48,7 +48,7 @@ class EventDetailsComponent extends React.Component {
       let showAvailabilityGrid = 'block';
       let myAvailability = [];
 
-      // find actual user particant record
+      // find actual user participant record
       const isCurParticipant = this.state.participants.find(participant =>
         participant.userId._id === curUser._id,
       );
@@ -153,7 +153,6 @@ class EventDetailsComponent extends React.Component {
       event,
       showHeatmap,
       participants,
-      myAvailability,
       dates,
       showAvailabilityGrid,
       snackBarOpen,
@@ -191,6 +190,7 @@ class EventDetailsComponent extends React.Component {
                     event={event}
                     curUser={curUser}
                     dates={dates}
+                    availability={availability}
                     editAvail={this.editAvail}
                     participants={participants}
                     heatmap

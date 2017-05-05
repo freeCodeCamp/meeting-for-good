@@ -455,7 +455,7 @@ class AvailabilityGrid extends React.Component {
 
   renderHeatmap() {
     const { generateHeatMapBackgroundColors } = this.constructor;
-    const { event } = this.props;
+    const { event, availability } = this.props;
     // load the backgraund colors array
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
 
@@ -464,7 +464,7 @@ class AvailabilityGrid extends React.Component {
     const availabilityNum = {};
     const cells = document.querySelectorAll('.cell');
 
-    let flattenedAvailability = _.flatten(this.props.availability);
+    let flattenedAvailability = _.flatten(availability);
 
     flattenedAvailability = flattenedAvailability
       .filter(avail => avail)
@@ -704,6 +704,7 @@ AvailabilityGrid.propTypes = {
     name: React.PropTypes.string,
     avatar: React.PropTypes.string,
   }),
+  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
