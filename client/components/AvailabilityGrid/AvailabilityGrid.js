@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
@@ -16,8 +16,9 @@ import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
+import HeatMap from '../HeatMap/heatMap';
 
-class AvailabilityGrid extends React.Component {
+class AvailabilityGrid extends Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
   // between the two. num1 doesn't necessarily have to be smaller than num2.
   static generateRange(num1, num2) {
@@ -560,8 +561,20 @@ class AvailabilityGrid extends React.Component {
     );
   }
 
+  renderGridHours() {
+    const { hourTime } = this.state;
+    const colTitles = hourTime.map(time => (
+      <p
+        key={time}
+        className="grid-hour"
+        styleName="grid-hour"
+      >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
+    ));
+    return colTitles;
+  }
+
   render() {
-    const { allDatesRender, allTimesRender, hourTime } = this.state;
+    const { allDatesRender, allTimesRender } = this.state;
     const { dates } = this.props;
     return (
       <div styleName="Column">
@@ -573,14 +586,7 @@ class AvailabilityGrid extends React.Component {
             How do I use the grid?
           </FlatButton>
         </div>
-        <div styleName="selectbox" id="selectbox" />
-        {hourTime.map(time => (
-          <p
-            key={time}
-            className="grid-hour"
-            styleName="grid-hour"
-          >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
-        ))}
+        {this.renderGridHours()}
         {allDatesRender.map((date, i) => (
           <div key={date} className="grid-row" styleName="row">
             <div styleName="cell-aside">
@@ -589,7 +595,7 @@ class AvailabilityGrid extends React.Component {
             {allTimesRender.map((time, j) => {
               let disabled = '';
               let styleName = 'cell';
-
+              // render the grid for each row.
               dates.forEach(({ fromDate, toDate }) => {
                 const { dateFormatStr } = this.state;
                 fromDate = moment(fromDate);
@@ -697,8 +703,6 @@ class AvailabilityGrid extends React.Component {
 
 AvailabilityGrid.defaultProps = {
   heatmap: false,
-  curUser: {},
-  event: {},
   submitAvail: () => { console.log('submitAvail func not passed in!'); },
   editAvail: () => { console.log('ediAvail func not passed in!'); },
   closeGrid: () => { console.log('closeGrid func not passed in!'); },
@@ -711,13 +715,13 @@ AvailabilityGrid.propTypes = {
     _id: React.PropTypes.string,
     name: React.PropTypes.string,
     avatar: React.PropTypes.string,
-  }),
+  }).isRequired,
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
   event: React.PropTypes.shape({
     participants: React.PropTypes.array,
-  }),
+  }).isRequired,
 };
 
 export default cssModules(AvailabilityGrid, styles);

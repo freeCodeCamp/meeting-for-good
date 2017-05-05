@@ -41,14 +41,14 @@ class EventDetailsComponent extends React.Component {
   }
 
   async componentWillMount() {
-    const { curUser } = this.props;
+    const { curUser, event } = this.props;
     if (curUser) {
       let showHeatmap = false;
       let showAvailabilityGrid = 'block';
       let myAvailability = [];
 
       // find actual user participant record
-      const isCurParticipant = this.state.participants.find(participant =>
+      const isCurParticipant = event.participants.find(participant =>
         participant.userId._id === curUser._id,
       );
       // if curUser have aviability show heatMap
@@ -230,11 +230,17 @@ class EventDetailsComponent extends React.Component {
 }
 
 EventDetailsComponent.propTypes = {
-  event: React.PropTypes.object.isRequired,
+  event: React.PropTypes.shape({
+    participants: React.PropTypes.array,
+  }).isRequired,
   showInviteGuests: React.PropTypes.func.isRequired,
   cbDeleteEvent: React.PropTypes.func.isRequired,
   cbEditEvent: React.PropTypes.func.isRequired,
-  curUser: React.PropTypes.object.isRequired,
+  curUser: React.PropTypes.shape({
+    _id: React.PropTypes.string,
+    name: React.PropTypes.string,
+    avatar: React.PropTypes.string,
+  }).isRequired,
   cbHandleEmailOwner: React.PropTypes.func.isRequired,
   cbDeleteGuest: React.PropTypes.func.isRequired,
 };

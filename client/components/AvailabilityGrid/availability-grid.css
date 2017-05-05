@@ -21,6 +21,7 @@
   float: left;
   font-size: 13px;
   margin-left: 17.25px !important;
+  border-left: 1px solid black;
   transform: translateX(39px);
   user-select: none;
   -webkit-user-select: none;
@@ -68,12 +69,6 @@ a.info {
 
 .hover-available h6 {
   margin: 5px;
-}
-
-.selectbox {
-  position: absolute;
-  border: 1px solid black;
-
 }
 
 .Column
