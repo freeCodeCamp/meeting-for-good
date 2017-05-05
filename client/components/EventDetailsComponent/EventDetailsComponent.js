@@ -151,8 +151,14 @@ class EventDetailsComponent extends React.Component {
   render() {
     const {
       event,
-      showHeatmap, participants, myAvailability,
-      dates, showAvailabilityGrid, snackBarOpen, snackBarMsg } = this.state;
+      showHeatmap,
+      participants,
+      myAvailability,
+      dates,
+      showAvailabilityGrid,
+      snackBarOpen,
+      snackBarMsg,
+    } = this.state;
     const { curUser } = this.props;
     const availability = participants.map(participant => participant.availability);
     let isOwner;
@@ -182,6 +188,7 @@ class EventDetailsComponent extends React.Component {
               {(showHeatmap) ?
                 <div id="heatmap">
                   <AvailabilityGrid
+                    event={event}
                     dates={dates}
                     availability={availability}
                     editAvail={this.editAvail}
@@ -230,13 +237,13 @@ class EventDetailsComponent extends React.Component {
 }
 
 EventDetailsComponent.propTypes = {
-  event: React.PropTypes.object,
-  showInviteGuests: React.PropTypes.func,
-  cbDeleteEvent: React.PropTypes.func,
-  cbEditEvent: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  cbHandleEmailOwner: React.PropTypes.func,
-  cbDeleteGuest: React.PropTypes.func,
+  event: React.PropTypes.object.isRequired,
+  showInviteGuests: React.PropTypes.func.isRequired,
+  cbDeleteEvent: React.PropTypes.func.isRequired,
+  cbEditEvent: React.PropTypes.func.isRequired,
+  curUser: React.PropTypes.object.isRequired,
+  cbHandleEmailOwner: React.PropTypes.func.isRequired,
+  cbDeleteGuest: React.PropTypes.func.isRequired,
 };
 
 export default cssModules(EventDetailsComponent, styles);
