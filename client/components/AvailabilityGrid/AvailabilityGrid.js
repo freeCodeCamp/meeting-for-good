@@ -454,19 +454,6 @@ class AvailabilityGrid extends React.Component {
     const {
       generateHeatMapBackgroundColors,
     } = this.constructor;
-    /*const availabilityLength = this.props.availability.filter(av => av).length;
-    const saturationDivisions = 100 / availabilityLength;
-    const saturations = [];
-
-    for (let i = 0; i <= 100; i += saturationDivisions) {
-      saturations.push(i);
-    }
-
-    const colors = saturations.map(saturation => colorsys.hsvToHex({
-      h: 271,
-      s: saturation,
-      v: 100,
-    }));*/
 
     const formatStr = 'Do MMMM YYYY hh:mm a';
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
