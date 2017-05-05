@@ -3,6 +3,8 @@ import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
+import PropTypes from 'prop-types';
+
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import styles from './event-details-component.css';
@@ -86,7 +88,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  showAvailability(ev) {
+  showAvailability(/* ev */) {
     this.setState({ showButtonAviability: 'hidden', showAvailabilityGrid: 'block' });
   }
 
@@ -229,14 +231,51 @@ class EventDetailsComponent extends React.Component {
   }
 }
 
+EventDetailsComponent.defaultProps = {
+  curUser: {},
+  event: {},
+};
+
 EventDetailsComponent.propTypes = {
-  event: React.PropTypes.object,
-  showInviteGuests: React.PropTypes.func,
-  cbDeleteEvent: React.PropTypes.func,
-  cbEditEvent: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  cbHandleEmailOwner: React.PropTypes.func,
-  cbDeleteGuest: React.PropTypes.func,
+  showInviteGuests: PropTypes.func.isRequired,
+  cbDeleteEvent: PropTypes.func.isRequired,
+  cbEditEvent: PropTypes.func.isRequired,
+  cbHandleEmailOwner: PropTypes.func.isRequired,
+  cbDeleteGuest: PropTypes.func.isRequired,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
+  }),
+
+  // Event containing list of event participants
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.number,
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+  }),
 };
 
 export default cssModules(EventDetailsComponent, styles);
