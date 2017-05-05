@@ -159,7 +159,7 @@ class EventDetailsComponent extends React.Component {
       snackBarMsg,
     } = this.state;
     const { curUser } = this.props;
-    const availability = participants.map(participant => participant.availability);
+    // const availability = participants.map(participant => participant.availability);
     let isOwner;
     // check if the curUser is owner
     if (curUser !== undefined) {
@@ -190,7 +190,6 @@ class EventDetailsComponent extends React.Component {
                     event={event}
                     curUser={curUser}
                     dates={dates}
-                    availability={availability}
                     editAvail={this.editAvail}
                     participants={participants}
                     heatmap
@@ -202,7 +201,6 @@ class EventDetailsComponent extends React.Component {
                       event={event}
                       dates={dates}
                       curUser={curUser}
-                      availability={availability}
                       submitAvail={this.submitAvailability}
                       closeGrid={this.closeGrid}
                     />

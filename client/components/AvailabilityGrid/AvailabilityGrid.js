@@ -96,9 +96,10 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentWillMount() {
-    const { event, curUser } = this.props;
+    const { event, curUser, dates } = this.props;
+    const { dateFormatStr } = this.state;
     // construct all dates range to load at the grid
-    const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
+    const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
       getDaysBetween(fromDate, toDate),
     ));
 
@@ -111,7 +112,7 @@ class AvailabilityGrid extends React.Component {
 
     // format all dates to be displayed  'Do MMM ddd'
     const allDatesRender = allDates
-      .map(date => moment(date).format(this.state.dateFormatStr));
+      .map(date => moment(date).format(dateFormatStr));
 
      // format all times to be displayed 'hh:mm a'
     const allTimesRender = allTimes
@@ -139,9 +140,15 @@ class AvailabilityGrid extends React.Component {
     }
 
     // set current user availability
-    const myAvailability = event.participants.filter((participant) => {
+    let myAvailability = {};
+    const isParticipant  = event.participants.filter((participant) => {
       return participant.userId._id === curUser._id;
-    })[0].availability;
+    });
+    // its alredy a participant?
+    // if is not is accepting a invite so myAvailability = {}
+    if (isParticipant.length > 0) {
+      myAvailability = isParticipant[0].availability;
+    }
     this.setState({
       myAvailability,
       event,
@@ -455,12 +462,13 @@ class AvailabilityGrid extends React.Component {
 
   renderHeatmap() {
     const { generateHeatMapBackgroundColors } = this.constructor;
-    const { event, availability } = this.props;
+    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+    const { event } = this.props;
+    const availability = event.participants.map(participant => participant.availability);
     // load the backgraund colors array
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
 
     const formatStr = 'Do MMMM YYYY hh:mm a';
-    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
     const availabilityNum = {};
     const cells = document.querySelectorAll('.cell');
 
@@ -704,7 +712,6 @@ AvailabilityGrid.propTypes = {
     name: React.PropTypes.string,
     avatar: React.PropTypes.string,
   }),
-  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
