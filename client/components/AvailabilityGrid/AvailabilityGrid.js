@@ -9,6 +9,7 @@ import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
+import PropTypes from 'prop-types';
 
 import styles from './availability-grid.css';
 import { getHours, getMinutes, removeZero } from '../../util/time-format';
@@ -16,7 +17,6 @@ import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
-import PropTypes from 'prop-types';
 
 class AvailabilityGrid extends React.Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
@@ -753,7 +753,7 @@ AvailabilityGrid.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
-  })
+  }),
 };
 
 export default cssModules(AvailabilityGrid, styles);
