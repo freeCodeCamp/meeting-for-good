@@ -16,7 +16,6 @@ import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
-import HeatMap from '../HeatMap/heatMap';
 
 class AvailabilityGrid extends Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
@@ -300,7 +299,7 @@ class AvailabilityGrid extends Component {
   }
 
   @autobind
-  handleCellMouseUp(/* ev */) {
+  handleCellMouseUp() {
     if (this.props.heatmap) {
       return;
     }
@@ -410,6 +409,7 @@ class AvailabilityGrid extends Component {
   @autobind
   async submitAvailability() {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
+    const { curUser } = this.props;
     const availability = [];
 
     $('.cell').each((i, el) => {
@@ -426,7 +426,6 @@ class AvailabilityGrid extends Component {
       }
     });
 
-    const { _id } = this.props.curUser;
     // again i need to call the full event to edit... since he dont the
     // info that maybe have a guest "deleted"
     const eventToEdit = await loadEventFull(this.props.event._id);
@@ -434,15 +433,14 @@ class AvailabilityGrid extends Component {
     const observerEvent = jsonpatch.observe(event);
      // first check if cur exists as a participant
      // if is not add the curUser as participant
-    const isParticipant = event.participants.filter(participant => participant.userId._id === _id);
+    const isParticipant = event.participants.filter(participant => participant.userId._id === curUser._id);
     if (isParticipant.length === 0) {
-      const { curUser } = this.props;
       const { _id: userId } = curUser;
       const participant = { userId };
       event.participants.push(participant);
     }
     event.participants = event.participants.map((participant) => {
-      if (participant.userId._id === _id || participant.userId === _id) {
+      if (participant.userId._id === curUser._id || participant.userId === curUser._id) {
         participant.availability = availability;
         if (availability.length === 0) {
           participant.status = 2;
@@ -570,6 +568,8 @@ class AvailabilityGrid extends Component {
         styleName="grid-hour"
       >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
     ));
+    // delete the last hour for layout requirements
+    colTitles.pop();
     return colTitles;
   }
 

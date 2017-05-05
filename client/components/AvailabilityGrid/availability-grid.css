@@ -20,9 +20,11 @@
 .grid-hour {
   float: left;
   font-size: 13px;
-  margin-left: 17.25px !important;
-  border-left: 1px solid black;
-  transform: translateX(39px);
+  width: 48px;
+  padding: 0 0 0 3px;
+  margin-bottom: -1px;
+  border-left: 1px solid #787878;
+  transform: translateX(75px);
   user-select: none;
   -webkit-user-select: none;
 }
