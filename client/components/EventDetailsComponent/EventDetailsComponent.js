@@ -189,6 +189,7 @@ class EventDetailsComponent extends React.Component {
                 <div id="heatmap">
                   <AvailabilityGrid
                     event={event}
+                    curUser={curUser}
                     dates={dates}
                     availability={availability}
                     editAvail={this.editAvail}

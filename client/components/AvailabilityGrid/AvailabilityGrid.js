@@ -83,24 +83,31 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentWillMount() {
+    // construct all dates range to load at the grid
     const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
       getDaysBetween(fromDate, toDate),
     ));
 
+    // construct all times range to load a the grid
     const allTimes = _.flatten(
       [this.props.dates[0]].map(({ fromDate, toDate }) =>
         getTimesBetween(fromDate, toDate),
       ),
     );
 
+    // format all dates to be displayed  'Do MMM ddd'
     const allDatesRender = allDates
       .map(date => moment(date).format(this.state.dateFormatStr));
 
+     // format all times to be displayed 'hh:mm a'
     const allTimesRender = allTimes
       .map(time => moment(time).format('hh:mm a'));
 
+    // we dont whant to show the last time at title for
+    // layout reasons
     allTimesRender.pop();
 
+    // array only with full hours
     const hourTime = allTimesRender
       .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
 
@@ -127,18 +134,19 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
+    const { allTimesRender } = this.state;
+    const { myAvailability } = this.props;
     if (this.props.heatmap) {
       this.renderHeatmap();
     }
 
-    if (this.props.myAvailability && this.props.myAvailability.length > 0) {
+    if (myAvailability && myAvailability.length > 0) {
       this.renderAvail();
     }
 
     // Offset the grid-hour row if the event starts with a date that's offset by
     // 15/30/45 minutes.
     const gridHour = document.querySelector('.grid-hour');
-    const { allTimesRender } = this.state;
 
     if (getMinutes(allTimesRender[0]) === 15) {
       gridHour.setAttribute('style', 'margin-left: 50.6px !important');
@@ -231,6 +239,7 @@ class AvailabilityGrid extends React.Component {
 
   @autobind
   handleCellMouseDown(ev) {
+    // is at showing heatMap then ignore click
     if (this.props.heatmap) {
       return;
     }
