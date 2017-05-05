@@ -43,11 +43,9 @@ class AvailabilityGrid extends React.Component {
   static generateHeatMapBackgroundColors(quantOfParticipants) {
     const saturationDivisions = 100 / quantOfParticipants;
     const saturations = [];
-
     for (let i = 0; i <= 100; i += saturationDivisions) {
       saturations.push(i);
     }
-
     return saturations.map(saturation => colorsys.hsvToHex({
       h: 271,
       s: saturation,
@@ -74,7 +72,7 @@ class AvailabilityGrid extends React.Component {
   static removeCellFromAvailability(t) {
     t.style.background = 'white';
   }
-  
+
   constructor(props) {
     super(props);
 
@@ -98,6 +96,7 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentWillMount() {
+    const { event, curUser } = this.props;
     // construct all dates range to load at the grid
     const allDates = _.flatten(this.props.dates.map(({ fromDate, toDate }) =>
       getDaysBetween(fromDate, toDate),
@@ -122,7 +121,7 @@ class AvailabilityGrid extends React.Component {
     // layout reasons
     allTimesRender.pop();
 
-    // array only with full hours
+    // array only with full hours thats will be used to display at grid
     const hourTime = allTimesRender
       .filter(time => String(time).split(':')[1].split(' ')[0] === '00');
 
@@ -139,7 +138,14 @@ class AvailabilityGrid extends React.Component {
       );
     }
 
+    // set current user availability
+    const myAvailability = event.participants.filter((participant) => {
+      return participant.userId._id === curUser._id;
+    })[0].availability;
     this.setState({
+      myAvailability,
+      event,
+      curUser,
       allDates,
       allTimes,
       allDatesRender,
@@ -149,12 +155,11 @@ class AvailabilityGrid extends React.Component {
   }
 
   componentDidMount() {
-    const { allTimesRender } = this.state;
-    const { myAvailability } = this.props;
+    const { allTimesRender, myAvailability } = this.state;
     if (this.props.heatmap) {
       this.renderHeatmap();
     }
-
+    // only render the availability if curUser has availability set
     if (myAvailability && myAvailability.length > 0) {
       this.renderAvail();
     }
@@ -418,10 +423,8 @@ class AvailabilityGrid extends React.Component {
     const eventToEdit = await loadEventFull(this.props.event._id);
     const event = JSON.parse(JSON.stringify(eventToEdit));
     const observerEvent = jsonpatch.observe(event);
-    /**
-     * first check if cur exists as a particpant
-     * if is not add the curUser as participant
-    **/
+     // first check if cur exists as a participant
+     // if is not add the curUser as participant
     const isParticipant = event.participants.filter(participant => participant.userId._id === _id);
     if (isParticipant.length === 0) {
       const { curUser } = this.props;
@@ -451,9 +454,10 @@ class AvailabilityGrid extends React.Component {
   }
 
   renderHeatmap() {
-    const {
-      generateHeatMapBackgroundColors,
-    } = this.constructor;
+    const { generateHeatMapBackgroundColors } = this.constructor;
+    const { event } = this.props;
+    // load the backgraund colors array
+    const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
 
     const formatStr = 'Do MMMM YYYY hh:mm a';
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
@@ -474,9 +478,6 @@ class AvailabilityGrid extends React.Component {
         availabilityNum[avail] = 1;
       }
     });
-    // load the backgraund colors array;
-
-    const backgroundColors = generateHeatMapBackgroundColors(this.props.event.participants.length);
     cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
@@ -491,10 +492,11 @@ class AvailabilityGrid extends React.Component {
   }
 
   renderAvail() {
+    const { allTimesRender, allDatesRender, allDates, allTimes, myAvailability } = this.state;
+    const { addCellToAvailability } = this.constructor;
     const cells = document.querySelectorAll('.cell');
-    const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
     const formatStr = 'Do MMMM YYYY hh:mm a';
-    const myAvailabilityFrom = this.props.myAvailability
+    const myAvailabilityFrom = myAvailability
       .map(avail => new Date(avail[0]))
       .map(avail => moment(avail).format(formatStr));
 
@@ -508,7 +510,7 @@ class AvailabilityGrid extends React.Component {
         .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        this.constructor.addCellToAvailability(cell);
+        addCellToAvailability(cell);
       }
     });
   }
@@ -688,7 +690,6 @@ AvailabilityGrid.defaultProps = {
   heatmap: false,
   curUser: {},
   event: {},
-  myAvailability: [],
   participants: [],
   submitAvail: () => { console.log('submitAvail func not passed in!'); },
   editAvail: () => { console.log('ediAvail func not passed in!'); },
@@ -703,11 +704,9 @@ AvailabilityGrid.propTypes = {
     name: React.PropTypes.string,
     avatar: React.PropTypes.string,
   }),
-  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
-  myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
   participants: React.PropTypes.arrayOf(React.PropTypes.object),
   event: React.PropTypes.shape({
     participants: React.PropTypes.array,

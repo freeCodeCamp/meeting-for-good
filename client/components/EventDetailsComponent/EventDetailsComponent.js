@@ -191,7 +191,6 @@ class EventDetailsComponent extends React.Component {
                     event={event}
                     curUser={curUser}
                     dates={dates}
-                    availability={availability}
                     editAvail={this.editAvail}
                     participants={participants}
                     heatmap
@@ -204,7 +203,6 @@ class EventDetailsComponent extends React.Component {
                       dates={dates}
                       curUser={curUser}
                       availability={availability}
-                      myAvailability={myAvailability}
                       submitAvail={this.submitAvailability}
                       closeGrid={this.closeGrid}
                     />
