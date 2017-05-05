@@ -345,11 +345,12 @@ class AvailabilityGrid extends React.Component {
     }
 
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
+    const { event } = this.props;
     const formatStr = 'Do MMMM YYYY hh:mm a';
     const availableOnDate = [];
     const notAvailableOnDate = [];
 
-    const participants = JSON.parse(JSON.stringify(this.props.participants))
+    const participants = JSON.parse(JSON.stringify(event.participants))
       .filter(participant => participant.availability)
       .map((participant) => {
         participant.availability = participant.availability
@@ -698,7 +699,6 @@ AvailabilityGrid.defaultProps = {
   heatmap: false,
   curUser: {},
   event: {},
-  participants: [],
   submitAvail: () => { console.log('submitAvail func not passed in!'); },
   editAvail: () => { console.log('ediAvail func not passed in!'); },
   closeGrid: () => { console.log('closeGrid func not passed in!'); },
@@ -715,7 +715,6 @@ AvailabilityGrid.propTypes = {
   submitAvail: React.PropTypes.func,
   closeGrid: React.PropTypes.func,
   editAvail: React.PropTypes.func,
-  participants: React.PropTypes.arrayOf(React.PropTypes.object),
   event: React.PropTypes.shape({
     participants: React.PropTypes.array,
   }),
