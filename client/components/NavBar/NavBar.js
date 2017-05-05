@@ -12,6 +12,7 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import Divider from 'material-ui/Divider';
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import PropTypes from "prop-types";
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
@@ -206,15 +207,58 @@ class NavBar extends Component {
   }
 }
 
+NavBar.defaultProps = {
+  isAuthenticated: false,
+  showPastEvents: false,
+};
+
 NavBar.propTypes = {
-  location: React.PropTypes.object,
-  cbFilter: React.PropTypes.func,
-  isAuthenticated: React.PropTypes.bool,
-  curUser: React.PropTypes.object,
-  cbOpenLoginModal: React.PropTypes.func,
-  showPastEvents: React.PropTypes.bool,
-  events: React.PropTypes.array,
-  cbHandleDismissGuest: React.PropTypes.func,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }),
+  cbFilter: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
+  }),
+
+  cbOpenLoginModal: PropTypes.func.isRequired,
+  showPastEvents: PropTypes.bool,
+  cbHandleDismissGuest: PropTypes.func.isRequired,
+
+  // List of events containing list of event participants
+  events: PropTypes.arrayOf(
+    PropTypes.shape({
+       _id: PropTypes.string,
+      name: PropTypes.string,
+      owner: PropTypes.string,
+      active: PropTypes.bool,
+      selectedTimeRange: PropTypes.array,
+      dates: PropTypes.arrayOf(PropTypes.shape({
+        fromDate: PropTypes.string,
+        toDate: PropTypes.string,
+        _id: PropTypes.string,
+      })),
+      participants: PropTypes.arrayOf(PropTypes.shape({
+        userId: PropTypes.shape({
+          id: PropTypes.string,
+          avatar: PropTypes.string,
+          name: PropTypes.string,
+          emails: PropTypes.arrayOf(PropTypes.string),
+        }),
+        _id: PropTypes.string,
+        status: PropTypes.number,
+        emailUpdate: PropTypes.bool,
+        ownerNotified: PropTypes.bool,
+        availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+      })),
+    })
+  ),
+
 };
 
 export default cssModules(NavBar, styles);
