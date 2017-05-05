@@ -16,6 +16,7 @@ import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
+import PropTypes from 'prop-types';
 
 class AvailabilityGrid extends React.Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
@@ -680,22 +681,79 @@ AvailabilityGrid.defaultProps = {
 };
 
 AvailabilityGrid.propTypes = {
-  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-  heatmap: React.PropTypes.bool,
-  curUser: React.PropTypes.shape({
-    _id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    avatar: React.PropTypes.string,
+  // List of dates ranges for event
+  dates: PropTypes.arrayOf(PropTypes.shape({
+    fromDate: PropTypes.instanceOf(Date),
+    toDate: PropTypes.instanceOf(Date),
+  })).isRequired,
+
+  // True if grid is showing heat map
+  heatmap: PropTypes.bool,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
   }),
-  availability: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
-  submitAvail: React.PropTypes.func,
-  closeGrid: React.PropTypes.func,
-  editAvail: React.PropTypes.func,
-  myAvailability: React.PropTypes.arrayOf(React.PropTypes.array),
-  participants: React.PropTypes.arrayOf(React.PropTypes.object),
-  event: React.PropTypes.shape({
-    participants: React.PropTypes.array,
-  }),
+
+  // List of list of availability times used for heat map
+  availability: PropTypes.arrayOf(PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.string))).isRequired,
+
+  // Function to run when availability for current user is ready to be updated
+  submitAvail: PropTypes.func,
+
+  // Function to run when user wishes to cancel availability editing
+  closeGrid: PropTypes.func,
+
+  // Function to run to switch from heat map to availability editing
+  editAvail: PropTypes.func,
+
+  // Current user's availability array
+  myAvailability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+
+  // List of participants in event (dup of contents of event?)
+  participants: PropTypes.arrayOf(PropTypes.shape({
+    userId: PropTypes.shape({
+      id: PropTypes.string,
+      avatar: PropTypes.string,
+      name: PropTypes.string,
+      emails: PropTypes.arrayOf(PropTypes.string),
+    }),
+    _id: PropTypes.string,
+    status: PropTypes.number,
+    emailUpdate: PropTypes.bool,
+    ownerNotified: PropTypes.bool,
+    availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  })),
+
+  // Event containing list of event participants
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.number,
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+  })
 };
 
 export default cssModules(AvailabilityGrid, styles);
