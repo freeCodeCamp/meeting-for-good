@@ -40,6 +40,21 @@ class AvailabilityGrid extends React.Component {
     return range;
   }
 
+  static generateHeatMapBackgroundColors(quantOfParticipants) {
+    const saturationDivisions = 100 / quantOfParticipants;
+    const saturations = [];
+
+    for (let i = 0; i <= 100; i += saturationDivisions) {
+      saturations.push(i);
+    }
+
+    return saturations.map(saturation => colorsys.hsvToHex({
+      h: 271,
+      s: saturation,
+      v: 100,
+    }));
+  }
+
   static updateAvailabilityForRange(rowRange, colRange, updateAvail) {
     rowRange.forEach((i) => {
       colRange.forEach((j) => {
@@ -59,7 +74,7 @@ class AvailabilityGrid extends React.Component {
   static removeCellFromAvailability(t) {
     t.style.background = 'white';
   }
-
+  
   constructor(props) {
     super(props);
 
@@ -436,7 +451,10 @@ class AvailabilityGrid extends React.Component {
   }
 
   renderHeatmap() {
-    const availabilityLength = this.props.availability.filter(av => av).length;
+    const {
+      generateHeatMapBackgroundColors,
+    } = this.constructor;
+    /*const availabilityLength = this.props.availability.filter(av => av).length;
     const saturationDivisions = 100 / availabilityLength;
     const saturations = [];
 
@@ -448,7 +466,7 @@ class AvailabilityGrid extends React.Component {
       h: 271,
       s: saturation,
       v: 100,
-    }));
+    }));*/
 
     const formatStr = 'Do MMMM YYYY hh:mm a';
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
@@ -469,7 +487,9 @@ class AvailabilityGrid extends React.Component {
         availabilityNum[avail] = 1;
       }
     });
+    // load the backgraund colors array;
 
+    const backgroundColors = generateHeatMapBackgroundColors(this.props.event.participants.length);
     cells.forEach((cell) => {
       const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
       const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
@@ -479,7 +499,7 @@ class AvailabilityGrid extends React.Component {
         .set('date', date)
         .format(formatStr);
 
-      cell.style.background = colors[availabilityNum[cellFormatted]];
+      cell.style.background = backgroundColors[availabilityNum[cellFormatted]];
     });
   }
 
