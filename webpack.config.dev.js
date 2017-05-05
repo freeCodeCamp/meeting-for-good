@@ -33,6 +33,7 @@ const VENDOR_LIBS = [
   'material-ui',
   'nprogress',
   'clipboard',
+  'jstimezonedetect',
 ];
 
 module.exports = {

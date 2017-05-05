@@ -30,7 +30,6 @@ class EventDetailsComponent extends React.Component {
       ranges,
       dates,
       eventParticipantsIds,
-      participants: event.participants,
       showHeatmap: false,
       myAvailability: [],
       showButtonAviability: 'none',
@@ -42,14 +41,14 @@ class EventDetailsComponent extends React.Component {
   }
 
   async componentWillMount() {
-    const { curUser } = this.props;
+    const { curUser, event } = this.props;
     if (curUser) {
       let showHeatmap = false;
       let showAvailabilityGrid = 'block';
       let myAvailability = [];
 
-      // find actual user particant record
-      const isCurParticipant = this.state.participants.find(participant =>
+      // find actual user participant record
+      const isCurParticipant = event.participants.find(participant =>
         participant.userId._id === curUser._id,
       );
       // if curUser have aviability show heatMap
@@ -151,10 +150,13 @@ class EventDetailsComponent extends React.Component {
   render() {
     const {
       event,
-      showHeatmap, participants, myAvailability,
-      dates, showAvailabilityGrid, snackBarOpen, snackBarMsg } = this.state;
+      showHeatmap,
+      dates,
+      showAvailabilityGrid,
+      snackBarOpen,
+      snackBarMsg,
+    } = this.state;
     const { curUser } = this.props;
-    const availability = participants.map(participant => participant.availability);
     let isOwner;
     // check if the curUser is owner
     if (curUser !== undefined) {
@@ -182,10 +184,10 @@ class EventDetailsComponent extends React.Component {
               {(showHeatmap) ?
                 <div id="heatmap">
                   <AvailabilityGrid
+                    event={event}
+                    curUser={curUser}
                     dates={dates}
-                    availability={availability}
                     editAvail={this.editAvail}
-                    participants={participants}
                     heatmap
                   />
                 </div> :
@@ -195,8 +197,6 @@ class EventDetailsComponent extends React.Component {
                       event={event}
                       dates={dates}
                       curUser={curUser}
-                      availability={availability}
-                      myAvailability={myAvailability}
                       submitAvail={this.submitAvailability}
                       closeGrid={this.closeGrid}
                     />
@@ -230,13 +230,19 @@ class EventDetailsComponent extends React.Component {
 }
 
 EventDetailsComponent.propTypes = {
-  event: React.PropTypes.object,
-  showInviteGuests: React.PropTypes.func,
-  cbDeleteEvent: React.PropTypes.func,
-  cbEditEvent: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  cbHandleEmailOwner: React.PropTypes.func,
-  cbDeleteGuest: React.PropTypes.func,
+  event: React.PropTypes.shape({
+    participants: React.PropTypes.array,
+  }).isRequired,
+  showInviteGuests: React.PropTypes.func.isRequired,
+  cbDeleteEvent: React.PropTypes.func.isRequired,
+  cbEditEvent: React.PropTypes.func.isRequired,
+  curUser: React.PropTypes.shape({
+    _id: React.PropTypes.string,
+    name: React.PropTypes.string,
+    avatar: React.PropTypes.string,
+  }).isRequired,
+  cbHandleEmailOwner: React.PropTypes.func.isRequired,
+  cbDeleteGuest: React.PropTypes.func.isRequired,
 };
 
 export default cssModules(EventDetailsComponent, styles);
