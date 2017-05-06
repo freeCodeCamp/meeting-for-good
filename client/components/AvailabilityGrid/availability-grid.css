@@ -18,15 +18,18 @@
 }
 
 .grid-hour {
-  float: left;
   font-size: 13px;
   width: 48px;
   padding: 0 0 0 3px;
   margin-bottom: -1px;
   border-left: 1px solid #787878;
-  transform: translateX(75px);
   user-select: none;
   -webkit-user-select: none;
+}
+
+.timesTitle {
+  display: flex;
+  flex-direction: row;
 }
 
 .disabled {
@@ -81,3 +84,4 @@ a.info {
 .cancelButton {
   margin-left: 15px;
 }
+

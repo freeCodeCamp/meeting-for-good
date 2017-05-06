@@ -171,18 +171,6 @@ class AvailabilityGrid extends Component {
       this.renderAvail();
     }
 
-    // Offset the grid-hour row if the event starts with a date that's offset by
-    // 15/30/45 minutes.
-    const gridHour = document.querySelector('.grid-hour');
-
-    if (getMinutes(allTimesRender[0]) === 15) {
-      gridHour.setAttribute('style', 'margin-left: 50.6px !important');
-    } else if (getMinutes(allTimesRender[0]) === 30) {
-      gridHour.setAttribute('style', 'margin-left: 38px !important');
-    } else if (getMinutes(allTimesRender[0]) === 45) {
-      gridHour.setAttribute('style', 'margin-left: 25.2px !important');
-    }
-
     // Change the border of the cell if it's minutes = 0 or 30 to help visually
     // separate 15 minute blocks from 30 minute and 1 hour blocks.
     const cells = Array.from(document.querySelectorAll('.cell'));
@@ -560,17 +548,29 @@ class AvailabilityGrid extends Component {
   }
 
   renderGridHours() {
-    const { hourTime } = this.state;
+    const { hourTime, allTimes } = this.state;
+    let offSet = 0;
+    // calculate the numbers of cells to offset the hours grid
+    // since we only whant display the full hours
+    if (moment(allTimes[0]).minutes() !== 0) { 
+      offSet = moment(allTimes[0]).minutes() / 15;
+    }
+    const style = { margin: `0 0 0 ${75 + (offSet * 12)}px` };
+    console.log('offSet', offSet, style);
     const colTitles = hourTime.map(time => (
       <p
         key={time}
-        className="grid-hour"
         styleName="grid-hour"
       >{`${removeZero(time.split(':')[0])} ${time.split(' ')[1]}`}</p>
     ));
     // delete the last hour for layout requirements
     colTitles.pop();
-    return colTitles;
+    const timesTitle = (
+      <div id="timesTitle" styleName="timesTitle" style={style}>
+        {colTitles}
+      </div>
+    );
+    return timesTitle;
   }
 
   render() {
