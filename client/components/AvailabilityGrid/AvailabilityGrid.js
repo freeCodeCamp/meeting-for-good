@@ -162,7 +162,7 @@ class AvailabilityGrid extends Component {
   }
 
   componentDidMount() {
-    const { allTimesRender, myAvailability } = this.state;
+    const { myAvailability } = this.state;
     if (this.props.heatmap) {
       this.renderHeatmap();
     }
@@ -556,7 +556,6 @@ class AvailabilityGrid extends Component {
       offSet = moment(allTimes[0]).minutes() / 15;
     }
     const style = { margin: `0 0 0 ${75 + (offSet * 12)}px` };
-    console.log('offSet', offSet, style);
     const colTitles = hourTime.map(time => (
       <p
         key={time}
