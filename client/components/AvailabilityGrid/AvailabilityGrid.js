@@ -302,26 +302,28 @@ class AvailabilityGrid extends Component {
 
   @autobind
   handleCellMouseOver(ev) {
-    const {
-        generateRange,
-        updateAvailabilityForRange,
-    } = this.constructor;
+    const { generateRange,
+      updateAvailabilityForRange,
+      addCellToAvailability,
+      removeCellFromAvailability,
+     } = this.constructor;
+    const { mouseDownRow, mouseDownCol, oldRowRange, oldColRange } = this.state;
+    const { heatmap } = this.props;
 
-    if (!this.props.heatmap) {
+    if (!heatmap) {
       const thisRow = Number(ev.target.getAttribute('data-row'));
       const thisCol = Number(ev.target.getAttribute('data-col'));
 
-      if (this.state.mouseDownRow !== null &&
-        this.state.mouseDownCol !== null) {
-        if (this.state.oldRowRange != null && this.state.oldColRange != null) {
-          const updateAvail = this.constructor.removeCellFromAvailability;
-          updateAvailabilityForRange(this.state.oldRowRange,
-            this.state.oldColRange, updateAvail);
+      if (mouseDownRow !== null &&
+          mouseDownCol !== null) {
+        if (oldRowRange != null && oldColRange != null) {
+          const updateAvail = removeCellFromAvailability;
+          updateAvailabilityForRange(oldRowRange, oldColRange, updateAvail);
         }
 
-        const updateAvail = this.constructor.addCellToAvailability;
-        const rowRange = generateRange(this.state.mouseDownRow, thisRow);
-        const colRange = generateRange(this.state.mouseDownCol, thisCol);
+        const updateAvail = addCellToAvailability;
+        const rowRange = generateRange(mouseDownRow, thisRow);
+        const colRange = generateRange(mouseDownCol, thisCol);
         updateAvailabilityForRange(rowRange, colRange, updateAvail);
 
         this.setState({
