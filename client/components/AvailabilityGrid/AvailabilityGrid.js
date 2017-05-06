@@ -553,7 +553,7 @@ class AvailabilityGrid extends Component {
     // calculate the numbers of cells to offset the hours grid
     // since we only whant display the full hours
     if (moment(allTimes[0]).minutes() !== 0) { 
-      offSet = moment(allTimes[0]).minutes() / 15;
+      offSet = 4 - (moment(allTimes[0]).minutes() / 15);
     }
     const style = { margin: `0 0 0 ${75 + (offSet * 12)}px` };
     const colTitles = hourTime.map(time => (
