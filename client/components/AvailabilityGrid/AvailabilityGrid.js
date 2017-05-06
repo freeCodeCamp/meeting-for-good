@@ -671,8 +671,6 @@ class AvailabilityGrid extends React.Component {
 
 AvailabilityGrid.defaultProps = {
   heatmap: false,
-  curUser: {},
-  event: {},
   myAvailability: [],
   participants: [],
   submitAvail: () => { console.log('submitAvail func not passed in!'); },
@@ -695,20 +693,20 @@ AvailabilityGrid.propTypes = {
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
 
   // List of list of availability times used for heat map
   availability: PropTypes.arrayOf(PropTypes.arrayOf(
     PropTypes.arrayOf(PropTypes.string))).isRequired,
 
   // Function to run when availability for current user is ready to be updated
-  submitAvail: PropTypes.func,
+  submitAvail: PropTypes.func.isRequired,
 
   // Function to run when user wishes to cancel availability editing
-  closeGrid: PropTypes.func,
+  closeGrid: PropTypes.func.isRequired,
 
   // Function to run to switch from heat map to availability editing
-  editAvail: PropTypes.func,
+  editAvail: PropTypes.func.isRequired,
 
   // Current user's availability array
   myAvailability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
@@ -752,7 +750,7 @@ AvailabilityGrid.propTypes = {
       emailUpdate: PropTypes.bool,
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-    })),
+    })).isRequired,
   }),
 };
 

@@ -175,18 +175,13 @@ class NotificationBar extends Component {
   }
 }
 
-NotificationBar.defaultProps = {
-  curUser: {},
-  events: [],
-};
-
 NotificationBar.propTypes = {
   // Currrent user
   curUser: PropTypes.shape({
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
 
   cbHandleDismissGuest: PropTypes.func.isRequired,
 
@@ -217,7 +212,7 @@ NotificationBar.propTypes = {
         availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
       })),
     }),
-  ),
+  ).isRequired,
 };
 
 export default cssModules(NotificationBar, styles);

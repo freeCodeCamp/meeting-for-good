@@ -103,10 +103,6 @@ class DeleteModal extends Component {
   }
 }
 
-DeleteModal.defaultProps = {
-  event: {},
-};
-
 DeleteModal.propTypes = {
   cbEventDelete: PropTypes.func.isRequired,
 
@@ -135,7 +131,7 @@ DeleteModal.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
-  }),
+  }).isRequired,
 };
 
 export default cssModules(DeleteModal, styles);

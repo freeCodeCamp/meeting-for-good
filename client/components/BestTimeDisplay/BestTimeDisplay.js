@@ -185,7 +185,6 @@ class BestTimeDisplay extends Component {
 
 BestTimeDisplay.defaultProps = {
   disablePicker: false,
-  event: {},
 };
 
 BestTimeDisplay.propTypes = {
@@ -216,7 +215,7 @@ BestTimeDisplay.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
-  }),
+  }).isRequired,
 };
 
 export default cssModules(BestTimeDisplay, styles);

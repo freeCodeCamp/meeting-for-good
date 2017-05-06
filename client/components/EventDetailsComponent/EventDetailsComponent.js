@@ -88,7 +88,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  showAvailability(/* ev */) {
+  showAvailability() {
     this.setState({ showButtonAviability: 'hidden', showAvailabilityGrid: 'block' });
   }
 
@@ -231,11 +231,6 @@ class EventDetailsComponent extends React.Component {
   }
 }
 
-EventDetailsComponent.defaultProps = {
-  curUser: {},
-  event: {},
-};
-
 EventDetailsComponent.propTypes = {
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteEvent: PropTypes.func.isRequired,
@@ -248,7 +243,7 @@ EventDetailsComponent.propTypes = {
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
 
   // Event containing list of event participants
   event: PropTypes.shape({
@@ -275,7 +270,7 @@ EventDetailsComponent.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
-  }),
+  }).isRequired,
 };
 
 export default cssModules(EventDetailsComponent, styles);

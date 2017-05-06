@@ -233,18 +233,13 @@ class ParticipantsList extends Component {
   }
 }
 
-ParticipantsList.defaultProps = {
-  event: {},
-  curUser: {},
-};
-
 ParticipantsList.propTypes = {
   // Current user
   curUser: PropTypes.shape({
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
 
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
@@ -274,7 +269,7 @@ ParticipantsList.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
-  }),
+  }).isRequired,
 };
 
 export default cssModules(ParticipantsList, styles);

@@ -224,7 +224,7 @@ NavBar.propTypes = {
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
 
   cbOpenLoginModal: PropTypes.func.isRequired,
   showPastEvents: PropTypes.bool,
@@ -257,7 +257,7 @@ NavBar.propTypes = {
         availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
       })),
     })
-  ),
+  ).isRequired,
 
 };
 

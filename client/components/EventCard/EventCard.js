@@ -85,14 +85,8 @@ class EventCard extends Component {
   }
 }
 
-EventCard.defaultProps = {
-  curUser: {},
-  event: {},
-};
-
 EventCard.propTypes = {
   cbDeleteEvent: PropTypes.func.isRequired,
-//  cb: PropTypes.func,     // Dead?
   showInviteGuests: PropTypes.func.isRequired,
 
   // Current user
@@ -100,7 +94,8 @@ EventCard.propTypes = {
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
+
   cbDeleteGuest: PropTypes.func.isRequired,
 
   // Event containing list of event participants
@@ -128,7 +123,7 @@ EventCard.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
-  }),
+  }).isRequired,
 };
 
 export default cssModules(EventCard, styles);

@@ -318,8 +318,6 @@ class GuestInviteDrawer extends Component {
 }
 
 GuestInviteDrawer.defaultProps = {
-  event: {},
-  curUser: {},
   open: false,
 };
 
@@ -329,7 +327,7 @@ GuestInviteDrawer.propTypes = {
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
 
   open: PropTypes.bool,
   cb: PropTypes.func.isRequired,
@@ -360,7 +358,7 @@ GuestInviteDrawer.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
-  }),
+  }).isRequired,
 };
 
 export default cssModules(GuestInviteDrawer, styles);
