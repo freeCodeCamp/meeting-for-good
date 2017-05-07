@@ -707,6 +707,9 @@ AvailabilityGrid.defaultProps = {
   heatmap: false,
   myAvailability: [],
   participants: [],
+  submitAvail: () => { console.log('submitAvail func not passed in!'); },
+  closeGrid: () => { console.log('closeGrid func not passed in!'); },
+  editAvail: () => { console.log('ediAvail func not passed in!'); },
 };
 
 AvailabilityGrid.propTypes = {
@@ -727,13 +730,13 @@ AvailabilityGrid.propTypes = {
   }).isRequired,
 
   // Function to run when availability for current user is ready to be updated
-  submitAvail: PropTypes.func.isRequired,
+  submitAvail: PropTypes.func,
 
   // Function to run when user wishes to cancel availability editing
-  closeGrid: PropTypes.func.isRequired,
+  closeGrid: PropTypes.func,
 
   // Function to run to switch from heat map to availability editing
-  editAvail: PropTypes.func.isRequired,
+  editAvail: PropTypes.func,
 
   // Event containing list of event participants
   event: PropTypes.shape({
