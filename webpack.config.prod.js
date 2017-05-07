@@ -28,6 +28,7 @@ const VENDOR_LIBS = [
   'nprogress',
   'clipboard',
   'jstimezonedetect',
+  'react-input-range',
 ];
 
 module.exports = {
