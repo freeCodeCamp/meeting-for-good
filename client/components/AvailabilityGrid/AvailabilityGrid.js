@@ -315,8 +315,7 @@ class AvailabilityGrid extends Component {
       const thisRow = Number(ev.target.getAttribute('data-row'));
       const thisCol = Number(ev.target.getAttribute('data-col'));
 
-      if (mouseDownRow !== null &&
-          mouseDownCol !== null) {
+      if (mouseDownRow !== null && mouseDownCol !== null) {
         if (oldRowRange != null && oldColRange != null) {
           const updateAvail = removeCellFromAvailability;
           updateAvailabilityForRange(oldRowRange, oldColRange, updateAvail);
@@ -402,11 +401,13 @@ class AvailabilityGrid extends Component {
     const { allDates, allTimes, allDatesRender, allTimesRender } = this.state;
     const { curUser } = this.props;
     const availability = [];
-
-    $('.cell').each((i, el) => {
-      if ($(el).css('background-color') === 'rgb(128, 0, 128)') {
-        const timeIndex = allTimesRender.indexOf($(el).attr('data-time'));
-        const dateIndex = allDatesRender.indexOf($(el).attr('data-date'));
+    const cells = document.querySelectorAll('.cell');
+    // construct the availability to be submited
+    cells.forEach((cell) => {
+      const cellBackgroundColor = getComputedStyle(cell)['background-color'];
+      if (cellBackgroundColor === 'rgb(128, 0, 128)') {
+        const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
+        const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
         const date = moment(allDates[dateIndex]).get('date');
 
