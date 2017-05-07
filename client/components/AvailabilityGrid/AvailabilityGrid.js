@@ -726,10 +726,6 @@ AvailabilityGrid.propTypes = {
     avatar: PropTypes.string,   // URL to image representing user(?)
   }).isRequired,
 
-  // List of list of availability times used for heat map
-  availability: PropTypes.arrayOf(PropTypes.arrayOf(
-    PropTypes.arrayOf(PropTypes.string))).isRequired,
-
   // Function to run when availability for current user is ready to be updated
   submitAvail: PropTypes.func.isRequired,
 
@@ -738,24 +734,6 @@ AvailabilityGrid.propTypes = {
 
   // Function to run to switch from heat map to availability editing
   editAvail: PropTypes.func.isRequired,
-
-  // Current user's availability array
-  myAvailability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-
-  // List of participants in event (dup of contents of event?)
-  participants: PropTypes.arrayOf(PropTypes.shape({
-    userId: PropTypes.shape({
-      id: PropTypes.string,
-      avatar: PropTypes.string,
-      name: PropTypes.string,
-      emails: PropTypes.arrayOf(PropTypes.string),
-    }),
-    _id: PropTypes.string,
-    status: PropTypes.number,
-    emailUpdate: PropTypes.bool,
-    ownerNotified: PropTypes.bool,
-    availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-  })),
 
   // Event containing list of event participants
   event: PropTypes.shape({
@@ -781,8 +759,8 @@ AvailabilityGrid.propTypes = {
       emailUpdate: PropTypes.bool,
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-    })).isRequired,
-  }),
+    })),
+  }).isRequired,
 };
 
 export default cssModules(AvailabilityGrid, styles);
