@@ -14,7 +14,6 @@ const VENDOR_LIBS = [
   'fast-json-patch',
   'isomorphic-fetch',
   'lodash',
-  'materialize-css',
   'moment',
   'react',
   'react-addons-update',
@@ -29,6 +28,7 @@ const VENDOR_LIBS = [
   'nprogress',
   'clipboard',
   'jstimezonedetect',
+  'react-input-range',
 ];
 
 module.exports = {
