@@ -264,7 +264,7 @@ ParticipantsList.propTypes = {
         emails: PropTypes.arrayOf(PropTypes.string),
       }),
       _id: PropTypes.string,
-      status: PropTypes.number,
+      status: PropTypes.oneOf([0, 1, 2, 3]),
       emailUpdate: PropTypes.bool,
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
