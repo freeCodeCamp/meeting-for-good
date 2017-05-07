@@ -27,27 +27,7 @@ class BestTimeDisplay extends Component {
     return rows;
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      event: this.props.event,
-      disablePicker: false,
-    };
-  }
-
-  componentWillMount() {
-    const { event, disablePicker } = this.props;
-    const displayTimes = this.buildBestTimes(event);
-    this.setState({ event, displayTimes, disablePicker });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { event, disablePicker } = nextProps;
-    const displayTimes = this.buildBestTimes(event);
-    this.setState({ event, displayTimes, disablePicker });
-  }
-
-  buildBestTimes(event) {
+  static buildBestTimes(event) {
     const availability = [];
     const overlaps = [];
     const displayTimes = {};
@@ -100,6 +80,27 @@ class BestTimeDisplay extends Component {
     }
 
     return displayTimes;
+  }
+
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      event: this.props.event,
+      disablePicker: false,
+    };
+  }
+
+  componentWillMount() {
+    const { event, disablePicker } = this.props;
+    const displayTimes = this.constructor.buildBestTimes(event);
+    this.setState({ event, displayTimes, disablePicker });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { event, disablePicker } = nextProps;
+    const displayTimes = this.constructor.buildBestTimes(event);
+    this.setState({ event, displayTimes, disablePicker });
   }
 
   isBestTime() {
