@@ -8,6 +8,7 @@ import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
+import PropTypes from 'prop-types';
 
 import styles from './best-times-display.css';
 
@@ -182,9 +183,39 @@ class BestTimeDisplay extends Component {
   }
 }
 
+BestTimeDisplay.defaultProps = {
+  disablePicker: false,
+};
+
 BestTimeDisplay.propTypes = {
-  event: React.PropTypes.object,
-  disablePicker: React.PropTypes.bool,
+  disablePicker: PropTypes.bool,
+
+  // Event containing list of event participants
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.oneOf([0, 1, 2, 3]),
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+  }).isRequired,
 };
 
 export default cssModules(BestTimeDisplay, styles);

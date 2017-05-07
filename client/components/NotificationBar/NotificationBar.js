@@ -9,6 +9,7 @@ import Badge from 'material-ui/Badge';
 import Divider from 'material-ui/Divider';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
 
 import { checkStatus } from '../../util/fetch.util';
 import styles from './notification-bar.css';
@@ -175,9 +176,43 @@ class NotificationBar extends Component {
 }
 
 NotificationBar.propTypes = {
-  curUser: React.PropTypes.object,
-  events: React.PropTypes.array,
-  cbHandleDismissGuest: React.PropTypes.func,
+  // Currrent user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
+  }).isRequired,
+
+  cbHandleDismissGuest: PropTypes.func.isRequired,
+
+  // List of events containing list of event participants
+  events: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+      name: PropTypes.string,
+      owner: PropTypes.string,
+      active: PropTypes.bool,
+      selectedTimeRange: PropTypes.array,
+      dates: PropTypes.arrayOf(PropTypes.shape({
+        fromDate: PropTypes.string,
+        toDate: PropTypes.string,
+        _id: PropTypes.string,
+      })),
+      participants: PropTypes.arrayOf(PropTypes.shape({
+        userId: PropTypes.shape({
+          id: PropTypes.string,
+          avatar: PropTypes.string,
+          name: PropTypes.string,
+          emails: PropTypes.arrayOf(PropTypes.string),
+        }),
+        _id: PropTypes.string,
+        status: PropTypes.oneOf([0, 1, 2, 3]),
+        emailUpdate: PropTypes.bool,
+        ownerNotified: PropTypes.bool,
+        availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+      })),
+    }),
+  ).isRequired,
 };
 
 export default cssModules(NotificationBar, styles);

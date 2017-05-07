@@ -9,6 +9,7 @@ import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
+import PropTypes from 'prop-types';
 
 import styles from './availability-grid.css';
 import { getHours, getMinutes, removeZero } from '../../util/time-format';
@@ -704,25 +705,84 @@ class AvailabilityGrid extends Component {
 
 AvailabilityGrid.defaultProps = {
   heatmap: false,
-  submitAvail: () => { console.log('submitAvail func not passed in!'); },
-  editAvail: () => { console.log('ediAvail func not passed in!'); },
-  closeGrid: () => { console.log('closeGrid func not passed in!'); },
+  myAvailability: [],
+  participants: [],
 };
 
 AvailabilityGrid.propTypes = {
-  dates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-  heatmap: React.PropTypes.bool,
-  curUser: React.PropTypes.shape({
-    _id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    avatar: React.PropTypes.string,
+  // List of dates ranges for event
+  dates: PropTypes.arrayOf(PropTypes.shape({
+    fromDate: PropTypes.instanceOf(Date),
+    toDate: PropTypes.instanceOf(Date),
+  })).isRequired,
+
+  // True if grid is showing heat map
+  heatmap: PropTypes.bool,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
   }).isRequired,
-  submitAvail: React.PropTypes.func,
-  closeGrid: React.PropTypes.func,
-  editAvail: React.PropTypes.func,
-  event: React.PropTypes.shape({
-    participants: React.PropTypes.array,
-  }).isRequired,
+
+  // List of list of availability times used for heat map
+  availability: PropTypes.arrayOf(PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.string))).isRequired,
+
+  // Function to run when availability for current user is ready to be updated
+  submitAvail: PropTypes.func.isRequired,
+
+  // Function to run when user wishes to cancel availability editing
+  closeGrid: PropTypes.func.isRequired,
+
+  // Function to run to switch from heat map to availability editing
+  editAvail: PropTypes.func.isRequired,
+
+  // Current user's availability array
+  myAvailability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+
+  // List of participants in event (dup of contents of event?)
+  participants: PropTypes.arrayOf(PropTypes.shape({
+    userId: PropTypes.shape({
+      id: PropTypes.string,
+      avatar: PropTypes.string,
+      name: PropTypes.string,
+      emails: PropTypes.arrayOf(PropTypes.string),
+    }),
+    _id: PropTypes.string,
+    status: PropTypes.number,
+    emailUpdate: PropTypes.bool,
+    ownerNotified: PropTypes.bool,
+    availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  })),
+
+  // Event containing list of event participants
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.oneOf([0, 1, 2, 3]),
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })).isRequired,
+  }),
 };
 
 export default cssModules(AvailabilityGrid, styles);

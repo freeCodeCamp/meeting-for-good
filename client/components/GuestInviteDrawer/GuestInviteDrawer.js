@@ -14,6 +14,7 @@ import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import Infinite from 'react-infinite';
+import PropTypes from 'prop-types';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -316,12 +317,48 @@ class GuestInviteDrawer extends Component {
   }
 }
 
+GuestInviteDrawer.defaultProps = {
+  open: false,
+};
+
 GuestInviteDrawer.propTypes = {
-  event: React.PropTypes.object,
-  curUser: React.PropTypes.object,
-  open: React.PropTypes.bool,
-  cb: React.PropTypes.func,
-  cbInviteEmail: React.PropTypes.func,
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
+  }).isRequired,
+
+  open: PropTypes.bool,
+  cb: PropTypes.func.isRequired,
+  cbInviteEmail: PropTypes.func.isRequired,
+
+  // Event containing list of event participants
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.oneOf([0, 1, 2, 3]),
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+  }).isRequired,
 };
 
 export default cssModules(GuestInviteDrawer, styles);

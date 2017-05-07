@@ -3,8 +3,8 @@ import autobind from 'autobind-decorator';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import PropTypes from 'prop-types';
 
-import Facebook from '../../assets/facebook.png';
 import Google from '../../assets/google.png';
 
 class LoginModal extends Component {
@@ -98,10 +98,15 @@ class LoginModal extends Component {
   }
 }
 
+LoginModal.defaultProps = {
+  open: false,
+  logFail: false,
+};
+
 LoginModal.propTypes = {
-  open: React.PropTypes.bool,
-  logFail: React.PropTypes.bool,
-  cbCancel: React.PropTypes.func,
+  open: PropTypes.bool,
+  logFail: PropTypes.bool,
+  cbCancel: PropTypes.func.isRequired,
 };
 
 export default LoginModal;

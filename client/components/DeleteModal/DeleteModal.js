@@ -5,6 +5,7 @@ import autobind from 'autobind-decorator';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EventDelete from 'material-ui/svg-icons/action/delete';
 import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
 
 import styles from './delete-modal.css';
 
@@ -103,8 +104,34 @@ class DeleteModal extends Component {
 }
 
 DeleteModal.propTypes = {
-  event: React.PropTypes.object,
-  cbEventDelete: React.PropTypes.func,
+  cbEventDelete: PropTypes.func.isRequired,
+
+  // Event containing list of event participants
+  event: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
+      _id: PropTypes.string,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.oneOf([0, 1, 2, 3]),
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+  }).isRequired,
 };
 
 export default cssModules(DeleteModal, styles);
