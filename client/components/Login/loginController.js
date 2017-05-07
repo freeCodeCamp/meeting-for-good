@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import { isAuthenticated } from '../../util/auth';
 
@@ -16,10 +17,12 @@ class LoginController extends Component {
     return null;
   }
 }
+LoginController.defaultProps = {
+  handleAuthentication: () => { console.log('handleAuthentication func not passed in!'); },
+};
 
 LoginController.propTypes = {
-  params: React.PropTypes.object,
-  handleAuthentication: React.PropTypes.func,
+  handleAuthentication: PropTypes.func,
 
 };
 export default LoginController;

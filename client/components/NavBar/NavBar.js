@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import Divider from 'material-ui/Divider';
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
@@ -79,7 +79,7 @@ class NavBar extends Component {
  @autobind
   HandleDismissGuest(participantId) {
     this.props.cbHandleDismissGuest(participantId);
- }
+  }
 
   renderRightGroup() {
     const { toggleVisible } = this.state;
@@ -184,7 +184,7 @@ class NavBar extends Component {
       </ToolbarGroup>
     );
   }
-  
+
   render() {
     return (
       <Toolbar
@@ -215,7 +215,7 @@ NavBar.defaultProps = {
 NavBar.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired,
-  }),
+  }).isRequired,
   cbFilter: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
 
@@ -233,7 +233,7 @@ NavBar.propTypes = {
   // List of events containing list of event participants
   events: PropTypes.arrayOf(
     PropTypes.shape({
-       _id: PropTypes.string,
+      _id: PropTypes.string,
       name: PropTypes.string,
       owner: PropTypes.string,
       active: PropTypes.bool,
@@ -256,7 +256,7 @@ NavBar.propTypes = {
         ownerNotified: PropTypes.bool,
         availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
       })),
-    })
+    }),
   ).isRequired,
 
 };
