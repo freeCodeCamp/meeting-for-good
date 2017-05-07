@@ -92,6 +92,7 @@
     "passport-facebook": "^2.1.1",
     "passport-google-oauth": "^1.0.0",
     "pngquant-bin": "^3.1.1",
+    "prop-types": "^15.5.8",
     "react": "^15.4.1",
     "react-addons-update": "^15.4.1",
     "react-css-modules": "^4.1.0",

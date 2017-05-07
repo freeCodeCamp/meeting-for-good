@@ -275,7 +275,6 @@ class App extends Component {
   async handleGuestNotificationsDismiss(participantId) {
     const { events } = this.state;
     const nEvent = await handleDismiss(participantId);
-    console.log('nEvent', nEvent);
     if (nEvent) {
       const nEvents = events.filter(event => event._id !== nEvent._id);
       this.setState({ events: [nEvent, ...nEvents] });
