@@ -18,12 +18,18 @@
 }
 
 .grid-hour {
-  float: left;
   font-size: 13px;
-  margin-left: 17.25px !important;
-  transform: translateX(39px);
+  width: 48px;
+  padding: 0 0 0 3px;
+  margin-bottom: -1px;
+  border-left: 1px solid #787878;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.timesTitle {
+  display: flex;
+  flex-direction: row;
 }
 
 .disabled {
@@ -68,12 +74,6 @@ a.info {
 
 .hover-available h6 {
   margin: 5px;
-}
-
-.selectbox {
-  position: absolute;
-  border: 1px solid black;
-
 }
 
 .Column

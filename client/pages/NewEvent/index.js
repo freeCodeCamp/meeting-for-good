@@ -10,16 +10,14 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
-import noUiSlider from 'materialize-css/extras/noUiSlider/nouislider.min.js';
 import Snackbar from 'material-ui/Snackbar';
+import InputRange from 'react-input-range';
 
-import 'materialize-css/extras/noUiSlider/nouislider.css';
 import 'react-day-picker/lib/style.css';
+import '../../styles/no-css-modules/react-input-range.css';
 
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
 import { dateRangeReducer } from '../../util/dates.utils';
-
-
 import styles from './new-event.css';
 
 class NewEvent extends React.Component {
@@ -37,11 +35,15 @@ class NewEvent extends React.Component {
           .second(0)._d,
       }],
       eventName: '',
-      selectedTimeRange: [0, 23],
+      selectedTimeRange: [9, 17],
       disableSubmit: true,
       curUser: {},
       snackBarOpen: false,
       snackBarMsg: '',
+      value4: {
+        min: 5,
+        max: 10,
+      },
     };
   }
 
@@ -52,36 +54,6 @@ class NewEvent extends React.Component {
     } else {
       this.props.cbOpenLoginModal('/event/new');
     }
-  }
-
-  componentDidMount() {
-    const slider = document.getElementById('timeSlider');
-    noUiSlider.create(slider, {
-      start: [9, 17],
-      connect: true,
-      step: 0.25,
-      range: {
-        min: 0,
-        max: 24,
-      },
-      format: {
-        to: val => formatTime(val),
-        from: val => val,
-      },
-    });
-
-    slider.noUiSlider.on('update', (value, handle) => {
-      $('.range-label span').text('');
-      const { selectedTimeRange } = this.state;
-      selectedTimeRange[handle] = value[handle];
-      this.setState({ selectedTimeRange });
-    });
-
-    $('.notification-bar-action').on('click', () => {
-      this.setState({ notificationIsActive: false });
-    });
-
-    $('input[type="text"]+label').addClass('active');
   }
 
   @autobind
@@ -176,40 +148,18 @@ class NewEvent extends React.Component {
 
   @autobind
   async createEvent(ev) {
-    const {
-      eventName: name,
-      ranges,
-      selectedTimeRange: [fromTime, toTime],
-    } = this.state;
+    const { eventName: name, ranges, selectedTimeRange: [fromTime, toTime] } = this.state;
 
-    // validate the form
-    if (ev.target.className.indexOf('disabled') > -1) {
-      if (ranges.length < 0 || !ranges[0].from && name.length === 0) {
-        this.setState({
-          snackBarOpen: true,
-          snackBarMsg: 'Please select a date and enter an event name.',
-        });
-      } else if (ranges.length < 0 || !ranges[0].from && name.length !== 0) {
-        this.setState({
-          snackBarOpen: true,
-          snackBarMsg: 'Please select a date.',
-        });
-      } else if (ranges.length > 0 || ranges[0].from && name.length === 0) {
-        this.setState({
-          snackBarOpen: true,
-          snackBarMsg: 'Please enter an event name.',
-        });
-      }
-      return;
-    }
+    const fromTimeFormat = formatTime(fromTime);
+    const toTimeFormat = formatTime(toTime);
 
-    const fromHours = getHours(fromTime);
-    const toHours = getHours(toTime);
+    const fromHours = getHours(fromTimeFormat);
+    const toHours = getHours(toTimeFormat);
 
-    const fromMinutes = getMinutes(fromTime);
-    const toMinutes = getMinutes(toTime);
+    const fromMinutes = getMinutes(fromTimeFormat);
+    const toMinutes = getMinutes(toTimeFormat);
+
     // create a date range as date
-
     let dates = ranges.map(({ from, to }) => {
       if (!to) to = from;
 
@@ -324,10 +274,22 @@ class NewEvent extends React.Component {
                 />
               </div>
               <Subheader styleName="subHeader">What times might work?</Subheader>
-              <div id="timeSlider" />
+              <div styleName="rangeSelectorWrapper">
+                <InputRange
+                  disabled={false}
+                  name="range"
+                  maxValue={24}
+                  minValue={0}
+                  formatLabel={value => formatTime(value)}
+                  step={0.25}
+                  value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
+                  onChange={value => this.setState({ selectedTimeRange: [value.min, value.max] })}
+                  onChangeComplete={value => console.log(value)}
+                />
+              </div>
               <br />
               <Subheader styleName="subHeader">
-                No earlier than {selectedTimeRange[0]} and no later than {selectedTimeRange[1]}
+                No earlier than {formatTime(selectedTimeRange[0])} and no later than {formatTime(selectedTimeRange[1])}
               </Subheader>
               <div styleName="centerContainer">
                 <RaisedButton
