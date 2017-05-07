@@ -78,10 +78,8 @@ class BestTimeDisplay extends Component {
         }
       }
     }
-
     return displayTimes;
   }
-
 
   constructor(props) {
     super(props);

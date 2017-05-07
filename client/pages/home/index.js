@@ -49,13 +49,13 @@ class Home extends React.Component {
           <div>
             <div styleName={'divider'} />
             <p>Made with ❤ and lots of ☕ <br /> by &nbsp;
-              <a href="https://github.com/AkiraLaine" target="_blank">Akira Laine</a>, &nbsp;
-              <a href="https://github.com/awesomeaniruddh/" target="_blank">Aniruddh Agarwal</a>  and&nbsp;
-              <a href="https://github.com/jrogatis/" target="_blank">Jean Philip de Rogatis</a>
+              <a href="https://github.com/AkiraLaine" target="_blank" rel="noopener noreferrer">Akira Laine</a>, &nbsp;
+              <a href="https://github.com/awesomeaniruddh/" target="_blank" rel="noopener noreferrer">Aniruddh Agarwal</a>  and&nbsp;
+              <a href="https://github.com/jrogatis/" target="_blank" rel="noopener noreferrer">Jean Philip de Rogatis</a>
             </p>
 
             <p>
-              Check out the repo on <a href="https://github.com/FreeCodeCamp/LetsMeet" target="_blank">GitHub</a>
+              Check out the repo on <a href="https://github.com/FreeCodeCamp/LetsMeet" target="_blank" rel="noopener noreferrer">GitHub</a>
             </p>
           </div>
         </footer>
