@@ -1,10 +1,23 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
+import { getMinutes } from '../../util/time-format';
 
 import styles from './cell-grid.css';
 
 class CellGrid extends Component {
+
+  // Change the border of the cell if it's minutes = 0 or 30 to help visually
+  // separate 15 minute blocks from 30 minute and 1 hour blocks.
+  static formatCellBorder(time) {
+    const minutes = getMinutes(time);
+    if (minutes === 0) {
+      return { borderLeft: '1px solid rgb(120, 120, 120)' };
+    } else if (minutes === 30) {
+      return { borderLeft: '1px solid #c3bebe' };
+    }
+    return {};
+  }
 
   render() {
     const {
@@ -15,9 +28,11 @@ class CellGrid extends Component {
       onMouseLeave,
       styleName,
     } = this.props;
-    const style = (styleName) ? styleName : 'cell';
+    const style = (!styleName) ? 'cell' : styleName;
+    const inlineStyle = this.constructor.formatCellBorder(time)
     return (
       <div
+        style={inlineStyle}
         data-time={time}
         data-date={date}
         data-col={col}

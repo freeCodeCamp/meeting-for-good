@@ -173,18 +173,6 @@ class AvailabilityGrid extends Component {
       this.renderAvail();
     }
 
-    // Change the border of the cell if it's minutes = 0 or 30 to help visually
-    // separate 15 minute blocks from 30 minute and 1 hour blocks.
-    const cells = Array.from(document.querySelectorAll('.cell'));
-
-    cells.forEach((cell) => {
-      if (getMinutes(cell.getAttribute('data-time')) === 0) {
-        cell.style.borderLeft = '1px solid rgb(120, 120, 120)';
-      } else if (getMinutes(cell.getAttribute('data-time')) === 30) {
-        cell.style.borderLeft = '1px solid #c3bebe';
-      }
-    });
-
     // Check if two adjacent grid hours labels are consecutive or not. If not,
     // then split the grid at this point.
     const hourTime = this.state.hourTime.slice(0);
