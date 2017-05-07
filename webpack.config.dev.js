@@ -19,7 +19,6 @@ const VENDOR_LIBS = [
   'fast-json-patch',
   'isomorphic-fetch',
   'lodash',
-  'materialize-css',
   'moment',
   'react',
   'react-addons-update',
