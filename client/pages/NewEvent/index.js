@@ -284,7 +284,6 @@ class NewEvent extends React.Component {
                   step={0.25}
                   value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
                   onChange={value => this.setState({ selectedTimeRange: [value.min, value.max] })}
-                  onChangeComplete={value => console.log(value)}
                 />
               </div>
               <br />
