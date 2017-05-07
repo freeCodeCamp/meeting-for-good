@@ -17,6 +17,7 @@ import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
+import CellGrid from '../CellGrid/cellGrid';
 
 class AvailabilityGrid extends Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
@@ -629,18 +630,17 @@ class AvailabilityGrid extends Component {
               });
 
               return (
-                <div
+                <CellGrid
                   key={`${date} ${time}`}
-                  styleName={`${styleName}`}
-                  data-time={time}
-                  data-date={date}
-                  data-row={i}
-                  data-col={j}
-                  className={`cell ${disabled}`}
+                  time={time}
+                  date={date}
+                  row={i}
+                  col={j}
                   onMouseDown={this.handleCellMouseDown}
                   onMouseUp={this.handleCellMouseUp}
                   onMouseOver={this.handleCellMouseOver}
                   onMouseLeave={this.handleCellMouseLeave}
+                  styleName={`${styleName}`}
                 />
               );
             })}
