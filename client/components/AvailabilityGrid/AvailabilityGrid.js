@@ -567,7 +567,6 @@ class AvailabilityGrid extends Component {
 
   render() {
     const { allDatesRender, allTimesRender } = this.state;
-    const { dates } = this.props;
     return (
       <div styleName="Column">
         <div styleName="row">
@@ -585,38 +584,6 @@ class AvailabilityGrid extends Component {
               {date}
             </div>
             {allTimesRender.map((time, j) => {
-              let disabled = '';
-              let styleName = 'cell';
-              // render the grid for each row.
-              dates.forEach(({ fromDate, toDate }) => {
-                const { dateFormatStr } = this.state;
-                fromDate = moment(fromDate);
-                toDate = moment(toDate);
-                const fromDateFormatted = fromDate.format('hh:mm a');
-                const toDateFormatted = toDate.format('hh:mm a');
-
-                const fromDateDateFormat = fromDate.format(dateFormatStr);
-                // Boolean: If date in fromDate === date => True; Else => False
-                const fromDateIsDate = fromDateDateFormat === date;
-
-                // Boolean: If time in fromDate > time => True; Else => False
-                const fromDateAfterTime = moment(fromDateFormatted, 'hh:mm a')
-                  .isAfter(moment(time, 'hh:mm a'));
-
-                const toDateDateFormat = toDate.format(dateFormatStr);
-                const toDateIsDate = toDateDateFormat === date;
-                const toDateBeforeTime = moment(toDateFormatted, 'hh:mm a')
-                  .isBefore(moment(time, 'hh:mm a'));
-
-                const fromDateInvalid = fromDateIsDate && fromDateAfterTime;
-                const toDateInvalid = toDateIsDate && toDateBeforeTime;
-
-                if (fromDateInvalid || toDateInvalid) {
-                  disabled = 'disabled';
-                  styleName = 'disabled';
-                }
-              });
-
               return (
                 <CellGrid
                   key={`${date} ${time}`}
@@ -628,7 +595,6 @@ class AvailabilityGrid extends Component {
                   onMouseUp={this.handleCellMouseUp}
                   onMouseOver={this.handleCellMouseOver}
                   onMouseLeave={this.handleCellMouseLeave}
-                  styleName={`${styleName}`}
                 />
               );
             })}
