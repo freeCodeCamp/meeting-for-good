@@ -165,11 +165,12 @@ class AvailabilityGrid extends Component {
 
   componentDidMount() {
     const { myAvailability } = this.state;
-    if (this.props.heatmap) {
+    const { heatmap } = this.props;
+    if (heatmap) {
       this.renderHeatmap();
     }
     // only render the availability if curUser has availability set
-    if (myAvailability && myAvailability.length > 0) {
+    if (myAvailability && myAvailability.length > 0 && heatmap === false) {
       this.renderAvail();
     }
 
