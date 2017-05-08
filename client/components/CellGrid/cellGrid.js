@@ -29,7 +29,7 @@ class CellGrid extends Component {
       styleName,
     } = this.props;
     const style = (!styleName) ? 'cell' : styleName;
-    const inlineStyle = this.constructor.formatCellBorder(time)
+    const inlineStyle = this.constructor.formatCellBorder(time);
     return (
       <div
         style={inlineStyle}
@@ -41,7 +41,7 @@ class CellGrid extends Component {
         onMouseUp={onMouseUp}
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
-        className={'cell'}
+        className="cell"
         styleName={style}
       />
     );
@@ -58,7 +58,6 @@ CellGrid.propTypes = {
   date: PropTypes.string.isRequired,
   row: PropTypes.number.isRequired,
   col: PropTypes.number.isRequired,
-  isSelected: PropTypes.bool,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
   onMouseOver: PropTypes.func.isRequired,
