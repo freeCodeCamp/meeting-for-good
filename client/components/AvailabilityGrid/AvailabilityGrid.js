@@ -173,7 +173,11 @@ class AvailabilityGrid extends Component {
     if (myAvailability && myAvailability.length > 0 && heatmap === false) {
       this.renderAvail();
     }
-
+    // if the current user dos not has a availability just render the heatmap
+    // as a background shadow
+    if (((!myAvailability || myAvailability.length === 0) && heatmap === false)) {
+      this.renderHeatmap(true);
+    }
     // Check if two adjacent grid hours labels are consecutive or not. If not,
     // then split the grid at this point.
     const hourTime = this.state.hourTime.slice(0);
