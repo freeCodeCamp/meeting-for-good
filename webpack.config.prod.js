@@ -9,11 +9,11 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const VENDOR_LIBS = [
   'autobind-decorator',
   'bluebird',
-  'colorsys',
   'es6-promise',
   'fast-json-patch',
   'isomorphic-fetch',
   'lodash',
+  'chroma-js',
   'moment',
   'react',
   'react-addons-update',
