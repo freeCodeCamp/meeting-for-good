@@ -44,7 +44,7 @@ class AvailabilityGrid extends Component {
 
   static generateHeatMapBackgroundColors(quantOfParticipants) {
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
-    const colors = chroma.scale(['cornSilk', 'olive']);
+    const colors = chroma.scale(['wheat', 'olive']);
     return colors.colors(quantOfParticipants);
   }
 
@@ -60,7 +60,7 @@ class AvailabilityGrid extends Component {
 
   @autobind
   static addCellToAvailability(t, userId) {
-    t.style.background = 'navy';
+    t.style.background = 'olive';
     if (!t.hasAttribute('activeParticipant')) {
       t.setAttribute('activeParticipant', userId);
     }
@@ -261,8 +261,6 @@ class AvailabilityGrid extends Component {
     const { curUser } = this.props;
     const thisRow = Number(ev.target.getAttribute('data-row'));
     const thisCol = Number(ev.target.getAttribute('data-col'));
-
-    const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
     const cellIsSelected = (ev.target.hasAttribute('activeParticipant'));
 
     let updateAvail;
