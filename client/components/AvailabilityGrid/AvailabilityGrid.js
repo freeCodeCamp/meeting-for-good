@@ -55,24 +55,30 @@ class AvailabilityGrid extends Component {
     }));
   }
 
-  static updateAvailabilityForRange(rowRange, colRange, updateAvail) {
+  static updateAvailabilityForRange(rowRange, colRange, updateAvail, curUserId) {
     rowRange.forEach((i) => {
       colRange.forEach((j) => {
         const query = `div[data-row="${i}"][data-col="${j}"]`;
         const el = document.querySelector(query);
-        updateAvail(el);
+        updateAvail(el, curUserId);
       });
     });
   }
 
   @autobind
-  static addCellToAvailability(t) {
-    t.style.background = 'purple';
+  static addCellToAvailability(t, userId) {
+    t.style.background = 'navy';
+    if (!t.hasAttribute('activeParticipant')) {
+      t.setAttribute('activeParticipant', userId);
+    }
   }
 
   @autobind
   static removeCellFromAvailability(t) {
     t.style.background = 'transparent';
+    if (t.hasAttribute('activeParticipant')) {
+      t.removeAttribute('activeParticipant');
+    }
   }
 
   constructor(props) {
@@ -253,12 +259,13 @@ class AvailabilityGrid extends Component {
     if (this.props.heatmap) {
       return;
     }
-
     const {
         generateRange,
         updateAvailabilityForRange,
+        removeCellFromAvailability,
+        addCellToAvailability,
     } = this.constructor;
-
+    const { curUser } = this.props;
     const thisRow = Number(ev.target.getAttribute('data-row'));
     const thisCol = Number(ev.target.getAttribute('data-col'));
 
@@ -267,13 +274,13 @@ class AvailabilityGrid extends Component {
 
     let updateAvail;
     if (cellIsSelected) {
-      updateAvail = this.constructor.removeCellFromAvailability;
+      updateAvail = removeCellFromAvailability;
     } else {
-      updateAvail = this.constructor.addCellToAvailability;
+      updateAvail = addCellToAvailability;
     }
     const rowRange = generateRange(thisRow, thisRow);
     const colRange = generateRange(thisCol, thisCol);
-    updateAvailabilityForRange(rowRange, colRange, updateAvail);
+    updateAvailabilityForRange(rowRange, colRange, updateAvail, curUser._id);
 
     this.setState({
       mouseDownRow: thisRow,
@@ -303,7 +310,7 @@ class AvailabilityGrid extends Component {
       removeCellFromAvailability,
      } = this.constructor;
     const { mouseDownRow, mouseDownCol, oldRowRange, oldColRange } = this.state;
-    const { heatmap } = this.props;
+    const { heatmap, curUser } = this.props;
 
     if (!heatmap) {
       const thisRow = Number(ev.target.getAttribute('data-row'));
@@ -312,13 +319,13 @@ class AvailabilityGrid extends Component {
       if (mouseDownRow !== null && mouseDownCol !== null) {
         if (oldRowRange != null && oldColRange != null) {
           const updateAvail = removeCellFromAvailability;
-          updateAvailabilityForRange(oldRowRange, oldColRange, updateAvail);
+          updateAvailabilityForRange(oldRowRange, oldColRange, updateAvail, curUser._id);
         }
 
         const updateAvail = addCellToAvailability;
         const rowRange = generateRange(mouseDownRow, thisRow);
         const colRange = generateRange(mouseDownCol, thisCol);
-        updateAvailabilityForRange(rowRange, colRange, updateAvail);
+        updateAvailabilityForRange(rowRange, colRange, updateAvail, curUser._id);
 
         this.setState({
           oldRowRange: rowRange,
@@ -380,13 +387,11 @@ class AvailabilityGrid extends Component {
 
   @autobind
   updateCellAvailability(e) {
-    const cellBackgroundColor = getComputedStyle(e.target)['background-color'];
-    const cellIsSelected = cellBackgroundColor !== 'rgb(128, 0, 128)';
-
-    if (cellIsSelected) {
-      this.constructor.addCellToAvailability(e.target);
+    const { curUser } = this.props;
+    if (e.hasAttribute('activeParticipant')) {
+      this.constructor.addCellToAvailability(e.target, curUser._id);
     } else {
-      this.constructor.removeCellFromAvailability(e.target);
+      this.constructor.removeCellFromAvailability(e.target, curUser._id);
     }
   }
 
@@ -398,8 +403,7 @@ class AvailabilityGrid extends Component {
     const cells = document.querySelectorAll('.cell');
     // construct the availability to be submited
     cells.forEach((cell) => {
-      const cellBackgroundColor = getComputedStyle(cell)['background-color'];
-      if (cellBackgroundColor === 'rgb(128, 0, 128)') {
+      if (cell.hasAttribute('activeParticipant')) {
         const timeIndex = allTimesRender.indexOf(cell.getAttribute('data-time'));
         const dateIndex = allDatesRender.indexOf(cell.getAttribute('data-date'));
 
@@ -493,6 +497,7 @@ class AvailabilityGrid extends Component {
   renderAvail() {
     this.renderHeatmap(true);
     const { allTimesRender, allDatesRender, allDates, allTimes, myAvailability } = this.state;
+    const { curUser } = this.props;
     const { addCellToAvailability } = this.constructor;
     const cells = document.querySelectorAll('.cell');
     const formatStr = 'Do MMMM YYYY hh:mm a';
@@ -510,7 +515,7 @@ class AvailabilityGrid extends Component {
         .format(formatStr);
 
       if (myAvailabilityFrom.indexOf(cellFormatted) > -1) {
-        addCellToAvailability(cell);
+        addCellToAvailability(cell, curUser._id);
       }
     });
   }
