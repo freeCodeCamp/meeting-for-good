@@ -72,7 +72,7 @@ class AvailabilityGrid extends Component {
 
   @autobind
   static removeCellFromAvailability(t) {
-    t.style.background = 'white';
+    t.style.background = 'transparent';
   }
 
   constructor(props) {
@@ -173,7 +173,11 @@ class AvailabilityGrid extends Component {
     if (myAvailability && myAvailability.length > 0 && heatmap === false) {
       this.renderAvail();
     }
-
+    // if the current user dos not has a availability just render the heatmap
+    // as a background shadow
+    if (((!myAvailability || myAvailability.length === 0) && heatmap === false)) {
+      this.renderHeatmap(true);
+    }
     // Check if two adjacent grid hours labels are consecutive or not. If not,
     // then split the grid at this point.
     const hourTime = this.state.hourTime.slice(0);
@@ -442,7 +446,7 @@ class AvailabilityGrid extends Component {
     this.props.editAvail();
   }
 
-  renderHeatmap() {
+  renderHeatmap(shadedForBackground = false) {
     const { generateHeatMapBackgroundColors } = this.constructor;
     const { allTimesRender, allDatesRender, allDates, allTimes } = this.state;
     const { event } = this.props;
@@ -476,12 +480,18 @@ class AvailabilityGrid extends Component {
       const cellFormatted = moment(allTimes[timeIndex])
         .set('date', date)
         .format(formatStr);
-
-      cell.style.background = backgroundColors[availabilityNum[cellFormatted]];
+      if (shadedForBackground) {
+        if (availabilityNum[cellFormatted] > 0) {
+          cell.style.background = '#E0E0E0';
+        }
+      } else {
+        cell.style.background = backgroundColors[availabilityNum[cellFormatted]];
+      }
     });
   }
 
   renderAvail() {
+    this.renderHeatmap(true);
     const { allTimesRender, allDatesRender, allDates, allTimes, myAvailability } = this.state;
     const { addCellToAvailability } = this.constructor;
     const cells = document.querySelectorAll('.cell');
