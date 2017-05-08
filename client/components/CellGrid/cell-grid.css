@@ -1,0 +1,13 @@
+.cell {
+  padding: 5px;
+  border: 1px solid #efefef;
+  cursor: pointer;
+}
+
+.disabled {
+  composes: cell;
+  background-color: #eee;
+  cursor: disable;
+  pointer-events: none;
+  border: 1px solid #eee !important;
+}

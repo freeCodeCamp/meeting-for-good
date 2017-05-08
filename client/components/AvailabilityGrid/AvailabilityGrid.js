@@ -17,6 +17,7 @@ import { getDaysBetween } from '../../util/dates.utils';
 import { getTimesBetween } from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
+import CellGrid from '../CellGrid/cellGrid';
 
 class AvailabilityGrid extends Component {
   // Given two numbers num1 and num2, generates an array of all the numbers
@@ -171,18 +172,6 @@ class AvailabilityGrid extends Component {
     if (myAvailability && myAvailability.length > 0) {
       this.renderAvail();
     }
-
-    // Change the border of the cell if it's minutes = 0 or 30 to help visually
-    // separate 15 minute blocks from 30 minute and 1 hour blocks.
-    const cells = Array.from(document.querySelectorAll('.cell'));
-
-    cells.forEach((cell) => {
-      if (getMinutes(cell.getAttribute('data-time')) === 0) {
-        cell.style.borderLeft = '1px solid rgb(120, 120, 120)';
-      } else if (getMinutes(cell.getAttribute('data-time')) === 30) {
-        cell.style.borderLeft = '1px solid #c3bebe';
-      }
-    });
 
     // Check if two adjacent grid hours labels are consecutive or not. If not,
     // then split the grid at this point.
@@ -578,7 +567,6 @@ class AvailabilityGrid extends Component {
 
   render() {
     const { allDatesRender, allTimesRender } = this.state;
-    const { dates } = this.props;
     return (
       <div styleName="Column">
         <div styleName="row">
@@ -596,47 +584,13 @@ class AvailabilityGrid extends Component {
               {date}
             </div>
             {allTimesRender.map((time, j) => {
-              let disabled = '';
-              let styleName = 'cell';
-              // render the grid for each row.
-              dates.forEach(({ fromDate, toDate }) => {
-                const { dateFormatStr } = this.state;
-                fromDate = moment(fromDate);
-                toDate = moment(toDate);
-                const fromDateFormatted = fromDate.format('hh:mm a');
-                const toDateFormatted = toDate.format('hh:mm a');
-
-                const fromDateDateFormat = fromDate.format(dateFormatStr);
-                // Boolean: If date in fromDate === date => True; Else => False
-                const fromDateIsDate = fromDateDateFormat === date;
-
-                // Boolean: If time in fromDate > time => True; Else => False
-                const fromDateAfterTime = moment(fromDateFormatted, 'hh:mm a')
-                  .isAfter(moment(time, 'hh:mm a'));
-
-                const toDateDateFormat = toDate.format(dateFormatStr);
-                const toDateIsDate = toDateDateFormat === date;
-                const toDateBeforeTime = moment(toDateFormatted, 'hh:mm a')
-                  .isBefore(moment(time, 'hh:mm a'));
-
-                const fromDateInvalid = fromDateIsDate && fromDateAfterTime;
-                const toDateInvalid = toDateIsDate && toDateBeforeTime;
-
-                if (fromDateInvalid || toDateInvalid) {
-                  disabled = 'disabled';
-                  styleName = 'disabled';
-                }
-              });
-
               return (
-                <div
+                <CellGrid
                   key={`${date} ${time}`}
-                  styleName={`${styleName}`}
-                  data-time={time}
-                  data-date={date}
-                  data-row={i}
-                  data-col={j}
-                  className={`cell ${disabled}`}
+                  time={time}
+                  date={date}
+                  row={i}
+                  col={j}
                   onMouseDown={this.handleCellMouseDown}
                   onMouseUp={this.handleCellMouseUp}
                   onMouseOver={this.handleCellMouseOver}
