@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
-import { getMinutes } from '../../util/time-format';
 
+import { getMinutes } from '../../util/time-format';
 import styles from './cell-grid.css';
 
 class CellGrid extends Component {
