@@ -3,13 +3,13 @@ import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
-import colorsys from 'colorsys';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
+import chroma from 'chroma-js';
 
 import styles from './availability-grid.css';
 import { getHours, getMinutes, removeZero } from '../../util/time-format';
@@ -43,16 +43,9 @@ class AvailabilityGrid extends Component {
   }
 
   static generateHeatMapBackgroundColors(quantOfParticipants) {
-    const saturationDivisions = 100 / quantOfParticipants;
-    const saturations = [];
-    for (let i = 0; i <= 100; i += saturationDivisions) {
-      saturations.push(i);
-    }
-    return saturations.map(saturation => colorsys.hsvToHex({
-      h: 271,
-      s: saturation,
-      v: 100,
-    }));
+    quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
+    const colors = chroma.scale(['cornSilk', 'olive']);
+    return colors.colors(quantOfParticipants);
   }
 
   static updateAvailabilityForRange(rowRange, colRange, updateAvail, curUserId) {
@@ -270,7 +263,7 @@ class AvailabilityGrid extends Component {
     const thisCol = Number(ev.target.getAttribute('data-col'));
 
     const cellBackgroundColor = getComputedStyle(ev.target)['background-color'];
-    const cellIsSelected = (cellBackgroundColor === 'rgb(128, 0, 128)');
+    const cellIsSelected = (ev.target.hasAttribute('activeParticipant'));
 
     let updateAvail;
     if (cellIsSelected) {
@@ -489,7 +482,7 @@ class AvailabilityGrid extends Component {
           cell.style.background = '#E0E0E0';
         }
       } else {
-        cell.style.background = backgroundColors[availabilityNum[cellFormatted]];
+        cell.style.background = backgroundColors[availabilityNum[cellFormatted] - 1];
       }
     });
   }
