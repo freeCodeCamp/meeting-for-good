@@ -321,9 +321,8 @@ class NewEvent extends React.Component {
 
 NewEvent.defaultProps = {
   isAuthenticated: false,
-  cbOpenLoginModal: undefined,
-  cbNewEvent: undefined,
-  curUser: undefined,
+  cbOpenLoginModal: () => { console.log('cbOpenLogModal func not passed in!'); },
+  cbNewEvent: () => { console.log('cbNewEvent func not passed in!'); },
 };
 
 NewEvent.propTypes = {
@@ -336,7 +335,7 @@ NewEvent.propTypes = {
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
+  }).isRequired,
 
 };
 

@@ -108,32 +108,14 @@ class EventDetails extends Component {
 }
 
 EventDetails.defaultProps = {
-  isAuthenticated: false,
-  cbOpenLoginModal: undefined,
-  curUser: undefined,
-  cbLoadEvent: undefined,
-  cbDeleteEvent: undefined,
-  cbEditEvent: undefined,
-  cbEmailOwner: undefined,
-  cbDeleteGuest: undefined,
-  cbInviteEmail: undefined,
+  cbDeleteEvent: () => { console.log('cbDeleteEvent func not passed in!'); },
+  cbEditEvent: () => { console.log('cbEditEvent func not passed in!'); },
+  cbEmailOwner: () => { console.log('cbEmailOwner func not passed in!'); },
+  cbDeleteGuest: () => { console.log('cbDeleteGuest func not passed in!'); },
+  cbInviteEmail: () => { console.log('cbInviteEmail func not passed in!'); },
 };
 
 EventDetails.propTypes = {
-  params: PropTypes.shape({
-    uid: PropTypes.string,
-  }).isRequired,
-  isAuthenticated: PropTypes.bool,
-  cbOpenLoginModal: PropTypes.func,
-
-  // Current user
-  curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
-  }),
-
-  cbLoadEvent: PropTypes.func,
   cbDeleteEvent: PropTypes.func,
   cbEditEvent: PropTypes.func,
   cbEmailOwner: PropTypes.func,
