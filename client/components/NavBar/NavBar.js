@@ -175,7 +175,6 @@ class NavBar extends Component {
       >
         <FlatButton
           styleName="loginButton"
-          backgroundColor="transparent"
           onTouchTap={this.handleAuthClick}
           labelStyle={inLineStyles.loginButton.label}
         >
