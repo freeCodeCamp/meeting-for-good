@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
+import PropTypes from 'prop-types';
 
 import EventDetailsComponent from '../../components/EventDetailsComponent/EventDetailsComponent';
 import styles from './event-details.css';
@@ -106,17 +107,38 @@ class EventDetails extends Component {
   }
 }
 
+EventDetails.defaultProps = {
+  isAuthenticated: false,
+  cbOpenLoginModal: undefined,
+  curUser: undefined,
+  cbLoadEvent: undefined,
+  cbDeleteEvent: undefined,
+  cbEditEvent: undefined,
+  cbEmailOwner: undefined,
+  cbDeleteGuest: undefined,
+  cbInviteEmail: undefined,
+};
+
 EventDetails.propTypes = {
-  params: React.PropTypes.object,
-  isAuthenticated: React.PropTypes.bool,
-  cbOpenLoginModal: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  cbLoadEvent: React.PropTypes.func,
-  cbDeleteEvent: React.PropTypes.func,
-  cbEditEvent: React.PropTypes.func,
-  cbEmailOwner: React.PropTypes.func,
-  cbDeleteGuest: React.PropTypes.func,
-  cbInviteEmail: React.PropTypes.func,
+  params: PropTypes.shape({
+    uid: PropTypes.string,
+  }),
+  isAuthenticated: PropTypes.bool,
+  cbOpenLoginModal: PropTypes.func,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
+  }),
+
+  cbLoadEvent: PropTypes.func,
+  cbDeleteEvent: PropTypes.func,
+  cbEditEvent: PropTypes.func,
+  cbEmailOwner: PropTypes.func,
+  cbDeleteGuest: PropTypes.func,
+  cbInviteEmail: PropTypes.func,
 };
 
 export default cssModules(EventDetails, styles);

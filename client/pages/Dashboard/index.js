@@ -1,5 +1,5 @@
 /* vendor dependencies */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
@@ -8,6 +8,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
+import PropTypes from 'prop-types';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -118,14 +119,56 @@ class Dashboard extends Component {
   }
 }
 
+Dashboard.defaultProps = {
+  isAuthenticated: false,
+  cbOpenLoginModal: undefined,
+  curUser: undefined,
+  events: undefined,
+  cbDeleteEvent: undefined,
+  cbInviteEmail: undefined,
+};
+
 Dashboard.propTypes = {
   isAuthenticated: PropTypes.bool,
   cbOpenLoginModal: PropTypes.func,
-  curUser: PropTypes.object,
-  events: PropTypes.array,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
+  }),
+
+  events: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+      name: PropTypes.string,
+      owner: PropTypes.string,
+      active: PropTypes.bool,
+      selectedTimeRange: PropTypes.array,
+      dates: PropTypes.arrayOf(PropTypes.shape({
+        fromDate: PropTypes.string,
+        toDate: PropTypes.string,
+        _id: PropTypes.string,
+      })),
+      participants: PropTypes.arrayOf(PropTypes.shape({
+        userId: PropTypes.shape({
+          id: PropTypes.string,
+          avatar: PropTypes.string,
+          name: PropTypes.string,
+          emails: PropTypes.arrayOf(PropTypes.string),
+        }),
+        _id: PropTypes.string,
+        status: PropTypes.oneOf([0, 1, 2, 3]),
+        emailUpdate: PropTypes.bool,
+        ownerNotified: PropTypes.bool,
+        availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+      })),
+    }),
+  ),
+
   cbDeleteEvent: PropTypes.func,
-  cbDeleteGuest: PropTypes.func,
-  cbInviteEmail: React.PropTypes.func,
+  cbInviteEmail: PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);
