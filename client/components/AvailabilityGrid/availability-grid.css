@@ -85,3 +85,10 @@ a.info {
 .cancelButton {
   margin-left: 15px;
 }
+
+.actionButtonsWrapper {
+  display: flex;
+ justify-content: center;
+ flex-direction: row;
+}
+
