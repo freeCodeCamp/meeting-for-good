@@ -71,10 +71,12 @@ a.info {
 .hover-available h5 {
   margin-top: 5px;
   text-decoration: underline;
+  font-size: 25px;
 }
 
 .hover-available h6 {
   margin: 5px;
+  font-size: 14px;
 }
 
 .Column
