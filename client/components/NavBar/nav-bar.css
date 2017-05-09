@@ -38,14 +38,11 @@
 
 .loginButton {
   color: #ffffff !important;
-  width: 100px !important;
   background-color: #006400 !important;
-  box-shadow: none !important;
-  line-height: 20px !important;
   padding: 0px !important;
   margin: 0px !important;
   width: 87px !important;
-  border: 0px;
+  border: 0px !important;
 }
 
 .loginButton :hover {
