@@ -9,7 +9,28 @@ body {
   background-attachment: fixed;
   height: 100vh;
   overflow-x: hidden;
-  background-color:  #fbfffb; 
+  background-color: #fbfffb;
+  font-family: Lato;
+  font-weight: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 110%;
+  margin: .5rem 0 .4rem 0;
+  font-weight: 300;
+}
+
+h3 {
+  font-size: 42.34px;
+}
+
+h6 {
+  font-size: 14.5px
 }
 
 main {
@@ -19,28 +40,26 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@font-face {
   font-family: Lato;
-  
+  src: url('../assets/fonts/lato/Lato-Regular.ttf');
 }
 
 @font-face {
-    font-family: Lato;
-    src: url('../assets/fonts/lato/Lato-Regular.ttf');
+  font-family: Lato;
+  src: url('../assets/fonts/lato/Lato-Bold.ttf');
+  font-weight: bold;
 }
 
 @font-face {
-    font-family: Lato;
-    src: url('../assets/fonts/lato/Lato-Bold.ttf');
-    font-weight: bold;
+  font-family: Lato;
+  src: url('../assets/fonts/lato/Lato-Light.ttf');
+  font-weight: light;
 }
 
 @font-face {
-    font-family: Lato;
-    src: url('../assets/fonts/lato/Lato-Light.ttf');
-    font-weight: light;
-}
-
-@font-face {
-    font-family: SaxMono;
-    src: url('../assets/fonts/lato/Lato-Regular.ttf');
+  font-family: SaxMono;
+  src: url('../assets/fonts/lato/Lato-Regular.ttf');
 }
