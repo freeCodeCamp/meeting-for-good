@@ -122,7 +122,7 @@ EventDetails.defaultProps = {
 EventDetails.propTypes = {
   params: PropTypes.shape({
     uid: PropTypes.string,
-  }),
+  }).isRequired,
   isAuthenticated: PropTypes.bool,
   cbOpenLoginModal: PropTypes.func,
 
