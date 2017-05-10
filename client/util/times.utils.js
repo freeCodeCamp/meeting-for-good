@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const getTimesBetween = (start, end) => {
+const getTimesBetween = (start, end) => {
   let times = [start];
   let currentTime = start;
 
@@ -52,3 +52,4 @@ export const getTimesBetween = (start, end) => {
   return times;
 };
 
+export default getTimesBetween;

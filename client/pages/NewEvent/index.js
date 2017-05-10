@@ -12,10 +12,10 @@ import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 import Snackbar from 'material-ui/Snackbar';
 import InputRange from 'react-input-range';
+import PropTypes from 'prop-types';
 
 import 'react-day-picker/lib/style.css';
 import '../../styles/no-css-modules/react-input-range.css';
-
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
 import { dateRangeReducer } from '../../util/dates.utils';
 import styles from './new-event.css';
@@ -89,7 +89,8 @@ class NewEvent extends React.Component {
 
     // Check if day already exists in a range. If yes, remove it from all the
     // ranges that it exists in.
-    for (const range of ranges) {
+    ranges.forEach((range) => {
+//    for (const range of ranges) {
       if (DateUtils.isDayInRange(day, range)) {
         const { from, to } = range;
         const yesterday = moment(day).subtract(1, 'date')._d;
@@ -97,24 +98,23 @@ class NewEvent extends React.Component {
 
         if (!DateUtils.isDayInRange(yesterday, range) && !DateUtils.isDayInRange(tomorrow, range)) {
           ranges = removeRange(ranges, range);
-          continue;
-        }
+        } else {
+          if (!moment(day).isSame(from)) {
+            ranges.push({
+              from, to: yesterday,
+            });
+          }
 
-        if (!moment(day).isSame(from)) {
-          ranges.push({
-            from, to: yesterday,
-          });
-        }
+          if (!moment(day).isSame(to)) {
+            ranges.push({
+              from: tomorrow, to,
+            });
+          }
 
-        if (!moment(day).isSame(to)) {
-          ranges.push({
-            from: tomorrow, to,
-          });
+          ranges = removeRange(ranges, range);
         }
-
-        ranges = removeRange(ranges, range);
       }
-    }
+    });
 
     // If the previous operation did not change the ranges array (i.e. the
     // clicked day wasn't already in a range), then either create a new range or
@@ -147,7 +147,7 @@ class NewEvent extends React.Component {
   }
 
   @autobind
-  async createEvent(ev) {
+  async createEvent() {
     const { eventName: name, ranges, selectedTimeRange: [fromTime, toTime] } = this.state;
 
     const fromTimeFormat = formatTime(fromTime);
@@ -319,11 +319,24 @@ class NewEvent extends React.Component {
   }
 }
 
+NewEvent.defaultProps = {
+  isAuthenticated: false,
+  cbOpenLoginModal: () => { console.log('cbOpenLogModal func not passed in!'); },
+  cbNewEvent: () => { console.log('cbNewEvent func not passed in!'); },
+};
+
 NewEvent.propTypes = {
-  isAuthenticated: React.PropTypes.bool,
-  cbOpenLoginModal: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  cbNewEvent: React.PropTypes.func,
+  isAuthenticated: PropTypes.bool,
+  cbOpenLoginModal: PropTypes.func,
+  cbNewEvent: PropTypes.func,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
+  }).isRequired,
+
 };
 
 export default cssModules(NewEvent, styles);

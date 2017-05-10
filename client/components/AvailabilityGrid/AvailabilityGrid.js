@@ -14,7 +14,7 @@ import chroma from 'chroma-js';
 import styles from './availability-grid.css';
 import { getHours, getMinutes, removeZero } from '../../util/time-format';
 import { getDaysBetween } from '../../util/dates.utils';
-import { getTimesBetween } from '../../util/times.utils';
+import getTimesBetween from '../../util/times.utils';
 import enteravail from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import CellGrid from '../CellGrid/cellGrid';

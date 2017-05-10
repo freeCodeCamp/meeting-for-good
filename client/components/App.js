@@ -2,6 +2,7 @@ import React, { Component, cloneElement } from 'react';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 import NotificationSystem from 'react-notification-system';
+import PropTypes from 'prop-types';
 
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
@@ -12,7 +13,6 @@ import {
   handleDismiss,
 } from '../util/events';
 import { sendEmailOwner, sendEmailInvite } from '../util/emails';
-
 import '../styles/main.css';
 
 class App extends Component {
@@ -406,8 +406,11 @@ class App extends Component {
 }
 
 App.propTypes = {
-  children: React.PropTypes.element.isRequired,
-  location: React.PropTypes.object.isRequired,
+  children: PropTypes.element.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
+
 };
 
 export default App;

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
+import PropTypes from 'prop-types';
 
 import EventDetailsComponent from '../../components/EventDetailsComponent/EventDetailsComponent';
 import styles from './event-details.css';
@@ -106,17 +107,20 @@ class EventDetails extends Component {
   }
 }
 
+EventDetails.defaultProps = {
+  cbDeleteEvent: () => { console.log('cbDeleteEvent func not passed in!'); },
+  cbEditEvent: () => { console.log('cbEditEvent func not passed in!'); },
+  cbEmailOwner: () => { console.log('cbEmailOwner func not passed in!'); },
+  cbDeleteGuest: () => { console.log('cbDeleteGuest func not passed in!'); },
+  cbInviteEmail: () => { console.log('cbInviteEmail func not passed in!'); },
+};
+
 EventDetails.propTypes = {
-  params: React.PropTypes.object,
-  isAuthenticated: React.PropTypes.bool,
-  cbOpenLoginModal: React.PropTypes.func,
-  curUser: React.PropTypes.object,
-  cbLoadEvent: React.PropTypes.func,
-  cbDeleteEvent: React.PropTypes.func,
-  cbEditEvent: React.PropTypes.func,
-  cbEmailOwner: React.PropTypes.func,
-  cbDeleteGuest: React.PropTypes.func,
-  cbInviteEmail: React.PropTypes.func,
+  cbDeleteEvent: PropTypes.func,
+  cbEditEvent: PropTypes.func,
+  cbEmailOwner: PropTypes.func,
+  cbDeleteGuest: PropTypes.func,
+  cbInviteEmail: PropTypes.func,
 };
 
 export default cssModules(EventDetails, styles);

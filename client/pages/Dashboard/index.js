@@ -1,5 +1,5 @@
 /* vendor dependencies */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import Masonry from 'react-masonry-component';
@@ -8,6 +8,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
+import PropTypes from 'prop-types';
 
 /* external components */
 import EventCard from '../../components/EventCard/EventCard';
@@ -118,14 +119,12 @@ class Dashboard extends Component {
   }
 }
 
+Dashboard.defaultProps = {
+  cbInviteEmail: undefined,
+};
+
 Dashboard.propTypes = {
-  isAuthenticated: PropTypes.bool,
-  cbOpenLoginModal: PropTypes.func,
-  curUser: PropTypes.object,
-  events: PropTypes.array,
-  cbDeleteEvent: PropTypes.func,
-  cbDeleteGuest: PropTypes.func,
-  cbInviteEmail: React.PropTypes.func,
+  cbInviteEmail: PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

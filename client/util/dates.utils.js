@@ -5,7 +5,7 @@ import moment from 'moment';
 ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)*/
 export const dateRangeReducer = (dates) => {
   for (let i = 0; i < dates.length; i += 1) {
-    for (let x = i + 1; x < dates.length; x++) {
+    for (let x = i + 1; x < dates.length; x += 1) {
       // `dates[i]` represents every date object starting from index 0.
       //
       // `dates[x]` is every date object after dates[i]. Some dates[x] objects may get deleted
@@ -24,28 +24,25 @@ export const dateRangeReducer = (dates) => {
         dates[i].toDate = dates[x].toDate;
         dates[i].fromDate = dates[x].fromDate;
         dates.splice(x, 1);
-        x = i; continue;
-      }
-
+        x = i;
+      } else
       if (iFromMoment.isBefore(xFromMoment) && iToMoment.isAfter(xToMoment)) {
         dates.splice(x, 1);
-        x = i; continue;
-      }
-
+        x = i;
+      } else
       // If the current dates[x] object is adjacent the current dates[i] object and
       // dates[x] > dates[i].
       if (iToMoment.add(1, 'd').isSame(xFromMoment, 'd')) {
         dates[i].toDate = dates[x].toDate;
         dates.splice(x, 1);
-        x = i; continue;
-      }
-
+        x = i;
+      } else
       // If the current dates[x] object is adjacent the current dates[i] object and
       // dates[x] < dates[i].
       if (iFromMoment.subtract(1, 'd').isSame(xToMoment, 'd')) {
         dates[i].fromDate = dates[x].fromDate;
         dates.splice(x, 1);
-        x = i; continue;
+        x = i;
       }
     }
   }
