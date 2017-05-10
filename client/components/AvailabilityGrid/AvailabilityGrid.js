@@ -593,17 +593,19 @@ class AvailabilityGrid extends Component {
             <div styleName="cell-aside">
               {date}
             </div>
-            {allTimesRender.map((time, j) => <CellGrid
-              key={`${date} ${time}`}
-              time={time}
-              date={date}
-              row={i}
-              col={j}
-              onMouseDown={this.handleCellMouseDown}
-              onMouseUp={this.handleCellMouseUp}
-              onMouseOver={this.handleCellMouseOver}
-              onMouseLeave={this.handleCellMouseLeave}
-            />,
+            {allTimesRender.map((time, j) => (
+              <CellGrid
+                key={`${date} ${time}`}
+                time={time}
+                date={date}
+                row={i}
+                col={j}
+                onMouseDown={this.handleCellMouseDown}
+                onMouseUp={this.handleCellMouseUp}
+                onMouseOver={this.handleCellMouseOver}
+                onMouseLeave={this.handleCellMouseLeave}
+              />
+              ),
             )}
           </div>
         ))}
