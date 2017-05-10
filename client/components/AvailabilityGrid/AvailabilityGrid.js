@@ -142,9 +142,7 @@ class AvailabilityGrid extends Component {
 
     // set current user availability
     let myAvailability = {};
-    const isParticipant  = event.participants.filter((participant) => {
-      return participant.userId._id === curUser._id;
-    });
+    const isParticipant  = event.participants.filter(participant => participant.userId._id === curUser._id);
     // its alredy a participant?
     // if is not is accepting a invite so myAvailability = {}
     if (isParticipant.length > 0) {
@@ -590,21 +588,18 @@ class AvailabilityGrid extends Component {
             <div styleName="cell-aside">
               {date}
             </div>
-            {allTimesRender.map((time, j) => {
-              return (
-                <CellGrid
-                  key={`${date} ${time}`}
-                  time={time}
-                  date={date}
-                  row={i}
-                  col={j}
-                  onMouseDown={this.handleCellMouseDown}
-                  onMouseUp={this.handleCellMouseUp}
-                  onMouseOver={this.handleCellMouseOver}
-                  onMouseLeave={this.handleCellMouseLeave}
-                />
-              );
-            })}
+            {allTimesRender.map((time, j) => <CellGrid
+              key={`${date} ${time}`}
+              time={time}
+              date={date}
+              row={i}
+              col={j}
+              onMouseDown={this.handleCellMouseDown}
+              onMouseUp={this.handleCellMouseUp}
+              onMouseOver={this.handleCellMouseOver}
+              onMouseLeave={this.handleCellMouseLeave}
+            />,
+            )}
           </div>
         ))}
         <p styleName="info">

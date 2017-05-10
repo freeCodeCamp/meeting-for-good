@@ -143,9 +143,7 @@ class GuestInviteDrawer extends Component {
     const { guests } = this.state;
     let newGuests = guests.slice(0);
     if (searchString.length > 0) {
-      newGuests = newGuests.filter((guest) => {
-        return guest.userId.name.toLowerCase().match(searchString);
-      });
+      newGuests = newGuests.filter(guest => guest.userId.name.toLowerCase().match(searchString));
     }
     this.setState({ guestsToDisplay: newGuests });
   }
