@@ -12,9 +12,9 @@ class CellGrid extends Component {
   static formatCellBorder(time) {
     const minutes = getMinutes(time);
     if (minutes === 0) {
-      return { borderLeft: '1px solid rgb(120, 120, 120)' };
+      return '1px solid rgb(120, 120, 120)';
     } else if (minutes === 30) {
-      return { borderLeft: '1px solid #c3bebe' };
+      return '1px solid #c3bebe';
     }
     return {};
   }
@@ -27,7 +27,11 @@ class CellGrid extends Component {
       onMouseOver,
       onMouseLeave,
     } = this.props;
-    const inlineStyle = this.constructor.formatCellBorder(time);
+
+    const inlineStyle = {
+      borderLeft: this.constructor.formatCellBorder(time),
+    };
+
     return (
       <div
         style={inlineStyle}
