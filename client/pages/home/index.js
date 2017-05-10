@@ -41,9 +41,17 @@ class Home extends React.Component {
           <img src={enterAvailImage} styleName="gif" alt="enter availabily" />
           <hr styleName="hr" />
           <h3>Timezones supported</h3>
-          <h6>Don&#39;t worry about having to get everyone to convert to your timezone. Let us take of it!</h6>
+          <h6>
+            Don&#39;t worry about having to get everyone to
+            convert to your timezone. Let us take of it!
+          </h6>
           <img src={timeZonesImage} styleName="timezones" alt="timezone" />
-          <p><small>Same event. Image on the left: UTC+11. Image on the right UTC-5 (Daylight saving included)</small></p>
+          <p>
+            <small>
+              Same event. Image on the left: UTC+11.
+              Image on the right UTC-5 (Daylight saving included)
+            </small>
+          </p>
         </div>
         <footer>
           <div>

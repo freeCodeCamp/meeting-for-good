@@ -14,7 +14,9 @@ import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
-    const eventParticipantsIds = props.event.participants.map(participant => participant.userId._id);
+    const eventParticipantsIds = props.event.participants.map(
+      participant => participant.userId._id,
+    );
     const { event } = props;
 
     const ranges = event.dates.map(({ fromDate, toDate }) => ({

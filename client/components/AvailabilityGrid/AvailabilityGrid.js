@@ -130,7 +130,8 @@ class AvailabilityGrid extends Component {
     const lastHourTimeEl = hourTime.slice(-1)[0];
     const lastAllTimesRenderEl = allTimesRender.slice(-1)[0];
 
-    if (getHours(lastHourTimeEl) !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
+    if (getHours(lastHourTimeEl)
+      !== getHours(lastAllTimesRenderEl) || getMinutes(lastAllTimesRenderEl) === 45) {
       hourTime.push(
         moment(new Date())
         .set('h', getHours(lastHourTimeEl))
@@ -142,7 +143,9 @@ class AvailabilityGrid extends Component {
 
     // set current user availability
     let myAvailability = {};
-    const isParticipant  = event.participants.filter(participant => participant.userId._id === curUser._id);
+    const isParticipant = event.participants.filter(
+      participant => participant.userId._id === curUser._id,
+    );
     // its alredy a participant?
     // if is not is accepting a invite so myAvailability = {}
     if (isParticipant.length > 0) {
@@ -412,7 +415,9 @@ class AvailabilityGrid extends Component {
     const observerEvent = jsonpatch.observe(event);
      // first check if cur exists as a participant
      // if is not add the curUser as participant
-    const isParticipant = event.participants.filter(participant => participant.userId._id === curUser._id);
+    const isParticipant = event.participants.filter(
+      participant => participant.userId._id === curUser._id,
+    );
     if (isParticipant.length === 0) {
       const { _id: userId } = curUser;
       const participant = { userId };
