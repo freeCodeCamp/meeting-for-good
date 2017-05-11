@@ -67,7 +67,6 @@ class AvailabilityGrid2 extends Component {
     return grid;
   }
 
-
   static generateHeatMapBackgroundColors(quantOfParticipants) {
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
     const colors = chroma.scale(['wheat', 'olive']);
@@ -100,7 +99,7 @@ class AvailabilityGrid2 extends Component {
     );
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
-    this.setState({ grid, backgroundColors });
+    this.setState({ grid, backgroundColors, allTimes });
   }
 
   renderDialog() {
@@ -139,6 +138,34 @@ class AvailabilityGrid2 extends Component {
     );
   }
 
+  renderGridHours() {
+    const { allTimes } = this.state;
+    // array only with full hours thats will be used to display at grid
+    const hourTime = allTimes
+      .filter(time => moment(time).minute() === 0);
+    let offSet = 0;
+    // calculate the numbers of cells to offset the hours grid
+    // since we only whant display the full hours
+    if (moment(allTimes).minutes() !== 0) {
+      offSet = 4 - (moment(allTimes).minutes() / 15);
+    }
+    const style = { margin: `0 0 0 ${75 + (offSet * 12)}px` };
+    const colTitles = hourTime.map(time => (
+      <p
+        key={time}
+        styleName="grid-hour"
+      >{moment(time).format('h a')}</p>
+    ));
+    // delete the last hour for layout requirements
+    colTitles.pop();
+    const timesTitle = (
+      <div id="timesTitle" styleName="timesTitle" style={style}>
+        {colTitles}
+      </div>
+    );
+    return timesTitle;
+  }
+
   renderGridRow(quarters) {
     const { backgroundColors } = this.state;
     return quarters.map(quarter => (
@@ -156,6 +183,7 @@ class AvailabilityGrid2 extends Component {
     const { grid } = this.state;
     return (
       <div>
+        {this.renderGridHours()}
         {
           grid.map(row => (
             <div key={moment(row.date).format('Do MMM ddd')} styleName="column">

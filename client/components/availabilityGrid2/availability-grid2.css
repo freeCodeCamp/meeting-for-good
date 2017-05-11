@@ -12,8 +12,25 @@
   padding: 5px;
   border: 1px solid #efefef;
   cursor: pointer;
-  width: 75px;
+  width: 65px;
+  padding: 5px 0px 14px 5px;
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.grid-hour {
+  font-size: 13px;
+  width: 48px;
+  height: 22px;
+  padding: 0 0 0 3px;
+  margin-bottom: -1px;
+  border-left: 1px solid #787878;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.timesTitle {
+  display: flex;
+  flex-direction: row;
+  margin: 0 0 0 72px;
 }
