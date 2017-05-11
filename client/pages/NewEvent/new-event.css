@@ -35,12 +35,12 @@
 .heading {
   font-size: 1.2em;
   margin: 10px 0;
-  text-align: center !important;
+  text-align: center;
 }
 
 .heading-dates {
   composes: heading;
-  margin-top: 10px !important;
+  margin-top: 12px;
 }
 
 .reset-button {
@@ -49,16 +49,16 @@
 }
 
 .centerContainer {
-  display: flex !important;
-  justify-content: space-around !important;
+  display: flex;
+  justify-content: space-around;
   padding-bottom: 10px;
 
 }
 
 .textField {
-  width: 95% !important;
-  padding: 0 0 0 10px !important;
-  margin: 0 !important;
+  width: 95%;
+  padding: 0 0 0 10px;
+  margin: 0;
 }
 
 .subHeader {

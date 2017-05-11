@@ -616,7 +616,7 @@ class AvailabilityGrid extends Component {
           </em>
         </p>
         <br />
-        <div className="center">
+        <div styleName="actionButtonsWrapper">
           {this.props.heatmap ?
             <RaisedButton
               primary
