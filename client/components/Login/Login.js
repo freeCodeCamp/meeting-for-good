@@ -37,8 +37,8 @@ class LoginModal extends Component {
           backgroundColor: '#006400',
           marginBottom: '10px',
           fontSize: '25px',
-          height: '50px',
-          paddingTop: 6,
+          paddingTop: '7px',
+          paddingBottom: '10px',
           color: '#ffffff',
         },
         bodyStyle: {
