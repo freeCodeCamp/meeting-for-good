@@ -1,0 +1,19 @@
+.row {
+  display: flex;
+  clear: both;
+}
+
+.column {
+  display:flex;
+  flex-direction: column;
+}
+
+.date-cell {
+  padding: 5px;
+  border: 1px solid #efefef;
+  cursor: pointer;
+  width: 75px;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}

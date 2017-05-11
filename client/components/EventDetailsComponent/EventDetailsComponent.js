@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
 import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
+import AvailabilityGrid2 from '../availabilityGrid2/availabilityGrid2';
 import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
@@ -188,6 +189,13 @@ class EventDetailsComponent extends React.Component {
               {(showHeatmap) ?
                 <div id="heatmap">
                   <AvailabilityGrid
+                    event={event}
+                    curUser={curUser}
+                    dates={dates}
+                    editAvail={this.editAvail}
+                    heatmap
+                  />
+                  <AvailabilityGrid2
                     event={event}
                     curUser={curUser}
                     dates={dates}
