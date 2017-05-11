@@ -15,7 +15,9 @@ import { getDaysBetween } from '../../util/dates.utils';
 import getTimesBetween from '../../util/times.utils';
 import enteravailGif from '../../assets/enteravail.gif';
 import CellGrid from '../CellGrid2/cellGrid';
+import SnackBarGrid from '../SnackBarGrid/snackBarGrid';
 import styles from './availability-grid2.css';
+
 
 class AvailabilityGrid2 extends Component {
 
@@ -50,15 +52,23 @@ class AvailabilityGrid2 extends Component {
             .second(0)
             .millisecond(0);
           const guests = [];
+          const notGuests = [];
           event.participants.forEach((participant) => {
             const availForThatParticipant = flattenedAvailability[participant.userId._id];
             if (availForThatParticipant.indexOf(dateHourForCell.toJSON()) > -1) {
-              guests.push(participant.userId._id);
+              const guest = {};
+              guest[participant.userId._id] = participant.userId.name;
+              guests.push(guest);
+            } else {
+              const guest = {};
+              guest[participant.userId._id] = participant.userId.name;
+              notGuests.push(guest);
             }
           });
           return {
             time: dateHourForCell.toDate(),
             participants: guests,
+            notParticipants: notGuests,
           };
         }),
       });
@@ -79,6 +89,9 @@ class AvailabilityGrid2 extends Component {
       openModal: false,
       grid: {},
       backgroundColors: [],
+      openSnackBar: false,
+      snackBarGuests: [],
+      snackBarNoGuests: [],
     };
   }
 
@@ -100,6 +113,18 @@ class AvailabilityGrid2 extends Component {
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
     this.setState({ grid, backgroundColors, allTimes });
+  }
+
+  handleCellMouseOver(ev, quarter) {
+    ev.preventDefault();
+    const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
+    const snackBarNoGuests = quarter.notParticipants.map(participant => Object.values(participant));
+    this.setState({ openSnackBar: true, snackBarGuests, snackBarNoGuests });
+  }
+
+  handleCellMouseLeave(ev) {
+    ev.preventDefault();
+    //this.setState({ openSnackBar: false });
   }
 
   renderDialog() {
@@ -174,6 +199,8 @@ class AvailabilityGrid2 extends Component {
         date={quarter.time}
         backgroundColors={backgroundColors}
         participants={quarter.participants}
+        onMouseOver={ev => this.handleCellMouseOver(ev, quarter)}
+        onMouseLeave={ev => this.handleCellMouseLeave(ev)}
       />
     ),
     );
@@ -200,6 +227,7 @@ class AvailabilityGrid2 extends Component {
     );
   }
   render() {
+    const { snackBarGuests, snackBarNoGuests, openSnackBar } = this.state;
     return (
       <div styleName="column">
         <div styleName="row">
@@ -211,6 +239,11 @@ class AvailabilityGrid2 extends Component {
           </FlatButton>
         </div>
         {this.renderGrid()}
+        <SnackBarGrid
+          guests={snackBarGuests}
+          noGuests={snackBarNoGuests}
+          openSnackBar={openSnackBar}
+        />
       </div>
     );
   }

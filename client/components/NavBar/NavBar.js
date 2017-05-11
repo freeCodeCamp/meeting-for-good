@@ -3,7 +3,6 @@ import autobind from 'autobind-decorator';
 import FlatButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
-import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
 import Toggle from 'material-ui/Toggle';
 import cssModules from 'react-css-modules';

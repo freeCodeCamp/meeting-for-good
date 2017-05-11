@@ -38,6 +38,8 @@ class CellGrid extends Component {
         style={inlineStyle}
         styleName="cell"
         key={moment(date).toDate()}
+        onMouseOver={this.props.onMouseOver}
+        onMouseLeave={this.props.onMouseLeave}
       />
     );
   }
@@ -50,8 +52,10 @@ CellGrid.defaultProps = {
 
 CellGrid.propTypes = {
   date: PropTypes.instanceOf(Date).isRequired,
-  participants: PropTypes.arrayOf(PropTypes.string).isRequired,
+  participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
   backgroundColors: PropTypes.arrayOf(PropTypes.string),
+  onMouseOver: PropTypes.func.isRequired,
+  onMouseLeave: PropTypes.func.isRequired,
 };
 
 export default cssModules(CellGrid, styles);
