@@ -124,6 +124,10 @@ class AvailabilityGrid2 extends Component {
   }
 
   handleCellMouseOver(ev, quarter) {
+    const { showHeatmap } = this.state;
+    if (!showHeatmap) {
+      return;
+    }
     ev.preventDefault();
     const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
     const snackBarNoGuests = quarter.notParticipants.map(participant => Object.values(participant));
@@ -131,6 +135,10 @@ class AvailabilityGrid2 extends Component {
   }
 
   handleCellMouseLeave(ev) {
+    const { showHeatmap } = this.state;
+    if (!showHeatmap) {
+      return;
+    }
     ev.preventDefault();
     this.setState({ openSnackBar: false });
   }
