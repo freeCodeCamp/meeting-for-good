@@ -124,7 +124,7 @@ class AvailabilityGrid2 extends Component {
 
   handleCellMouseLeave(ev) {
     ev.preventDefault();
-    //this.setState({ openSnackBar: false });
+    // this.setState({ openSnackBar: false });
   }
 
   renderDialog() {

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import Snackbar from 'material-ui/Snackbar';
-import FontIcon from 'material-ui/FontIcon';
-import TumbUp from 'material-ui/svg-icons/action/thumb-up';
-import TumbDown from 'material-ui/svg-icons/action/thumb-down';
+import ThumbUp from 'material-ui/svg-icons/action/thumb-up';
+import ThumbDown from 'material-ui/svg-icons/action/thumb-down';
 import {
   Table,
   TableBody,
@@ -17,20 +16,21 @@ import PropTypes from 'prop-types';
 import styles from './snack-bar-grid.css';
 
 class SnackBarGrid extends Component {
- 
+
   createMsgSnackBar() {
     const { guests, noGuests } = this.props;
+    const interactor = (guests.length > noGuests.length) ? guests : noGuests;
+
 
     const inlineStyles = {
       backgroundColor: 'transparent',
-      maxWidth: '40%',
+      maxWidth: '100%',
       tableHeader: {
         tableRow: {
           tableHeaderColumn: {
             textAlign: 'center',
-            fontSize: '30px',
+            fontSize: '20px',
             color: '#FFFFFF',
-            textDecoration: 'underline',
             iconStyles: {
               margin: 0,
             },
@@ -38,110 +38,102 @@ class SnackBarGrid extends Component {
         },
       },
       tableBody: {
-        tableRowColumn: {
-          textAlign: 'center',
-          border: 'none',
-          fontSize: '15px',
-          color: '#ffffff',
+        tableRow: {
+          borderBottom: 'none',
+          borderTop: 'none',
+          height: '30px',
+          lineHeight: '30px',
+          tableRowColumn: {
+            height: '30px',
+            lineHeight: '30px',
+            textAlign: 'center',
+            borderBottom: 'none',
+            borderTop: 'none',
+            fontSize: '15px',
+            color: '#ffffff',
+          },
         },
       },
     };
     return (
-      <div styleName="row">
-        <Table
-          style={inlineStyles}
-          selectable={false}
+      <Table
+        style={inlineStyles}
+        selectable={false}
+      >
+        <TableHeader
+          style={inlineStyles.tableHeader}
+          displaySelectAll={false}
+          adjustForCheckbox={false}
         >
-          <TableHeader
-            style={inlineStyles.tableHeader}
-            displaySelectAll={false}
-          >
-            <TableRow>
-              <TableHeaderColumn
-                style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
+          <TableRow>
+            <TableHeaderColumn
+              style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
+            >
+              <ThumbUp
+                style={{ fontSize: '100px' }}
+                viewBox="0 0 28 21"
+                color={'#ffffff'}
+              /> Available
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
+            >
+              <ThumbDown
+                style={{ fontSize: '24px' }}
+                viewBox="0 0 28 21"
+                color={'#ffffff'}
+              /> Not Available
+            </TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody
+          displayRowCheckbox={false}
+        >{interactor.map((inter, index) =>
+          (
+            <TableRow
+              key={inter}
+              style={inlineStyles.tableBody.tableRow}
+            >
+              <TableRowColumn
+                style={inlineStyles.tableBody.tableRow.tableRowColumn}
               >
-                <TumbUp
-                  size={40}
-                  color={'#ffffff'}
-                />
-              </TableHeaderColumn>
+                {guests[index]}
+              </TableRowColumn>
+              <TableRowColumn
+                style={inlineStyles.tableBody.tableRow.tableRowColumn}
+              >
+                {noGuests[index]}
+              </TableRowColumn>
             </TableRow>
-          </TableHeader>
-          <TableBody
-            displayRowCheckbox={false}
-          >{guests.map(guest =>
-            (
-              <TableRow
-                key={guest}
-              >
-                <TableRowColumn
-                  style={inlineStyles.tableBody.tableRowColumn}
-                >
-                  {guest}
-                </TableRowColumn>
-              </TableRow>
-            ))
-          }
-          </TableBody>
-        </Table>
-        <Table
-          style={inlineStyles}
-          selectable={false}
-        >
-          <TableHeader
-            style={inlineStyles.tableHeader}
-            displaySelectAll={false}
-          >
-            <TableRow>
-              <TableHeaderColumn
-                style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
-              >
-                <TumbDown
-                  size={40}
-                  color={'#ffffff'}
-                />
-              </TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody
-            displayRowCheckbox={false}
-          >{noGuests.map(guest =>
-            (
-              <TableRow
-                key={guest}
-              >
-                <TableRowColumn
-                  style={inlineStyles.tableBody.tableRowColumn}
-                >
-                  {guest}
-                </TableRowColumn>
-              </TableRow>
-            ))
-          }
-          </TableBody>
-        </Table>
-      </div>
+          ))
+        }
+        </TableBody>
+      </Table>
+
     );
   }
 
   render() {
     const { openSnackBar, guests, noGuests } = this.props;
     const heightCalc = 60 +
-      ((guests.length > noGuests.length) ? guests.length * 50 : noGuests.length * 50);
-    console.log(heightCalc);
+      ((guests.length > noGuests.length) ? guests.length * 30 : noGuests.length * 30);
+    // console.log(heightCalc);
     const inlineStyles = {
-      minHeight: `${heightCalc}px`,
+      width: '450px',
       bodyStyle: {
+        display: 'flex',
+        flexDirection: 'row',
         height: `${heightCalc}px`,
       },
     };
 
     return (
       <Snackbar
+        style={inlineStyles}
         bodyStyle={inlineStyles.bodyStyle}
         open={openSnackBar}
         message={this.createMsgSnackBar()}
-        autoHideDuration={30000}
+        autoHideDuration={3000000}
         onRequestClose={this.handleRequestClose}
       />
     );
