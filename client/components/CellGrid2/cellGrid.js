@@ -39,9 +39,8 @@ class CellGrid extends Component {
   }
 
   componentWillMount() {
-    const { date, participants } = this.props;
+    const { date } = this.props;
     this.setState({ date: moment(date) });
-    console.log(JSON.stringify(participants));
   }
 
   render() {

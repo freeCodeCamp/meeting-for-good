@@ -60,7 +60,7 @@ class EventDetailsComponent extends React.Component {
       if (isCurParticipant) {
         if (isCurParticipant.availability) {
           myAvailability = isCurParticipant.availability;
-          if (myAvailability.length) {
+          if (myAvailability.length > 0) {
             showHeatmap = true;
             showAvailabilityGrid = 'none';
           }

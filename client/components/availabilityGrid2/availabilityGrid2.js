@@ -35,6 +35,7 @@ class AvailabilityGrid2 extends Component {
   }
 
   static createGridComplete(allDates, allTimes, event) {
+    console.log(allDates);
     const grid = [];
     const flattenedAvailability = AvailabilityGrid2.flattenedAvailability(event);
     allDates.forEach((date) => {
@@ -73,6 +74,8 @@ class AvailabilityGrid2 extends Component {
         }),
       });
     });
+    // pop the last quarter of each day
+    grid.forEach(date => date.quarters.pop());
     console.log(grid);
     return grid;
   }
@@ -92,15 +95,16 @@ class AvailabilityGrid2 extends Component {
       openSnackBar: false,
       snackBarGuests: [],
       snackBarNoGuests: [],
-      showHeatmap: true,
+      showHeatmap: false,
     };
   }
 
   componentWillMount() {
-    const { event, dates } = this.props;
+    const { event, dates, showHeatmap } = this.props;
     const { createGridComplete, generateHeatMapBackgroundColors } = this.constructor;
 
     // construct all dates range to load at the grid
+    console.log(dates);
     const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
       getDaysBetween(fromDate, toDate),
     ));
@@ -115,7 +119,7 @@ class AvailabilityGrid2 extends Component {
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
 
-    this.setState({ grid, backgroundColors, allTimes });
+    this.setState({ grid, backgroundColors, allTimes, showHeatmap });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -252,7 +256,7 @@ class AvailabilityGrid2 extends Component {
 
   render() {
     const { snackBarGuests, snackBarNoGuests, openSnackBar, showHeatmap } = this.state;
-
+    console.log(showHeatmap);
     return (
       <div styleName="column">
         <div styleName="row">
@@ -307,7 +311,7 @@ class AvailabilityGrid2 extends Component {
 }
 
 AvailabilityGrid2.defaultProps = {
-  showHeatmap: true,
+  showHeatmap: false,
   editAvail: () => { console.log('ediAvail func not passed in!'); },
   closeEditorGrid: () => { console.log('closeGrid func not passed in!'); },
 };
