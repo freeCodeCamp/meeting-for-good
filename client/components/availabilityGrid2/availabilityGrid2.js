@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
-// import autobind from 'autobind-decorator';
+import autobind from 'autobind-decorator';
 // import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
@@ -135,6 +135,10 @@ class AvailabilityGrid2 extends Component {
     this.setState({ openSnackBar: false });
   }
 
+  @autobind
+  handleCancelBtnClick() {
+    this.props.closeEditorGrid();
+  }
   renderDialog() {
     const { openModal } = this.state;
     const actions = [
@@ -297,12 +301,16 @@ class AvailabilityGrid2 extends Component {
 AvailabilityGrid2.defaultProps = {
   showHeatmap: true,
   editAvail: () => { console.log('ediAvail func not passed in!'); },
+  closeEditorGrid: () => { console.log('closeGrid func not passed in!'); },
 };
 
 AvailabilityGrid2.propTypes = {
 
   // Function to run to switch from heat map to availability editing
   editAvail: PropTypes.func,
+
+  // Function to run when user wishes to cancel availability editing
+  closeEditorGrid: PropTypes.func,
 
   // List of dates ranges for event
   dates: PropTypes.arrayOf(PropTypes.shape({
