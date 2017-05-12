@@ -35,11 +35,11 @@ class AvailabilityGrid2 extends Component {
   }
 
   static createGridComplete(allDates, allTimes, event) {
-    console.log(allDates);
     const grid = [];
     const flattenedAvailability = AvailabilityGrid2.flattenedAvailability(event);
     allDates.forEach((date) => {
       const dateMoment = moment(date);
+      dateMoment.hour(0).minute(0).second(0).millisecond(0);
       grid.push({
         date: dateMoment,
         quarters: allTimes.map((quarter) => {
@@ -96,6 +96,7 @@ class AvailabilityGrid2 extends Component {
       snackBarGuests: [],
       snackBarNoGuests: [],
       showHeatmap: false,
+      mouseDown: false,
     };
   }
 
@@ -104,7 +105,6 @@ class AvailabilityGrid2 extends Component {
     const { createGridComplete, generateHeatMapBackgroundColors } = this.constructor;
 
     // construct all dates range to load at the grid
-    console.log(dates);
     const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
       getDaysBetween(fromDate, toDate),
     ));
@@ -119,7 +119,7 @@ class AvailabilityGrid2 extends Component {
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
 
-    this.setState({ grid, backgroundColors, allTimes, showHeatmap });
+    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -127,15 +127,72 @@ class AvailabilityGrid2 extends Component {
     this.setState({ showHeatmap });
   }
 
+  editParticipantToCellGrid(quarter, operation) {
+    const { curUser } = this.props;
+    const { grid } = this.state;
+    const nGrid = _.cloneDeep(grid);
+    const nQuarter = _.cloneDeep(quarter);
+    let index = 0;
+    // find the day
+    while (index < nGrid.length - 1
+      && moment(nGrid[index].date).format('YYYY MM DD').toString()
+      !== moment(nQuarter.time).format('YYYY MM DD').toString()
+      ) {
+      index += 1;
+    }
+    // find the quarter
+    let indexQuarter = 0;
+    while (indexQuarter < nGrid[index].quarters.length - 1
+      && moment(nGrid[index].quarters[indexQuarter].time).toString()
+      !== moment(nQuarter.time).toString()
+      ) {
+      indexQuarter += 1;
+    }
+
+    if (operation === 'add') {
+      const temp = nQuarter.notParticipants.splice(
+      _.findIndex(quarter.notParticipants, curUser._id), 1);
+      nQuarter.participants.push(temp[0]);
+    }
+
+    if (operation === 'remove') {
+      const temp = nQuarter.participants.splice(
+      _.findIndex(quarter.participants, curUser._id), 1);
+      nQuarter.notParticipants.push(temp[0]);
+    }
+
+    nGrid[index].quarters[indexQuarter] = nQuarter;
+    this.setState({ grid: nGrid });
+  }
+
+  handleCellMouseDown(ev, quarter) {
+    // is at showing heatMap then ignore click
+    if (this.props.showHeatmap) {
+      return;
+    }
+    const { curUser } = this.props;
+    const indexCurUserIsParticipant = _.findIndex(quarter.participants, curUser._id);
+    if (indexCurUserIsParticipant > -1) {
+      this.editParticipantToCellGrid(quarter, 'remove');
+    } else {
+      this.editParticipantToCellGrid(quarter, 'add');
+    }
+    this.setState({ mouseDown: true });
+  }
+
   handleCellMouseOver(ev, quarter) {
+    ev.preventDefault();
     const { showHeatmap } = this.state;
     if (!showHeatmap) {
       return;
     }
-    ev.preventDefault();
     const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
     const snackBarNoGuests = quarter.notParticipants.map(participant => Object.values(participant));
     this.setState({ openSnackBar: true, snackBarGuests, snackBarNoGuests });
+  }
+
+  handleCellMouseUp() {
+    this.setState({ mouseDown: false });
   }
 
   handleCellMouseLeave(ev) {
@@ -149,6 +206,11 @@ class AvailabilityGrid2 extends Component {
 
   @autobind
   handleCancelBtnClick() {
+    const { allDates, allTimes } = this.state;
+    const { event } = this.props;
+    const { createGridComplete } = this.constructor;
+    const grid =  createGridComplete(allDates, allTimes, event);
+    this.setState({ grid });
     this.props.closeEditorGrid();
   }
   renderDialog() {
@@ -227,6 +289,8 @@ class AvailabilityGrid2 extends Component {
         participants={quarter.participants}
         onMouseOver={ev => this.handleCellMouseOver(ev, quarter)}
         onMouseLeave={ev => this.handleCellMouseLeave(ev)}
+        onMouseDown={ev => this.handleCellMouseDown(ev, quarter)}
+        onMouseUp={this.handleCellMouseUp}
         curUser={curUser}
       />
     ),
@@ -256,7 +320,6 @@ class AvailabilityGrid2 extends Component {
 
   render() {
     const { snackBarGuests, snackBarNoGuests, openSnackBar, showHeatmap } = this.state;
-    console.log(showHeatmap);
     return (
       <div styleName="column">
         <div styleName="row">

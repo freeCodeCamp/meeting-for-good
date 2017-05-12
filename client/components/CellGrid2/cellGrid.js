@@ -38,14 +38,28 @@ class CellGrid extends Component {
     return 'transparent';
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      participants: [],
+    };
+  }
+
   componentWillMount() {
-    const { date } = this.props;
-    this.setState({ date: moment(date) });
+    const { date, participants } = this.props;
+    // console.log('participants', participants);
+    this.setState({ date: moment(date), participants });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { date, participants } = nextProps;
+    // console.log('participants', participants);
+    this.setState({ date: moment(date), participants });
   }
 
   render() {
-    const { date } = this.state;
-    const { heatMapMode, participants, backgroundColors, curUser } = this.props;
+    const { date, participants } = this.state;
+    const { heatMapMode, backgroundColors, curUser } = this.props;
     const { formatCellBackgroundColor, formatCellBorder } = this.constructor;
 
     const inlineStyle = {
@@ -61,6 +75,7 @@ class CellGrid extends Component {
         key={moment(date).toDate()}
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}
+        onMouseDown={this.props.onMouseDown}
       />
     );
   }
@@ -78,6 +93,8 @@ CellGrid.propTypes = {
   backgroundColors: PropTypes.arrayOf(PropTypes.string),
   onMouseOver: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
+  onMouseDown: PropTypes.func.isRequired,
+  onMouseUp: PropTypes.func.isRequired,
   // Current user
   curUser: PropTypes.shape({
     _id: PropTypes.string,      // Unique user id
