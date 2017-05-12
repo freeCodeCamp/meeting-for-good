@@ -4,9 +4,9 @@ import _ from 'lodash';
 import moment from 'moment';
 // import autobind from 'autobind-decorator';
 // import jsonpatch from 'fast-json-patch';
-// import jz from 'jstimezonedetect';
+import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
-// import RaisedButton from 'material-ui/RaisedButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 import chroma from 'chroma-js';
@@ -92,6 +92,7 @@ class AvailabilityGrid2 extends Component {
       openSnackBar: false,
       snackBarGuests: [],
       snackBarNoGuests: [],
+      showHeatmap: true,
     };
   }
 
@@ -110,9 +111,16 @@ class AvailabilityGrid2 extends Component {
         getTimesBetween(fromDate, toDate),
       ),
     );
+
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
+
     this.setState({ grid, backgroundColors, allTimes });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { showHeatmap } = nextProps;
+    this.setState({ showHeatmap });
   }
 
   handleCellMouseOver(ev, quarter) {
@@ -124,7 +132,7 @@ class AvailabilityGrid2 extends Component {
 
   handleCellMouseLeave(ev) {
     ev.preventDefault();
-    // this.setState({ openSnackBar: false });
+    this.setState({ openSnackBar: false });
   }
 
   renderDialog() {
@@ -192,15 +200,18 @@ class AvailabilityGrid2 extends Component {
   }
 
   renderGridRow(quarters) {
-    const { backgroundColors } = this.state;
+    const { backgroundColors, showHeatmap } = this.state;
+    const { curUser } = this.props;
     return quarters.map(quarter => (
       <CellGrid
+        heatMapMode={showHeatmap}
         key={moment(quarter.time).toDate()}
         date={quarter.time}
         backgroundColors={backgroundColors}
         participants={quarter.participants}
         onMouseOver={ev => this.handleCellMouseOver(ev, quarter)}
         onMouseLeave={ev => this.handleCellMouseLeave(ev)}
+        curUser={curUser}
       />
     ),
     );
@@ -226,8 +237,10 @@ class AvailabilityGrid2 extends Component {
       </div>
     );
   }
+
   render() {
-    const { snackBarGuests, snackBarNoGuests, openSnackBar } = this.state;
+    const { snackBarGuests, snackBarNoGuests, openSnackBar, showHeatmap } = this.state;
+
     return (
       <div styleName="column">
         <div styleName="row">
@@ -239,6 +252,38 @@ class AvailabilityGrid2 extends Component {
           </FlatButton>
         </div>
         {this.renderGrid()}
+        <p styleName="info">
+          <em>Each time slot represents 15 minutes.</em>
+        </p>
+        <p styleName="info">
+          <em>
+            Displaying all times in your local timezone: {jz.determine().name()}
+          </em>
+        </p>
+        <br />
+        <div styleName="actionButtonsWrapper">
+          {showHeatmap ?
+            <RaisedButton
+              primary
+              label="Edit Availability"
+              onClick={this.props.editAvail}
+            />
+            :
+            <div>
+              <RaisedButton
+                primary
+                label="Submit"
+                onClick={this.submitAvailability}
+              />
+              <RaisedButton
+                primary
+                label="Cancel"
+                styleName="cancelButton"
+                onClick={this.handleCancelBtnClick}
+              />
+            </div>
+          }
+        </div>
         <SnackBarGrid
           guests={snackBarGuests}
           noGuests={snackBarNoGuests}
@@ -249,7 +294,16 @@ class AvailabilityGrid2 extends Component {
   }
 }
 
+AvailabilityGrid2.defaultProps = {
+  showHeatmap: true,
+  editAvail: () => { console.log('ediAvail func not passed in!'); },
+};
+
 AvailabilityGrid2.propTypes = {
+
+  // Function to run to switch from heat map to availability editing
+  editAvail: PropTypes.func,
+
   // List of dates ranges for event
   dates: PropTypes.arrayOf(PropTypes.shape({
     fromDate: PropTypes.instanceOf(Date),
@@ -257,6 +311,7 @@ AvailabilityGrid2.propTypes = {
   })).isRequired,
 
   // True if grid is showing heat map
+  showHeatmap: PropTypes.bool,
   // Event containing list of event participants
   event: PropTypes.shape({
     _id: PropTypes.string,
@@ -282,6 +337,12 @@ AvailabilityGrid2.propTypes = {
       ownerNotified: PropTypes.bool,
       availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     })),
+  }).isRequired,
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string,      // Unique user id
+    name: PropTypes.string,     // User name
+    avatar: PropTypes.string,   // URL to image representing user(?)
   }).isRequired,
 };
 

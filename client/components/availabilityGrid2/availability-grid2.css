@@ -34,3 +34,20 @@
   flex-direction: row;
   margin: 0 0 0 72px;
 }
+
+.info {
+  margin-top: 5px !important;
+  margin-bottom: -10px !important;
+  text-align: left;
+  font-size: 12px;
+}
+
+.actionButtonsWrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.cancelButton {
+  margin-left: 15px;
+}
