@@ -370,9 +370,14 @@ AvailabilityGrid2.defaultProps = {
   showHeatmap: false,
   editAvail: () => { console.log('ediAvail func not passed in!'); },
   closeEditorGrid: () => { console.log('closeGrid func not passed in!'); },
+  submitAvail: () => { console.log('submitAvail func not passed in!'); },
 };
 
 AvailabilityGrid2.propTypes = {
+
+
+  // Function to run when availability for current user is ready to be updated
+  submitAvail: PropTypes.func,
 
   // Function to run to switch from heat map to availability editing
   editAvail: PropTypes.func,
