@@ -97,6 +97,7 @@ class AvailabilityGrid2 extends Component {
       snackBarNoGuests: [],
       showHeatmap: false,
       mouseDown: false,
+      editOperation: 'add',
     };
   }
 
@@ -172,25 +173,31 @@ class AvailabilityGrid2 extends Component {
     }
     const { curUser } = this.props;
     const indexCurUserIsParticipant = _.findIndex(quarter.participants, curUser._id);
+    let editOperation = 'add';
     if (indexCurUserIsParticipant > -1) {
+      editOperation = 'remove';
       this.editParticipantToCellGrid(quarter, 'remove');
     } else {
       this.editParticipantToCellGrid(quarter, 'add');
     }
-    this.setState({ mouseDown: true });
+    this.setState({ mouseDown: true, editOperation });
   }
 
+  @autobind
   handleCellMouseOver(ev, quarter) {
     ev.preventDefault();
-    const { showHeatmap } = this.state;
+    const { showHeatmap, mouseDown, editOperation } = this.state;
     if (!showHeatmap) {
-      return;
+      if (mouseDown) {
+        this.editParticipantToCellGrid(quarter, editOperation);
+      }
+    } else {
+      const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
+      const snackBarNoGuests = quarter.notParticipants.map(participant => Object.values(participant));
+      this.setState({ openSnackBar: true, snackBarGuests, snackBarNoGuests });
     }
-    const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
-    const snackBarNoGuests = quarter.notParticipants.map(participant => Object.values(participant));
-    this.setState({ openSnackBar: true, snackBarGuests, snackBarNoGuests });
   }
-
+  @autobind
   handleCellMouseUp() {
     this.setState({ mouseDown: false });
   }

@@ -76,6 +76,7 @@ class CellGrid extends Component {
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}
         onMouseDown={this.props.onMouseDown}
+        onMouseUp={this.props.onMouseUp}
       />
     );
   }
