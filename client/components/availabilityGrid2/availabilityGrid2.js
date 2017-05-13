@@ -18,7 +18,6 @@ import CellGrid from '../CellGrid2/cellGrid';
 import SnackBarGrid from '../SnackBarGrid/snackBarGrid';
 import styles from './availability-grid2.css';
 
-
 class AvailabilityGrid2 extends Component {
 
   static flattenedAvailability(event) {
@@ -128,28 +127,11 @@ class AvailabilityGrid2 extends Component {
     this.setState({ showHeatmap });
   }
 
-  editParticipantToCellGrid(quarter, operation) {
+  editParticipantToCellGrid(quarter, operation, rowIndex, columnIndex) {
     const { curUser } = this.props;
     const { grid } = this.state;
     const nGrid = _.cloneDeep(grid);
     const nQuarter = _.cloneDeep(quarter);
-    let index = 0;
-    // find the day
-    while (index < nGrid.length - 1
-      && moment(nGrid[index].date).format('YYYY MM DD').toString()
-      !== moment(nQuarter.time).format('YYYY MM DD').toString()
-      ) {
-      index += 1;
-    }
-    // find the quarter
-    let indexQuarter = 0;
-    while (indexQuarter < nGrid[index].quarters.length - 1
-      && moment(nGrid[index].quarters[indexQuarter].time).toString()
-      !== moment(nQuarter.time).toString()
-      ) {
-      indexQuarter += 1;
-    }
-
     if (operation === 'add') {
       const temp = nQuarter.notParticipants.splice(
       _.findIndex(quarter.notParticipants, curUser._id), 1);
@@ -162,11 +144,12 @@ class AvailabilityGrid2 extends Component {
       nQuarter.notParticipants.push(temp[0]);
     }
 
-    nGrid[index].quarters[indexQuarter] = nQuarter;
+    nGrid[rowIndex].quarters[columnIndex] = nQuarter;
     this.setState({ grid: nGrid });
   }
 
-  handleCellMouseDown(ev, quarter) {
+  handleCellMouseDown(ev, quarter, rowIndex, columnIndex) {
+    ev.preventDefault();
     // is at showing heatMap then ignore click
     if (this.props.showHeatmap) {
       return;
@@ -176,24 +159,25 @@ class AvailabilityGrid2 extends Component {
     let editOperation = 'add';
     if (indexCurUserIsParticipant > -1) {
       editOperation = 'remove';
-      this.editParticipantToCellGrid(quarter, 'remove');
+      this.editParticipantToCellGrid(quarter, 'remove', rowIndex, columnIndex);
     } else {
-      this.editParticipantToCellGrid(quarter, 'add');
+      this.editParticipantToCellGrid(quarter, 'add', rowIndex, columnIndex);
     }
     this.setState({ mouseDown: true, editOperation });
   }
 
   @autobind
-  handleCellMouseOver(ev, quarter) {
+  handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
     const { showHeatmap, mouseDown, editOperation } = this.state;
     if (!showHeatmap) {
       if (mouseDown) {
-        this.editParticipantToCellGrid(quarter, editOperation);
+        this.editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex);
       }
     } else {
       const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
-      const snackBarNoGuests = quarter.notParticipants.map(participant => Object.values(participant));
+      const snackBarNoGuests =
+        quarter.notParticipants.map(participant => Object.values(participant));
       this.setState({ openSnackBar: true, snackBarGuests, snackBarNoGuests });
     }
   }
@@ -284,21 +268,23 @@ class AvailabilityGrid2 extends Component {
     return timesTitle;
   }
 
-  renderGridRow(quarters) {
+  renderGridRow(quarters, rowIndex) {
     const { backgroundColors, showHeatmap } = this.state;
     const { curUser } = this.props;
-    return quarters.map(quarter => (
+    return quarters.map((quarter, columnIndex) => (
       <CellGrid
         heatMapMode={showHeatmap}
         key={moment(quarter.time).toDate()}
         date={quarter.time}
         backgroundColors={backgroundColors}
         participants={quarter.participants}
-        onMouseOver={ev => this.handleCellMouseOver(ev, quarter)}
+        onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
         onMouseLeave={ev => this.handleCellMouseLeave(ev)}
-        onMouseDown={ev => this.handleCellMouseDown(ev, quarter)}
+        onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
         onMouseUp={this.handleCellMouseUp}
         curUser={curUser}
+        rowIndex={rowIndex}
+        columnIndex={columnIndex}
       />
     ),
     );
@@ -310,13 +296,13 @@ class AvailabilityGrid2 extends Component {
       <div>
         {this.renderGridHours()}
         {
-          grid.map(row => (
+          grid.map((row, rowIndex) => (
             <div key={moment(row.date).format('Do MMM ddd')} styleName="column">
               <div styleName="row">
                 <div styleName="date-cell">
                   {moment(row.date).format('Do MMM ddd')}
                 </div>
-                {this.renderGridRow(row.quarters)}
+                {this.renderGridRow(row.quarters, rowIndex)}
               </div>
             </div>
           ))

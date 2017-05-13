@@ -77,6 +77,8 @@ class CellGrid extends Component {
         onMouseLeave={this.props.onMouseLeave}
         onMouseDown={this.props.onMouseDown}
         onMouseUp={this.props.onMouseUp}
+        rowIndex={this.props.rowIndex}
+        columnIndex={this.props.columnIndex}
       />
     );
   }
@@ -96,6 +98,9 @@ CellGrid.propTypes = {
   onMouseLeave: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
+  rowIndex: PropTypes.number.isRequired,
+  columnIndex: PropTypes.number.isRequired,
+
   // Current user
   curUser: PropTypes.shape({
     _id: PropTypes.string,      // Unique user id
