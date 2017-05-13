@@ -6,7 +6,7 @@ import Snackbar from 'material-ui/Snackbar';
 import PropTypes from 'prop-types';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
-import AvailabilityGrid from '../AvailabilityGrid/availabilityGrid';
+import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
