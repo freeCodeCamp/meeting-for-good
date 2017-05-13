@@ -414,6 +414,7 @@ class AvailabilityGrid extends Component {
   }
 }
 
+
 AvailabilityGrid.defaultProps = {
   showHeatmap: false,
   editAvail: () => { console.log('ediAvail func not passed in!'); },
