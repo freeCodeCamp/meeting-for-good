@@ -1,15 +1,5 @@
 .cell {
-  padding: 5px;
   border: 1px solid #efefef;
-  height: 42px;
   cursor: pointer;
-  width: 1px;
-}
-
-.disabled {
-  composes: cell;
-  background-color: #eee;
-  cursor: disable;
-  pointer-events: none;
-  border: 1px solid #eee !important;
+  width: 11px
 }

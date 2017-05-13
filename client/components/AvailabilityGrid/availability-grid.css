@@ -3,15 +3,17 @@
   clear: both;
 }
 
-.cell {
+.column {
+  display:flex;
+  flex-direction: column;
+}
+
+.date-cell {
   padding: 5px;
   border: 1px solid #efefef;
   cursor: pointer;
-}
-
-.cell-aside {
-  composes: cell;
-  width: 63px;
+  width: 65px;
+  padding: 5px 0px 14px 5px;
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
@@ -27,18 +29,10 @@
   user-select: none;
   -webkit-user-select: none;
 }
-
 .timesTitle {
   display: flex;
   flex-direction: row;
-}
-
-.disabled {
-  composes: cell;
-  background-color: #eee;
-  cursor: disable;
-  pointer-events: none;
-  border: 1px solid #eee !important;
+  margin: 0 0 0 72px;
 }
 
 .info {
@@ -48,49 +42,12 @@
   font-size: 12px;
 }
 
-a.info {
-  position: absolute;
-  transform: translateY(-30px);
-  left: 20px;
-}
-
-.hover-container {
-  text-align: center;
-}
-
-.hover-available {
-  margin-top: 10px;
-  background-color: white;
-  border-radius: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  text-align: center;
-  display: inline-block;
-}
-
-.hover-available h5 {
-  margin-top: 5px;
-  text-decoration: underline;
-  font-size: 25px;
-}
-
-.hover-available h6 {
-  margin: 5px;
-  font-size: 14px;
-}
-
-.Column
-{
-    display: table-cell;
+.actionButtonsWrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
 
 .cancelButton {
   margin-left: 15px;
 }
-
-.actionButtonsWrapper {
-  display: flex;
- justify-content: center;
- flex-direction: row;
-}
-
