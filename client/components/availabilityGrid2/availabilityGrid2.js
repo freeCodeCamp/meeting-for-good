@@ -130,22 +130,20 @@ class AvailabilityGrid2 extends Component {
   editParticipantToCellGrid(quarter, operation, rowIndex, columnIndex) {
     const { curUser } = this.props;
     const { grid } = this.state;
-    const nGrid = _.cloneDeep(grid);
-    const nQuarter = _.cloneDeep(quarter);
+
     if (operation === 'add') {
-      const temp = nQuarter.notParticipants.splice(
+      const temp = quarter.notParticipants.splice(
       _.findIndex(quarter.notParticipants, curUser._id), 1);
-      nQuarter.participants.push(temp[0]);
+      quarter.participants.push(temp[0]);
     }
-
     if (operation === 'remove') {
-      const temp = nQuarter.participants.splice(
+      const temp = quarter.participants.splice(
       _.findIndex(quarter.participants, curUser._id), 1);
-      nQuarter.notParticipants.push(temp[0]);
+      quarter.notParticipants.push(temp[0]);
     }
-
-    nGrid[rowIndex].quarters[columnIndex] = nQuarter;
-    this.setState({ grid: nGrid });
+    grid[rowIndex].quarters[columnIndex] = quarter;
+    // grid = nQuarter;
+    this.setState({ grid });
   }
 
   handleCellMouseDown(ev, quarter, rowIndex, columnIndex) {
@@ -182,16 +180,18 @@ class AvailabilityGrid2 extends Component {
     }
   }
   @autobind
-  handleCellMouseUp() {
+  handleCellMouseUp(ev) {
+    ev.preventDefault();
     this.setState({ mouseDown: false });
   }
 
+  @autobind
   handleCellMouseLeave(ev) {
+    ev.preventDefault();
     const { showHeatmap } = this.state;
     if (!showHeatmap) {
       return;
     }
-    ev.preventDefault();
     this.setState({ openSnackBar: false });
   }
 
@@ -281,7 +281,7 @@ class AvailabilityGrid2 extends Component {
         onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
         onMouseLeave={ev => this.handleCellMouseLeave(ev)}
         onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
-        onMouseUp={this.handleCellMouseUp}
+        onMouseUp={ev => this.handleCellMouseUp(ev)}
         curUser={curUser}
         rowIndex={rowIndex}
         columnIndex={columnIndex}

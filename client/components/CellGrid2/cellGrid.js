@@ -28,7 +28,6 @@ class CellGrid extends Component {
       return 'transparent';
     }
 
-    // console.log(curUser._id, _.find(participants, curUser._id));
     if (_.find(participants, curUser._id)) {
       return '#000000';
     }
