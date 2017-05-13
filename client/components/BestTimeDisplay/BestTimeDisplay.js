@@ -32,24 +32,24 @@ class BestTimeDisplay extends Component {
     const overlaps = [];
     const displayTimes = {};
 
+    // flat availability
     event.participants.forEach((participant) => {
       if (participant.availability !== undefined) availability.push(participant.availability);
     });
-
     if (availability.length > 1) {
       for (let i = 0; i < availability[0].length; i += 1) {
         const current = availability[0][i];
         let count = 0;
         for (let j = 0; j < availability.length; j += 1) {
           for (let k = 0; k < availability[j].length; k += 1) {
-            if (availability[j][k][0] === current[0]) {
+            if (moment(availability[j][k][0]).format('D M YYYY HH MM').toString()
+              === moment(current[0]).format('D M YYYY HH MM').toString()) {
               count += 1;
             }
           }
         }
         if (count === availability.length) overlaps.push(current);
       }
-
       if (overlaps.length !== 0) {
         let index = 0;
         for (let i = 0; i < overlaps.length; i += 1) {
