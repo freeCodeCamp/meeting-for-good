@@ -42,24 +42,25 @@ class CellGrid extends Component {
     super(props);
     this.state = {
       participants: [],
+      heatMapMode: false,
     };
   }
 
   componentWillMount() {
-    const { date, participants } = this.props;
+    const { date, participants, heatMapMode } = this.props;
     // console.log('participants', participants);
-    this.setState({ date: moment(date), participants });
+    this.setState({ date: moment(date), participants, heatMapMode });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { date, participants } = nextProps;
+    const { date, participants, heatMapMode } = nextProps;
     // console.log('participants', participants);
-    this.setState({ date: moment(date), participants });
+    this.setState({ date: moment(date), participants, heatMapMode });
   }
 
   render() {
-    const { date, participants } = this.state;
-    const { heatMapMode, backgroundColors, curUser } = this.props;
+    const { date, participants, heatMapMode } = this.state;
+    const { backgroundColors, curUser } = this.props;
     const { formatCellBackgroundColor, formatCellBorder } = this.constructor;
 
     const inlineStyle = {
@@ -85,7 +86,6 @@ class CellGrid extends Component {
 }
 
 CellGrid.defaultProps = {
-  isSelected: false,
   backgroundColors: ['transparent'],
 };
 
