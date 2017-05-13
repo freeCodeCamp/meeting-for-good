@@ -46,14 +46,12 @@ class CellGrid extends Component {
   }
 
   componentWillMount() {
-    const { date, participants, heatMapMode } = this.props;
-    // console.log('participants', participants);
-    this.setState({ date: moment(date), participants, heatMapMode });
+    const { date, participants, heatMapMode, rowIndex, columnIndex } = this.props;
+    this.setState({ date: moment(date), participants, heatMapMode, rowIndex, columnIndex });
   }
 
   componentWillReceiveProps(nextProps) {
     const { date, participants, heatMapMode } = nextProps;
-    // console.log('participants', participants);
     this.setState({ date: moment(date), participants, heatMapMode });
   }
 
@@ -72,13 +70,11 @@ class CellGrid extends Component {
       <div
         style={inlineStyle}
         styleName="cell"
-        key={moment(date).toDate()}
+        key={moment(date)._d}
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}
         onMouseDown={this.props.onMouseDown}
         onMouseUp={this.props.onMouseUp}
-        rowIndex={this.props.rowIndex}
-        columnIndex={this.props.columnIndex}
       />
     );
   }
@@ -86,6 +82,8 @@ class CellGrid extends Component {
 
 CellGrid.defaultProps = {
   backgroundColors: ['transparent'],
+  rowIndex: 0,
+  columnIndex: 0,
 };
 
 CellGrid.propTypes = {
@@ -97,8 +95,8 @@ CellGrid.propTypes = {
   onMouseLeave: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
-  rowIndex: PropTypes.number.isRequired,
-  columnIndex: PropTypes.number.isRequired,
+  rowIndex: PropTypes.number,
+  columnIndex: PropTypes.number,
 
   // Current user
   curUser: PropTypes.shape({

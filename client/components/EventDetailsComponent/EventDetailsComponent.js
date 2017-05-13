@@ -6,8 +6,7 @@ import Snackbar from 'material-ui/Snackbar';
 import PropTypes from 'prop-types';
 
 import DeleteModal from '../../components/DeleteModal/DeleteModal';
-import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
-import AvailabilityGrid2 from '../availabilityGrid2/availabilityGrid2';
+import AvailabilityGrid from '../AvailabilityGrid/availabilityGrid';
 import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
@@ -157,7 +156,6 @@ class EventDetailsComponent extends React.Component {
       event,
       showHeatmap,
       dates,
-      showAvailabilityGrid,
       snackBarOpen,
       snackBarMsg,
     } = this.state;
@@ -186,29 +184,7 @@ class EventDetailsComponent extends React.Component {
             <CardTitle styleName="cardTitle">{event.name}</CardTitle>
             <CardText>
               <BestTimesDisplay event={event} disablePicker />
-              {(showHeatmap) ?
-                <div id="heatmap">
-                  <AvailabilityGrid
-                    event={event}
-                    curUser={curUser}
-                    dates={dates}
-                    editAvail={this.editAvail}
-                    heatmap
-                  />
-                </div> :
-                <div id="grid" styleName="aviabilityContainer" >
-                  <div style={{ display: showAvailabilityGrid }}>
-                    <AvailabilityGrid
-                      event={event}
-                      dates={dates}
-                      curUser={curUser}
-                      submitAvail={this.submitAvailability}
-                      closeGrid={this.closeGrid}
-                    />
-                  </div>
-                </div>
-              }
-              <AvailabilityGrid2
+              <AvailabilityGrid
                 event={event}
                 curUser={curUser}
                 dates={dates}

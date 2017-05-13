@@ -154,8 +154,8 @@ class AvailabilityGrid extends Component {
     grid.forEach((row) => {
       row.quarters.forEach((quarter) => {
         if (_.findIndex(quarter.participants, curUser._id) > -1) {
-          const from = moment(quarter.time).toString();
-          const to = moment(quarter.time).add(15, 'm').toString();
+          const from = moment(quarter.time)._d;
+          const to = moment(quarter.time).add(15, 'm')._d;
           availability.push([from, to]);
         }
       });
@@ -322,7 +322,7 @@ class AvailabilityGrid extends Component {
     return quarters.map((quarter, columnIndex) => (
       <CellGrid
         heatMapMode={showHeatmap}
-        key={moment(quarter.time).toDate()}
+        key={moment(quarter.time)._d}
         date={quarter.time}
         backgroundColors={backgroundColors}
         participants={quarter.participants}
