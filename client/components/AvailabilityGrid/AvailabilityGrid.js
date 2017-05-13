@@ -11,11 +11,11 @@ import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 import chroma from 'chroma-js';
 
+import CellGrid from '../CellGrid/CellGrid';
+import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import { getDaysBetween } from '../../util/dates.utils';
 import getTimesBetween from '../../util/times.utils';
 import enteravailGif from '../../assets/enteravail.gif';
-import CellGrid from '../CellGrid/cellGrid';
-import SnackBarGrid from '../SnackBarGrid/snackBarGrid';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
 
