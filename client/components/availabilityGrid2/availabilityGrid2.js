@@ -3,7 +3,7 @@ import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import moment from 'moment';
 import autobind from 'autobind-decorator';
-// import jsonpatch from 'fast-json-patch';
+import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -16,6 +16,7 @@ import getTimesBetween from '../../util/times.utils';
 import enteravailGif from '../../assets/enteravail.gif';
 import CellGrid from '../CellGrid2/cellGrid';
 import SnackBarGrid from '../SnackBarGrid/snackBarGrid';
+import { loadEventFull } from '../../util/events';
 import styles from './availability-grid2.css';
 
 class AvailabilityGrid2 extends Component {
@@ -146,6 +147,52 @@ class AvailabilityGrid2 extends Component {
     this.setState({ grid });
   }
 
+  @autobind
+  async submitAvailability() {
+    const { curUser } = this.props;
+    const { grid } = this.state;
+    const availability = [];
+    grid.forEach((row) => {
+      row.quarters.forEach((quarter) => {
+        if (_.findIndex(quarter.participants, curUser._id) > -1) {
+          const from = moment(quarter.time).toString();
+          const to = moment(quarter.time).add(15, 'm').toString();
+          availability.push([from, to]);
+        }
+      });
+    });
+
+    // again i need to call the full event to edit... since he dont the
+    // info that maybe have a guest "deleted"
+    const eventToEdit = await loadEventFull(this.props.event._id);
+    const event = JSON.parse(JSON.stringify(eventToEdit));
+    const observerEvent = jsonpatch.observe(event);
+     // first check if cur exists as a participant
+     // if is not add the curUser as participant
+    const isParticipant = event.participants.filter(
+      participant => participant.userId._id === curUser._id,
+    );
+    if (isParticipant.length === 0) {
+      const { _id: userId } = curUser;
+      const participant = { userId };
+      event.participants.push(participant);
+    }
+    event.participants = event.participants.map((participant) => {
+      if (participant.userId._id === curUser._id || participant.userId === curUser._id) {
+        participant.availability = availability;
+        if (availability.length === 0) {
+          participant.status = 2;
+        } else {
+          participant.status = 3;
+        }
+      }
+      return participant;
+    });
+
+    const patches = jsonpatch.generate(observerEvent);
+    await this.props.submitAvail(patches);
+  }
+
   handleCellMouseDown(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
     // is at showing heatMap then ignore click
@@ -179,6 +226,7 @@ class AvailabilityGrid2 extends Component {
       this.setState({ openSnackBar: true, snackBarGuests, snackBarNoGuests });
     }
   }
+
   @autobind
   handleCellMouseUp(ev) {
     ev.preventDefault();
@@ -204,6 +252,7 @@ class AvailabilityGrid2 extends Component {
     this.setState({ grid });
     this.props.closeEditorGrid();
   }
+
   renderDialog() {
     const { openModal } = this.state;
     const actions = [
@@ -374,7 +423,6 @@ AvailabilityGrid2.defaultProps = {
 };
 
 AvailabilityGrid2.propTypes = {
-
 
   // Function to run when availability for current user is ready to be updated
   submitAvail: PropTypes.func,

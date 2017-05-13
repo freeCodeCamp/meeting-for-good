@@ -213,6 +213,7 @@ class EventDetailsComponent extends React.Component {
                 curUser={curUser}
                 dates={dates}
                 editAvail={this.editAvail}
+                submitAvail={this.submitAvailability}
                 showHeatmap={showHeatmap}
                 closeEditorGrid={this.closeGrid}
               />
