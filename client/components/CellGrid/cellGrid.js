@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import _ from 'lodash';
 
-
 import styles from './cell-grid.css';
 
 class CellGrid extends Component {
