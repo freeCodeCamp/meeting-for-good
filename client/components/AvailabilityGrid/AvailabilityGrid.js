@@ -74,7 +74,6 @@ class AvailabilityGrid extends Component {
     });
     // pop the last quarter of each day
     grid.forEach(date => date.quarters.pop());
-    console.log('grid', grid);
     return grid;
   }
 
