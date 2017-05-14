@@ -84,7 +84,7 @@ class BestTimeDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      event: this.props.event,
+      event: {},
       disablePicker: false,
     };
   }

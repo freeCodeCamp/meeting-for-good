@@ -56,13 +56,11 @@ class AvailabilityGrid extends Component {
           const notGuests = [];
           event.participants.forEach((participant) => {
             const availForThatParticipant = flattenedAvailability[participant.userId._id];
+            const guest = {};
+            guest[participant.userId._id] = participant.userId.name;
             if (availForThatParticipant.indexOf(dateHourForCell.toJSON()) > -1) {
-              const guest = {};
-              guest[participant.userId._id] = participant.userId.name;
               guests.push(guest);
             } else {
-              const guest = {};
-              guest[participant.userId._id] = participant.userId.name;
               notGuests.push(guest);
             }
           });
@@ -76,6 +74,7 @@ class AvailabilityGrid extends Component {
     });
     // pop the last quarter of each day
     grid.forEach(date => date.quarters.pop());
+    console.log('grid', grid);
     return grid;
   }
 
@@ -97,6 +96,7 @@ class AvailabilityGrid extends Component {
       showHeatmap: false,
       mouseDown: false,
       editOperation: 'add',
+      event: {},
     };
   }
 
@@ -111,7 +111,7 @@ class AvailabilityGrid extends Component {
 
     // construct all times range to load a the grid
     const allTimes = _.flatten(
-      [this.props.dates[0]].map(({ fromDate, toDate }) =>
+      [dates[0]].map(({ fromDate, toDate }) =>
         getTimesBetween(fromDate, toDate),
       ),
     );
@@ -119,31 +119,31 @@ class AvailabilityGrid extends Component {
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
 
-    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates });
+    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { showHeatmap } = nextProps;
-    this.setState({ showHeatmap });
+    const { showHeatmap, event } = nextProps;
+    this.setState({ showHeatmap, event });
   }
 
   editParticipantToCellGrid(quarter, operation, rowIndex, columnIndex) {
     const { curUser } = this.props;
     const { grid } = this.state;
-
+    const nGrid = _.cloneDeep(grid);
+    const nQuarter = _.cloneDeep(quarter);
     if (operation === 'add') {
-      const temp = quarter.notParticipants.splice(
-      _.findIndex(quarter.notParticipants, curUser._id), 1);
-      quarter.participants.push(temp[0]);
+      const temp = nQuarter.notParticipants.splice(
+        _.findIndex(nQuarter.notParticipants, curUser._id), 1);
+      nQuarter.participants.push(temp[0]);
     }
     if (operation === 'remove') {
-      const temp = quarter.participants.splice(
-      _.findIndex(quarter.participants, curUser._id), 1);
-      quarter.notParticipants.push(temp[0]);
+      const temp = nQuarter.participants.splice(
+        _.findIndex(nQuarter.participants, curUser._id), 1);
+      nQuarter.notParticipants.push(temp[0]);
     }
-    grid[rowIndex].quarters[columnIndex] = quarter;
-    // grid = nQuarter;
-    this.setState({ grid });
+    nGrid[rowIndex].quarters[columnIndex] = nQuarter;
+    this.setState({ grid: nGrid });
   }
 
   @autobind
@@ -163,7 +163,7 @@ class AvailabilityGrid extends Component {
 
     // again i need to call the full event to edit... since he dont the
     // info that maybe have a guest "deleted"
-    const eventToEdit = await loadEventFull(this.props.event._id);
+    const eventToEdit = await loadEventFull(this.state.event._id);
     const event = JSON.parse(JSON.stringify(eventToEdit));
     const observerEvent = jsonpatch.observe(event);
      // first check if cur exists as a participant
@@ -192,31 +192,39 @@ class AvailabilityGrid extends Component {
     await this.props.submitAvail(patches);
   }
 
+  @autobind
   handleCellMouseDown(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
+    const { showHeatmap } = this.state;
     // is at showing heatMap then ignore click
-    if (this.props.showHeatmap) {
+    if (showHeatmap) {
       return;
     }
     const { curUser } = this.props;
-    const indexCurUserIsParticipant = _.findIndex(quarter.participants, curUser._id);
-    let editOperation = 'add';
-    if (indexCurUserIsParticipant > -1) {
+    let editOperation = '';
+    if (_.findIndex(quarter.participants, curUser._id) > -1) {
       editOperation = 'remove';
-      this.editParticipantToCellGrid(quarter, 'remove', rowIndex, columnIndex);
-    } else {
-      this.editParticipantToCellGrid(quarter, 'add', rowIndex, columnIndex);
     }
-    this.setState({ mouseDown: true, editOperation });
+    if (_.findIndex(quarter.notParticipants, curUser._id) > -1) {
+      editOperation = 'add';
+    }
+    this.setState({ mouseDown: true, editOperation },
+      this.editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex));
   }
 
   @autobind
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
     const { showHeatmap, mouseDown, editOperation } = this.state;
+    const { curUser } = this.props;
     if (!showHeatmap) {
       if (mouseDown) {
-        this.editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex);
+        if (_.findIndex(quarter.participants, curUser._id) > -1 && editOperation === 'remove') {
+          this.editParticipantToCellGrid(quarter, 'remove', rowIndex, columnIndex);
+        }
+        if (_.findIndex(quarter.notParticipants, curUser._id) > -1 && editOperation === 'add') {
+          this.editParticipantToCellGrid(quarter, 'add', rowIndex, columnIndex);
+        }
       }
     } else {
       const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
@@ -244,8 +252,7 @@ class AvailabilityGrid extends Component {
 
   @autobind
   handleCancelBtnClick() {
-    const { allDates, allTimes } = this.state;
-    const { event } = this.props;
+    const { allDates, allTimes, event } = this.state;
     const { createGridComplete } = this.constructor;
     const grid =  createGridComplete(allDates, allTimes, event);
     this.setState({ grid });
