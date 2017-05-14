@@ -378,14 +378,16 @@ class AvailabilityGrid extends Component {
           </FlatButton>
         </div>
         {this.renderGrid()}
-        <p styleName="info">
-          <em>Each time slot represents 15 minutes.</em>
-        </p>
-        <p styleName="info">
-          <em>
-            Displaying all times in your local timezone: {jz.determine().name()}
-          </em>
-        </p>
+        <div styleName="info">
+          <p>
+            <em>Each time slot represents 15 minutes.</em>
+          </p>
+          <p>
+            <em>
+              Displaying all times in your local timezone: {jz.determine().name()}
+            </em>
+          </p>
+        </div>
         <br />
         <div styleName="actionButtonsWrapper">
           {showHeatmap ?

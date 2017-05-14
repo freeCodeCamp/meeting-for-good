@@ -34,7 +34,7 @@ class BestTimeDisplay extends Component {
 
     // flat availability
     event.participants.forEach((participant) => {
-      if (participant.availability !== undefined && participant.length > 0) {
+      if (participant.availability !== undefined && participant.availability.length > 0) {
         availability.push(participant.availability);
       }
     });
