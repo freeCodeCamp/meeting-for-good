@@ -1,5 +1,6 @@
 .cell {
   border: 1px solid #efefef;
   cursor: pointer;
-  width: 11px
+  width: 12px;
+  box-sizing: border-box;
 }
