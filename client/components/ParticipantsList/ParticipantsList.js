@@ -233,8 +233,8 @@ class ParticipantsList extends Component {
 }
 
 ParticipantsList.defaultProps = {
-  cbOnChipMouseOver: () => { console.log('cbOnChipMouseOver func not passed in!'); },
-  cbOnChipMouseLeave: () => { console.log('cbOnChipMouseLeave func not passed in!'); },
+  cbOnChipMouseOver: () => {},
+  cbOnChipMouseLeave: () => {},
 };
 
 ParticipantsList.propTypes = {
