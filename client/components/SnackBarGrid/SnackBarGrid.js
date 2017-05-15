@@ -21,7 +21,6 @@ class SnackBarGrid extends Component {
     const { guests, noGuests } = this.props;
     const interactor = (guests.length > noGuests.length) ? guests : noGuests;
 
-
     const inlineStyles = {
       backgroundColor: 'transparent',
       maxWidth: '100%',
@@ -140,8 +139,8 @@ class SnackBarGrid extends Component {
 }
 
 SnackBarGrid.propTypes = {
-  guests: PropTypes.arrayOf(PropTypes.string).isRequired,
-  noGuests: PropTypes.arrayOf(PropTypes.string).isRequired,
+  guests: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
+  noGuests: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
   openSnackBar: PropTypes.bool.isRequired,
 };
 
