@@ -27,52 +27,46 @@ const respondWithResult = (res, statusCode) => {
 
 const handleError = (res, statusCode) => {
   statusCode = statusCode || 500;
-  // console.log('handleError userController', res);
   return (err) => {
     res.status(statusCode).send(err);
   };
 };
 
-const patchUpdates = (patches) => {
-  return (entity) => {
-    try {
-      jsonpatch.apply(entity, patches, /* validate */ true);
-    } catch (err) {
-      console.log('err at patches', err);
-      return Promise.reject(err);
-    }
+const patchUpdates = patches => (entity) => {
+  try {
+    jsonpatch.apply(entity, patches, /* validate */ true);
+  } catch (err) {
+    console.log('err at patches', err);
+    return Promise.reject(err);
+  }
 
-    return entity.save();
-  };
+  return entity.save();
 };
 
-const removeEntity = (res) => {
-  return (entity) => {
-    if (entity) {
-      return entity.remove()
-        .then(() => {
-          res.status(204).end();
-        });
-    }
-  };
+
+const removeEntity = res => (entity) => {
+  if (entity) {
+    return entity.remove()
+      .then(() => {
+        res.status(204).end();
+      });
+  }
 };
 
-const handleEntityNotFound = (res) => {
-  return (entity) => {
-    if (!entity) {
-      res.status(404).end();
-      return null;
-    }
-    return entity;
-  };
+
+const handleEntityNotFound = res => (entity) => {
+  if (!entity) {
+    res.status(404).end();
+    return null;
+  }
+  return entity;
 };
 
 // Gets a list of all  users
-export const index = (req, res) => {
-  return Users.find().exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-};
+export const index = (req, res) => Users.find().exec()
+  .then(respondWithResult(res))
+  .catch(handleError(res));
+
 
 // Gets a list of all  users filter by name
 export const indexByName = (req, res) => {
@@ -83,12 +77,11 @@ export const indexByName = (req, res) => {
 };
 
 // Gets a single user from the DB
-export const show = (req, res) => {
-  return Users.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-};
+export const show = (req, res) => Users.findById(req.params.id).exec()
+  .then(handleEntityNotFound(res))
+  .then(respondWithResult(res))
+  .catch(handleError(res));
+
 
 // Upserts the given user in the DB at the specified ID
 export const upsert = (req, res) => {
@@ -106,12 +99,11 @@ export const upsert = (req, res) => {
 };
 
 // Deletes a User from the DB
-export const destroy = (req, res) => {
-  return Users.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(removeEntity(res))
-    .catch(handleError(res));
-};
+export const destroy = (req, res) => Users.findById(req.params.id).exec()
+  .then(handleEntityNotFound(res))
+  .then(removeEntity(res))
+  .catch(handleError(res));
+
 
 // Updates an existing User in the DB
 export const patch = (req, res) => {
@@ -127,11 +119,10 @@ export const patch = (req, res) => {
 };
 
 // Creates a new User in the DB
-export const create = (req, res) => {
-  return Users.create(req.body)
-    .then(respondWithResult(res, 201))
-    .catch(handleError(res));
-};
+export const create = (req, res) => Users.create(req.body)
+  .then(respondWithResult(res, 201))
+  .catch(handleError(res));
+
 
 /**
  * Get my info

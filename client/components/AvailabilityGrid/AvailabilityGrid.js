@@ -44,14 +44,9 @@ class AvailabilityGrid extends Component {
         date: dateMoment,
         quarters: allTimes.map((quarter) => {
           // construct the time / date value for each cell
-          const dateHourForCell = moment()
-            .year(dateMoment.year())
-            .month(dateMoment.month())
-            .date(dateMoment.date())
+          const dateHourForCell = moment(dateMoment)
             .hour(moment(quarter).hour())
-            .minute(moment(quarter).minute())
-            .second(0)
-            .millisecond(0);
+            .minute(moment(quarter).minute());
           const guests = [];
           const notGuests = [];
           event.participants.forEach((participant) => {

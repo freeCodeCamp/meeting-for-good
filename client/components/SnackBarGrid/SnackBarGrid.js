@@ -117,7 +117,6 @@ class SnackBarGrid extends Component {
     const { openSnackBar, guests, noGuests } = this.props;
     const heightCalc = 60 +
       ((guests.length > noGuests.length) ? guests.length * 30 : noGuests.length * 30);
-    // console.log(heightCalc);
     const inlineStyles = {
       width: '450px',
       bodyStyle: {
