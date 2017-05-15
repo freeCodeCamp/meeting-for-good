@@ -123,10 +123,12 @@ module.exports = {
     }),
     new WebpackAssetsManifest({
       writeToDisk: true,
+      merge: true,
       done(manifest) {
         console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
       },
       apply(manifest) {
+        manifest.set('manifest_version', '2');
         manifest.set('short_name', 'LetsMeet');
         manifest.set('name', 'LetsMeet');
         manifest.set('background_color', '#FBFFFB');
