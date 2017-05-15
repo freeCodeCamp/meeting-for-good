@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
+import nameInitials from '../../util/string.utils';
 
 class GuestInviteDrawer extends Component {
   @autobind
@@ -174,7 +175,7 @@ class GuestInviteDrawer extends Component {
           />}
           rightAvatar={<Avatar
             src={guest.userId.avatar}
-            alt={guest.userId.name}
+            alt={nameInitials(guest.userId.name)}
           />}
         />
       );

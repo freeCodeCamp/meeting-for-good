@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
+import nameInitials from '../../util/string.utils';
 import styles from './nav-bar.css';
 
 class NavBar extends Component {
@@ -140,7 +141,7 @@ class NavBar extends Component {
                   <Avatar
                     size={34}
                     src={userAvatar}
-                    alt={curUser.name}
+                    alt={nameInitials(curUser.name)}
                   />
                   <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
                 </div>
