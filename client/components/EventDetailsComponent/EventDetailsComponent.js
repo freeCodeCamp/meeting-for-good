@@ -178,7 +178,7 @@ class EventDetailsComponent extends React.Component {
 
     return (
       <div styleName="wrapper">
-        <div styleName="cardWrapper">
+        <div>
           <Card styleName="card">
             {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
             <CardTitle styleName="cardTitle">{event.name}</CardTitle>
