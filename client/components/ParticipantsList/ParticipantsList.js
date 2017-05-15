@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 
+import nameInitials from '../../util/string.utils';
 import styles from './participants-list.css';
 
 class ParticipantsList extends Component {
@@ -67,6 +68,7 @@ class ParticipantsList extends Component {
     };
     let borderColor;
     let text;
+
     switch (participant.status) {
       case 1:
         borderColor = '3px solid #ff8080';
@@ -83,6 +85,7 @@ class ParticipantsList extends Component {
       default:
         break;
     }
+
     return (
     (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
       <Chip
@@ -95,7 +98,7 @@ class ParticipantsList extends Component {
           src={participant.userId.avatar}
           styleName="avatar"
           style={{ border: borderColor }}
-          alt={participant.userId.name}
+          alt={nameInitials(participant.userId.name)}
         />
         <div styleName="chipTextWrapper">
           <span>{participant.userId.name}</span>
@@ -112,7 +115,7 @@ class ParticipantsList extends Component {
           src={participant.userId.avatar}
           styleName="avatar"
           style={{ border: borderColor }}
-          alt={participant.userId.name}
+          alt={nameInitials(participant.userId.name)}
         />
         <div styleName="chipTextWrapper">
           <span styleName="chipTextName">{participant.userId.name}</span>
