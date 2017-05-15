@@ -128,9 +128,9 @@ class AvailabilityGrid extends Component {
 
   editParticipantToCellGrid(quarter, operation, rowIndex, columnIndex) {
     const { curUser } = this.props;
-    const { grid } = this.state;
-    const nGrid = _.cloneDeep(grid);
-    const nQuarter = _.cloneDeep(quarter);
+    const stateCopy = Object.assign({}, this.state);
+    const { grid } = stateCopy;
+    const nQuarter = Object.assign({}, quarter);
     if (operation === 'add') {
       const temp = nQuarter.notParticipants.splice(
         _.findIndex(nQuarter.notParticipants, curUser._id), 1);
@@ -141,8 +141,8 @@ class AvailabilityGrid extends Component {
         _.findIndex(nQuarter.participants, curUser._id), 1);
       nQuarter.notParticipants.push(temp[0]);
     }
-    nGrid[rowIndex].quarters[columnIndex] = nQuarter;
-    this.setState({ grid: nGrid });
+    grid[rowIndex].quarters[columnIndex] = nQuarter;
+    this.setState(stateCopy);
   }
 
   @autobind
