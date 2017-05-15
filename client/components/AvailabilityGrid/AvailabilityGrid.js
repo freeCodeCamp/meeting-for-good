@@ -224,7 +224,6 @@ class AvailabilityGrid extends Component {
       const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
       const snackBarNoGuests =
         quarter.notParticipants.map(participant => Object.values(participant));
-      //console.log('snackBarGuests', snackBarGuests, snackBarNoGuests);
       this.setState({ openSnackBar: true, snackBarGuests, snackBarNoGuests });
     }
   }
@@ -414,6 +413,7 @@ class AvailabilityGrid extends Component {
           noGuests={snackBarNoGuests}
           openSnackBar={openSnackBar}
         />
+        {this.renderDialog()}
       </div>
     );
   }
