@@ -29,11 +29,6 @@ class ParticipantsList extends Component {
   componentWillMount() {
     const { curUser, event } = this.props;
     this.setState({ curUser, event });
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('img').forEach((img) => {
-        img.onerror = () => { this.style.display = 'none'; };
-      });
-    });
   }
 
   componentWillReceiveProps(nextProps) {
