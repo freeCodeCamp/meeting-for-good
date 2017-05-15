@@ -22,6 +22,7 @@ class ParticipantsList extends Component {
       openDeleteModal: false,
       openDrawer: false,
       guestToDelete: '',
+      chipHoverEnable: '',
     };
   }
 
@@ -90,35 +91,21 @@ class ParticipantsList extends Component {
       default:
         break;
     }
+    const onRequestDeleteEnable = () => {
+      if (curUser._id !== participant.userId._id && event.owner === curUser._id) {
+        return () => this.handleOpenDeleteModal(participant._id);
+      }
+      return null;
+    };
 
     return (
-    (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
       <Chip
         key={participant._id}
         styleName="chip"
         labelStyle={inLinestyles.chip.label}
-        onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
+        onRequestDelete={onRequestDeleteEnable()}
         onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
-        onMouseLeave={this.props.onMouseLeave}
-      >
-        <Avatar
-          src={participant.userId.avatar}
-          styleName="avatar"
-          style={{ border: borderColor }}
-          alt={nameInitials(participant.userId.name)}
-        />
-        <div styleName="chipTextWrapper">
-          <span>{participant.userId.name}</span>
-          <span>{text}</span>
-        </div>
-      </Chip>
-    :
-      <Chip
-        key={participant._id}
-        styleName="chip"
-        labelStyle={inLinestyles.chip.label}
-        onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
-        onMouseLeave={this.props.onMouseLeave}
+        onMouseLeave={this.props.cbOnChipMouseLeave}
       >
         <Avatar
           src={participant.userId.avatar}
@@ -168,7 +155,7 @@ class ParticipantsList extends Component {
           backgroundColor: '#FF4025',
           color: '#ffffff',
           fontSize: '25px',
-          height: '50px',
+          height: '30px',
           paddingTop: 6,
         },
         content: {
@@ -247,7 +234,7 @@ class ParticipantsList extends Component {
 
 ParticipantsList.defaultProps = {
   cbOnChipMouseOver: () => { console.log('cbOnChipMouseOver func not passed in!'); },
-  onMouseLeave: () => { console.log('onMouseLeave func not passed in!'); },
+  cbOnChipMouseLeave: () => { console.log('cbOnChipMouseLeave func not passed in!'); },
 };
 
 ParticipantsList.propTypes = {
@@ -261,7 +248,7 @@ ParticipantsList.propTypes = {
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
   cbOnChipMouseOver: PropTypes.func,
-  onMouseLeave: PropTypes.func,
+  cbOnChipMouseLeave: PropTypes.func,
 
   // Event containing list of event participants
   event: PropTypes.shape({

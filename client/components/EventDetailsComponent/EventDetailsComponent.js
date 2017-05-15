@@ -208,7 +208,7 @@ class EventDetailsComponent extends React.Component {
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
                 cbDeleteGuest={this.handleDeleteGuest}
                 cbOnChipMouseOver={guest => this.handleOnMouseOverPrtcList(guest)}
-                onMouseLeave={guest => this.handleOnMouseLeavePrtcList(guest)}
+                cbOnChipMouseLeave={guest => this.handleOnMouseLeavePrtcList(guest)}
               />
             </CardText>
           </Card>
