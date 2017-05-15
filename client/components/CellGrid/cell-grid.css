@@ -6,7 +6,10 @@
 }
 
 .cellHighlighted {
-   border: 1px solid #000000;
+   border: 1px solid rgba(0, 100, 0, 1);
+  -webkit-box-shadow: 2px 2px 1px 0px rgba(0, 100, 0, 1) !important;
+  -moz-box-shadow: 2px 2px 1px 0px rgba(0, 100, 0, 1) !important;
+  box-shadow: 2px 2px 1px 0px rgba(0, 100, 0, 1) !important;
    cursor: pointer;
    width: 12px;
    box-sizing: border-box;

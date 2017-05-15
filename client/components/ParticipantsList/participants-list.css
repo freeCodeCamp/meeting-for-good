@@ -21,6 +21,11 @@
   padding: 2px 0px 2px 0px !important;
 }
 
+.chip:hover {
+  -webkit-box-shadow: 2px 2px 1px 0px rgba(0, 100, 0, 1) !important;
+  -moz-box-shadow: 2px 2px 1px 0px rgba(0, 100, 0, 1) !important;
+  box-shadow: 2px 2px 1px 0px rgba(0, 100, 0, 1) !important;
+}
 .avatar {
   width: 36px !important;
   height: 36px !important;
