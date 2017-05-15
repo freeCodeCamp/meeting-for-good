@@ -75,6 +75,7 @@ class CellGrid extends Component {
 
     return (
       <div
+        role="presentation"
         style={inlineStyle}
         styleName={styleNameSelection(heightlightedUser, participants)}
         key={moment(date)._d}

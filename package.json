@@ -119,12 +119,12 @@
   },
   "devDependencies": {
     "eslint": "^3.17.1",
-    "eslint-config-airbnb": "^14.0.0",
+    "eslint-config-airbnb": "^15.0.0",
     "eslint-friendly-formatter": "^2.0.6",
     "eslint-loader": "^1.7.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.3",
+    "eslint-plugin-jsx-a11y": "^5.0.0",
+    "eslint-plugin-react": "^7.0.1",
     "webpack-dev-middleware": "^1.10.0",
     "webpack-dev-server": "^2.3.0",
     "webpack-hot-middleware": "^2.16.1"
