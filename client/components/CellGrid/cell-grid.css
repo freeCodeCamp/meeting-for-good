@@ -4,3 +4,10 @@
   width: 12px;
   box-sizing: border-box;
 }
+
+.cellHighlighted {
+   border: 1px solid #000000;
+   cursor: pointer;
+   width: 12px;
+   box-sizing: border-box;
+}

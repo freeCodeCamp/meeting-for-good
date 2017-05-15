@@ -57,6 +57,11 @@ class ParticipantsList extends Component {
     this.props.showInviteGuests();
   }
 
+  @autobind
+  handleChipOnMouseOver(ev, guest) {
+    this.props.cbOnChipMouseOver(guest);
+  }
+
   renderChip(participant) {
     const { curUser, event } = this.state;
     const inLinestyles = {
@@ -93,6 +98,8 @@ class ParticipantsList extends Component {
         styleName="chip"
         labelStyle={inLinestyles.chip.label}
         onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
+        onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
+        onMouseLeave={this.props.onMouseLeave}
       >
         <Avatar
           src={participant.userId.avatar}
@@ -110,6 +117,8 @@ class ParticipantsList extends Component {
         key={participant._id}
         styleName="chip"
         labelStyle={inLinestyles.chip.label}
+        onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
+        onMouseLeave={this.props.onMouseLeave}
       >
         <Avatar
           src={participant.userId.avatar}
@@ -236,6 +245,11 @@ class ParticipantsList extends Component {
   }
 }
 
+ParticipantsList.defaultProps = {
+  cbOnChipMouseOver: () => { console.log('cbOnChipMouseOver func not passed in!'); },
+  onMouseLeave: () => { console.log('onMouseLeave func not passed in!'); },
+};
+
 ParticipantsList.propTypes = {
   // Current user
   curUser: PropTypes.shape({
@@ -246,6 +260,8 @@ ParticipantsList.propTypes = {
 
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
+  cbOnChipMouseOver: PropTypes.func,
+  onMouseLeave: PropTypes.func,
 
   // Event containing list of event participants
   event: PropTypes.shape({

@@ -339,6 +339,7 @@ class AvailabilityGrid extends Component {
         curUser={curUser}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
+        heightlightedUser={this.props.heightlightedUser}
       />
     ),
     );
@@ -427,6 +428,7 @@ AvailabilityGrid.defaultProps = {
   editAvail: () => { console.log('ediAvail func not passed in!'); },
   closeEditorGrid: () => { console.log('closeGrid func not passed in!'); },
   submitAvail: () => { console.log('submitAvail func not passed in!'); },
+  heightlightedUser: '',
 };
 
 AvailabilityGrid.propTypes = {
@@ -480,6 +482,7 @@ AvailabilityGrid.propTypes = {
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
   }).isRequired,
+  heightlightedUser: PropTypes.string,
 };
 
 export default cssModules(AvailabilityGrid, styles);

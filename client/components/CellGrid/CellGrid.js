@@ -37,6 +37,10 @@ class CellGrid extends Component {
     return 'transparent';
   }
 
+  static styleNameSelection(userToHighlight, participants) {
+    return (_.find(participants, userToHighlight)) ? 'cellHighlighted' : 'cell';
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -46,19 +50,22 @@ class CellGrid extends Component {
   }
 
   componentWillMount() {
-    const { date, participants, heatMapMode, rowIndex, columnIndex } = this.props;
-    this.setState({ date: moment(date), participants, heatMapMode, rowIndex, columnIndex });
+    const {
+      date, participants, heatMapMode, rowIndex, columnIndex, heightlightedUser } = this.props;
+    this.setState({
+      date: moment(date), participants, heatMapMode, rowIndex, columnIndex, heightlightedUser,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { date, participants, heatMapMode } = nextProps;
-    this.setState({ date: moment(date), participants, heatMapMode });
+    const { date, participants, heatMapMode, heightlightedUser } = nextProps;
+    this.setState({ date: moment(date), participants, heatMapMode, heightlightedUser });
   }
 
   render() {
-    const { date, participants, heatMapMode } = this.state;
+    const { date, participants, heatMapMode, heightlightedUser } = this.state;
     const { backgroundColors, curUser } = this.props;
-    const { formatCellBackgroundColor, formatCellBorder } = this.constructor;
+    const { formatCellBackgroundColor, formatCellBorder, styleNameSelection } = this.constructor;
 
     const inlineStyle = {
       borderLeft: formatCellBorder(date),
@@ -69,7 +76,7 @@ class CellGrid extends Component {
     return (
       <div
         style={inlineStyle}
-        styleName="cell"
+        styleName={styleNameSelection(heightlightedUser, participants)}
         key={moment(date)._d}
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}
@@ -84,6 +91,7 @@ CellGrid.defaultProps = {
   backgroundColors: ['transparent'],
   rowIndex: 0,
   columnIndex: 0,
+  heightlightedUser: '',
 };
 
 CellGrid.propTypes = {
@@ -97,6 +105,7 @@ CellGrid.propTypes = {
   onMouseUp: PropTypes.func.isRequired,
   rowIndex: PropTypes.number,
   columnIndex: PropTypes.number,
+  heightlightedUser: PropTypes.string,
 
   // Current user
   curUser: PropTypes.shape({

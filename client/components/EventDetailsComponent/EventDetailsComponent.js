@@ -41,6 +41,7 @@ class EventDetailsComponent extends React.Component {
       isParticipant: true,
       snackBarOpen: false,
       snackBarMsg: '',
+      heightlightedUser: '',
     };
   }
 
@@ -151,13 +152,19 @@ class EventDetailsComponent extends React.Component {
     });
   }
 
+  @autobind
+  handleOnMouseOverPrtcList(guest) {
+    this.setState({ heightlightedUser: guest });
+  }
+
+  @autobind
+  handleOnMouseLeavePrtcList() {
+    this.setState({ heightlightedUser: '' });
+  }
+
   render() {
     const {
-      event,
-      showHeatmap,
-      dates,
-      snackBarOpen,
-      snackBarMsg,
+      event, showHeatmap, dates, snackBarOpen, snackBarMsg, heightlightedUser,
     } = this.state;
     const { curUser } = this.props;
     let isOwner;
@@ -192,6 +199,7 @@ class EventDetailsComponent extends React.Component {
                 submitAvail={this.submitAvailability}
                 showHeatmap={showHeatmap}
                 closeEditorGrid={this.closeGrid}
+                heightlightedUser={heightlightedUser}
               />
               <br />
               <ParticipantsList
@@ -199,6 +207,8 @@ class EventDetailsComponent extends React.Component {
                 curUser={curUser}
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
                 cbDeleteGuest={this.handleDeleteGuest}
+                cbOnChipMouseOver={guest => this.handleOnMouseOverPrtcList(guest)}
+                onMouseLeave={guest => this.handleOnMouseLeavePrtcList(guest)}
               />
             </CardText>
           </Card>
