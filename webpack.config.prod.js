@@ -122,6 +122,7 @@ module.exports = {
       inject: 'body',
     }),
     new WebpackAssetsManifest({
+      writeToDisk: true,
       done(manifest) {
         console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
       },
