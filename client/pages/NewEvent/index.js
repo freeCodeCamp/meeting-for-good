@@ -337,7 +337,6 @@ NewEvent.propTypes = {
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
   }).isRequired,
-
 };
 
 export default cssModules(NewEvent, styles);
