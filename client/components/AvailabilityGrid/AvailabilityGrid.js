@@ -136,6 +136,11 @@ class AvailabilityGrid extends Component {
         _.findIndex(nQuarter.participants, curUser._id), 1);
       nQuarter.notParticipants.push(temp[0]);
     }
+    if (operation === 'new') {
+      const temp = {};
+      temp[curUser._id] = curUser.name;
+      nQuarter.participants.push(temp);
+    }
     grid[rowIndex].quarters[columnIndex] = nQuarter;
     this.setState(stateCopy);
   }
@@ -195,7 +200,8 @@ class AvailabilityGrid extends Component {
       return;
     }
     const { curUser } = this.props;
-    let editOperation = '';
+    console.log('Avail', curUser);
+    let editOperation = 'new';
     if (_.findIndex(quarter.participants, curUser._id) > -1) {
       editOperation = 'remove';
     }
@@ -215,9 +221,10 @@ class AvailabilityGrid extends Component {
       if (mouseDown) {
         if (_.findIndex(quarter.participants, curUser._id) > -1 && editOperation === 'remove') {
           this.editParticipantToCellGrid(quarter, 'remove', rowIndex, columnIndex);
-        }
-        if (_.findIndex(quarter.notParticipants, curUser._id) > -1 && editOperation === 'add') {
+        } else if (_.findIndex(quarter.notParticipants, curUser._id) > -1 && editOperation === 'add') {
           this.editParticipantToCellGrid(quarter, 'add', rowIndex, columnIndex);
+        } else {
+          this.editParticipantToCellGrid(quarter, 'new', rowIndex, columnIndex);
         }
       }
     } else {
