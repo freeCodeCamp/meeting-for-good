@@ -159,6 +159,8 @@ module.exports = {
         console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
       },
       apply(manifest) {
+        manifest.set('manifest_version', '2');
+        manifest.set('version', '1');
         manifest.set('short_name', 'LetsMeet');
         manifest.set('name', 'LetsMeet');
         manifest.set('background_color', '#FBFFFB');

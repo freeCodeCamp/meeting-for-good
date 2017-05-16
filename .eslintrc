@@ -8,7 +8,7 @@
     "no-param-reassign": 0,
     "no-console": 0,
     "strict": [0, "global"],
-    "react/prefer-stateless-function": 0,
+    "react/prefer-stateless-function": 2,
     "no-multi-spaces": ["error", {
       "exceptions": {
         "VariableDeclarator": true
@@ -16,10 +16,10 @@
     }],
     "no-shadow": 0,
     "no-underscore-dangle": 0,
-    "arrow-body-style": 0,
+    "arrow-body-style": 2,
     "consistent-return": 0,
     "no-nested-ternary": 0,
-    "max-len": 0,
+    "max-len": 2,
     "allowForLoopAfterthoughts": 0,
     "react/jsx-filename-extension": [1, {
       "extensions": [".js", ".jsx"]
