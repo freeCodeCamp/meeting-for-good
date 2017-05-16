@@ -327,7 +327,7 @@ class AvailabilityGrid extends Component {
       return (
         <CellGrid
           heatMapMode={showHeatmap}
-          key={moment(quarter.time)._d}
+          key={quarter.time}
           date={quarter.time}
           backgroundColors={backgroundColors}
           participants={quarter.participants}
@@ -352,7 +352,7 @@ class AvailabilityGrid extends Component {
         {this.renderGridHours()}
         {
           grid.map((row, rowIndex) => (
-            <div key={moment(row.date).format('Do MMM ddd')} styleName="column">
+            <div key={row.date} styleName="column">
               <div styleName="row">
                 <div styleName="date-cell">
                   {moment(row.date).format('Do MMM ddd')}
