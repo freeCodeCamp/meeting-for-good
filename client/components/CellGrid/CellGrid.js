@@ -37,10 +37,6 @@ class CellGrid extends Component {
     return 'transparent';
   }
 
-  static styleNameSelection(userToHighlight, participants) {
-    return (_.find(participants, userToHighlight)) ? 'cellHighlighted' : 'cell';
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -65,7 +61,7 @@ class CellGrid extends Component {
   render() {
     const { date, participants, heatMapMode, heightlightedUser } = this.state;
     const { backgroundColors, curUser } = this.props;
-    const { formatCellBackgroundColor, formatCellBorder, styleNameSelection } = this.constructor;
+    const { formatCellBackgroundColor, formatCellBorder } = this.constructor;
 
     const inlineStyle = {
       borderLeft: formatCellBorder(date),
@@ -77,7 +73,7 @@ class CellGrid extends Component {
       <div
         role="presentation"
         style={inlineStyle}
-        styleName={styleNameSelection(heightlightedUser, participants)}
+        styleName={(heightlightedUser) ? 'cellHighlighted' : 'cell'}
         key={moment(date)._d}
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}

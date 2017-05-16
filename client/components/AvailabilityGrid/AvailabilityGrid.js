@@ -320,23 +320,28 @@ class AvailabilityGrid extends Component {
   renderGridRow(quarters, rowIndex) {
     const { backgroundColors, showHeatmap } = this.state;
     const { curUser } = this.props;
-    return quarters.map((quarter, columnIndex) => (
-      <CellGrid
-        heatMapMode={showHeatmap}
-        key={moment(quarter.time)._d}
-        date={quarter.time}
-        backgroundColors={backgroundColors}
-        participants={quarter.participants}
-        onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
-        onMouseLeave={ev => this.handleCellMouseLeave(ev)}
-        onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
-        onMouseUp={ev => this.handleCellMouseUp(ev)}
-        curUser={curUser}
-        rowIndex={rowIndex}
-        columnIndex={columnIndex}
-        heightlightedUser={this.props.heightlightedUser}
-      />
-    ),
+    return quarters.map((quarter, columnIndex) => {
+      const heightlightedUserTemp =
+        (_.find(quarter.participants, this.props.heightlightedUser))
+          ? this.props.heightlightedUser : null;
+      return (
+        <CellGrid
+          heatMapMode={showHeatmap}
+          key={moment(quarter.time)._d}
+          date={quarter.time}
+          backgroundColors={backgroundColors}
+          participants={quarter.participants}
+          onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
+          onMouseLeave={ev => this.handleCellMouseLeave(ev)}
+          onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
+          onMouseUp={ev => this.handleCellMouseUp(ev)}
+          curUser={curUser}
+          rowIndex={rowIndex}
+          columnIndex={columnIndex}
+          heightlightedUser={heightlightedUserTemp}
+        />
+      );
+    },
     );
   }
 
