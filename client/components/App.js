@@ -222,7 +222,6 @@ class App extends Component {
     const { events } = this.state;
     // find if the guest alredy exists as participant
     // ask at DB because guests sets as 0 its not load as default
-    // let indexOfGuest = -1;
     event = await loadEventFull(event._id);
     const participants = event.participants;
     const indexOfGuest = _.findIndex(participants, participant => participant.userId._id === guestId.toString());
