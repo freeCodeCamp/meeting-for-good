@@ -80,7 +80,11 @@ class NotificationBar extends Component {
       notificationColor = '#ffffff';
       events.forEach((event) => {
         event.participants.forEach((participant) => {
-          if (participant.userId._id.toString() !== curUser._id && participant.ownerNotified === false) {
+          if (
+            participant.userId._id.toString() !== curUser._id
+            && participant.ownerNotified === false
+            && event.owner.toString() === curUser._id
+          ) {
             notificationColor = '#ff0000';
             quantOwnerNotNotified += 1;
           }
