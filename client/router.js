@@ -6,7 +6,9 @@ import Home from './pages/home/';
 
 require('es6-promise').polyfill();
 
-const loadRoute = cb => module => cb(null, module.default);
+const loadRoute = (cb) => {
+  return module => cb(null, module.default);
+};
 
 const errorLoading = (err) => {
   console.error('Dynamic page loading failed', err);
@@ -53,6 +55,10 @@ const componentRoutes = {
   ],
 };
 
-const Routes = () => <Router history={browserHistory} routes={componentRoutes} />;
+const Routes = () => {
+  return (
+    <Router history={browserHistory} routes={componentRoutes} />
+  );
+};
 
 export default Routes;

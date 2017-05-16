@@ -1,16 +1,15 @@
 .cell {
+  padding: 5px;
   border: 1px solid #efefef;
+  height: 42px;
   cursor: pointer;
-  width: 12px;
-  box-sizing: border-box;
+  width: 1px;
 }
 
-.cellHighlighted {
-   border: 1px solid rgba(0, 100, 0, 1);
-  -webkit-box-shadow: 5px 5px 5px 0px rgba(50, 102, 50, 0.75);
-  -moz-box-shadow: 5px 5px 5px 0px rgba(50, 102, 50, 0.75);
-  box-shadow: 5px 5px 5px 0px rgba(50, 102, 50, 0.75);
-   cursor: pointer;
-   width: 12px;
-   box-sizing: border-box;
+.disabled {
+  composes: cell;
+  background-color: #eee;
+  cursor: disable;
+  pointer-events: none;
+  border: 1px solid #eee !important;
 }

@@ -14,9 +14,7 @@ import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
-    const eventParticipantsIds = props.event.participants.map(
-      participant => participant.userId._id,
-    );
+    const eventParticipantsIds = props.event.participants.map(participant => participant.userId._id);
     const { event } = props;
 
     const ranges = event.dates.map(({ fromDate, toDate }) => ({
@@ -41,7 +39,6 @@ class EventDetailsComponent extends React.Component {
       isParticipant: true,
       snackBarOpen: false,
       snackBarMsg: '',
-      heightlightedUser: '',
     };
   }
 
@@ -60,7 +57,7 @@ class EventDetailsComponent extends React.Component {
       if (isCurParticipant) {
         if (isCurParticipant.availability) {
           myAvailability = isCurParticipant.availability;
-          if (myAvailability.length > 0) {
+          if (myAvailability.length) {
             showHeatmap = true;
             showAvailabilityGrid = 'none';
           }
@@ -152,19 +149,14 @@ class EventDetailsComponent extends React.Component {
     });
   }
 
-  @autobind
-  handleOnMouseOverPrtcList(guest) {
-    this.setState({ heightlightedUser: guest });
-  }
-
-  @autobind
-  handleOnMouseLeavePrtcList() {
-    this.setState({ heightlightedUser: '' });
-  }
-
   render() {
     const {
-      event, showHeatmap, dates, snackBarOpen, snackBarMsg, heightlightedUser,
+      event,
+      showHeatmap,
+      dates,
+      showAvailabilityGrid,
+      snackBarOpen,
+      snackBarMsg,
     } = this.state;
     const { curUser } = this.props;
     let isOwner;
@@ -185,30 +177,40 @@ class EventDetailsComponent extends React.Component {
 
     return (
       <div styleName="wrapper">
-        <div>
+        <div styleName="cardWrapper">
           <Card styleName="card">
             {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
             <CardTitle styleName="cardTitle">{event.name}</CardTitle>
             <CardText>
               <BestTimesDisplay event={event} disablePicker />
-              <AvailabilityGrid
-                event={event}
-                curUser={curUser}
-                dates={dates}
-                editAvail={this.editAvail}
-                submitAvail={this.submitAvailability}
-                showHeatmap={showHeatmap}
-                closeEditorGrid={this.closeGrid}
-                heightlightedUser={heightlightedUser}
-              />
+              {(showHeatmap) ?
+                <div id="heatmap">
+                  <AvailabilityGrid
+                    event={event}
+                    curUser={curUser}
+                    dates={dates}
+                    editAvail={this.editAvail}
+                    heatmap
+                  />
+                </div> :
+                <div id="grid" styleName="aviabilityContainer" >
+                  <div style={{ display: showAvailabilityGrid }}>
+                    <AvailabilityGrid
+                      event={event}
+                      dates={dates}
+                      curUser={curUser}
+                      submitAvail={this.submitAvailability}
+                      closeGrid={this.closeGrid}
+                    />
+                  </div>
+                </div>
+              }
               <br />
               <ParticipantsList
                 event={event}
                 curUser={curUser}
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
                 cbDeleteGuest={this.handleDeleteGuest}
-                cbOnChipMouseOver={guest => this.handleOnMouseOverPrtcList(guest)}
-                cbOnChipMouseLeave={guest => this.handleOnMouseLeavePrtcList(guest)}
               />
             </CardText>
           </Card>
