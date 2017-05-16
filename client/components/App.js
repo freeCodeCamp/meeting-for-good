@@ -39,9 +39,7 @@ class App extends Component {
       }
       const curUser = await getCurrentUser();
       const events = await loadEvents(showPastEvents);
-      this.setState({
-        isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents,
-      });
+      this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
 
@@ -72,7 +70,7 @@ class App extends Component {
     if (event.length === 0) {
       const event = await loadEvent(id);
       if (event === null) {
-        this._addNotification('Error!!', 'I can\'t load event, please try again later', 'error', 8);
+        this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 8);
         return false;
       }
       return event;
@@ -98,7 +96,7 @@ class App extends Component {
       this._addNotification('Success!', 'Event deleted', 'success');
       return true;
     }
-    this._addNotification('Error!!', 'Delete event error, please try again later', 'error', 8);
+    this._addNotification('Error!!', 'delete event error, please try again latter', 'error', 8);
     return false;
   }
 
@@ -189,7 +187,7 @@ class App extends Component {
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
       return eventEdited;
     }
-    this._addNotification('Error!!', 'Failed to delete guest. Please try again later.', 'error');
+    this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
     return eventEdited;
   }
 
@@ -224,7 +222,7 @@ class App extends Component {
         if (nEvent) {
           const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
           if (responseEmail) {
-            this._addNotification('Info', 'Guest already invited for this event. Invite sent again', 'info');
+            this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
             const nEvents = events.filter(event => event._id !== nEvent._id);
             this.setState({ events: [nEvent, ...nEvents] });
             return true;
@@ -237,15 +235,15 @@ class App extends Component {
       } else if (status === 1) {
         const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
         if (responseEmail) {
-          this._addNotification('Info', 'Guest alredy invited for this event. Invite sent again', 'info');
+          this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
           return true;
         }
         return false;
       } else if (status === 2) {
-        this._addNotification('Info', 'Guest already joined this event.', 'info');
+        this._addNotification('Info', 'Guest alredy join this event.', 'info');
         return true;
       } else if (status === 3) {
-        this._addNotification('Info', 'Guest already set a time table for this event.', 'info');
+        this._addNotification('Info', 'Guest alredy set a time table for this event.', 'info');
         return true;
       }
     }
@@ -266,7 +264,7 @@ class App extends Component {
   async sendInviteEmail(guestId, event, curUser) {
     const result = await sendEmailInvite(guestId, event, curUser);
     if (result) {
-      this._addNotification('Success', 'Invite sent successfully.', 'success');
+      this._addNotification('Success', 'Invite send successfully.', 'success');
       return result;
     }
     this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
