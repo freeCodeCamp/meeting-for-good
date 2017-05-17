@@ -175,6 +175,15 @@ export const patch = (req, res) => {
         .populate('participants.userId', 'avatar emails name')
         .exec();
     })
+    .then((event) => {
+      const nEvent = _.clone(event);
+      event.participants.forEach((participant, indexParticipant) => {
+        if (participant.status === 0) {
+          nEvent.participants.splice(indexParticipant, 1);
+        }
+      });
+      return nEvent;
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
