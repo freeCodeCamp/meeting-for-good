@@ -75,7 +75,7 @@ class NewEvent extends React.Component {
   handleDayClick(day, { disabled }) {
     if (disabled) return;
 
-    function removeRange(ranges, range) {
+    const removeRange = (ranges, range) => {
       const newRange = ranges.filter(r => !_.isEqual(r, range));
       if (newRange.length === 0) {
         return [{
@@ -84,10 +84,11 @@ class NewEvent extends React.Component {
         }];
       }
       return newRange;
-    }
+    };
 
     // Deep copy this.state.ranges to ranges
-    let ranges = _.map(this.state.ranges, _.clone);
+//    let ranges = _.map(this.state.ranges, _.clone);
+    let ranges = _.cloneDeep(this.state.ranges);
 
     let found = false;
     for (let i = 0; i < ranges.length; i += 1) {
