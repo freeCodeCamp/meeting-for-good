@@ -8,18 +8,6 @@ import styles from './cell-grid.css';
 
 class CellGrid extends Component {
 
-  // Change the border of the cell if it's minutes = 0 or 30 to help visually
-  // separate 15 minute blocks from 30 minute and 1 hour blocks.
-  static formatCellBorder(time) {
-    const minutes = time.minutes();
-    if (minutes === 0) {
-      return '.borderHour';
-    } else if (minutes === 30) {
-      return 'borderHalfHour';
-    }
-    return {};
-  }
-
   static styleNameCompose(
     heightlightedUser, heatMapMode, participants, backgroundColors, curUser, time) {
     // select the class for the border base style
@@ -32,7 +20,7 @@ class CellGrid extends Component {
     }
 
     // if have a user to hightLight and is present at this cell
-    if (heatMapMode) { 
+    if (heatMapMode) {
       if (heightlightedUser) {
         if (_.find(participants, heightlightedUser)) {
           style += ' cellHighlighted';
@@ -85,13 +73,12 @@ class CellGrid extends Component {
   render() {
     const { date, participants, heatMapMode, heightlightedUser } = this.state;
     const { backgroundColors, curUser } = this.props;
-    const { formatCellBackgroundColor, formatCellBorder, styleNameCompose } = this.constructor;
+    const { formatCellBackgroundColor, styleNameCompose } = this.constructor;
 
     const styleNames = styleNameCompose(
       heightlightedUser, heatMapMode, participants, backgroundColors, curUser, date);
 
     const inlineStyle = {
-      borderLeft: formatCellBorder(date),
       backgroundColor: formatCellBackgroundColor(
         heatMapMode, participants, backgroundColors, curUser),
     };
