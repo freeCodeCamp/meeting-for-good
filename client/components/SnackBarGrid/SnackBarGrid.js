@@ -29,7 +29,7 @@ class SnackBarGrid extends Component {
           tableHeaderColumn: {
             textAlign: 'center',
             fontSize: '20px',
-            color: '#FFFFFF',
+            color: '#000000',
             iconStyles: {
               margin: 0,
             },
@@ -49,7 +49,7 @@ class SnackBarGrid extends Component {
             borderBottom: 'none',
             borderTop: 'none',
             fontSize: '15px',
-            color: '#ffffff',
+            color: '#000000',
           },
         },
       },
@@ -71,7 +71,7 @@ class SnackBarGrid extends Component {
               <ThumbUp
                 style={{ fontSize: '100px' }}
                 viewBox="0 0 28 21"
-                color={'#ffffff'}
+                color={'#000000'}
               /> Available
             </TableHeaderColumn>
             <TableHeaderColumn
@@ -80,7 +80,7 @@ class SnackBarGrid extends Component {
               <ThumbDown
                 style={{ fontSize: '24px' }}
                 viewBox="0 0 28 21"
-                color={'#ffffff'}
+                color={'#000000'}
               /> Not Available
             </TableHeaderColumn>
           </TableRow>
@@ -117,6 +117,7 @@ class SnackBarGrid extends Component {
     const heightCalc = 60 +
       ((guests.length > noGuests.length) ? guests.length * 30 : noGuests.length * 30);
     const inlineStyles = {
+      border: '2px ridge #E0E0E0',
       width: '450px',
       bodyStyle: {
         display: 'flex',
@@ -131,7 +132,7 @@ class SnackBarGrid extends Component {
         bodyStyle={inlineStyles.bodyStyle}
         open={openSnackBar}
         message={this.createMsgSnackBar()}
-        autoHideDuration={3000000}
+        autoHideDuration={30000000}
         onRequestClose={this.handleRequestClose}
       />
     );

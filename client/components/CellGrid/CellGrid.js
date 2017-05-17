@@ -13,11 +13,35 @@ class CellGrid extends Component {
   static formatCellBorder(time) {
     const minutes = time.minutes();
     if (minutes === 0) {
-      return '1px solid rgb(120, 120, 120)';
+      return '.borderHour';
     } else if (minutes === 30) {
-      return '1px solid #c3bebe';
+      return 'borderHalfHour';
     }
     return {};
+  }
+
+  static styleNameCompose(
+    heightlightedUser, heatMapMode, participants, backgroundColors, curUser, time) {
+    // select the class for the border base style
+    let style = 'cell';
+    const minutes = time.minutes();
+    if (minutes === 0) {
+      style += ' cellBorderHour';
+    } else if (minutes === 30) {
+      style += ' cellBorderHalfHour';
+    }
+
+    // if have a user to hightLight and is present at this cell
+    if (heatMapMode) { 
+      if (heightlightedUser) {
+        if (_.find(participants, heightlightedUser)) {
+          style += ' cellHighlighted';
+        } else {
+          style += ' cellNotHeiglighted';
+        }
+      }
+    }
+    return style;
   }
 
   static formatCellBackgroundColor(heatMapMode, participants, backgroundColors, curUser) {
@@ -61,7 +85,10 @@ class CellGrid extends Component {
   render() {
     const { date, participants, heatMapMode, heightlightedUser } = this.state;
     const { backgroundColors, curUser } = this.props;
-    const { formatCellBackgroundColor, formatCellBorder } = this.constructor;
+    const { formatCellBackgroundColor, formatCellBorder, styleNameCompose } = this.constructor;
+
+    const styleNames = styleNameCompose(
+      heightlightedUser, heatMapMode, participants, backgroundColors, curUser, date);
 
     const inlineStyle = {
       borderLeft: formatCellBorder(date),
@@ -73,8 +100,8 @@ class CellGrid extends Component {
       <div
         role="presentation"
         style={inlineStyle}
-        styleName={(heightlightedUser) ? 'cellHighlighted' : 'cell'}
-        key={moment(date)._d}
+        styleName={styleNames}
+        key={date}
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}
         onMouseDown={this.props.onMouseDown}
@@ -112,4 +139,4 @@ CellGrid.propTypes = {
   }).isRequired,
 };
 
-export default cssModules(CellGrid, styles);
+export default cssModules(CellGrid, styles, { allowMultiple: true });

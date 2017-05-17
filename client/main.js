@@ -6,7 +6,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';
 import Routes from './router'; // App
-import { darkBlack, darkWhite } from '../node_modules/material-ui/styles/colors';
+import { darkBlack } from '../node_modules/material-ui/styles/colors';
 
 // Vendor Dependencies
 import './styles/no-css-modules/nprogress.css';
@@ -30,8 +30,8 @@ const muiTheme = getMuiTheme({
     accent1Color: '#FF4025',
   },
   snackbar: {
-    textColor: darkWhite,
-    backgroundColor: '#006400',
+    textColor: 'black',
+    backgroundColor: 'white',
   },
   raisedButton: {
     fontWeight: 'regular',
