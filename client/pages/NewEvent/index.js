@@ -70,13 +70,11 @@ class NewEvent extends React.Component {
     }
   }
 
-  @autobind
+    @autobind
   handleDayClick(day, { disabled }) {
     if (disabled) return;
 
-    // date ranges manipulation
-    let ranges = _.map(this.state.ranges, _.clone); // deep copy this.state.ranges to ranges
-    function removeRange(ranges, range) {
+    const removeRange = (ranges, range) => {
       const newRange = ranges.filter(r => !_.isEqual(r, range));
       if (newRange.length === 0) {
         return [{
@@ -85,54 +83,31 @@ class NewEvent extends React.Component {
         }];
       }
       return newRange;
-    }
+    };
 
-    // Check if day already exists in a range. If yes, remove it from all the
-    // ranges that it exists in.
-    ranges.forEach((range) => {
-//    for (const range of ranges) {
+    // Deep copy this.state.ranges to ranges
+    let ranges = _.cloneDeep(this.state.ranges);
+
+    let found = false;
+    for (let i = 0; i < ranges.length; i += 1) {
+      const range = ranges[i];
       if (DateUtils.isDayInRange(day, range)) {
-        const { from, to } = range;
-        const yesterday = moment(day).subtract(1, 'date')._d;
-        const tomorrow = moment(day).add(1, 'date')._d;
-
-        if (!DateUtils.isDayInRange(yesterday, range) && !DateUtils.isDayInRange(tomorrow, range)) {
-          ranges = removeRange(ranges, range);
-        } else {
-          if (!moment(day).isSame(from)) {
-            ranges.push({
-              from, to: yesterday,
-            });
-          }
-
-          if (!moment(day).isSame(to)) {
-            ranges.push({
-              from: tomorrow, to,
-            });
-          }
-
-          ranges = removeRange(ranges, range);
-        }
+        ranges = removeRange(ranges, range);
+        found = true;
+        break;
       }
-    });
-
-    // If the previous operation did not change the ranges array (i.e. the
-    // clicked day wasn't already in a range), then either create a new range or
-    // add it to the existing range.
-    if (_.isEqual(ranges, this.state.ranges)) {
-      if (!ranges[ranges.length - 1].from ||
-          !ranges[ranges.length - 1].to) {
-        ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
-        this.setState({ ranges }, () => this.toggleSubmitDisabled());
-      } else {
-        ranges.push({ from: null, to: null });
-        ranges[ranges.length - 1] = DateUtils.addDayToRange(day, ranges[ranges.length - 1]);
-        this.setState({ ranges }, () => this.toggleSubmitDisabled());
-      }
-    } else {
-      this.setState({ ranges }, () => this.toggleSubmitDisabled());
     }
+
+    if (!found) {
+      if (ranges.length > 0 && !ranges[0].from) {
+        ranges = [];
+      }
+      ranges.push({ from: day, to: day });
+    }
+
+    this.setState({ ranges }, () => this.toggleSubmitDisabled());
   }
+
 
   @autobind
   handleResetClick(e) {
