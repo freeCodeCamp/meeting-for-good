@@ -38,9 +38,10 @@ class BestTimeDisplay extends Component {
         availability.push(participant.availability);
       }
     });
+
     if (availability.length > 1) {
-      // need to find the participant with most availabilitys to be the base one;
-      availability.sort((a, b) => b.length - a.length);
+      // need to find the participant with less availabilitys to be the base one;
+      availability.sort((a, b) => a.length - b.length);
       for (let i = 0; i < availability[0].length; i += 1) {
         const current = availability[0][i];
         let count = 0;

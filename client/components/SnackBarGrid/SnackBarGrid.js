@@ -90,7 +90,7 @@ class SnackBarGrid extends Component {
         >{interactor.map((inter, index) =>
           (
             <TableRow
-              key={inter}
+              key={`${inter} ${Math.random()}`}
               style={inlineStyles.tableBody.tableRow}
             >
               <TableRowColumn
