@@ -212,8 +212,8 @@ class AvailabilityGrid extends Component {
     const eventToEdit = await loadEventFull(this.state.event._id);
     const event = JSON.parse(JSON.stringify(eventToEdit));
     const observerEvent = jsonpatch.observe(event);
-     // first check if cur exists as a participant
-     // if is not add the curUser as participant
+    // first check if cur exists as a participant
+    // if is not add the curUser as participant
     const isParticipant = event.participants.filter(
       participant => participant.userId._id === curUser._id,
     );
@@ -313,7 +313,7 @@ class AvailabilityGrid extends Component {
   handleCancelBtnClick() {
     const { allDates, allTimes, event } = this.state;
     const { createGridComplete } = this.constructor;
-    const grid =  createGridComplete(allDates, allTimes, event);
+    const grid = createGridComplete(allDates, allTimes, event);
     this.setState({ grid });
     this.props.closeEditorGrid();
   }

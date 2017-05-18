@@ -1,8 +1,9 @@
 .cell {
+  padding: 5px;
   border: 1px solid #efefef;
+  height: 42px;
   cursor: pointer;
-  width: 12px;
-  box-sizing: border-box;
+  width: 1px;
 }
 
 .cellHighlighted {

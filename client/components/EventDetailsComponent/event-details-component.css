@@ -1,29 +1,29 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  margin: 0px;
-  padding: 0px;
-  margin: 2% 0 0 0;
-}
-
-.wrapper:hover {
-  box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3);
-}
-
 .card {
-  width: flex !important;
-  min-width: 320px;
+   width: flex !important;
+   margin-top: 2% !important;
+   min-width: 320px;
 }
+
+.cardWrapper:hover {
+  box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3);
+}
+
 .cardTitle {
   padding: 25px 10px 10px 10px !important;
   font-size: 36px !important;
+  font-weight: 300 !important;
   line-height: 38px !important;
   text-align: center !important;
 }
 
 .aviabilityContainer {
   display: flex;
+  justify-content: space-around;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
   justify-content: space-around;
 }
 

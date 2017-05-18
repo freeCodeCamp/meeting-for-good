@@ -32,11 +32,8 @@ class BestTimeDisplay extends Component {
     const overlaps = [];
     const displayTimes = {};
 
-    // flat availability
     event.participants.forEach((participant) => {
-      if (participant.availability !== undefined && participant.availability.length > 0) {
-        availability.push(participant.availability);
-      }
+      if (participant.availability !== undefined) availability.push(participant.availability);
     });
 
     if (availability.length > 1) {
@@ -47,37 +44,37 @@ class BestTimeDisplay extends Component {
         let count = 0;
         for (let j = 0; j < availability.length; j += 1) {
           for (let k = 0; k < availability[j].length; k += 1) {
-            if (moment(availability[j][k][0]).format('D M YYYY HH mm').toString()
-              === moment(current[0]).format('D M YYYY HH mm').toString()) {
+            if (availability[j][k][0] === current[0]) {
               count += 1;
             }
           }
         }
-        if (count === availability.length) {
-          overlaps.push(current);
-        }
+        if (count === availability.length) overlaps.push(current);
       }
+
       if (overlaps.length !== 0) {
         let index = 0;
         for (let i = 0; i < overlaps.length; i += 1) {
-          const date = moment(overlaps[index][0]).format('DD MMM');
-          const row = `${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`;
           if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
-            if (displayTimes[date] !== undefined) {
-              displayTimes[date].hours.push(row);
+            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
+                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
             } else {
-              displayTimes[date] = {};
-              displayTimes[date].hours = [];
-              displayTimes[date].hours.push(row);
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
+                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
             }
             index = i + 1;
           } else if (overlaps[i + 1] === undefined) {
-            if (displayTimes[date] !== undefined) {
-              displayTimes[date].hours.push(row);
+            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
+                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
             } else {
-              displayTimes[date] = {};
-              displayTimes[date].hours = [];
-              displayTimes[date].hours.push(row);
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
+              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
+                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
             }
           }
         }
@@ -89,7 +86,7 @@ class BestTimeDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      event: {},
+      event: this.props.event,
       disablePicker: false,
     };
   }

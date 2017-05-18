@@ -22,13 +22,7 @@ class ParticipantsList extends Component {
       openDeleteModal: false,
       openDrawer: false,
       guestToDelete: '',
-      chipHoverEnable: '',
     };
-  }
-
-  componentWillMount() {
-    const { curUser, event } = this.props;
-    this.setState({ curUser, event });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,11 +57,6 @@ class ParticipantsList extends Component {
     this.props.showInviteGuests();
   }
 
-  @autobind
-  handleChipOnMouseOver(ev, guest) {
-    this.props.cbOnChipMouseOver(guest);
-  }
-
   renderChip(participant) {
     const { curUser, event } = this.state;
     const inLinestyles = {
@@ -96,21 +85,31 @@ class ParticipantsList extends Component {
       default:
         break;
     }
-    const onRequestDeleteEnable = () => {
-      if (curUser._id !== participant.userId._id && event.owner === curUser._id) {
-        return () => this.handleOpenDeleteModal(participant._id);
-      }
-      return null;
-    };
 
     return (
+    (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
       <Chip
         key={participant._id}
         styleName="chip"
         labelStyle={inLinestyles.chip.label}
-        onRequestDelete={onRequestDeleteEnable()}
-        onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
-        onMouseLeave={this.props.cbOnChipMouseLeave}
+        onRequestDelete={() => this.handleOpenDeleteModal(participant._id)}
+      >
+        <Avatar
+          src={participant.userId.avatar}
+          styleName="avatar"
+          style={{ border: borderColor }}
+          alt={nameInitials(participant.userId.name)}
+        />
+        <div styleName="chipTextWrapper">
+          <span>{participant.userId.name}</span>
+          <span>{text}</span>
+        </div>
+      </Chip>
+    :
+      <Chip
+        key={participant._id}
+        styleName="chip"
+        labelStyle={inLinestyles.chip.label}
       >
         <Avatar
           src={participant.userId.avatar}
@@ -160,7 +159,7 @@ class ParticipantsList extends Component {
           backgroundColor: '#FF4025',
           color: '#ffffff',
           fontSize: '25px',
-          height: '30px',
+          height: '50px',
           paddingTop: 6,
         },
         content: {
@@ -237,11 +236,6 @@ class ParticipantsList extends Component {
   }
 }
 
-ParticipantsList.defaultProps = {
-  cbOnChipMouseOver: () => {},
-  cbOnChipMouseLeave: () => {},
-};
-
 ParticipantsList.propTypes = {
   // Current user
   curUser: PropTypes.shape({
@@ -252,8 +246,6 @@ ParticipantsList.propTypes = {
 
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
-  cbOnChipMouseOver: PropTypes.func,
-  cbOnChipMouseLeave: PropTypes.func,
 
   // Event containing list of event participants
   event: PropTypes.shape({

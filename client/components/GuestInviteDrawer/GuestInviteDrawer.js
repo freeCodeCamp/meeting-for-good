@@ -68,7 +68,7 @@ class GuestInviteDrawer extends Component {
       guests = await parseJSON(response);
       this.setState({ guests, guestsToDisplay: guests });
     } catch (err) {
-      console.log('loadPastGuests', err);
+      console.log('loadPassGuests', err);
       this.setState({
         snackbarOpen: true,
         snackbarMsg: 'Error!!, Failed to load guests. Please try again later.',
@@ -144,7 +144,9 @@ class GuestInviteDrawer extends Component {
     const { guests } = this.state;
     let newGuests = guests.slice(0);
     if (searchString.length > 0) {
-      newGuests = newGuests.filter(guest => guest.userId.name.toLowerCase().match(searchString));
+      newGuests = newGuests.filter((guest) => {
+        return guest.userId.name.toLowerCase().match(searchString);
+      });
     }
     this.setState({ guestsToDisplay: newGuests });
   }

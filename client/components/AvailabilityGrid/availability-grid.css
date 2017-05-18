@@ -3,26 +3,23 @@
   clear: both;
 }
 
-.column {
-  display:flex;
-  flex-direction: column;
-}
-
-.date-cell {
+.cell {
   padding: 5px;
   border: 1px solid #efefef;
   cursor: pointer;
-  width: 75px;
-  padding: 5px 0px 14px 5px;
+}
+
+.cell-aside {
+  composes: cell;
+  width: 63px;
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
-  box-sizing: border-box;
 }
 
 .grid-hour {
   font-size: 13px;
-  width: 44px;
+  width: 48px;
   height: 22px;
   padding: 0 0 0 3px;
   margin-bottom: -1px;
@@ -30,26 +27,70 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
 .timesTitle {
   display: flex;
   flex-direction: row;
-  margin: 0 0 0 72px;
+}
+
+.disabled {
+  composes: cell;
+  background-color: #eee;
+  cursor: disable;
+  pointer-events: none;
+  border: 1px solid #eee !important;
 }
 
 .info {
-  margin: 5px 0 0 0;
+  margin-top: 5px !important;
+  margin-bottom: -10px !important;
+  text-align: left;
   font-size: 12px;
-  display: flex;
-  flex-direction: column;
 }
 
-.actionButtonsWrapper {
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-  margin: 5px 0 0 0;
+a.info {
+  position: absolute;
+  transform: translateY(-30px);
+  left: 20px;
+}
+
+.hover-container {
+  text-align: center;
+}
+
+.hover-available {
+  margin-top: 10px;
+  background-color: white;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+  display: inline-block;
+}
+
+.hover-available h5 {
+  margin-top: 5px;
+  text-decoration: underline;
+  font-size: 25px;
+}
+
+.hover-available h6 {
+  margin: 5px;
+  font-size: 14px;
+}
+
+.Column
+{
+    display: table-cell;
 }
 
 .cancelButton {
   margin-left: 15px;
 }
+
+.actionButtonsWrapper {
+  display: flex;
+ justify-content: center;
+ flex-direction: row;
+}
+
