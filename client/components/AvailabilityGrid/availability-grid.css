@@ -3,6 +3,11 @@
   clear: both;
 }
 
+.rowGrid {
+  composes: row;
+  min-height: 55px;
+}
+
 .column {
   display: flex;
   flex-direction: column;
