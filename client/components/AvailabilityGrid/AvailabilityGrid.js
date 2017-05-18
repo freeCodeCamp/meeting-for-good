@@ -97,7 +97,10 @@ class AvailabilityGrid extends Component {
     return grid;
   }
 
-  static generateHeatMapBackgroundColors(quantOfParticipants) {
+  static generateHeatMapBackgroundColors(participants) {
+    let quantOfParticipants = participants.filter(
+      participant => participant.availability.length > 0).length;
+    console.log(quantOfParticipants);
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
     const colors = chroma.scale(['wheat', 'olive']);
     return colors.colors(quantOfParticipants);
@@ -121,7 +124,6 @@ class AvailabilityGrid extends Component {
     cellInitialRow,
     cellInitialColumn,
     curUser, grid) {
-    console.log(cellInitialRow, cellInitialColumn);
     const nGrid = _.cloneDeep(grid);
     AvailabilityGrid.generateRange(cellInitialRow, cellRowIndex).forEach((row) => {
       AvailabilityGrid.generateRange(cellInitialColumn, cellColumnIndex).forEach((cell) => {
@@ -182,7 +184,7 @@ class AvailabilityGrid extends Component {
     );
 
     const grid = createGridComplete(allDates, allTimes, event);
-    const backgroundColors = generateHeatMapBackgroundColors(event.participants.length);
+    const backgroundColors = generateHeatMapBackgroundColors(event.participants);
 
     this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
   }
