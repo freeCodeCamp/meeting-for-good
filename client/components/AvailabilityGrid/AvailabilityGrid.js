@@ -100,7 +100,6 @@ class AvailabilityGrid extends Component {
   static generateHeatMapBackgroundColors(participants) {
     let quantOfParticipants = participants.filter(
       participant => participant.availability.length > 0).length;
-    console.log(quantOfParticipants);
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
     const colors = chroma.scale(['wheat', 'olive']);
     return colors.colors(quantOfParticipants);
@@ -413,7 +412,7 @@ class AvailabilityGrid extends Component {
         {
           grid.map((row, rowIndex) => (
             <div key={row.date} styleName="column">
-              <div styleName="row">
+              <div styleName="rowGrid">
                 <div styleName="date-cell">
                   {moment(row.date).format('Do MMM ddd')}
                 </div>
