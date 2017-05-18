@@ -20,13 +20,11 @@ class CellGrid extends Component {
     }
 
     // if have a user to hightLight and is present at this cell
-    if (heatMapMode) {
-      if (heightlightedUser) {
-        if (_.find(participants, heightlightedUser)) {
-          style += ' cellHighlighted';
-        } else {
-          style += ' cellNotHeiglighted';
-        }
+    if (heightlightedUser) {
+      if (_.find(participants, heightlightedUser)) {
+        style += ' cellHighlighted';
+      } else {
+        style += ' cellNotHeiglighted';
       }
     }
     return style;
