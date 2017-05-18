@@ -176,12 +176,13 @@ export const patch = (req, res) => {
         .exec();
     })
     .then((event) => {
+      const nEvent = _.clone(event);
       event.participants.forEach((participant, indexParticipant) => {
         if (participant.status === 0) {
-          event.participants.splice(indexParticipant, 1);
+          nEvent.participants.splice(indexParticipant, 1);
         }
       });
-      return event;
+      return nEvent;
     })
     .then(respondWithResult(res))
     .catch(handleError(res));
