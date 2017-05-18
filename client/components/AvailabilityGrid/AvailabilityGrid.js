@@ -364,7 +364,7 @@ class AvailabilityGrid extends Component {
     if (moment(allTimes[0]).minutes() !== 0) {
       offSet = 4 - (moment(allTimes[0]).minutes() / 15);
     }
-    const style = { margin: `0 0 0 ${75 + (offSet * 12)}px` };
+    const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
     const colTitles = hourTime.map(time => (
       <p
         key={time}
