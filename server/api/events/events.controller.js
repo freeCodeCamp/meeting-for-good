@@ -252,6 +252,11 @@ export const GuestNotificationDismiss = (req, res) => {
     .catch(handleError(res));
 };
 
+const filterStatusZeroParticipants = (event) => {
+  event.participants = event.participants.filter(participant => participant.status !== 0);
+  return event;
+};
+
 // set the guest as inactive
 export const setGuestInactive = (req, res) => {
   return Events.findOne({ 'participants._id': req.params.id })
@@ -266,12 +271,7 @@ export const setGuestInactive = (req, res) => {
         .populate('participants.userId', 'avatar emails name')
         .exec();
     })
-    .then((event) => {
-      event.participants = event.participants.filter((participant) => {
-        return participant.status !== 0;
-      });
-      return event;
-    })
+    .then(event => filterStatusZeroParticipants(event))
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
