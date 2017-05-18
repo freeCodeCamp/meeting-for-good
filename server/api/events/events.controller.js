@@ -16,7 +16,6 @@
 'use strict';
 
 import jsonpatch from 'fast-json-patch';
-import _ from 'lodash';
 import Events from './events.model';
 
 
@@ -111,7 +110,6 @@ export const indexById = (req, res) => {
 
 // Gets all events that a especified user is participant
 export const indexByUser = (req, res) => {
-  console.log("*** indexByUser");
   const actualDate = (req.params.actualDate) ? req.params.actualDate : new Date(1970, 1, 1);
   return Events.find({
     'participants.userId': req.user._id.toString(),
