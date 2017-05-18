@@ -226,7 +226,8 @@ class App extends Component {
     // ask at DB because guests sets as 0 its not load as default
     event = await loadEventFull(event._id);
     const participants = event.participants;
-    const indexOfGuest = _.findIndex(participants, participant => participant.userId._id === guestId.toString());
+    const indexOfGuest = _.findIndex(
+      participants, participant => participant.userId._id === guestId.toString());
     if (indexOfGuest > -1) {
       const status = participants[indexOfGuest].status;
       if (status === 0) {
