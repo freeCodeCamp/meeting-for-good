@@ -53,15 +53,22 @@ export const dateRangeReducer = (dates) => {
 // Get all days between start and end.
   // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
   // (all input and output is in javascript Date objects)
-export const getDaysBetween = (start, end) => {
-  const dates = [start];
-  let currentDay = start;
+  /**
+   *
+   * @param {*} startDate
+   * @param {*} endDate
+   */
+export const getDaysBetween = (startDate, endDate) => {
+  const dates = [startDate];
+  let currentDay = startDate;
 
   // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
   // create an extra row in the grid made up only of disabled cells.
-  if (moment(end).hour() === 0) end = moment(end).subtract(1, 'd')._d;
+  if (moment(endDate).hour() === 0) {
+    endDate = moment(endDate).subtract(1, 'd')._d;
+  }
 
-  while (moment(end).isAfter(dates[dates.length - 1], 'day')) {
+  while (moment(endDate).isAfter(dates[dates.length - 1], 'day')) {
     currentDay = moment(currentDay).add(1, 'd')._d;
     dates.push(currentDay);
   }
