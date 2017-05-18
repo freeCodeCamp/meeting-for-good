@@ -106,7 +106,7 @@ class ParticipantsList extends Component {
     return (
       <Chip
         key={participant._id}
-        styleName="chip"
+        styleName={(location.pathname === '/dashboard') ? 'chip' : 'chipHover'}
         labelStyle={inLinestyles.chip.label}
         onRequestDelete={onRequestDeleteEnable()}
         onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
