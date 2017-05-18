@@ -89,7 +89,9 @@ class AvailabilityGrid extends Component {
       snackBarNoGuests: [],
       showHeatmap: false,
       mouseDown: false,
-      editOperation: 'add',
+      editOperation: null,
+      cellInitialRow: null,
+      cellInitialColumn: null,
       event: {},
     };
   }
@@ -141,7 +143,6 @@ class AvailabilityGrid extends Component {
       temp[curUser._id] = curUser.name;
       nQuarter.participants.push(temp);
     }
-    // nGrid[cellRowIndex].quarters[cellColumnIndex] = nQuarter;
     this.setState({ grid: nGrid });
   }
 
@@ -203,11 +204,12 @@ class AvailabilityGrid extends Component {
     let editOperation = 'new';
     if (_.findIndex(quarter.participants, curUser._id) > -1) {
       editOperation = 'remove';
-    }
-    if (_.findIndex(quarter.notParticipants, curUser._id) > -1) {
+    } else if (_.findIndex(quarter.notParticipants, curUser._id) > -1) {
       editOperation = 'add';
     }
-    this.setState({ mouseDown: true, editOperation },
+    this.setState({
+      mouseDown: true, editOperation, cellColumnIndex: columnIndex, cellInitialRow: rowIndex,
+    },
       this.editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex));
   }
 
@@ -215,16 +217,9 @@ class AvailabilityGrid extends Component {
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
     const { showHeatmap, mouseDown, editOperation } = this.state;
-    const { curUser } = this.props;
     if (!showHeatmap) {
       if (mouseDown) {
-        if (_.findIndex(quarter.participants, curUser._id) > -1 && editOperation === 'remove') {
-          this.editParticipantToCellGrid(quarter, 'remove', rowIndex, columnIndex);
-        } else if (_.findIndex(quarter.notParticipants, curUser._id) > -1 && editOperation === 'add') {
-          this.editParticipantToCellGrid(quarter, 'add', rowIndex, columnIndex);
-        } else {
-          this.editParticipantToCellGrid(quarter, 'new', rowIndex, columnIndex);
-        }
+        this.editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex);
       }
     } else {
       const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
@@ -237,7 +232,9 @@ class AvailabilityGrid extends Component {
   @autobind
   handleCellMouseUp(ev) {
     ev.preventDefault();
-    this.setState({ mouseDown: false });
+    this.setState({
+      mouseDown: false, cellColumnIndex: null, cellInitialRow: null, editOperation: null,
+    });
   }
 
   @autobind
