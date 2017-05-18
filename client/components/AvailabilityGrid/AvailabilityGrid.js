@@ -292,7 +292,6 @@ class AvailabilityGrid extends Component {
 
   @autobind
   handleCellMouseUp(ev) {
-    console.log('MouseUp');
     ev.preventDefault();
     this.setState({
       mouseDown: false, cellColumnIndex: null, cellInitialRow: null, editOperation: null,
