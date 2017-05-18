@@ -100,13 +100,10 @@ export const indexById = (req, res) => {
   return Events.find({ uid, active: true })
     .exec()
     .then((event) => {
-      const nEvent = _.clone(event);
-      event.participants.forEach((participant, indexParticipant) => {
-        if (participant.status === 0) {
-          nEvent.participants.splice(indexParticipant, 1);
-        }
+      event.participants = event.participants.filter((participant) => {
+        return participant.status !== 0;
       });
-      return nEvent;
+      return event;
     })
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -114,6 +111,7 @@ export const indexById = (req, res) => {
 
 // Gets all events that a especified user is participant
 export const indexByUser = (req, res) => {
+  console.log("*** indexByUser");
   const actualDate = (req.params.actualDate) ? req.params.actualDate : new Date(1970, 1, 1);
   return Events.find({
     'participants.userId': req.user._id.toString(),
@@ -124,18 +122,29 @@ export const indexByUser = (req, res) => {
     .populate('participants.userId', 'avatar emails name')
     .exec()
     .then((events) => {
-      const nEvents = _.clone(events);
       events.forEach((event, index) => {
         event.participants.forEach((participant, indexParticipant) => {
           // if he is the owner then dont show the event.
           if (participant.status === 0 && participant.userId._id.toString() === req.user._id.toString()) {
-            nEvents.splice(index, 1);
-          } else if (participant.status === 0 && participant.userId._id.toString() !== req.user._id.toString()) {
-            nEvents[index].participants.splice(indexParticipant, 1);
+            events[index] = null;
+          } else
+          if (participant.status === 0 && participant.userId._id.toString() !== req.user._id.toString()) {
+            events[index].participants[indexParticipant] = null;
           }
         });
       });
-      return nEvents;
+
+      // Pack the arrays
+      events = events.filter((event) => {
+        return event != null;
+      });
+      events.forEach((event) => {
+        event.participants = event.participants.filter((participant) => {
+          return participant != null;
+        });
+      });
+
+      return events;
     })
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -147,13 +156,10 @@ export const show = (req, res) => {
     .populate('participants.userId', 'avatar emails name')
     .exec()
     .then((event) => {
-      const nEvent = _.clone(event);
-      event.participants.forEach((participant, indexParticipant) => {
-        if (participant.status === 0) {
-          nEvent.participants.splice(indexParticipant, 1);
-        }
+      event.participants = event.participants.filter((participant) => {
+        return participant.status !== 0;
       });
-      return nEvent;
+      return event;
     })
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
@@ -176,13 +182,10 @@ export const patch = (req, res) => {
         .exec();
     })
     .then((event) => {
-      const nEvent = _.clone(event);
-      event.participants.forEach((participant, indexParticipant) => {
-        if (participant.status === 0) {
-          nEvent.participants.splice(indexParticipant, 1);
-        }
+      event.participants = event.participants.filter((participant) => {
+        return participant.status !== 0;
       });
-      return nEvent;
+      return event;
     })
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -266,13 +269,10 @@ export const setGuestInactive = (req, res) => {
         .exec();
     })
     .then((event) => {
-      const nEvent = _.clone(event);
-      event.participants.forEach((participant, indexParticipant) => {
-        if (participant.status === 0) {
-          nEvent.participants.splice(indexParticipant, 1);
-        }
+      event.participants = event.participants.filter((participant) => {
+        return participant.status !== 0;
       });
-      return nEvent;
+      return event;
     })
     .then(respondWithResult(res))
     .catch(handleError(res));
