@@ -192,7 +192,6 @@ class AvailabilityGrid extends Component {
     this.setState({ showHeatmap, event });
   }
 
-  
   @autobind
   async submitAvailability() {
     const { curUser } = this.props;
@@ -241,7 +240,6 @@ class AvailabilityGrid extends Component {
 
   @autobind
   handleCellMouseDown(ev, quarter, rowIndex, columnIndex) {
-    console.log('mouseDown');
     ev.preventDefault();
     const { showHeatmap, grid } = this.state;
     const { curUser } = this.props;
@@ -269,7 +267,6 @@ class AvailabilityGrid extends Component {
 
   @autobind
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
-    console.log('mouseOver');
     ev.preventDefault();
     const { showHeatmap, mouseDown, editOperation, cellInitialRow,
       cellInitialColumn } = this.state;
