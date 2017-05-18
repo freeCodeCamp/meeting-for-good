@@ -33,7 +33,12 @@ class AvailabilityGrid extends Component {
     });
     return flattenedAvailability;
   }
-
+  /**
+   *
+   * @param {*} allDates
+   * @param {*} allTimes
+   * @param {*} event
+   */
   static createGridComplete(allDates, allTimes, event) {
     const grid = [];
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
@@ -77,6 +82,46 @@ class AvailabilityGrid extends Component {
     const colors = chroma.scale(['wheat', 'olive']);
     return colors.colors(quantOfParticipants);
   }
+
+  /**
+   *
+   * @param {*} quarter
+   * @param {*} operation
+   * @param {*} cellRowIndex
+   * @param {*} cellColumnIndex
+   * @param {*} cellInitialRow
+   * @param {*} cellInitialColumn
+   * @param {*} curUser
+   * @param {*} grid
+   */
+  static editParticipantToCellGrid(
+    quarter, operation,
+    cellRowIndex,
+    cellColumnIndex,
+    cellInitialRow,
+    cellInitialColumn,
+    curUser, grid) {
+    console.log(cellInitialRow, cellInitialColumn);
+    const nGrid = _.cloneDeep(grid);
+    const nQuarter = nGrid[cellRowIndex].quarters[cellColumnIndex];
+    if (operation === 'add') {
+      const temp = nQuarter.notParticipants.splice(
+        _.findIndex(nQuarter.notParticipants, curUser._id), 1);
+      nQuarter.participants.push(temp[0]);
+    }
+    if (operation === 'remove') {
+      const temp = nQuarter.participants.splice(
+        _.findIndex(nQuarter.participants, curUser._id), 1);
+      nQuarter.notParticipants.push(temp[0]);
+    }
+    if (operation === 'new') {
+      const temp = {};
+      temp[curUser._id] = curUser.name;
+      nQuarter.participants.push(temp);
+    }
+    return nGrid;
+  }
+
 
   constructor(props) {
     super(props);
@@ -123,29 +168,7 @@ class AvailabilityGrid extends Component {
     this.setState({ showHeatmap, event });
   }
 
-  editParticipantToCellGrid(quarter, operation, cellRowIndex, cellColumnIndex) {
-    const { curUser } = this.props;
-    const { grid } = this.state;
-    const nGrid = _.cloneDeep(grid);
-    const nQuarter = nGrid[cellRowIndex].quarters[cellColumnIndex];
-    if (operation === 'add') {
-      const temp = nQuarter.notParticipants.splice(
-        _.findIndex(nQuarter.notParticipants, curUser._id), 1);
-      nQuarter.participants.push(temp[0]);
-    }
-    if (operation === 'remove') {
-      const temp = nQuarter.participants.splice(
-        _.findIndex(nQuarter.participants, curUser._id), 1);
-      nQuarter.notParticipants.push(temp[0]);
-    }
-    if (operation === 'new') {
-      const temp = {};
-      temp[curUser._id] = curUser.name;
-      nQuarter.participants.push(temp);
-    }
-    this.setState({ grid: nGrid });
-  }
-
+  
   @autobind
   async submitAvailability() {
     const { curUser } = this.props;
@@ -194,13 +217,15 @@ class AvailabilityGrid extends Component {
 
   @autobind
   handleCellMouseDown(ev, quarter, rowIndex, columnIndex) {
+    console.log('mouseDown');
     ev.preventDefault();
-    const { showHeatmap } = this.state;
+    const { showHeatmap, grid } = this.state;
+    const { curUser } = this.props;
+    const { editParticipantToCellGrid } = this.constructor;
     // is at showing heatMap then ignore click
     if (showHeatmap) {
       return;
     }
-    const { curUser } = this.props;
     let editOperation = 'new';
     if (_.findIndex(quarter.participants, curUser._id) > -1) {
       editOperation = 'remove';
@@ -208,18 +233,33 @@ class AvailabilityGrid extends Component {
       editOperation = 'add';
     }
     this.setState({
-      mouseDown: true, editOperation, cellColumnIndex: columnIndex, cellInitialRow: rowIndex,
-    },
-      this.editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex));
+      mouseDown: true,
+      editOperation,
+      cellInitialColumn: columnIndex,
+      cellInitialRow: rowIndex,
+      grid: editParticipantToCellGrid(
+        quarter, editOperation, rowIndex,
+        columnIndex, rowIndex, columnIndex, curUser, grid),
+    });
   }
 
   @autobind
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
+    console.log('mouseOver');
     ev.preventDefault();
-    const { showHeatmap, mouseDown, editOperation } = this.state;
+    const { showHeatmap, mouseDown, editOperation, cellInitialRow,
+      cellInitialColumn } = this.state;
+    const { curUser } = this.props;
+    const { editParticipantToCellGrid } = this.constructor;
     if (!showHeatmap) {
       if (mouseDown) {
-        this.editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex);
+        this.setState(oldState => ({
+          grid: editParticipantToCellGrid(
+            quarter, editOperation, rowIndex,
+            columnIndex, cellInitialRow,
+            cellInitialColumn, curUser, oldState.grid),
+        }),
+        );
       }
     } else {
       const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
@@ -231,6 +271,7 @@ class AvailabilityGrid extends Component {
 
   @autobind
   handleCellMouseUp(ev) {
+    console.log('MouseUp');
     ev.preventDefault();
     this.setState({
       mouseDown: false, cellColumnIndex: null, cellInitialRow: null, editOperation: null,
