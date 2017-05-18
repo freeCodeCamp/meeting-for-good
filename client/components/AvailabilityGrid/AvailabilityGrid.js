@@ -121,11 +121,11 @@ class AvailabilityGrid extends Component {
     this.setState({ showHeatmap, event });
   }
 
-  editParticipantToCellGrid(quarter, operation, rowIndex, columnIndex) {
+  editParticipantToCellGrid(quarter, operation, cellRowIndex, cellColumnIndex) {
     const { curUser } = this.props;
-    const stateCopy = Object.assign({}, this.state);
-    const { grid } = stateCopy;
-    const nQuarter = Object.assign({}, quarter);
+    const { grid } = this.state;
+    const nGrid = _.cloneDeep(grid);
+    const nQuarter = nGrid[cellRowIndex].quarters[cellColumnIndex];
     if (operation === 'add') {
       const temp = nQuarter.notParticipants.splice(
         _.findIndex(nQuarter.notParticipants, curUser._id), 1);
@@ -141,8 +141,8 @@ class AvailabilityGrid extends Component {
       temp[curUser._id] = curUser.name;
       nQuarter.participants.push(temp);
     }
-    grid[rowIndex].quarters[columnIndex] = nQuarter;
-    this.setState(stateCopy);
+    // nGrid[cellRowIndex].quarters[cellColumnIndex] = nQuarter;
+    this.setState({ grid: nGrid });
   }
 
   @autobind
