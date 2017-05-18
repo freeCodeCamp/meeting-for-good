@@ -89,6 +89,13 @@ class EventDetailsComponent extends React.Component {
     }
   }
 
+  async sendEmailOwnerEdit(event) {
+    const response = this.props.cbHandleEmailOwnerEdit(event);
+    if (!response) {
+      console.log('sendEmailOwnerEdit error');
+    }
+  }
+
   @autobind
   showAvailability() {
     this.setState({ showButtonAviability: 'hidden', showAvailabilityGrid: 'block' });
@@ -107,6 +114,9 @@ class EventDetailsComponent extends React.Component {
   @autobind
   async submitAvailability(patches) {
     const { event, curUser } = this.props;
+    const oldMe = event.participants.find(participant =>
+      participant.userId._id === curUser._id,
+    );
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
     if (responseEvent) {
       const me = responseEvent.participants.find(participant =>
@@ -119,7 +129,12 @@ class EventDetailsComponent extends React.Component {
         myAvailability: me.availability,
       });
       if (curUser._id !== event.owner) {
-        await this.sendEmailOwner(responseEvent);
+        if (oldMe.status === 3) {
+          // send email edit
+          await this.sendEmailOwnerEdit(responseEvent);
+        } else {
+          await this.sendEmailOwner(responseEvent);
+        }
       }
       return responseEvent;
     }
@@ -234,6 +249,7 @@ EventDetailsComponent.propTypes = {
   cbDeleteEvent: PropTypes.func.isRequired,
   cbEditEvent: PropTypes.func.isRequired,
   cbHandleEmailOwner: PropTypes.func.isRequired,
+  cbHandleEmailOwnerEdit: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
 
   // Current user

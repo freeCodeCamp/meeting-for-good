@@ -68,6 +68,11 @@ class EventDetails extends Component {
   }
 
   @autobind
+  async HandleEmailOwnerEdit(event) {
+    await this.props.cbEmailOwnerEdit(event);
+  }
+
+  @autobind
   async handleDeleteGuest(guestToDelete) {
     const nEvent = await this.props.cbDeleteGuest(guestToDelete);
     this.setState({ event: nEvent });
@@ -92,6 +97,7 @@ class EventDetails extends Component {
             cbDeleteEvent={this.handleDeleteEvent}
             cbEditEvent={this.handleEditEvent}
             cbHandleEmailOwner={this.HandleEmailOwner}
+            cbHandleEmailOwnerEdit={this.HandleEmailOwnerEdit}
             cbDeleteGuest={this.handleDeleteGuest}
           />
           <GuestInviteDrawer
@@ -111,6 +117,7 @@ EventDetails.defaultProps = {
   cbDeleteEvent: () => { console.log('cbDeleteEvent func not passed in!'); },
   cbEditEvent: () => { console.log('cbEditEvent func not passed in!'); },
   cbEmailOwner: () => { console.log('cbEmailOwner func not passed in!'); },
+  cbEmailOwnerEdit: () => { console.log('cbEmailEdit func not passed in!'); },
   cbDeleteGuest: () => { console.log('cbDeleteGuest func not passed in!'); },
   cbInviteEmail: () => { console.log('cbInviteEmail func not passed in!'); },
 };
@@ -119,6 +126,7 @@ EventDetails.propTypes = {
   cbDeleteEvent: PropTypes.func,
   cbEditEvent: PropTypes.func,
   cbEmailOwner: PropTypes.func,
+  cbEmailOwnerEdit: PropTypes.func,
   cbDeleteGuest: PropTypes.func,
   cbInviteEmail: PropTypes.func,
 };

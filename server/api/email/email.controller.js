@@ -35,7 +35,7 @@ const sendEmail = (message) => {
   return transporter.sendMail(message);
 };
 
-export const ownerNotification = (req, res) => {
+const ownerNotification = (req, res) => {
   const message = req.body;
   message.from = process.env.emailFrom;
   const templateDir = path.join(__dirname, 'templates', 'ownerNotification');
@@ -54,7 +54,7 @@ export const ownerNotification = (req, res) => {
   });
 };
 
-export const sendInvite = (req, res) => {
+const sendInvite = (req, res) => {
   const message = req.body;
   message.from = process.env.emailFrom;
   const templateDir = path.join(__dirname, 'templates', 'inviteGuests');
@@ -72,3 +72,24 @@ export const sendInvite = (req, res) => {
       .catch(handleError(res));
   });
 };
+
+const ownerNotificationForEdit = (req, res) => {
+  const message = req.body;
+  message.from = process.env.emailFrom;
+  const templateDir = path.join(__dirname, 'templates', 'editAvailability');
+  const template = new EmailTemplate(templateDir);
+  template.render(message, (err, result) => {
+    if (err) {
+      console.log('err at render of ownerNotificationForEdit', err);
+      return err;
+    }
+    message.subject = 'Lets Meet Availability Change';
+    message.text = result.text;
+    message.html = result.html;
+    return sendEmail(message)
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  });
+};
+
+export { ownerNotification, sendInvite, ownerNotificationForEdit };

@@ -3,6 +3,7 @@ import autobind from 'autobind-decorator';
 import { browserHistory } from 'react-router';
 import NotificationSystem from 'react-notification-system';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
@@ -12,7 +13,7 @@ import {
   addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest, loadEventFull,
   handleDismiss,
 } from '../util/events';
-import { sendEmailOwner, sendEmailInvite } from '../util/emails';
+import { sendEmailOwner, sendEmailInvite, sendEmailOwnerEdit } from '../util/emails';
 import '../styles/main.css';
 
 class App extends Component {
@@ -130,6 +131,19 @@ class App extends Component {
   }
 
   @autobind
+  async handleEmailOwnerEdit(event) {
+    const { curUser } = this.state;
+    const ownerData = await loadOwnerData(event.owner);
+    if (ownerData !== null) {
+      const response = await sendEmailOwnerEdit(event, curUser, ownerData);
+      if (response) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  @autobind
   handleLogin(curUser) {
     if (Object.keys(curUser).length > 0) {
       this.setState({ curUser, isAuthenticated: true });
@@ -210,15 +224,12 @@ class App extends Component {
     const { events } = this.state;
     // find if the guest alredy exists as participant
     // ask at DB because guests sets as 0 its not load as default
-    let indexOfGuest = -1;
     event = await loadEventFull(event._id);
-    event.participants.forEach((participant, index) => {
-      if (participant.userId._id.toString() === guestId.toString()) {
-        indexOfGuest = index;
-      }
-    });
+    const participants = event.participants;
+    const indexOfGuest = _.findIndex(
+      participants, participant => participant.userId._id === guestId.toString());
     if (indexOfGuest > -1) {
-      const status = event.participants[indexOfGuest].status;
+      const status = participants[indexOfGuest].status;
       if (status === 0) {
         const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
         if (nEvent) {
@@ -361,6 +372,7 @@ class App extends Component {
             cbDeleteEvent: this.handleDeleteEvent,
             cbEditEvent: this.handleEditEvent,
             cbEmailOwner: this.handleEmailOwner,
+            cbEmailOwnerEdit: this.handleEmailOwnerEdit,
             cbDeleteGuest: this.handleDeleteGuest,
             cbInviteEmail: this.handleInviteEmail,
 

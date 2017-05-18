@@ -11,4 +11,5 @@ function callback() {
 const cpy = path.join(__dirname, '../node_modules/cpy-cli/cli.js');
 shelljs.exec(`${cpy} server/api/email/templates/ownerNotification/* build/api/email/templates/ownerNotification/`, addCheckMark.bind(null, callback));
 shelljs.exec(`${cpy} server/api/email/templates/inviteGuests/* build/api/email/templates/inviteGuests/`, addCheckMark.bind(null, callback));
+shelljs.exec(`${cpy} server/api/email/templates/editAvailability/* build/api/email/templates/editAvailability/`, addCheckMark.bind(null, callback));
 
