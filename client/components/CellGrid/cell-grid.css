@@ -1,15 +1,25 @@
 .cell {
-  padding: 5px;
   border: 1px solid #efefef;
-  height: 42px;
   cursor: pointer;
-  width: 1px;
+  width: 13px;
+  box-sizing: border-box;
 }
 
-.disabled {
-  composes: cell;
-  background-color: #eee;
-  cursor: disable;
-  pointer-events: none;
-  border: 1px solid #eee !important;
+.cellHighlighted {
+  background-color: gray !important;
+  -webkit-box-shadow: 5px 5px 5px 0px rgba(120, 120, 120, 0.75);
+  -moz-box-shadow: 5px 5px 5px 0px rgba(120, 120, 120, 0.75);
+  box-shadow: 5px 5px 5px 0px rgba(120, 120, 120, 0.75);
+}
+
+.cellNotHeiglighted {
+  background-color: transparent !important;
+}
+
+.cellBorderHour {
+  border-left: 1px solid rgb(120, 120, 120);
+}
+
+.cellBorderHalfHour {
+  border-left: 1px solid #c3bebe;
 }

@@ -54,15 +54,15 @@ module.exports = {
   module: {
     rules: [
       (!lintCode ?
-      {
-        test: /\.js$/,
-        enforce: 'pre',
+        {
+          test: /\.js$/,
+          enforce: 'pre',
 
-        loader: 'eslint-loader',
-        options: {
-          emitWarning: true,
-        },
-      } : {}),
+          loader: 'eslint-loader',
+          options: {
+            emitWarning: true,
+          },
+        } : {}),
       {
         test: /\.js$/,
         use: 'babel-loader',
@@ -122,10 +122,10 @@ module.exports = {
     ],
   },
   plugins: [
-     (!noVisualization ?
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-        }) : null),
+    (!noVisualization ?
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+      }) : null),
 
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -159,6 +159,8 @@ module.exports = {
         console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
       },
       apply(manifest) {
+        manifest.set('manifest_version', '2');
+        manifest.set('version', '1');
         manifest.set('short_name', 'LetsMeet');
         manifest.set('name', 'LetsMeet');
         manifest.set('background_color', '#FBFFFB');
@@ -172,4 +174,3 @@ module.exports = {
   },
   devtool: 'source-map',
 };
-

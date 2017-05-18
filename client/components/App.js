@@ -40,7 +40,9 @@ class App extends Component {
       }
       const curUser = await getCurrentUser();
       const events = await loadEvents(showPastEvents);
-      this.setState({ isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
+      this.setState({
+        isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents,
+      });
     }
   }
 
