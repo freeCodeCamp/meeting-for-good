@@ -21,6 +21,26 @@ import styles from './availability-grid.css';
 
 class AvailabilityGrid extends Component {
 
+  static generateRange(num1, num2) {
+    let rangeStart;
+    let rangeEnd;
+    const range = [];
+
+    if (num1 > num2) {
+      rangeStart = num2;
+      rangeEnd = num1;
+    } else {
+      rangeStart = num1;
+      rangeEnd = num2;
+    }
+
+    for (let i = rangeStart; i <= rangeEnd; i += 1) {
+      range.push(i);
+    }
+
+    return range;
+  }
+
   static flattenedAvailability(event) {
     const flattenedAvailability = {};
     event.participants.forEach((participant) => {
@@ -103,22 +123,26 @@ class AvailabilityGrid extends Component {
     curUser, grid) {
     console.log(cellInitialRow, cellInitialColumn);
     const nGrid = _.cloneDeep(grid);
-    const nQuarter = nGrid[cellRowIndex].quarters[cellColumnIndex];
-    if (operation === 'add') {
-      const temp = nQuarter.notParticipants.splice(
-        _.findIndex(nQuarter.notParticipants, curUser._id), 1);
-      nQuarter.participants.push(temp[0]);
-    }
-    if (operation === 'remove') {
-      const temp = nQuarter.participants.splice(
-        _.findIndex(nQuarter.participants, curUser._id), 1);
-      nQuarter.notParticipants.push(temp[0]);
-    }
-    if (operation === 'new') {
-      const temp = {};
-      temp[curUser._id] = curUser.name;
-      nQuarter.participants.push(temp);
-    }
+    AvailabilityGrid.generateRange(cellInitialRow, cellRowIndex).forEach((row) => {
+      AvailabilityGrid.generateRange(cellInitialColumn, cellColumnIndex).forEach((cell) => {
+        const nQuarter = nGrid[row].quarters[cell];
+        if (operation === 'add' && _.findIndex(nQuarter.participants, curUser._id) === -1) {
+          const temp = nQuarter.notParticipants.splice(
+            _.findIndex(nQuarter.notParticipants, curUser._id), 1);
+          nQuarter.participants.push(temp[0]);
+        }
+        if (operation === 'remove' && _.findIndex(nQuarter.notParticipants, curUser._id) === -1) {
+          const temp = nQuarter.participants.splice(
+            _.findIndex(nQuarter.participants, curUser._id), 1);
+          nQuarter.notParticipants.push(temp[0]);
+        }
+        if (operation === 'new') {
+          const temp = {};
+          temp[curUser._id] = curUser.name;
+          nQuarter.participants.push(temp);
+        }
+      });
+    });
     return nGrid;
   }
 
