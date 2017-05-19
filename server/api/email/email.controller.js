@@ -45,7 +45,7 @@ const ownerNotification = (req, res) => {
       console.log('err at render of ownerNotification', err);
       return err;
     }
-    message.subject = 'Lets Meet Invite Accepeted';
+    message.subject = 'Meeting for Good Invite Accepeted';
     message.text = result.text;
     message.html = result.html;
     return sendEmail(message)
@@ -64,7 +64,7 @@ const sendInvite = (req, res) => {
       console.log('err at render of sendInvite', err);
       return err;
     }
-    message.subject = `Lets Meet Invite from ${message.eventOwnerName}`;
+    message.subject = `Meeting for Good Invite from ${message.eventOwnerName}`;
     message.text = result.text;
     message.html = result.html;
     return sendEmail(message)
@@ -83,7 +83,7 @@ const ownerNotificationForEdit = (req, res) => {
       console.log('err at render of ownerNotificationForEdit', err);
       return err;
     }
-    message.subject = 'Lets Meet Availability Change';
+    message.subject = 'Meeting for Good Availability Change';
     message.text = result.text;
     message.html = result.html;
     return sendEmail(message)
