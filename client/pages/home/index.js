@@ -23,7 +23,7 @@ class Home extends React.Component {
     return (
       <div styleName="main">
         <header styleName="header">
-          <h2>Meeting for Good</h2>
+          <h2>LetsMeet</h2>
           <hr />
           <h6>The best meeting coordination app</h6>
           <img
