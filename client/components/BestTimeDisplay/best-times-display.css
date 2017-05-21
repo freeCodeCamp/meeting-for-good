@@ -49,3 +49,11 @@
 .RowListItem {
     padding: 0px 0 0 26px !important;
   }
+
+.info {
+  margin: 5px 0 0 0;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+}

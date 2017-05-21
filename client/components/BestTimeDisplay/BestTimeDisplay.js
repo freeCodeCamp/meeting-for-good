@@ -9,6 +9,7 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
+import jz from 'jstimezonedetect';
 
 import styles from './best-times-display.css';
 
@@ -173,6 +174,13 @@ class BestTimeDisplay extends Component {
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
           <div>
+            <div styleName="info">
+              <p>
+                <em>
+                  Displaying all times in your local timezone: {jz.determine().name()}
+                </em>
+              </p>
+            </div>
             <h6 styleName="bestTimeTitle">The following times work for everyone:</h6>
             {this.renderBestTime()}
           </div>
