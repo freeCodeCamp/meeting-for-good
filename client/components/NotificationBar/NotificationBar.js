@@ -22,8 +22,8 @@ class NotificationBar extends Component {
     super(props);
     this.state = {
       events: this.props.events,
-      notificationColor: '#A7A7A7',
       curUser: this.props.curUser,
+      notificationColor: '#ff0000',
       quantOwnerNotNotified: 0,
     };
   }
@@ -64,7 +64,6 @@ class NotificationBar extends Component {
     let notificationColor;
     let quantOwnerNotNotified = 0;
     if (events.length > 0) {
-      notificationColor = '#ffffff';
       events.forEach((event) => {
         event.participants.forEach((participant) => {
           if (
@@ -72,13 +71,17 @@ class NotificationBar extends Component {
             && participant.ownerNotified === false
             && event.owner.toString() === curUser._id
           ) {
-            notificationColor = '#ff0000';
             quantOwnerNotNotified += 1;
           }
         });
       });
     }
     this.setState({ notificationColor, quantOwnerNotNotified });
+  }
+
+  @autobind
+  handleOnRequestChange(open, reason) {
+    console.log(open, reason);
   }
 
   renderMenuRows() {
@@ -119,9 +122,8 @@ class NotificationBar extends Component {
   }
 
   render() {
-    const { quantOwnerNotNotified, events } = this.state;
+    const { quantOwnerNotNotified } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
-    const openMenu = (events.length === 0) ? false : null;
     const inLineStyles = {
       badge: {
         right: 47,
@@ -141,9 +143,8 @@ class NotificationBar extends Component {
     return (
       <IconMenu
         maxHeight={300}
-        open={openMenu}
         iconStyle={inLineStyles.iconButton}
-        onRequestChange={(open, reason) => { console.log(open, reason); }}
+        onRequestChange={(open, reason) => this.handleOnRequestChange(open, reason)}
         styleName="iconMenu"
         iconButtonElement={
           <Badge
