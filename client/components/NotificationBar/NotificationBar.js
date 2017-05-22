@@ -18,6 +18,24 @@ class NotificationBar extends Component {
     browserHistory.push(`/event/${id}`);
   }
 
+  static quantOwnerNotNotified(events, curUser) {
+    let quantOwnerNotNotified = 0;
+    if (events.length > 0) {
+      events.forEach((event) => {
+        event.participants.forEach((participant) => {
+          if (
+            participant.userId._id.toString() !== curUser._id
+            && participant.ownerNotified === false
+            && event.owner.toString() === curUser._id
+          ) {
+            quantOwnerNotNotified += 1;
+          }
+        });
+      });
+    }
+    return quantOwnerNotNotified;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -25,17 +43,23 @@ class NotificationBar extends Component {
       curUser: this.props.curUser,
       notificationColor: '#ff0000',
       quantOwnerNotNotified: 0,
+      openMenu: false,
     };
   }
 
   componentWillMount() {
     const { events, curUser } = this.props;
-    this.setState({ events, curUser }, this.IconButtonColor());
+    const { quantOwnerNotNotified } = this.constructor;
+    this.setState({
+      events, curUser, quantOwnerNotNotified: quantOwnerNotNotified(events, curUser),
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     const { events } = nextProps;
-    this.setState({ events }, this.IconButtonColor());
+    const { curUser } = this.props;
+    const { quantOwnerNotNotified } = this.constructor;
+    this.setState({ events, quantOwnerNotNotified: quantOwnerNotNotified(events, curUser) });
   }
 
   @autobind
@@ -54,34 +78,20 @@ class NotificationBar extends Component {
       await cbHandleDismissGuest(guestDismissList);
     } catch (err) {
       console.log('error at handleDismissAll NoficationBar', err);
-    } finally {
-      this.IconButtonColor();
     }
-  }
-
-  IconButtonColor() {
-    const { events, curUser } = this.state;
-    let notificationColor;
-    let quantOwnerNotNotified = 0;
-    if (events.length > 0) {
-      events.forEach((event) => {
-        event.participants.forEach((participant) => {
-          if (
-            participant.userId._id.toString() !== curUser._id
-            && participant.ownerNotified === false
-            && event.owner.toString() === curUser._id
-          ) {
-            quantOwnerNotNotified += 1;
-          }
-        });
-      });
-    }
-    this.setState({ notificationColor, quantOwnerNotNotified });
   }
 
   @autobind
-  handleOnRequestChange(open, reason) {
-    console.log(open, reason);
+  async handleOnRequestChange(open) {
+    if (!open) {
+      await this.handleDismissAll();
+    }
+    this.setState({ openMenu: open });
+  }
+
+  @autobind
+  handleOpenMenu() {
+    this.setState({ openMenu: true });
   }
 
   renderMenuRows() {
@@ -122,18 +132,18 @@ class NotificationBar extends Component {
   }
 
   render() {
-    const { quantOwnerNotNotified } = this.state;
+    const { quantOwnerNotNotified, openMenu } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const inLineStyles = {
       badge: {
-        right: 47,
-        top: 30,
+        top: 3,
         visibility: visible,
         fontSize: '12px',
         width: 16,
         height: 16,
       },
       iconButton: {
+        top: '-40px',
         icon: {
           color: 'white',
           width: '19px',
@@ -143,23 +153,26 @@ class NotificationBar extends Component {
     return (
       <IconMenu
         maxHeight={300}
-        iconStyle={inLineStyles.iconButton}
-        onRequestChange={(open, reason) => this.handleOnRequestChange(open, reason)}
         styleName="iconMenu"
+        onRequestChange={this.handleOnRequestChange}
+        onTouchTap={this.handleOpenMenu}
+        open={openMenu}
+        useLayerForClickAway
         iconButtonElement={
-          <Badge
-            badgeContent={quantOwnerNotNotified}
-            secondary
-            badgeStyle={inLineStyles.badge}
-          >
+          <div styleName="iconButtonWrapper">
+            <Badge
+              badgeContent={quantOwnerNotNotified}
+              secondary
+              badgeStyle={inLineStyles.badge}
+            />
             <IconButton
               tooltip="Notifications"
-              onTouchTap={this.handleDismissAll}
+              style={inLineStyles.iconButton}
               iconStyle={inLineStyles.iconButton.icon}
             >
-              <NotificationsIcon size={10} />
+              <NotificationsIcon />
             </IconButton>
-          </Badge>
+          </div>
         }
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}

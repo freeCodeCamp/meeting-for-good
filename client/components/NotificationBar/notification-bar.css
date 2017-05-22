@@ -10,8 +10,14 @@
 .iconMenu {
    height: 40px;
    width: 40px;
-   margin: -54px 18px 0px 0px;
+   margin: 0px 18px 0px 0px;
 }
+
+.iconButtonWrapper {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
 @media (max-width:550px) {
   .menuItem {
     font-size: 14px !important;
