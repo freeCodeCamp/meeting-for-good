@@ -26,6 +26,7 @@ class NotificationBar extends Component {
           if (
             participant.userId._id.toString() !== curUser._id
             && participant.ownerNotified === false
+            && participant.status > 1
             && event.owner.toString() === curUser._id
           ) {
             quantOwnerNotNotified += 1;
@@ -69,7 +70,9 @@ class NotificationBar extends Component {
     const guestDismissList = [];
     events.forEach((event) => {
       event.participants.forEach((participant) => {
-        if (participant.ownerNotified === false) {
+        if (participant.ownerNotified === false
+          && participant.status > 1
+          ) {
           guestDismissList.push(participant._id);
         }
       });
@@ -103,7 +106,7 @@ class NotificationBar extends Component {
       events.forEach((event) => {
         if (event.owner.toString() === curUser._id) {
           event.participants.forEach((participant) => {
-            if (participant.userId._id !== curUser._id) {
+            if (participant.userId._id !== curUser._id && participant.status > 1) {
               let bkgColor = '#ffffff';
               if (!participant.ownerNotified) {
                 bkgColor = '#EEEEFF';
