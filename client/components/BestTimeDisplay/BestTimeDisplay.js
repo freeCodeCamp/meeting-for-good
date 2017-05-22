@@ -170,17 +170,27 @@ class BestTimeDisplay extends Component {
 
   render() {
     const { displayTimes, disablePicker } = this.state;
+
+    // Only show timezone information when we're at the dashboard.
+    let tzInfo;
+    if (location.pathname === '/dashboard') {
+      tzInfo =
+        (<div styleName="info">
+          <p>
+            <em>
+              Displaying all times in your local timezone: {jz.determine().name()}
+            </em>
+          </p>
+        </div>);
+    } else {
+      tzInfo = <div />;
+    }
+    
     return (
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
           <div>
-            <div styleName="info">
-              <p>
-                <em>
-                  Displaying all times in your local timezone: {jz.determine().name()}
-                </em>
-              </p>
-            </div>
+            {tzInfo}
             <h6 styleName="bestTimeTitle">The following times work for everyone:</h6>
             {this.renderBestTime()}
           </div>
