@@ -5,7 +5,6 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Badge from 'material-ui/Badge';
-import Divider from 'material-ui/Divider';
 import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
@@ -31,27 +30,33 @@ class NotificationBar extends Component {
 
   componentWillMount() {
     const { events, curUser } = this.props;
-    this.setState({ events, curUser });
-    this.IconButtonColor();
+    this.setState({ events, curUser }, this.IconButtonColor());
   }
 
   componentWillReceiveProps(nextProps) {
     const { events } = nextProps;
-    this.setState({ events });
-    this.IconButtonColor();
+    this.setState({ events }, this.IconButtonColor());
   }
 
   @autobind
   async handleDismissAll() {
     const { events } = this.state;
+    const { cbHandleDismissGuest } = this.props;
+    const guestDismissList = [];
     events.forEach((event) => {
       event.participants.forEach((participant) => {
         if (participant.ownerNotified === false) {
-          this.props.cbHandleDismissGuest(participant._id);
+          guestDismissList.push(participant._id);
         }
       });
     });
-    this.setState({ notificationColor: '#ffffff', quantOwnerNotNotified: 0 });
+    try {
+      await cbHandleDismissGuest(guestDismissList);
+    } catch (err) {
+      console.log('error at handleDismissAll NoficationBar', err);
+    } finally {
+      this.IconButtonColor();
+    }
   }
 
   IconButtonColor() {
@@ -105,7 +110,6 @@ class NotificationBar extends Component {
               </MenuItem>
               );
               rows.push(row);
-              rows.push(<Divider key={`${participant._id} divider`} style={{ width: '100%' }} />);
             }
           });
         }
@@ -139,7 +143,8 @@ class NotificationBar extends Component {
         maxHeight={300}
         open={openMenu}
         iconStyle={inLineStyles.iconButton}
-        style={{ height: '40px', width: '40px', margin: '-54px 18px 0px 0px' }}
+        onRequestChange={(open, reason) => { console.log(open, reason); }}
+        styleName="iconMenu"
         iconButtonElement={
           <Badge
             badgeContent={quantOwnerNotNotified}
