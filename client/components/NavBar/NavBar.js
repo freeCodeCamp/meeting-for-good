@@ -197,7 +197,7 @@ class NavBar extends Component {
             href={this.state.conditionalHomeLink}
             styleName="logoButton"
           >
-            Lets Meet
+            Meeting for Good
           </FlatButton>
         </ToolbarGroup >
         {this.renderRightGroup()}

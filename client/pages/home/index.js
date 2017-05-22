@@ -23,7 +23,7 @@ class Home extends React.Component {
     return (
       <div styleName="main">
         <header styleName="header">
-          <h2>LetsMeet</h2>
+          <h2>Meeting for Good</h2>
           <hr />
           <h6>The best meeting coordination app</h6>
           <img
@@ -63,7 +63,7 @@ class Home extends React.Component {
             </p>
 
             <p>
-              Check out the repo on <a href="https://github.com/FreeCodeCamp/LetsMeet" target="_blank" rel="noopener noreferrer">GitHub</a>
+              Check out the repo on <a href="https://github.com/freeCodeCamp/meeting-for-good/" target="_blank" rel="noopener noreferrer">GitHub</a>
             </p>
           </div>
         </footer>
