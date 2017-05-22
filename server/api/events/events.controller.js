@@ -16,7 +16,6 @@
 'use strict';
 
 import jsonpatch from 'fast-json-patch';
-import _ from 'lodash';
 import Events from './events.model';
 
 
@@ -30,20 +29,18 @@ const respondWithResult = (res, statusCode) => {
   };
 };
 
-const patchUpdates = (patches) => {
-  return (entity) => {
-    try {
-      jsonpatch.apply(entity, patches, /* validate */ true);
-    } catch (err) {
-      console.log('err at patches', err);
-      return Promise.reject(err);
-    }
-    return entity.save();
-  };
+const patchUpdates = patches => (entity) => {
+  try {
+    jsonpatch.apply(entity, patches, /* validate */ true);
+  } catch (err) {
+    console.log('err at patches', err);
+    return Promise.reject(err);
+  }
+  return entity.save();
 };
 
-const removeEntity = (res) => {
-  return (entity) => {
+const removeEntity = res =>
+  (entity) => {
     if (entity) {
       return entity.remove()
         .then(() => {
@@ -51,17 +48,15 @@ const removeEntity = (res) => {
         });
     }
   };
-};
 
-const handleEntityNotFound = (res) => {
-  return (entity) => {
+const handleEntityNotFound = res =>
+  (entity) => {
     if (!entity) {
       res.status(404).end();
       return null;
     }
     return entity;
   };
-};
 
 const handleError = (res, statusCode) => {
   statusCode = statusCode || 500;
@@ -69,6 +64,11 @@ const handleError = (res, statusCode) => {
     console.log('handleError at event.controler', err);
     res.status(statusCode).send(err);
   };
+};
+
+const filterOutStatusZeroParticipants = (event) => {
+  event.participants = event.participants.filter(participant => participant.status !== 0);
+  return event;
 };
 
 // Make a false delete setting the active to false
@@ -88,26 +88,17 @@ export const setFalse =  (req, res) => {
 };
 
 // Gets a list of all active events
-export const index = (req, res) => {
-  return Events.find({ active: true }).exec()
+export const index = (req, res) =>
+  Events.find({ active: true }).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
-};
 
 // Gets that event
 export const indexById = (req, res) => {
   const uid = req.params.uid;
   return Events.find({ uid, active: true })
     .exec()
-    .then((event) => {
-      const nEvent = _.clone(event);
-      event.participants.forEach((participant, indexParticipant) => {
-        if (participant.status === 0) {
-          nEvent.participants.splice(indexParticipant, 1);
-        }
-      });
-      return nEvent;
-    })
+    .then(event => filterOutStatusZeroParticipants(event))
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -124,41 +115,22 @@ export const indexByUser = (req, res) => {
     .populate('participants.userId', 'avatar emails name')
     .exec()
     .then((events) => {
-      const nEvents = _.clone(events);
-      events.forEach((event, index) => {
-        event.participants.forEach((participant, indexParticipant) => {
-          // if he is the owner then dont show the event.
-          if (participant.status === 0 && participant.userId._id.toString() === req.user._id.toString()) {
-            nEvents.splice(index, 1);
-          } else if (participant.status === 0 && participant.userId._id.toString() !== req.user._id.toString()) {
-            nEvents[index].participants.splice(indexParticipant, 1);
-          }
-        });
-      });
-      return nEvents;
+      events.forEach(event => filterOutStatusZeroParticipants(event));
+      return events;
     })
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
 
 // Gets a single Event from the DB
-export const show = (req, res) => {
-  return Events.findById(req.params.id)
+export const show = (req, res) =>
+  Events.findById(req.params.id)
     .populate('participants.userId', 'avatar emails name')
     .exec()
-    .then((event) => {
-      const nEvent = _.clone(event);
-      event.participants.forEach((participant, indexParticipant) => {
-        if (participant.status === 0) {
-          nEvent.participants.splice(indexParticipant, 1);
-        }
-      });
-      return nEvent;
-    })
+    .then(event => filterOutStatusZeroParticipants(event))
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
-};
 
 // Updates an existing Event in the DB
 export const patch = (req, res) => {
@@ -170,22 +142,20 @@ export const patch = (req, res) => {
     .exec()
     .then(handleEntityNotFound(res))
     .then(patchUpdates(req.body))
-    .then((res) => {
-      return Events.findById(res._id)
+    .then(res => Events.findById(res._id)
         .populate('participants.userId', 'avatar emails name')
-        .exec();
-    })
+        .exec())
+    .then(event => filterOutStatusZeroParticipants(event))
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
 
 // Deletes a Event from the DB
-export const destroy = (req, res) => {
-  return Events.findById(req.params.id).exec()
+export const destroy = (req, res) =>
+  Events.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
-};
 
 // Upserts the given Event in the DB at the specified ID
 export const upsert = (req, res) => {
@@ -223,8 +193,8 @@ export const create = (req, res) => {
 };
 
 // set the owner notification for that participants._id as true
-export const GuestNotificationDismiss = (req, res) => {
-  return Events.findOne({
+export const GuestNotificationDismiss = (req, res) =>
+  Events.findOne({
     'participants._id': req.params.id,
   })
     .exec()
@@ -233,46 +203,33 @@ export const GuestNotificationDismiss = (req, res) => {
       event.participants.id(req.params.id).ownerNotified = true;
       return event.save();
     })
-    .then((res) => {
-      return Events.findById({ _id: res._id })
+    .then(res =>
+      Events.findById({ _id: res._id })
         .populate('participants.userId', 'avatar emails name')
-        .exec();
-    })
+        .exec())
     .then(respondWithResult(res))
     .catch(handleError(res));
-};
 
 // set the guest as inactive
-export const setGuestInactive = (req, res) => {
-  return Events.findOne({ 'participants._id': req.params.id })
+export const setGuestInactive = (req, res) =>
+  Events.findOne({ 'participants._id': req.params.id })
     .exec()
     .then((event) => {
       event.participants.id(req.params.id).status = 0;
       event.participants.id(req.params.id).availability = [];
       return event.save();
     })
-    .then((res) => {
-      return Events.findById({ _id: res._id })
+    .then(res =>
+      Events.findById({ _id: res._id })
         .populate('participants.userId', 'avatar emails name')
-        .exec();
-    })
-    .then((event) => {
-      const nEvent = _.clone(event);
-      event.participants.forEach((participant, indexParticipant) => {
-        if (participant.status === 0) {
-          nEvent.participants.splice(indexParticipant, 1);
-        }
-      });
-      return nEvent;
-    })
+        .exec())
+    .then(event => filterOutStatusZeroParticipants(event))
     .then(respondWithResult(res))
     .catch(handleError(res));
-};
 
-export const showFull = (req, res) => {
-  return Events.findById({ _id: req.params.id })
+export const showFull = (req, res) =>
+  Events.findById({ _id: req.params.id })
     .populate('participants.userId', 'avatar emails name')
     .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
-};
