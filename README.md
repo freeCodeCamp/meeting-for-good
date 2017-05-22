@@ -1,7 +1,7 @@
-# Lets Meet
+# Meeting for Good
 A meeting coordination app for your team.
 
-### Get LetsMeet running locally
+### Get Meeting for Good running locally
 
 *Prerequisites*
 - [NodeJS](https://nodejs.org)
@@ -10,11 +10,11 @@ A meeting coordination app for your team.
 *Steps*
 - Fork the repo to your own account
 - Clone it to your computer:
-`git clone https://github.com/[your_account_name]/letsmeet.git && cd letsmeet`
+`git clone https://github.com/[your_account_name]/meeting-for-good.git && cd meeting-for-good`
 - Run `npm install` or `yarn install`
 - Create a `.env` file in the root directory of the app with the following contents:
 ```
-MONGO_URI=mongodb://localhost:27017/letsmeet
+MONGO_URI=mongodb://localhost:27017/meeting-for-good
 GOOGLE_KEY=[YOUR_GOOGLE_KEY]
 GOOGLE_SECRET=[YOUR_GOOGLE_SECRET]
 FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
