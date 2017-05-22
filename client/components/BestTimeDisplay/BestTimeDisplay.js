@@ -183,9 +183,9 @@ class BestTimeDisplay extends Component {
           </p>
         </div>);
     } else {
-      tzInfo = <div />;
+      tzInfo = null;
     }
-    
+
     return (
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
