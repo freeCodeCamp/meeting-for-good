@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
-import fetch from 'isomorphic-fetch';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
@@ -11,7 +10,6 @@ import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 
-import { checkStatus } from '../../util/fetch.util';
 import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
@@ -19,22 +17,6 @@ class NotificationBar extends Component {
   @autobind
   static handleEventLinkClick(id) {
     browserHistory.push(`/event/${id}`);
-  }
-
-  static async handleDismiss(participantId) {
-    const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      method: 'PATCH',
-    });
-    try {
-      checkStatus(response);
-    } catch (err) {
-      console.error('handleDismiss', err);
-    }
   }
 
   constructor(props) {
@@ -96,6 +78,7 @@ class NotificationBar extends Component {
 
   renderMenuRows() {
     const { events, curUser } = this.state;
+    const { handleEventLinkClick } = this.constructor;
     const rows = [];
 
     if (events) {
@@ -115,7 +98,7 @@ class NotificationBar extends Component {
               >
                 {participant.userId.name} <span>accepted your invitation for &#32;</span>
                 <a
-                  onTouchTap={() => this.constructor.handleEventLinkClick(event._id)}
+                  onTouchTap={() => handleEventLinkClick(event._id)}
                   styleName="eventLink"
                 >{event.name}</a>.
               </MenuItem>
