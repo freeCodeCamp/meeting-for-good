@@ -115,26 +115,7 @@ export const indexByUser = (req, res) => {
     .populate('participants.userId', 'avatar emails name')
     .exec()
     .then((events) => {
-      events.forEach((event, index) => {
-        event.participants.forEach((participant, indexParticipant) => {
-          // if he is the owner then dont show the event.
-          if (participant.status === 0 &&
-              participant.userId._id.toString() === req.user._id.toString()) {
-            events[index] = null;
-          } else
-          if (participant.status === 0 &&
-              participant.userId._id.toString() !== req.user._id.toString()) {
-            events[index].participants[indexParticipant] = null;
-          }
-        });
-      });
-
-      // Pack the arrays
-      events = events.filter(event => event != null);
-      events.forEach((event) => {
-        event.participants = event.participants.filter(participant => participant != null);
-      });
-
+      events.forEach(event => filterOutStatusZeroParticipants(event));
       return events;
     })
     .then(respondWithResult(res))
