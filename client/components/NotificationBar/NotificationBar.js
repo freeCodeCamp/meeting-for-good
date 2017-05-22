@@ -83,30 +83,32 @@ class NotificationBar extends Component {
 
     if (events) {
       events.forEach((event) => {
-        event.participants.forEach((participant) => {
-          if (participant.userId._id !== curUser._id) {
-            let bkgColor = '#ffffff';
-            if (!participant.ownerNotified) {
-              bkgColor = '#EEEEFF';
-            }
-            const row = (
-              <MenuItem
-                key={`${participant._id} first`}
-                value={participant._id}
-                style={{ backgroundColor: bkgColor }}
-                styleName="menuItem"
-              >
-                {participant.userId.name} <span>accepted your invitation for &#32;</span>
-                <a
-                  onTouchTap={() => handleEventLinkClick(event._id)}
-                  styleName="eventLink"
-                >{event.name}</a>.
+        if (event.owner.toString() === curUser._id) {
+          event.participants.forEach((participant) => {
+            if (participant.userId._id !== curUser._id) {
+              let bkgColor = '#ffffff';
+              if (!participant.ownerNotified) {
+                bkgColor = '#EEEEFF';
+              }
+              const row = (
+                <MenuItem
+                  key={`${participant._id} first`}
+                  value={participant._id}
+                  style={{ backgroundColor: bkgColor }}
+                  styleName="menuItem"
+                >
+                  {participant.userId.name} <span>accepted your invitation for &#32;</span>
+                  <a
+                    onTouchTap={() => handleEventLinkClick(event._id)}
+                    styleName="eventLink"
+                  >{event.name}</a>.
               </MenuItem>
-            );
-            rows.push(row);
-            rows.push(<Divider key={`${participant._id} divider`} style={{ width: '100%' }} />);
-          }
-        });
+              );
+              rows.push(row);
+              rows.push(<Divider key={`${participant._id} divider`} style={{ width: '100%' }} />);
+            }
+          });
+        }
       });
     }
     return rows;
