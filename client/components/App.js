@@ -284,17 +284,28 @@ class App extends Component {
     return result;
   }
 
+  /**
+   *
+   * @param {*} participantsIds array of particpants to dismiss
+   */
   @autobind
-  async handleGuestNotificationsDismiss(participantId) {
+  async handleGuestNotificationsDismiss(participantsIds) {
     const { events } = this.state;
-    const nEvent = await handleDismiss(participantId);
-    if (nEvent) {
-      const nEvents = events.filter(event => event._id !== nEvent._id);
-      this.setState({ events: [nEvent, ...nEvents] });
-      return nEvent;
+    const nEvents = _.cloneDeep(events);
+    try {
+      await Promise.all(participantsIds.map(
+        async (participantId) => {
+          const nEvent = await handleDismiss(participantId.toString());
+          nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
+        },
+      ));
+    } catch (err) {
+      this._addNotification('Error!', 'Failed to dismiss guest. Please try again later.', 'error');
+      return err;
+    } finally {
+      this.setState({ events: nEvents });
     }
-    this._addNotification('Error!', 'Failed to dismiss guest. Please try again later.', 'error');
-    return nEvent;
+    return events;
   }
 
   render() {
