@@ -64,7 +64,7 @@ class AvailabilityGrid extends Component {
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
     allDates.forEach((date) => {
       const dateMoment = moment(date);
-      dateMoment.hour(0).minute(0).second(0).millisecond(0);
+      dateMoment.startOf('date');
       grid.push({
         date: dateMoment,
         quarters: allTimes.map((quarter) => {
@@ -124,23 +124,33 @@ class AvailabilityGrid extends Component {
     cellInitialColumn,
     curUser, grid) {
     const nGrid = _.cloneDeep(grid);
-    AvailabilityGrid.generateRange(cellInitialRow, cellRowIndex).forEach((row) => {
-      AvailabilityGrid.generateRange(cellInitialColumn, cellColumnIndex).forEach((cell) => {
+    const rows = AvailabilityGrid.generateRange(cellInitialRow, cellRowIndex);
+    const columns = AvailabilityGrid.generateRange(cellInitialColumn, cellColumnIndex);
+
+    rows.forEach((row) => {
+      columns.forEach((cell) => {
         const nQuarter = nGrid[row].quarters[cell];
-        if (operation === 'add' && _.findIndex(nQuarter.participants, curUser._id) === -1) {
-          const temp = nQuarter.notParticipants.splice(
-            _.findIndex(nQuarter.notParticipants, curUser._id), 1);
-          nQuarter.participants.push(temp[0]);
+        const indexAtParticipant = _.findIndex(nQuarter.participants, curUser._id);
+        const indexAtNotParticipant = _.findIndex(nQuarter.notParticipants, curUser._id);
+        if (operation === 'add' && indexAtParticipant === -1) {
+          if (indexAtNotParticipant > -1) {
+            const temp = nQuarter.notParticipants.splice(indexAtNotParticipant, 1);
+            nQuarter.participants.push(temp[0]);
+          } else {
+            const temp = {};
+            temp[curUser._id] = curUser.name;
+            nQuarter.participants.push(temp);
+          }
         }
-        if (operation === 'remove' && _.findIndex(nQuarter.notParticipants, curUser._id) === -1) {
-          const temp = nQuarter.participants.splice(
-            _.findIndex(nQuarter.participants, curUser._id), 1);
-          nQuarter.notParticipants.push(temp[0]);
-        }
-        if (operation === 'new') {
-          const temp = {};
-          temp[curUser._id] = curUser.name;
-          nQuarter.participants.push(temp);
+        if (operation === 'remove' && indexAtNotParticipant === -1) {
+          if (indexAtParticipant > -1) {
+            const temp = nQuarter.participants.splice(indexAtParticipant, 1);
+            nQuarter.notParticipants.push(temp[0]);
+          } else {
+            const temp = {};
+            temp[curUser._id] = curUser.name;
+            nQuarter.notParticipants.push(temp);
+          }
         }
       });
     });
@@ -249,11 +259,9 @@ class AvailabilityGrid extends Component {
     if (showHeatmap) {
       return;
     }
-    let editOperation = 'new';
+    let editOperation = 'add';
     if (_.findIndex(quarter.participants, curUser._id) > -1) {
       editOperation = 'remove';
-    } else if (_.findIndex(quarter.notParticipants, curUser._id) > -1) {
-      editOperation = 'add';
     }
     this.setState({
       mouseDown: true,
@@ -295,7 +303,7 @@ class AvailabilityGrid extends Component {
   handleCellMouseUp(ev) {
     ev.preventDefault();
     this.setState({
-      mouseDown: false, cellColumnIndex: null, cellInitialRow: null, editOperation: null,
+      mouseDown: false, cellInitialColumn: null, cellInitialRow: null, editOperation: null,
     });
   }
 
