@@ -263,8 +263,8 @@ class NewEvent extends React.Component {
               </div>
               <br />
               <Subheader styleName="subHeader">
-                No earlier than {formatTime(selectedTimeRange[0])}
-                and no later than {formatTime(selectedTimeRange[1])}
+                No earlier than {formatTime(selectedTimeRange[0])} and no later
+                 than {formatTime(selectedTimeRange[1])}
               </Subheader>
               <div styleName="centerContainer">
                 <RaisedButton
