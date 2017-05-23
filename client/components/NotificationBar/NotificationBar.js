@@ -146,7 +146,7 @@ class NotificationBar extends Component {
         height: 16,
       },
       iconButton: {
-        top: '-40px',
+        top: '-42px',
         icon: {
           color: 'white',
           width: '19px',
