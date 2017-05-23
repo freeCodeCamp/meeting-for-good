@@ -84,6 +84,7 @@ class DeleteModal extends Component {
           backgroundColor="#ECEFF1"
           onTouchTap={this.handleOpen}
           styleName="delete-buttom"
+          aria-label="delete-event-buttom"
         >
           <EventDelete />
         </FloatingActionButton>

@@ -83,7 +83,12 @@ class Dashboard extends Component {
     return (
       <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}
-        <FloatingActionButton styleName="new-event-icon" secondary onClick={this.constructor.handleNewEvent} >
+        <FloatingActionButton
+          styleName="new-event-icon"
+          secondary
+          onClick={this.constructor.handleNewEvent}
+          aria-label="new event"
+        >
           <ContentAdd />
         </FloatingActionButton>
         {/* Card Template */}

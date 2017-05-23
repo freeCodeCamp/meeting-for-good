@@ -124,6 +124,7 @@ class NavBar extends Component {
             <FlatButton
               styleName="DashButton"
               onTouchTap={this.constructor.handleDashboardClick}
+              aria-label="Dashboard"
             >
               Dashboard
             </FlatButton>
@@ -136,7 +137,7 @@ class NavBar extends Component {
             iconStyle={inLineStyles.iconMenu.iconStyle}
             menuItemStyle={{ height: '38px' }}
             iconButtonElement={
-              <IconButton style={{ padding: 0 }}>
+              <IconButton style={{ padding: 0 }} aria-label="user button">
                 <div>
                   <Avatar
                     size={34}
@@ -196,6 +197,7 @@ class NavBar extends Component {
           <FlatButton
             href={this.state.conditionalHomeLink}
             styleName="logoButton"
+            aria-label="reload app"
           >
             Meeting for Good
           </FlatButton>
