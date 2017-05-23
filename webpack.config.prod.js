@@ -129,13 +129,35 @@ module.exports = {
       },
       apply(manifest) {
         manifest.set('manifest_version', '2');
-        manifest.set('short_name', 'LetsMeet');
-        manifest.set('name', 'LetsMeet');
+        manifest.set('version', '1');
+        manifest.set('default_locale', 'en');
+        manifest.set('description', 'THE BEST MEETING COORDINATION APP');
+        manifest.set('display', 'fullscreen');
+        manifest.set('short_name', 'MeetingFG');
+        manifest.set('name', 'Meeting For Good');
         manifest.set('background_color', '#FBFFFB');
         manifest.set('theme_color', '#FBFFFB');
       },
     }),
-    new OfflinePlugin(),
+    new OfflinePlugin({
+      caches: {
+        main: [
+          'app.*.js',
+          '*.app.*.js',
+          'vendor.*.js',
+          'vendor.css',
+          '*.png',
+          '*.ttf',
+          '*.gif',
+        ],
+      },
+      externals: [
+        '/',
+      ],
+      ServiceWorker: {
+        navigateFallbackURL: '/',
+      },
+    }),
   ],
   resolve: {
     extensions: ['.js', '.css'],
