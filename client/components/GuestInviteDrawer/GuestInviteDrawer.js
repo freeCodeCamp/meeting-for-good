@@ -260,6 +260,7 @@ class GuestInviteDrawer extends Component {
           fullWidth
           label="Full Url"
           ref={focusUrlTextField}
+          aria-label="Full Url"
         />
         <div styleName="Row">
           <RaisedButton

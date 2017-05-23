@@ -53,16 +53,15 @@ module.exports = {
   },
   module: {
     rules: [
-      (!lintCode ?
-        {
-          test: /\.js$/,
-          enforce: 'pre',
+      (!lintCode ? {
+        test: /\.js$/,
+        enforce: 'pre',
 
-          loader: 'eslint-loader',
-          options: {
-            emitWarning: true,
-          },
-        } : {}),
+        loader: 'eslint-loader',
+        options: {
+          emitWarning: true,
+        },
+      } : {}),
       {
         test: /\.js$/,
         use: 'babel-loader',
@@ -74,41 +73,41 @@ module.exports = {
       },
       {
         test: /\.(png|jp?g|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: { limit: 10000 },
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
           },
-          {
-            loader: 'image-webpack-loader',
-            query: {
-              mozjpeg: {
-                progressive: true,
-              },
-              gifsicle: {
-                interlaced: false,
-              },
-              optipng: {
-                optimizationLevel: 4,
-              },
-              pngquant: {
-                quality: '75-90',
-                speed: 3,
-              },
+        },
+        {
+          loader: 'image-webpack-loader',
+          query: {
+            mozjpeg: {
+              progressive: true,
+            },
+            gifsicle: {
+              interlaced: false,
+            },
+            optipng: {
+              optimizationLevel: 4,
+            },
+            pngquant: {
+              quality: '75-90',
+              speed: 3,
             },
           },
+        },
         ],
       },
       {
         test: /\.css$/,
         exclude: [/node_modules/, /no-css-modules/],
-        use: [
-          {
-            loader: 'style-loader?sourceMap',
-          },
-          {
-            loader: 'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-          },
+        use: [{
+          loader: 'style-loader?sourceMap',
+        },
+        {
+          loader: 'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+        },
         ],
       },
       {
@@ -132,7 +131,11 @@ module.exports = {
     }),
     new ExtractTextPlugin('vendor.css'),
     new OptimizeCSS({
-      cssProcessorOptions: { discardComments: { removeAll: true } },
+      cssProcessorOptions: {
+        discardComments: {
+          removeAll: true,
+        },
+      },
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
@@ -161,13 +164,29 @@ module.exports = {
       apply(manifest) {
         manifest.set('manifest_version', '2');
         manifest.set('version', '1');
-        manifest.set('short_name', 'LetsMeet');
-        manifest.set('name', 'LetsMeet');
+        manifest.set('default_locale', 'en');
+        manifest.set('description', 'THE BEST MEETING COORDINATION APP');
+        manifest.set('display', 'fullscreen');
+        manifest.set('short_name', 'MeetingFG');
+        manifest.set('name', 'Meeting For Good');
         manifest.set('background_color', '#FBFFFB');
         manifest.set('theme_color', '#FBFFFB');
       },
     }),
-    new OfflinePlugin(),
+    new OfflinePlugin({
+      caches: {
+        main: [
+          'vendor.*.js',
+          'bundle.*.js',
+        ],
+      },
+      externals: [
+        '/',
+      ],
+      ServiceWorker: {
+        navigateFallbackURL: '/',
+      },
+    }),
   ].filter(p => p),
   resolve: {
     extensions: ['.js', '.css'],
