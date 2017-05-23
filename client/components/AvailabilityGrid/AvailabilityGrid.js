@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import moment from 'moment';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import autobind from 'autobind-decorator';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
@@ -14,10 +15,11 @@ import chroma from 'chroma-js';
 import CellGrid from '../CellGrid/CellGrid';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import { getDaysBetween } from '../../util/dates.utils';
-import getTimesBetween from '../../util/times.utils';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
+
+const moment = extendMoment(Moment);
 
 class AvailabilityGrid extends Component {
 
@@ -92,8 +94,6 @@ class AvailabilityGrid extends Component {
         }),
       });
     });
-    // pop the last quarter of each day
-    grid.forEach(date => date.quarters.pop());
     return grid;
   }
 
@@ -186,12 +186,17 @@ class AvailabilityGrid extends Component {
     ));
 
     // construct all times range to load a the grid
-    const allTimes = _.flatten(
-      [dates[0]].map(({ fromDate, toDate }) =>
-        getTimesBetween(fromDate, toDate),
-      ),
-    );
+    const startDate = moment(dates[0].fromDate);
+    const year = startDate.get('year');
+    const month = startDate.get('month');
+    const date = startDate.get('date');
 
+    const endDate = moment(dates[0].toDate);
+    const hour = endDate.get('hour');
+    const minute = endDate.get('minute');
+    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
+    const dateRange = moment.range(startDate, endDateToRange);
+    const allTimes = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants);
 
@@ -381,7 +386,7 @@ class AvailabilityGrid extends Component {
       >{moment(time).format('h a')}</p>
     ));
     // delete the last hour for layout requirements
-    colTitles.pop();
+    // colTitles.pop();
     const timesTitle = (
       <div id="timesTitle" styleName="timesTitle" style={style}>
         {colTitles}
