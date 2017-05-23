@@ -385,8 +385,6 @@ class AvailabilityGrid extends Component {
         styleName="grid-hour"
       >{moment(time).format('h a')}</p>
     ));
-    // delete the last hour for layout requirements
-    // colTitles.pop();
     const timesTitle = (
       <div id="timesTitle" styleName="timesTitle" style={style}>
         {colTitles}
