@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import moment from 'moment';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import autobind from 'autobind-decorator';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
@@ -14,10 +15,11 @@ import chroma from 'chroma-js';
 import CellGrid from '../CellGrid/CellGrid';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import { getDaysBetween } from '../../util/dates.utils';
-import getTimesBetween from '../../util/times.utils';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
+
+const moment = extendMoment(Moment);
 
 class AvailabilityGrid extends Component {
 
@@ -64,7 +66,7 @@ class AvailabilityGrid extends Component {
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
     allDates.forEach((date) => {
       const dateMoment = moment(date);
-      dateMoment.hour(0).minute(0).second(0).millisecond(0);
+      dateMoment.startOf('date');
       grid.push({
         date: dateMoment,
         quarters: allTimes.map((quarter) => {
@@ -92,8 +94,6 @@ class AvailabilityGrid extends Component {
         }),
       });
     });
-    // pop the last quarter of each day
-    grid.forEach(date => date.quarters.pop());
     return grid;
   }
 
@@ -124,23 +124,33 @@ class AvailabilityGrid extends Component {
     cellInitialColumn,
     curUser, grid) {
     const nGrid = _.cloneDeep(grid);
-    AvailabilityGrid.generateRange(cellInitialRow, cellRowIndex).forEach((row) => {
-      AvailabilityGrid.generateRange(cellInitialColumn, cellColumnIndex).forEach((cell) => {
+    const rows = AvailabilityGrid.generateRange(cellInitialRow, cellRowIndex);
+    const columns = AvailabilityGrid.generateRange(cellInitialColumn, cellColumnIndex);
+
+    rows.forEach((row) => {
+      columns.forEach((cell) => {
         const nQuarter = nGrid[row].quarters[cell];
-        if (operation === 'add' && _.findIndex(nQuarter.participants, curUser._id) === -1) {
-          const temp = nQuarter.notParticipants.splice(
-            _.findIndex(nQuarter.notParticipants, curUser._id), 1);
-          nQuarter.participants.push(temp[0]);
+        const indexAtParticipant = _.findIndex(nQuarter.participants, curUser._id);
+        const indexAtNotParticipant = _.findIndex(nQuarter.notParticipants, curUser._id);
+        if (operation === 'add' && indexAtParticipant === -1) {
+          if (indexAtNotParticipant > -1) {
+            const temp = nQuarter.notParticipants.splice(indexAtNotParticipant, 1);
+            nQuarter.participants.push(temp[0]);
+          } else {
+            const temp = {};
+            temp[curUser._id] = curUser.name;
+            nQuarter.participants.push(temp);
+          }
         }
-        if (operation === 'remove' && _.findIndex(nQuarter.notParticipants, curUser._id) === -1) {
-          const temp = nQuarter.participants.splice(
-            _.findIndex(nQuarter.participants, curUser._id), 1);
-          nQuarter.notParticipants.push(temp[0]);
-        }
-        if (operation === 'new') {
-          const temp = {};
-          temp[curUser._id] = curUser.name;
-          nQuarter.participants.push(temp);
+        if (operation === 'remove' && indexAtNotParticipant === -1) {
+          if (indexAtParticipant > -1) {
+            const temp = nQuarter.participants.splice(indexAtParticipant, 1);
+            nQuarter.notParticipants.push(temp[0]);
+          } else {
+            const temp = {};
+            temp[curUser._id] = curUser.name;
+            nQuarter.notParticipants.push(temp);
+          }
         }
       });
     });
@@ -176,12 +186,17 @@ class AvailabilityGrid extends Component {
     ));
 
     // construct all times range to load a the grid
-    const allTimes = _.flatten(
-      [dates[0]].map(({ fromDate, toDate }) =>
-        getTimesBetween(fromDate, toDate),
-      ),
-    );
+    const startDate = moment(dates[0].fromDate);
+    const year = startDate.get('year');
+    const month = startDate.get('month');
+    const date = startDate.get('date');
 
+    const endDate = moment(dates[0].toDate);
+    const hour = endDate.get('hour');
+    const minute = endDate.get('minute');
+    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
+    const dateRange = moment.range(startDate, endDateToRange);
+    const allTimes = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants);
 
@@ -249,11 +264,9 @@ class AvailabilityGrid extends Component {
     if (showHeatmap) {
       return;
     }
-    let editOperation = 'new';
+    let editOperation = 'add';
     if (_.findIndex(quarter.participants, curUser._id) > -1) {
       editOperation = 'remove';
-    } else if (_.findIndex(quarter.notParticipants, curUser._id) > -1) {
-      editOperation = 'add';
     }
     this.setState({
       mouseDown: true,
@@ -295,7 +308,7 @@ class AvailabilityGrid extends Component {
   handleCellMouseUp(ev) {
     ev.preventDefault();
     this.setState({
-      mouseDown: false, cellColumnIndex: null, cellInitialRow: null, editOperation: null,
+      mouseDown: false, cellInitialColumn: null, cellInitialRow: null, editOperation: null,
     });
   }
 
@@ -372,8 +385,6 @@ class AvailabilityGrid extends Component {
         styleName="grid-hour"
       >{moment(time).format('h a')}</p>
     ));
-    // delete the last hour for layout requirements
-    colTitles.pop();
     const timesTitle = (
       <div id="timesTitle" styleName="timesTitle" style={style}>
         {colTitles}
