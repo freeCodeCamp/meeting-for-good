@@ -47,7 +47,7 @@ class DeleteModal extends Component {
           backgroundColor: '#FF4025',
           color: '#ffffff',
           fontSize: '25px',
-          height: '50px',
+          height: '25px',
           paddingTop: 6,
         },
         content: {
