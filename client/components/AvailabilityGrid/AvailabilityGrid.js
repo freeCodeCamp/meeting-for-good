@@ -77,9 +77,9 @@ class AvailabilityGrid extends Component {
     });
     datesRanges = _.flatten(datesRanges);
     datesRanges.sort((a, b) => {
-      const x = a.clone();
-      const y = b.clone();
-      return x.unix() - y.unix();
+      const x = a.clone().unix();
+      const y = b.clone().unix();
+      return x - y;
     });
     return datesRanges;
   }
@@ -238,7 +238,7 @@ class AvailabilityGrid extends Component {
       });
     });
 
-    // again i need to call the full event to edit... since he dont the
+    // need to call the full event to edit... since he dont the
     // info that maybe have a guest "deleted"
     const eventToEdit = await loadEventFull(this.state.event._id);
     const event = JSON.parse(JSON.stringify(eventToEdit));
@@ -383,19 +383,19 @@ class AvailabilityGrid extends Component {
     const { allTimes } = this.state;
     // array only with full hours thats will be used to display at grid
     const hourTime = allTimes
-      .filter(time => moment(time).minute() === 0);
+      .filter(time => time.minute() === 0);
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
     // since we only whant display the full hours
-    if (moment(allTimes[0]).minutes() !== 0) {
-      offSet = 4 - (moment(allTimes[0]).minutes() / 15);
+    if (allTimes[0].minutes() !== 0) {
+      offSet = 4 - (allTimes[0].minutes() / 15);
     }
     const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
     const colTitles = hourTime.map(time => (
       <p
         key={time}
         styleName="grid-hour"
-      >{moment(time).format('h a')}</p>
+      >{time.format('h a')}</p>
     ));
     const timesTitle = (
       <div id="timesTitle" styleName="timesTitle" style={style}>
@@ -437,7 +437,7 @@ class AvailabilityGrid extends Component {
             <div key={row.date} styleName="column">
               <div styleName="rowGrid">
                 <div styleName="date-cell">
-                  {moment(row.date).format('Do MMM ddd')}
+                  {row.date.format('Do MMM')} <br /> {row.date.format('ddd')}
                 </div>
                 {this.renderGridRow(row.quarters, rowIndex)}
               </div>

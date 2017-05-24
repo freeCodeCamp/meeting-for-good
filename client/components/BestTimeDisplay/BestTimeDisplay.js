@@ -40,6 +40,7 @@ class BestTimeDisplay extends Component {
     if (availability.length > 1) {
       // need to find the participant with less availabilitys to be the base one;
       availability.sort((a, b) => a.length - b.length);
+      // now calculate the overlaps
       for (let i = 0; i < availability[0].length; i += 1) {
         const current = availability[0][i];
         let count = 0;
@@ -52,6 +53,13 @@ class BestTimeDisplay extends Component {
         }
         if (count === availability.length) overlaps.push(current);
       }
+
+      // sort the overlaps to be at order of date and inicial time
+      overlaps.sort((a, b) => {
+        const x = moment(a[0]).clone().unix();
+        const y = moment(b[0]).clone().unix();
+        return x - y;
+      });
 
       if (overlaps.length !== 0) {
         let index = 0;

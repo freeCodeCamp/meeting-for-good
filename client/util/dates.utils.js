@@ -3,7 +3,7 @@ import moment from 'moment';
  /* input - date as dateRanges object
   {from: date, to: date }
 ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)*/
-export const dateRangeReducer = (dates) => {
+const dateRangeReducer = (dates) => {
   for (let i = 0; i < dates.length; i += 1) {
     for (let x = i + 1; x < dates.length; x += 1) {
       // `dates[i]` represents every date object starting from index 0.
@@ -49,12 +49,4 @@ export const dateRangeReducer = (dates) => {
   return dates;
 };
 
-
-// Get all days between start and end.
-  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
-  // (all input and output is in javascript Date objects)
-  /**
-   *
-   * @param {*} startDate
-   * @param {*} endDate
-   */
+export default dateRangeReducer;
