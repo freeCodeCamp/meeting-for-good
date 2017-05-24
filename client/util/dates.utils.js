@@ -3,7 +3,7 @@ import moment from 'moment';
  /* input - date as dateRanges object
   {from: date, to: date }
 ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)*/
-export const dateRangeReducer = (dates) => {
+const dateRangeReducer = (dates) => {
   for (let i = 0; i < dates.length; i += 1) {
     for (let x = i + 1; x < dates.length; x += 1) {
       // `dates[i]` represents every date object starting from index 0.
@@ -49,29 +49,4 @@ export const dateRangeReducer = (dates) => {
   return dates;
 };
 
-
-// Get all days between start and end.
-  // eg. getDaysBetween(25th June 2016, 30th June 2016) => [25th, 26th, 27th, 28th, 29th, 30th]
-  // (all input and output is in javascript Date objects)
-  /**
-   *
-   * @param {*} startDate
-   * @param {*} endDate
-   */
-export const getDaysBetween = (startDate, endDate) => {
-  const dates = [startDate];
-  let currentDay = startDate;
-
-  // If the end variable's hour is 12am, then we don't want it in the allDates array, or it will
-  // create an extra row in the grid made up only of disabled cells.
-  if (moment(endDate).hour() === 0) {
-    endDate = moment(endDate).subtract(1, 'd')._d;
-  }
-
-  while (moment(endDate).isAfter(dates[dates.length - 1], 'day')) {
-    currentDay = moment(currentDay).add(1, 'd')._d;
-    dates.push(currentDay);
-  }
-
-  return dates;
-};
+export default dateRangeReducer;

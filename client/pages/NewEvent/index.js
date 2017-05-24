@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import 'react-day-picker/lib/style.css';
 import '../../styles/no-css-modules/react-input-range.css';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
-import { dateRangeReducer } from '../../util/dates.utils';
+import dateRangeReducer from '../../util/dates.utils';
 import styles from './new-event.css';
 
 class NewEvent extends React.Component {

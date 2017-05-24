@@ -14,7 +14,6 @@ import chroma from 'chroma-js';
 
 import CellGrid from '../CellGrid/CellGrid';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
-import { getDaysBetween } from '../../util/dates.utils';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
@@ -49,24 +48,53 @@ class AvailabilityGrid extends Component {
       flattenedAvailability[participant.userId._id] =
         participant.availability.map((avail) => {
           // correct the milliseconds to zero since its a unecessary information
-          const dateCorrect = moment(avail[0]).second(0).millisecond(0);
+          const dateCorrect = moment(avail[0]).startOf('minute');
           return dateCorrect.toJSON();
         });
     });
     return flattenedAvailability;
   }
+
+  static createTimesRange(dates) {
+    // construct all times range to load a the grid
+    const startDate = moment(dates[0].fromDate);
+    const year = startDate.get('year');
+    const month = startDate.get('month');
+    const date = startDate.get('date');
+
+    const endDate = moment(dates[0].toDate);
+    const hour = endDate.get('hour');
+    const minute = endDate.get('minute');
+    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
+    const dateRange = moment.range(startDate, endDateToRange);
+    return Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+  }
+
+  static createDatesRange(dates) {
+    let datesRanges = dates.map((date) => {
+      const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
+      return Array.from(range.by('days', { step: 1 }));
+    });
+    datesRanges = _.flatten(datesRanges);
+    datesRanges.sort((a, b) => {
+      const x = a.clone().unix();
+      const y = b.clone().unix();
+      return x - y;
+    });
+    return datesRanges;
+  }
+
   /**
    *
-   * @param {*} allDates
-   * @param {*} allTimes
-   * @param {*} event
+   * @param {array} allDates
+   * @param {array} allTimes
+   * @param {Object} event
    */
   static createGridComplete(allDates, allTimes, event) {
     const grid = [];
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
     allDates.forEach((date) => {
-      const dateMoment = moment(date);
-      dateMoment.startOf('date');
+      const dateMoment = date;
       grid.push({
         date: dateMoment,
         quarters: allTimes.map((quarter) => {
@@ -101,8 +129,7 @@ class AvailabilityGrid extends Component {
     let quantOfParticipants = participants.filter(
       participant => participant.availability.length > 0).length;
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
-    const colors = chroma.scale(['wheat', 'olive']);
-    return colors.colors(quantOfParticipants);
+    return chroma.scale(['wheat', 'olive']).colors(quantOfParticipants);
   }
 
   /**
@@ -178,25 +205,13 @@ class AvailabilityGrid extends Component {
 
   componentWillMount() {
     const { event, dates, showHeatmap } = this.props;
-    const { createGridComplete, generateHeatMapBackgroundColors } = this.constructor;
+    const {
+      createGridComplete, generateHeatMapBackgroundColors,
+      createTimesRange, createDatesRange,
+    } = this.constructor;
 
-    // construct all dates range to load at the grid
-    const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
-      getDaysBetween(fromDate, toDate),
-    ));
-
-    // construct all times range to load a the grid
-    const startDate = moment(dates[0].fromDate);
-    const year = startDate.get('year');
-    const month = startDate.get('month');
-    const date = startDate.get('date');
-
-    const endDate = moment(dates[0].toDate);
-    const hour = endDate.get('hour');
-    const minute = endDate.get('minute');
-    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
-    const dateRange = moment.range(startDate, endDateToRange);
-    const allTimes = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    const allDates = createDatesRange(dates);
+    const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants);
 
@@ -223,7 +238,7 @@ class AvailabilityGrid extends Component {
       });
     });
 
-    // again i need to call the full event to edit... since he dont the
+    // need to call the full event to edit... since he dont the
     // info that maybe have a guest "deleted"
     const eventToEdit = await loadEventFull(this.state.event._id);
     const event = JSON.parse(JSON.stringify(eventToEdit));
@@ -264,10 +279,7 @@ class AvailabilityGrid extends Component {
     if (showHeatmap) {
       return;
     }
-    let editOperation = 'add';
-    if (_.findIndex(quarter.participants, curUser._id) > -1) {
-      editOperation = 'remove';
-    }
+    const editOperation = (_.findIndex(quarter.participants, curUser._id) > -1) ? 'remove' : 'add';
     this.setState({
       mouseDown: true,
       editOperation,
@@ -371,19 +383,19 @@ class AvailabilityGrid extends Component {
     const { allTimes } = this.state;
     // array only with full hours thats will be used to display at grid
     const hourTime = allTimes
-      .filter(time => moment(time).minute() === 0);
+      .filter(time => time.minute() === 0);
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
     // since we only whant display the full hours
-    if (moment(allTimes[0]).minutes() !== 0) {
-      offSet = 4 - (moment(allTimes[0]).minutes() / 15);
+    if (allTimes[0].minutes() !== 0) {
+      offSet = 4 - (allTimes[0].minutes() / 15);
     }
     const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
     const colTitles = hourTime.map(time => (
       <p
         key={time}
         styleName="grid-hour"
-      >{moment(time).format('h a')}</p>
+      >{time.format('h a')}</p>
     ));
     const timesTitle = (
       <div id="timesTitle" styleName="timesTitle" style={style}>
@@ -425,7 +437,7 @@ class AvailabilityGrid extends Component {
             <div key={row.date} styleName="column">
               <div styleName="rowGrid">
                 <div styleName="date-cell">
-                  {moment(row.date).format('Do MMM ddd')}
+                  {row.date.format('Do MMM')} <br /> {row.date.format('ddd')}
                 </div>
                 {this.renderGridRow(row.quarters, rowIndex)}
               </div>
