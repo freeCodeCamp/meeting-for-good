@@ -75,7 +75,12 @@ class AvailabilityGrid extends Component {
       const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
       return Array.from(range.by('days', { step: 1 }));
     });
-    datesRanges = _.sortedUniq(_.flatten(datesRanges));
+    datesRanges = _.flatten(datesRanges);
+    datesRanges.sort((a, b) => {
+      const x = a.clone();
+      const y = b.clone();
+      return x.unix() - y.unix();
+    });
     return datesRanges;
   }
 
@@ -89,8 +94,7 @@ class AvailabilityGrid extends Component {
     const grid = [];
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
     allDates.forEach((date) => {
-      const dateMoment = moment(date);
-      dateMoment.startOf('date');
+      const dateMoment = date;
       grid.push({
         date: dateMoment,
         quarters: allTimes.map((quarter) => {
