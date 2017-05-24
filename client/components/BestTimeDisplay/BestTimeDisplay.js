@@ -29,62 +29,67 @@ class BestTimeDisplay extends Component {
   }
 
   static buildBestTimes(event) {
-    const availability = [];
+    const availabilitys = [];
     const overlaps = [];
     const displayTimes = {};
 
+    // clean the availability and tranform each avail at a moment
     event.participants.forEach((participant) => {
-      if (participant.availability !== undefined) availability.push(participant.availability);
+      if (participant.availability !== undefined) {
+        availabilitys.push(participant.availability.map(avail =>
+          [moment(avail[0]), moment(avail[1])]));
+      }
     });
-
-    if (availability.length > 1) {
+    if (availabilitys.length > 1) {
       // need to find the participant with less availabilitys to be the base one;
-      availability.sort((a, b) => a.length - b.length);
+      availabilitys.sort((a, b) => a.length - b.length);
       // now calculate the overlaps
-      for (let i = 0; i < availability[0].length; i += 1) {
-        const current = availability[0][i];
+      const smallestAvail = availabilitys[0];
+      // calculates the overlaps
+      for (let i = 0; i < smallestAvail.length; i += 1) {
+        const current = smallestAvail[i];
         let count = 0;
-        for (let j = 0; j < availability.length; j += 1) {
-          for (let k = 0; k < availability[j].length; k += 1) {
-            if (availability[j][k][0] === current[0]) {
+        for (let j = 0; j < availabilitys.length; j += 1) {
+          for (let k = 0; k < availabilitys[j].length; k += 1) {
+            if (availabilitys[j][k][0].isSame(current[0])) {
               count += 1;
             }
           }
         }
-        if (count === availability.length) overlaps.push(current);
+        if (count === availabilitys.length) {
+          overlaps.push(current);
+        }
       }
 
       // sort the overlaps to be at order of date and inicial time
       overlaps.sort((a, b) => {
-        const x = moment(a[0]).clone().unix();
-        const y = moment(b[0]).clone().unix();
+        const x = a[0].clone().unix();
+        const y = b[0].clone().unix();
         return x - y;
       });
-
       if (overlaps.length !== 0) {
         let index = 0;
+        // for all overlaps calculated
         for (let i = 0; i < overlaps.length; i += 1) {
-          if (overlaps[i + 1] !== undefined && overlaps[i][1] !== overlaps[i + 1][0]) {
-            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
-                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
-            } else {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
-                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
+          const curOverlapDay = overlaps[index][0].format('DD MMM');
+          const curOverlapEnd = overlaps[i][1];
+          if (overlaps[i + 1] !== undefined && curOverlapEnd.isSame(overlaps[i + 1][0]) === false) {
+            // if alreedy have that day
+            if (displayTimes[curOverlapDay] === undefined) {
+              displayTimes[curOverlapDay] = {};
+              displayTimes[curOverlapDay].hours = [];
             }
+            displayTimes[curOverlapDay]
+              .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
             index = i + 1;
+            // dont have a next overlap
           } else if (overlaps[i + 1] === undefined) {
-            if (displayTimes[moment(overlaps[index][0]).format('DD MMM')] !== undefined) {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
-                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
-            } else {
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')] = {};
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')].hours = [];
-              displayTimes[moment(overlaps[index][0]).format('DD MMM')]
-                .hours.push(`${moment(overlaps[index][0]).format('h:mm a')} to ${moment(overlaps[i][1]).format('h:mm a')}`);
+            if (displayTimes[curOverlapDay] === undefined) {
+              displayTimes[curOverlapDay] = {};
+              displayTimes[curOverlapDay].hours = [];
             }
+            displayTimes[curOverlapDay]
+              .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
           }
         }
       }
