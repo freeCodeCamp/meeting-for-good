@@ -101,8 +101,7 @@ class AvailabilityGrid extends Component {
     let quantOfParticipants = participants.filter(
       participant => participant.availability.length > 0).length;
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
-    const colors = chroma.scale(['wheat', 'olive']);
-    return colors.colors(quantOfParticipants);
+    return chroma.scale(['wheat', 'olive']).colors(quantOfParticipants);
   }
 
   /**
@@ -264,10 +263,7 @@ class AvailabilityGrid extends Component {
     if (showHeatmap) {
       return;
     }
-    let editOperation = 'add';
-    if (_.findIndex(quarter.participants, curUser._id) > -1) {
-      editOperation = 'remove';
-    }
+    const editOperation = (_.findIndex(quarter.participants, curUser._id) > -1) ? 'remove' : 'add';
     this.setState({
       mouseDown: true,
       editOperation,
