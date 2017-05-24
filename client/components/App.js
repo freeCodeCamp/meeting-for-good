@@ -106,12 +106,13 @@ class App extends Component {
   @autobind
   async handleEditEvent(patches, eventId) {
     const { events } = this.state;
-    const eventEdited = await editEvent(patches, eventId);
-    if (eventEdited) {
-      const nEvents = events.filter(event => event._id !== eventId);
-      this.setState({ events: [eventEdited, ...nEvents] });
+    const nEvent = await editEvent(patches, eventId);
+    if (nEvent) {
+      const nEvents = _.cloneDeep(events);
+      nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
+      this.setState({ events: nEvents });
       this._addNotification('Success', 'Saved availability successfully.', 'success');
-      return eventEdited;
+      return nEvent;
     }
     this._addNotification('Error!!', 'Failed to update availability. Please try again later.', 'error');
     return false;
@@ -196,15 +197,15 @@ class App extends Component {
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const { events } = this.state;
-    const eventEdited = await deleteGuest(guestToDelete);
-    if (eventEdited) {
-      const nEvents = events.filter(event => event._id !== eventEdited._id);
-      this.setState({ events: [eventEdited, ...nEvents] });
+    const nEvent = await deleteGuest(guestToDelete);
+    if (nEvent) {
+      const nEvents = _.cloneDeep(events);
+      nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
-      return eventEdited;
+      return nEvent;
     }
     this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
-    return eventEdited;
+    return nEvent;
   }
 
   /**
@@ -263,8 +264,9 @@ class App extends Component {
     // if wasn't a participant then add
     const nEvent = await AddEventParticipant(guestId, event);
     if (nEvent) {
-      const nEvents = events.filter(event => event._id !== nEvent._id);
-      this.setState({ events: [nEvent, ...nEvents] });
+      const nEvents = _.cloneDeep(events);
+      nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
+      this.setState({ events: nEvents });
       const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
       if (responseEmail) {
         return nEvent;
