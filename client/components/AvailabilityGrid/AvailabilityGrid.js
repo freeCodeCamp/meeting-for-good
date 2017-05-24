@@ -14,7 +14,6 @@ import chroma from 'chroma-js';
 
 import CellGrid from '../CellGrid/CellGrid';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
-import { getDaysBetween } from '../../util/dates.utils';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
@@ -55,6 +54,31 @@ class AvailabilityGrid extends Component {
     });
     return flattenedAvailability;
   }
+
+  static createTimesRange(dates) {
+    // construct all times range to load a the grid
+    const startDate = moment(dates[0].fromDate);
+    const year = startDate.get('year');
+    const month = startDate.get('month');
+    const date = startDate.get('date');
+
+    const endDate = moment(dates[0].toDate);
+    const hour = endDate.get('hour');
+    const minute = endDate.get('minute');
+    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
+    const dateRange = moment.range(startDate, endDateToRange);
+    return Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+  }
+
+  static createDatesRange(dates) {
+    let datesRanges = dates.map((date) => {
+      const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
+      return Array.from(range.by('days', { step: 1 }));
+    });
+    datesRanges = _.sortedUniq(_.flatten(datesRanges));
+    return datesRanges;
+  }
+
   /**
    *
    * @param {array} allDates
@@ -101,7 +125,7 @@ class AvailabilityGrid extends Component {
     let quantOfParticipants = participants.filter(
       participant => participant.availability.length > 0).length;
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
-    return chroma.scale(['#B5D0E2', '#6AA9CD']).colors(quantOfParticipants);
+    return chroma.scale(['wheat', 'olive']).colors(quantOfParticipants);
   }
 
   /**
@@ -177,25 +201,13 @@ class AvailabilityGrid extends Component {
 
   componentWillMount() {
     const { event, dates, showHeatmap } = this.props;
-    const { createGridComplete, generateHeatMapBackgroundColors } = this.constructor;
+    const {
+      createGridComplete, generateHeatMapBackgroundColors,
+      createTimesRange, createDatesRange,
+    } = this.constructor;
 
-    // construct all dates range to load at the grid
-    const allDates = _.flatten(dates.map(({ fromDate, toDate }) =>
-      getDaysBetween(fromDate, toDate),
-    ));
-
-    // construct all times range to load a the grid
-    const startDate = moment(dates[0].fromDate);
-    const year = startDate.get('year');
-    const month = startDate.get('month');
-    const date = startDate.get('date');
-
-    const endDate = moment(dates[0].toDate);
-    const hour = endDate.get('hour');
-    const minute = endDate.get('minute');
-    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
-    const dateRange = moment.range(startDate, endDateToRange);
-    const allTimes = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    const allDates = createDatesRange(dates);
+    const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = generateHeatMapBackgroundColors(event.participants);
 
