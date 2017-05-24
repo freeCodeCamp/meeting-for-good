@@ -49,7 +49,7 @@ class AvailabilityGrid extends Component {
       flattenedAvailability[participant.userId._id] =
         participant.availability.map((avail) => {
           // correct the milliseconds to zero since its a unecessary information
-          const dateCorrect = moment(avail[0]).second(0).millisecond(0);
+          const dateCorrect = moment(avail[0]).startOf('minute');
           return dateCorrect.toJSON();
         });
     });
@@ -57,9 +57,9 @@ class AvailabilityGrid extends Component {
   }
   /**
    *
-   * @param {*} allDates
-   * @param {*} allTimes
-   * @param {*} event
+   * @param {array} allDates
+   * @param {array} allTimes
+   * @param {Object} event
    */
   static createGridComplete(allDates, allTimes, event) {
     const grid = [];
