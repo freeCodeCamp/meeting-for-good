@@ -5,6 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -115,6 +116,7 @@ module.exports = {
       minChunks: 'Infinity',
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
+    new FaviconsWebpackPlugin('./client/assets/favicons/logo.png'),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',
