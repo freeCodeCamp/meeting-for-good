@@ -7,6 +7,7 @@ const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
 const lintCode = process.env.LINT_CODE.toString() === 'false';
@@ -146,6 +147,7 @@ module.exports = {
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
     }),
+    new FaviconsWebpackPlugin('./client/assets/favicons/logo.png'),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',
@@ -163,6 +165,7 @@ module.exports = {
       },
       apply(manifest) {
         manifest.set('manifest_version', '2');
+        manifest.set('start_url', '/?homescreen=1');
         manifest.set('version', '1');
         manifest.set('default_locale', 'en');
         manifest.set('description', 'THE BEST MEETING COORDINATION APP');

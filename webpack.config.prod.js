@@ -5,6 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -115,6 +116,7 @@ module.exports = {
       minChunks: 'Infinity',
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
+    new FaviconsWebpackPlugin('./client/assets/favicons/logo.png'),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',
@@ -128,6 +130,7 @@ module.exports = {
         console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
       },
       apply(manifest) {
+        manifest.set('start_url', '/?homescreen=1');
         manifest.set('manifest_version', '2');
         manifest.set('version', '1');
         manifest.set('default_locale', 'en');
