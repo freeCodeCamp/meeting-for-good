@@ -2,7 +2,7 @@
   "name": "meeting-for-good",
   "version": "0.0.99",
   "description": "Schedule events with ease!",
-  "homepage": "https://github.com/FreeCodeCamp/meeting-for-god/#readme",
+  "homepage": "https://github.com/FreeCodeCamp/meeting-for-good/#readme",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf build",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FreeCodeCamp/LetsMeet"
+    "url": "git+https://github.com/FreeCodeCamp/meeting-for-good"
   },
   "author": "Aniruddh Agarwal <aaniruddh99@gmail.com>",
   "contributors": [
@@ -29,7 +29,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FreeCodeCamp/LetsMeet/issues"
+    "url": "https://github.com/FreeCodeCamp/meeting-for-good/issues"
   },
   "engines": {
     "node": "7.9.0",
