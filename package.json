@@ -72,6 +72,7 @@
     "express-sessions": "^1.0.6",
     "extract-text-webpack-plugin": "^2.1.0",
     "fast-json-patch": "^1.1.10",
+    "favicons-webpack-plugin": "0.0.7",
     "file-loader": "^0.11.1",
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.28.0",
@@ -126,7 +127,6 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^5.0.0",
     "eslint-plugin-react": "^7.0.1",
-    "favicons-webpack-plugin": "0.0.7",
     "webpack-dev-middleware": "^1.10.0",
     "webpack-dev-server": "^2.4.5",
     "webpack-hot-middleware": "^2.16.1"
