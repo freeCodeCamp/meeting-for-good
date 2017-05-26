@@ -61,7 +61,6 @@ class BestTimeDisplay extends Component {
       // calculates the overlaps
       for (let i = 0; i < smallestAvail[0].length; i += 1) {
         const currentQuarter = smallestAvail[0][i];
-        // console.log('current', currentQuarter[0].toString());
         let count = 0;
         for (let j = 0; j < availabilitys.length; j += 1) {
           for (let k = 0; k < availabilitys[j].length; k += 1) {
@@ -94,16 +93,17 @@ class BestTimeDisplay extends Component {
       for (let i = 0; i < overlaps.length; i += 1) {
         const curOverlapDay = overlaps[index][0].format('DD MMM');
         const curOverlapEnd = overlaps[i][1];
-        if (overlaps[i + 1] !== undefined && curOverlapEnd.isSame(overlaps[i + 1][0]) === false) {
-          // if alreedy have that day
+        if (overlaps[i + 1] !== undefined && !curOverlapEnd.isSame(overlaps[i + 1][0])) {
+          // if dosn't alreedy have that day create that day
           if (displayTimes[curOverlapDay] === undefined) {
             displayTimes[curOverlapDay] = {};
             displayTimes[curOverlapDay].hours = [];
           }
+          // push the overlaped range
           displayTimes[curOverlapDay]
             .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
           index = i + 1;
-          // dont have a next overlap
+          // dont have a next overlap, its the last one
         } else if (overlaps[i + 1] === undefined) {
           if (displayTimes[curOverlapDay] === undefined) {
             displayTimes[curOverlapDay] = {};
@@ -127,23 +127,31 @@ class BestTimeDisplay extends Component {
 
   componentWillMount() {
     const { event, disablePicker } = this.props;
-    const displayTimes = this.constructor.buildBestTimes(event);
+    const { buildBestTimes } = this.constructor;
+    const displayTimes = buildBestTimes(event);
     this.setState({ event, displayTimes, disablePicker });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, disablePicker } = nextProps;
-    const displayTimes = this.constructor.buildBestTimes(event);
+    const { buildBestTimes } = this.constructor;
+    const displayTimes = buildBestTimes(event);
     this.setState({ event, displayTimes, disablePicker });
   }
 
   isBestTime() {
-    const bestTimes = this.state.displayTimes;
+    const { displayTimes } = this.state;
+    const bestTimes = displayTimes;
     let isBestTime;
     if (bestTimes !== undefined) {
-      if (Object.keys(bestTimes).length > 0) isBestTime = true;
-      else isBestTime = false;
-    } else isBestTime = false;
+      if (Object.keys(bestTimes).length > 0) {
+        isBestTime = true;
+      } else {
+        isBestTime = false;
+      }
+    } else {
+      isBestTime = false;
+    }
 
     return isBestTime;
   }
@@ -152,7 +160,10 @@ class BestTimeDisplay extends Component {
     const { displayTimes } = this.state;
     return Object.keys(displayTimes).map(date => (
       <List key={date} disabled styleName="BstTimeList">
-        <Subheader styleName="SubHeader"><DateRangeIcon styleName="DateRangeIcon" />{date}</Subheader>
+        <Subheader styleName="SubHeader">
+          <DateRangeIcon styleName="DateRangeIcon" />
+          {date}
+        </Subheader>
         <ListItem key={date} disabled styleName="BstTimeListItem">
           <List>
             {this.constructor.renderRows(displayTimes[date].hours)}
@@ -224,7 +235,9 @@ class BestTimeDisplay extends Component {
         {this.isBestTime(displayTimes) ?
           <div>
             {tzInfo}
-            <h6 styleName="bestTimeTitle">The following times work for everyone:</h6>
+            <h6 styleName="bestTimeTitle">
+              The following times work for everyone:
+              </h6>
             {this.renderBestTime()}
           </div>
           :
