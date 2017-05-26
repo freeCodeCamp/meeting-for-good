@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import moment from 'moment';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import { List, ListItem } from 'material-ui/List';
 import _ from 'lodash';
 import Subheader from 'material-ui/Subheader';
@@ -12,6 +13,8 @@ import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
 
 import styles from './best-times-display.css';
+
+const moment = extendMoment(Moment);
 
 class BestTimeDisplay extends Component {
 
@@ -28,69 +31,86 @@ class BestTimeDisplay extends Component {
     return rows;
   }
 
-  static buildBestTimes(event) {
+  static buildAvailabilitys(event) {
     const availabilitys = [];
-    const overlaps = [];
-    const displayTimes = {};
-
-    // clean the availability and tranform each avail at a moment
+    // clean the availability and tranform each avail in a range of moments with 15 min long
+    // to be able to calculate the overlaps
     event.participants.forEach((participant) => {
       if (participant.availability !== undefined) {
-        availabilitys.push(participant.availability.map(avail =>
-          [moment(avail[0]), moment(avail[1])]));
+        const availability = participant.availability.map((avail) => {
+          const datesRange = moment.range([moment(avail[0]), moment(avail[1])]);
+          const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
+          const quartersToAvail = [];
+          quartersFromDtRange.forEach(date =>
+            quartersToAvail.push([moment(date), moment(date).add(15, 'm')]));
+          return quartersToAvail;
+        });
+        availabilitys.push(_.flatten(availability));
       }
     });
+    return availabilitys;
+  }
+
+  static createOverlaps(availabilitys) {
+    const overlaps = [];
     if (availabilitys.length > 1) {
       // need to find the participant with less availabilitys to be the base one;
       availabilitys.sort((a, b) => a.length - b.length);
       // now calculate the overlaps
-      const smallestAvail = availabilitys[0];
+      const smallestAvail = availabilitys.splice(0, 1);
       // calculates the overlaps
-      for (let i = 0; i < smallestAvail.length; i += 1) {
-        const current = smallestAvail[i];
+      for (let i = 0; i < smallestAvail[0].length; i += 1) {
+        const currentQuarter = smallestAvail[0][i];
+        // console.log('current', currentQuarter[0].toString());
         let count = 0;
         for (let j = 0; j < availabilitys.length; j += 1) {
           for (let k = 0; k < availabilitys[j].length; k += 1) {
-            if (availabilitys[j][k][0].isSame(current[0])) {
+            const quarterToCompare = availabilitys[j][k][0];
+            if (currentQuarter[0].isSame(quarterToCompare)) {
               count += 1;
             }
           }
         }
         if (count === availabilitys.length) {
-          overlaps.push(current);
+          overlaps.push(currentQuarter);
         }
       }
+    }
+    overlaps.sort((a, b) => {
+      const x = a[0].clone().unix();
+      const y = b[0].clone().unix();
+      return x - y;
+    });
+    return overlaps;
+  }
 
-      // sort the overlaps to be at order of date and inicial time
-      overlaps.sort((a, b) => {
-        const x = a[0].clone().unix();
-        const y = b[0].clone().unix();
-        return x - y;
-      });
-      if (overlaps.length !== 0) {
-        let index = 0;
-        // for all overlaps calculated
-        for (let i = 0; i < overlaps.length; i += 1) {
-          const curOverlapDay = overlaps[index][0].format('DD MMM');
-          const curOverlapEnd = overlaps[i][1];
-          if (overlaps[i + 1] !== undefined && curOverlapEnd.isSame(overlaps[i + 1][0]) === false) {
-            // if alreedy have that day
-            if (displayTimes[curOverlapDay] === undefined) {
-              displayTimes[curOverlapDay] = {};
-              displayTimes[curOverlapDay].hours = [];
-            }
-            displayTimes[curOverlapDay]
-              .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
-            index = i + 1;
-            // dont have a next overlap
-          } else if (overlaps[i + 1] === undefined) {
-            if (displayTimes[curOverlapDay] === undefined) {
-              displayTimes[curOverlapDay] = {};
-              displayTimes[curOverlapDay].hours = [];
-            }
-            displayTimes[curOverlapDay]
-              .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
+  static buildBestTimes(event) {
+    const availabilitys = BestTimeDisplay.buildAvailabilitys(event);
+    const overlaps = BestTimeDisplay.createOverlaps(availabilitys);
+    const displayTimes = {};
+    if (overlaps.length !== 0) {
+      let index = 0;
+      // for all overlaps calculated
+      for (let i = 0; i < overlaps.length; i += 1) {
+        const curOverlapDay = overlaps[index][0].format('DD MMM');
+        const curOverlapEnd = overlaps[i][1];
+        if (overlaps[i + 1] !== undefined && curOverlapEnd.isSame(overlaps[i + 1][0]) === false) {
+          // if alreedy have that day
+          if (displayTimes[curOverlapDay] === undefined) {
+            displayTimes[curOverlapDay] = {};
+            displayTimes[curOverlapDay].hours = [];
           }
+          displayTimes[curOverlapDay]
+            .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
+          index = i + 1;
+          // dont have a next overlap
+        } else if (overlaps[i + 1] === undefined) {
+          if (displayTimes[curOverlapDay] === undefined) {
+            displayTimes[curOverlapDay] = {};
+            displayTimes[curOverlapDay].hours = [];
+          }
+          displayTimes[curOverlapDay]
+            .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
         }
       }
     }
@@ -207,8 +227,8 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">The following times work for everyone:</h6>
             {this.renderBestTime()}
           </div>
-         :
-         (disablePicker === false) ? this.renderDayPicker() : null
+          :
+          (disablePicker === false) ? this.renderDayPicker() : null
         }
       </div>
     );
