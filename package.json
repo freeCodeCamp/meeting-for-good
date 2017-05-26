@@ -1,8 +1,8 @@
 {
-  "name": "letsmeet",
+  "name": "meeting-for-good",
   "version": "0.0.98",
   "description": "Schedule events with ease!",
-  "homepage": "https://github.com/FreeCodeCamp/LetsMeet#readme",
+  "homepage": "https://github.com/FreeCodeCamp/meeting-for-god/#readme",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf build",

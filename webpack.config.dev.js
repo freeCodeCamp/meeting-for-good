@@ -165,6 +165,7 @@ module.exports = {
       },
       apply(manifest) {
         manifest.set('manifest_version', '2');
+        manifest.set('start_url', '/?homescreen=1');
         manifest.set('version', '1');
         manifest.set('default_locale', 'en');
         manifest.set('description', 'THE BEST MEETING COORDINATION APP');

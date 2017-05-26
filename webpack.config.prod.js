@@ -130,6 +130,7 @@ module.exports = {
         console.log(`The manifest has been written to ${manifest.getOutputPath()}`);
       },
       apply(manifest) {
+        manifest.set('start_url', '/?homescreen=1');
         manifest.set('manifest_version', '2');
         manifest.set('version', '1');
         manifest.set('default_locale', 'en');
