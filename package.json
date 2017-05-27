@@ -1,8 +1,8 @@
 {
-  "name": "letsmeet",
-  "version": "0.0.98",
+  "name": "meeting-for-good",
+  "version": "0.0.99",
   "description": "Schedule events with ease!",
-  "homepage": "https://github.com/FreeCodeCamp/LetsMeet#readme",
+  "homepage": "https://github.com/FreeCodeCamp/meeting-for-good/#readme",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf build",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FreeCodeCamp/LetsMeet"
+    "url": "git+https://github.com/FreeCodeCamp/meeting-for-good"
   },
   "author": "Aniruddh Agarwal <aaniruddh99@gmail.com>",
   "contributors": [
@@ -29,7 +29,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FreeCodeCamp/LetsMeet/issues"
+    "url": "https://github.com/FreeCodeCamp/meeting-for-good/issues"
   },
   "engines": {
     "node": "7.9.0",
@@ -72,6 +72,7 @@
     "express-sessions": "^1.0.6",
     "extract-text-webpack-plugin": "^2.1.0",
     "fast-json-patch": "^1.1.10",
+    "favicons-webpack-plugin": "0.0.7",
     "file-loader": "^0.11.1",
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.28.0",
