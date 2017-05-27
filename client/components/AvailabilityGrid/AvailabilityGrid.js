@@ -130,12 +130,12 @@ class AvailabilityGrid extends Component {
       participant => participant.availability.length > 0).length;
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
     if (quantOfParticipants < 3) {
-      return chroma.scale(['#BAB861', '#7F7319']).colors(quantOfParticipants);
+      return chroma.scale(['#AECDE0', '#8191CD']).colors(quantOfParticipants);
     }
     if (quantOfParticipants < 5) {
-      return chroma.scale(['#BAB861', '#7F7219']).colors(quantOfParticipants);
+      return chroma.scale(['#AECDE0', '#5456BA']).colors(quantOfParticipants);
     }
-    return chroma.scale(['#BAB861', '#4C4300']).colors(quantOfParticipants);
+    return chroma.scale(['#AECDE0', '#3E38B1']).colors(quantOfParticipants);
   }
 
   /**
