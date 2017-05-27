@@ -129,7 +129,7 @@ class AvailabilityGrid extends Component {
     let quantOfParticipants = participants.filter(
       participant => participant.availability.length > 0).length;
     quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
-    if (quantOfParticipants < 4) {
+    if (quantOfParticipants < 5) {
       return chroma.scale(['wheat', 'olive']).colors(quantOfParticipants);
     }
     return chroma.scale(['wheat', 'green']).colors(quantOfParticipants);
