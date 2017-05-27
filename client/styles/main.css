@@ -22,7 +22,7 @@ h5,
 h6 {
   line-height: 110%;
   margin: .5rem 0 .4rem 0;
-  font-weight: 300;
+  font-weight: 200;
 }
 
 h3 {
@@ -56,7 +56,7 @@ main {
 @font-face {
   font-family: Lato;
   src: url('../assets/fonts/lato/Lato-Light.ttf');
-  font-weight: light;
+  font-weight: 200;
 }
 
 @font-face {
