@@ -11,7 +11,7 @@
 .logoButton {
   font-size: 22px !important;
   color: #ffffff !important;
-  font-family: 'saxMono' !important;
+  font-weight: 400;
 }
 
 .DashButton {
