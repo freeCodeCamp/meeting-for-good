@@ -371,8 +371,8 @@ class AvailabilityGrid extends Component {
     const inlineStyles = {
       modal: {
         content: {
-          width: '550px',
-          maxWidth: '550px',
+          width: '630px',
+          maxWidth: '630px',
         },
         bodyStyle: {
           paddingTop: 10,
