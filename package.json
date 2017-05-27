@@ -20,11 +20,11 @@
     "type": "git",
     "url": "git+https://github.com/FreeCodeCamp/meeting-for-good"
   },
-  "author": "Aniruddh Agarwal <aaniruddh99@gmail.com>",
+  "author": "Jean Philip de Rogatis <jrogatis@rogatis.eti.br>",
   "contributors": [
     {
-      "name": "Jean Philip de Rogatis",
-      "email": "jrogatis@rogatis.eti.br"
+      "name": "Aniruddh Agarwal",
+      "email": "aaniruddh99@gmail.com"
     }
   ],
   "license": "MIT",
@@ -32,7 +32,7 @@
     "url": "https://github.com/FreeCodeCamp/meeting-for-good/issues"
   },
   "engines": {
-    "node": "7.9.0",
+    "node": "^7.9.0",
     "npm": "^4.5.0"
   },
   "dependencies": {
