@@ -147,7 +147,13 @@ module.exports = {
     new WriteFilePlugin({
       test: /\.(html|ejs)$/,
     }),
-    new FaviconsWebpackPlugin('./client/assets/favicons/logo.png'),
+    new FaviconsWebpackPlugin({
+      logo: './client/assets/favicons/logo.png',
+      icons: {
+        appleStartup: false,
+      },
+      background: 'transparent',
+    }),
     new HtmlWebpackPlugin({
       title: 'Lets Meet',
       template: 'html-loader!./client/index.html',

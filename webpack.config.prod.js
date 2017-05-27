@@ -116,9 +116,15 @@ module.exports = {
       minChunks: 'Infinity',
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new FaviconsWebpackPlugin('./client/assets/favicons/logo.png'),
+    new FaviconsWebpackPlugin({
+      logo: './client/assets/favicons/logo.png',
+      icons: {
+        appleStartup: false,
+      },
+      background: 'transparent',
+    }),
     new HtmlWebpackPlugin({
-      title: 'Lets Meet',
+      title: 'Meeting for Good',
       template: 'html-loader!./client/index.html',
       filename: '../index.html',
       inject: 'body',
