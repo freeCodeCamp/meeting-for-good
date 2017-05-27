@@ -219,8 +219,18 @@ class AvailabilityGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { showHeatmap, event } = nextProps;
-    this.setState({ showHeatmap, event });
+    const { event, dates, showHeatmap } = nextProps;
+    const {
+      createGridComplete, generateHeatMapBackgroundColors,
+      createTimesRange, createDatesRange,
+    } = this.constructor;
+
+    const allDates = createDatesRange(dates);
+    const allTimes = createTimesRange(dates);
+    const grid = createGridComplete(allDates, allTimes, event);
+    const backgroundColors = generateHeatMapBackgroundColors(event.participants);
+
+    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
   }
 
   @autobind
