@@ -8,7 +8,7 @@
 
 .header {
 	text-transform: uppercase;
-	height: 87vh;
+	min-height: 87vh;
 }
 
 .header h2 {
@@ -25,6 +25,7 @@
 	background-color: white;
 	padding-top: 10px;
 	padding-bottom: 20px;
+	display: block;
 }
 
 .gif {
