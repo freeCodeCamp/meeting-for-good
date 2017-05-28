@@ -1,35 +1,22 @@
-# Meeting for Good
-A meeting coordination app for your team.
+# Lets Meet
+#### A meeting coordination app for your team
 
-### Get Meeting for Good running locally
+
+## Get LetsMeet running locally
 
 *Prerequisites*
 - [NodeJS](https://nodejs.org)
 - [MongoDB](https://www.mongodb.org)
 
-*Steps*
-- Fork the repo to your own account
-- Clone it to your computer:
-`git clone https://github.com/[your_account_name]/meeting-for-good.git && cd meeting-for-good`
-- Run `npm install` or `yarn install`
-- Create a `.env` file in the root directory of the app with the following contents:
-```
-MONGO_URI=mongodb://localhost:27017/meeting-for-good
-GOOGLE_KEY=[YOUR_GOOGLE_KEY]
-GOOGLE_SECRET=[YOUR_GOOGLE_SECRET]
-FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
-FACEBOOK_SECRET=[YOUR_FACEBOOK_SECRET]
-APP_URL= http://localhost:8080/
-NODE_ENV = 'development'
-AWSAccessKeyID='your AWS email user'
-AWSSecretKey='your AWS  email pass'
-emailFrom='default email from'
-ANALYSE_PACK=false
-LINT_CODE=false
-GoogleAnalyticsID=[YOUR_GOOGLE_ANALYTICS_ID]
-GoogleAnalyticsDebug=false
-```
-- Open a new terminal session and run `mongod`
-- Run `npm run serve` from the app's root directory. This will start the app at port 8080 (unless overridden)
+The first thing you want to do is fork the repository. Once you have your own copy on your account, then you want to clone that to your local machine.
 
-To build the app instead, run `npm run build`
+In your local version's root directory, you're going to need to create a `.env` file with the following information:
+```
+MONGO_URI=mongodb://localhost:27017/letsmeet
+githubID=YOU_GITHIB_CLIENTID
+githubSecret=YOUR_GITHUB_SECRET
+githubCallbackURL=http://localhost:3000/auth/github/callback
+```
+
+Now just open up a terminal to the app's directory and run the following command: `mongod`.
+Then in another window, run `node server` and LetsMeet should be running on port `3000`.
