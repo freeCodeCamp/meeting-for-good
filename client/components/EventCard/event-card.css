@@ -1,0 +1,37 @@
+.card {
+  margin: 2% 1%;
+  width: 280px;
+}
+
+.cardTitle {
+    padding-bottom: 0px;
+    font-size: 24px;
+    padding-top: 20;
+    font-weight: 300;
+    text-align: center;
+}
+
+.cardActions {
+  font-size: 20px !important;
+  padding-left: 5%;
+}
+
+.viewDetailsButton {
+   color: #F66036 !important;
+}
+
+.card:hover {
+  box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3) !important;
+}
+
+.divider {
+   width: 100%;
+}
+
+@media (max-width:550px) {
+  .card {
+    margin: 2.5% 1% 0% 5%;
+    max-width: 335px;
+    width: 100%;
+  }
+}

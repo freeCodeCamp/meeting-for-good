@@ -1,0 +1,101 @@
+
+.card {
+  width: 700px;
+}
+
+.wrapper {
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+}
+.noCurEventsMsg {
+   text-align: center;
+   font-size: 24px;
+   margin: 0px 0px 5% 0px;
+}
+.card:hover {
+  box-shadow: 0 2px 30px 0 rgba(0,0,0,0.3),0 2px 40px 0 rgba(0,0,0,0.3);
+}
+
+.cardTitle {
+  text-align: center;
+  padding-bottom: 0px !important;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.cardText {
+  padding-top: 0px !important;
+}
+
+.daypicker {
+  outline: none;
+}
+
+.heading {
+  font-size: 1.2em;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.heading-dates {
+  composes: heading;
+  margin-top: 12px;
+}
+
+.reset-button {
+  min-height: 36px;
+  text-align: center;
+}
+
+.centerContainer {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 10px;
+
+}
+
+.textField {
+  width: 95%;
+  padding: 0 0 0 10px;
+  margin: 0;
+}
+
+.subHeader {
+  text-align: center;
+  color: #000000 !important;
+  font-size: 16px !important;
+}
+
+@media (min-width:550px) and (max-width:850px) {
+   .card {
+    width: 740px;
+  }
+}
+
+@media (max-width:550px) {
+  .card {
+    width: 320px;
+  }
+  .cardTitle {
+    text-align: center;
+    padding-bottom: 0px !important;
+    font-size: 20px;
+    font-weight: 300;
+  }
+  .subHeader {
+    font-size: 13px !important;
+    padding: 0px !important;
+    line-height: 36px !important;
+  }
+  .cardText {
+    padding: 0px !important;
+  }
+  .daypicker {
+    padding: 0px 0px 10px 0px !important;
+  }
+}
+.rangeSelectorWrapper {
+   display: flex;
+   padding: 10px 0 0 0;
+}

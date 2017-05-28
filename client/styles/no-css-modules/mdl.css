@@ -1,0 +1,8 @@
+header.mdl-layout__header, footer {
+  background-color: darkgreen;
+}
+
+.mdl-button--fab {
+  background: #F44336 !important;
+}
+

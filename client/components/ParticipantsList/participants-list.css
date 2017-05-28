@@ -1,0 +1,53 @@
+.particHeader {
+  font-size: 20px;
+  margin: 0;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chip {
+  margin: 0px 0px 3px 0px !important;
+  width: 100% !important;
+  border-radius: 30px 20px 20px 30px !important;
+  border: 0.5px solid #E0E0E0 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  background-color: #E0E0E0 !important;
+  padding: 2px 0px 2px 0px !important;
+}
+
+.chipHover {
+  composes: chip;
+}
+
+.chipHover:hover {
+  -webkit-box-shadow: 5px 5px 5px 0px rgba(50, 102, 50, 0.75);
+  -moz-box-shadow: 5px 5px 5px 0px rgba(50, 102, 50, 0.75);
+  box-shadow: 5px 5px 5px 0px rgba(50, 102, 50, 0.75);
+}
+
+.avatar {
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.guestsContainer {
+  margin: 5px 0 0 0;
+}
+
+.chipTextWrapper {
+  display: flex;
+  flex-direction: column;
+  line-height: 15px;
+}
+
+.chipTextName {
+  font-weight: bold;
+}
