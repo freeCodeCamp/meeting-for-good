@@ -108,6 +108,8 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.GoogleAnalyticsID': JSON.stringify(process.env.GoogleAnalyticsID),
+      'process.env.GoogleAnalyticsDebug': JSON.stringify(process.env.GoogleAnalyticsDebug),
     }),
     new ExtractTextPlugin('vendor.css'),
     new OptimizeCSS({
