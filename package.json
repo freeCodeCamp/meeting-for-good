@@ -100,6 +100,7 @@
     "react-css-modules": "^4.3.0",
     "react-day-picker": "^5.5.1",
     "react-dom": "^15.4.1",
+    "react-ga": "^2.2.0",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-infinite": "^0.11.0",
     "react-input-range": "^1.1.4",
