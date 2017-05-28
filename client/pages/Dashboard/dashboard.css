@@ -1,0 +1,63 @@
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  text-align: center;
+  width: 100%;
+  font-size: 40px !important;
+}
+
+.wrapper {
+  min-width: 100% !important;
+  background-color: transparent !important;
+  padding: 0px 30px 0px 0px !important;
+  margin: 0px !important;
+}
+
+.new-event-icon {
+  position: fixed !important;
+  z-index: 1000;
+  right: 0;
+  margin-bottom: 20px;
+  margin-right: 24px;
+  bottom: 0;
+  overflow: 'auto';
+}
+
+.no-selectIcon {
+  width: 200px !important;
+  height: 200px !important;
+  color: #BDBDBD !important;
+  text-align: center;
+  flex-grow: 100;
+}
+
+.no-select-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;   
+}
+
+
+@media (max-width:550px) {
+  .new-event-icon {
+    right: 0;
+    bottom: 0;
+    margin-bottom: 10px !important;
+    margin-right: 10px;
+    box-shadow: none !important;
+  }
+
+  .no-select {
+    font-size: 30px !important;
+  }
+
+  .no-selectIcon {
+    width: 150px !important;
+    height: 150px !important;
+    color: #BDBDBD !important;
+    text-align: center;
+    flex-grow: 100;
+  }
+
+}
