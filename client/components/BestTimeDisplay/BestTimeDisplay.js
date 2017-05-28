@@ -63,11 +63,12 @@ class BestTimeDisplay extends Component {
         const currentQuarter = smallestAvail[0][i];
         let count = 0;
         for (let j = 0; j < availabilitys.length; j += 1) {
-          for (let k = 0; k < availabilitys[j].length; k += 1) {
-            const quarterToCompare = availabilitys[j][k][0];
-            if (currentQuarter[0].isSame(quarterToCompare)) {
-              count += 1;
-            }
+          let k = 0;
+          while (k < availabilitys[j].length && !currentQuarter[0].isSame(availabilitys[j][k][0])) {
+            k += 1;
+          }
+          if (k < availabilitys[j].length) {
+            count += 1;
           }
         }
         if (count === availabilitys.length) {
@@ -80,6 +81,7 @@ class BestTimeDisplay extends Component {
       const y = b[0].clone().unix();
       return x - y;
     });
+
     return overlaps;
   }
 
