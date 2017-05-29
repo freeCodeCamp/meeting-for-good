@@ -295,39 +295,20 @@ class AvailabilityGrid extends Component {
     const eventToEdit = await loadEventFull(this.state.event._id);
     const event = JSON.parse(JSON.stringify(eventToEdit));
     const observerEvent = jsonpatch.observe(event);
-    // first check if cur exists as a participant
-    // if is not add the curUser as participant
-    const isParticipant = event.participants.filter(
-      participant => participant.userId._id === curUser._id,
-    );
     // fild for curUser at the array depends if is a participant
     // yet or not
     let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
-    // console.log('availability at submit', availability);
-    // console.log('availReduced', availabilityReducer(availability));
-    const availabilityEdited = availabilityReducer(availability);
-    if (isParticipant.length === 0) {
+    // first check if cur exists as a participant
+    // if is not add the curUser as participant
+    if (!curParticipant) {
       const { _id: userId } = curUser;
       const participant = { userId };
       event.participants.push(participant);
       curParticipant = _.find(event.participants, ['userId', curUser._id]);
     }
     curParticipant.status = (availability.length === 0) ? 2 : 3;
-    curParticipant.availability = availability;
-    console.log('event', event, curParticipant);
-
-    /*event.participants = event.participants.map((participant) => {
-      if (participant.userId._id === curUser._id || participant.userId === curUser._id) {
-        participant.availability = availability;
-        if (availability.length === 0) {
-          participant.status = 2;
-        } else {
-          participant.status = 3;
-        }
-      }
-      return participant;
-    });*/
-
+    const availabilityEdited = (availability.length > 0) ? availabilityReducer(availability) : [];
+    curParticipant.availability = availabilityEdited;
     const patches = jsonpatch.generate(observerEvent);
     await this.props.submitAvail(patches);
   }
