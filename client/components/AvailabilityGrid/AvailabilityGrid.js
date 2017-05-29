@@ -42,15 +42,22 @@ class AvailabilityGrid extends Component {
     return range;
   }
 
+  static rangeForAvailability(from, to) {
+    const datesRange = moment.range([moment(from), moment(to)]);
+    const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
+    const quartersToAvail = [];
+    quartersFromDtRange.forEach(date =>
+      quartersToAvail.push([moment(date).unix()]));
+    return quartersToAvail;
+  }
+
+
   static flattenedAvailability(event) {
     const flattenedAvailability = {};
     event.participants.forEach((participant) => {
-      flattenedAvailability[participant.userId._id] =
-        participant.availability.map((avail) => {
-          // correct the milliseconds to zero since its a unecessary information
-          const dateCorrect = moment(avail[0]).startOf('minute');
-          return dateCorrect.toJSON();
-        });
+      const avail = participant.availability.map(avail =>
+        _.flatten(AvailabilityGrid.rangeForAvailability(avail[0], avail[1])));
+      flattenedAvailability[participant.userId._id] = _.flatten(avail);
     });
     return flattenedAvailability;
   }
@@ -93,6 +100,7 @@ class AvailabilityGrid extends Component {
   static createGridComplete(allDates, allTimes, event) {
     const grid = [];
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
+    console.log('flattenedAvailability', flattenedAvailability);
     allDates.forEach((date) => {
       const dateMoment = date;
       grid.push({
@@ -108,7 +116,9 @@ class AvailabilityGrid extends Component {
             const availForThatParticipant = flattenedAvailability[participant.userId._id];
             const guest = {};
             guest[participant.userId._id] = participant.userId.name;
-            if (availForThatParticipant.indexOf(dateHourForCell.toJSON()) > -1) {
+            console.log('createGrid',
+              availForThatParticipant.indexOf(dateHourForCell.unix()), dateHourForCell.unix());
+            if (availForThatParticipant.indexOf(dateHourForCell.unix()) > -1) {
               guests.push(guest);
             } else {
               notGuests.push(guest);
