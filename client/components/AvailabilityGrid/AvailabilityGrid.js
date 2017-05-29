@@ -100,7 +100,6 @@ class AvailabilityGrid extends Component {
   static createGridComplete(allDates, allTimes, event) {
     const grid = [];
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
-    console.log('flattenedAvailability', flattenedAvailability);
     allDates.forEach((date) => {
       const dateMoment = date;
       grid.push({
@@ -116,8 +115,6 @@ class AvailabilityGrid extends Component {
             const availForThatParticipant = flattenedAvailability[participant.userId._id];
             const guest = {};
             guest[participant.userId._id] = participant.userId.name;
-            console.log('createGrid',
-              availForThatParticipant.indexOf(dateHourForCell.unix()), dateHourForCell.unix());
             if (availForThatParticipant.indexOf(dateHourForCell.unix()) > -1) {
               guests.push(guest);
             } else {
