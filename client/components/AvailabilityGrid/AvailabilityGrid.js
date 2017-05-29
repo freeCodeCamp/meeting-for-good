@@ -51,7 +51,6 @@ class AvailabilityGrid extends Component {
     return quartersToAvail;
   }
 
-
   static flattenedAvailability(event) {
     const flattenedAvailability = {};
     event.participants.forEach((participant) => {
@@ -197,6 +196,36 @@ class AvailabilityGrid extends Component {
     return nGrid;
   }
 
+  static availabilityReducer(availability) {
+    // sort the array just to be sure
+    availability.sort((a, b) => {
+      const x = moment(a[0]).clone().unix();
+      const y = moment(b[0]).clone().unix();
+      return x - y;
+    });
+    const availReduced = [];
+    let previousFrom = moment(availability[0][0]);
+    let previousTo = moment(availability[0][0]);
+
+    availability.forEach((quarter) => {
+      // if the old to is the same of the current from
+      // then is the same "range"
+      const curFrom = moment(quarter[0]);
+      const curTo = moment(quarter[1]);
+      if (previousTo.isSame(curFrom)) {
+        previousTo = curTo;
+      } else {
+        availReduced.push([previousFrom, previousTo]);
+        previousFrom = curFrom;
+        previousTo = curTo;
+      }
+    });
+    // at the and save the last from to sinse he dosen't have
+    // a pair to compare
+    availReduced.push([previousFrom, moment(availability[availability.length - 1][1])]);
+    console.log(availReduced);
+    return availReduced;
+  }
 
   constructor(props) {
     super(props);
@@ -250,6 +279,7 @@ class AvailabilityGrid extends Component {
   async submitAvailability() {
     const { curUser } = this.props;
     const { grid } = this.state;
+    const { availabilityReducer } = this.constructor;
     const availability = [];
     grid.forEach((row) => {
       row.quarters.forEach((quarter) => {
@@ -260,8 +290,9 @@ class AvailabilityGrid extends Component {
         }
       });
     });
-
-    // need to call the full event to edit... since he dont the
+    console.log('availability at submit', availability);
+    console.log('availReduced', availabilityReducer(availability));
+    // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
     const eventToEdit = await loadEventFull(this.state.event._id);
     const event = JSON.parse(JSON.stringify(eventToEdit));
