@@ -155,7 +155,6 @@ module.exports = {
         manifest.set('theme_color', '#FBFFFB');
       },
     }),
-    new webpack.optimize.UglifyJsPlugin(),
     new OfflinePlugin({
       caches: {
         main: [
