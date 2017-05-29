@@ -215,15 +215,15 @@ class AvailabilityGrid extends Component {
       if (previousTo.isSame(curFrom)) {
         previousTo = curTo;
       } else {
-        availReduced.push([previousFrom, previousTo]);
+        availReduced.push([previousFrom._d, previousTo._d]);
         previousFrom = curFrom;
         previousTo = curTo;
       }
     });
-    // at the and save the last from to sinse he dosen't have
+    // at the and save the last [from to] sinse he dosen't have
     // a pair to compare
-    availReduced.push([previousFrom, moment(availability[availability.length - 1][1])]);
-    console.log(availReduced);
+    const to = moment(availability[availability.length - 1][1]);
+    availReduced.push([previousFrom._d, to._d]);
     return availReduced;
   }
 
@@ -290,8 +290,6 @@ class AvailabilityGrid extends Component {
         }
       });
     });
-    console.log('availability at submit', availability);
-    console.log('availReduced', availabilityReducer(availability));
     // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
     const eventToEdit = await loadEventFull(this.state.event._id);
@@ -302,12 +300,23 @@ class AvailabilityGrid extends Component {
     const isParticipant = event.participants.filter(
       participant => participant.userId._id === curUser._id,
     );
+    // fild for curUser at the array depends if is a participant
+    // yet or not
+    let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
+    // console.log('availability at submit', availability);
+    // console.log('availReduced', availabilityReducer(availability));
+    const availabilityEdited = availabilityReducer(availability);
     if (isParticipant.length === 0) {
       const { _id: userId } = curUser;
       const participant = { userId };
       event.participants.push(participant);
+      curParticipant = _.find(event.participants, ['userId', curUser._id]);
     }
-    event.participants = event.participants.map((participant) => {
+    curParticipant.status = (availability.length === 0) ? 2 : 3;
+    curParticipant.availability = availability;
+    console.log('event', event, curParticipant);
+
+    /*event.participants = event.participants.map((participant) => {
       if (participant.userId._id === curUser._id || participant.userId === curUser._id) {
         participant.availability = availability;
         if (availability.length === 0) {
@@ -317,7 +326,7 @@ class AvailabilityGrid extends Component {
         }
       }
       return participant;
-    });
+    });*/
 
     const patches = jsonpatch.generate(observerEvent);
     await this.props.submitAvail(patches);
