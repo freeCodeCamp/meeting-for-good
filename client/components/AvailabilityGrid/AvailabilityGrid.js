@@ -198,16 +198,17 @@ class AvailabilityGrid extends Component {
 
   static availabilityReducer(availability) {
     // sort the array just to be sure
-    availability.sort((a, b) => {
+    const availabilityToEdit = _.cloneDeep(availability);
+    availabilityToEdit.sort((a, b) => {
       const x = moment(a[0]).clone().unix();
       const y = moment(b[0]).clone().unix();
       return x - y;
     });
     const availReduced = [];
-    let previousFrom = moment(availability[0][0]);
-    let previousTo = moment(availability[0][0]);
+    let previousFrom = moment(availabilityToEdit[0][0]);
+    let previousTo = moment(availabilityToEdit[0][0]);
 
-    availability.forEach((quarter) => {
+    availabilityToEdit.forEach((quarter) => {
       // if the old to is the same of the current from
       // then is the same "range"
       const curFrom = moment(quarter[0]);
@@ -222,7 +223,7 @@ class AvailabilityGrid extends Component {
     });
     // at the and save the last [from to] sinse he dosen't have
     // a pair to compare
-    const to = moment(availability[availability.length - 1][1]);
+    const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
     availReduced.push([previousFrom._d, to._d]);
     return availReduced;
   }
@@ -292,25 +293,35 @@ class AvailabilityGrid extends Component {
     });
     // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
-    const eventToEdit = await loadEventFull(this.state.event._id);
-    const event = JSON.parse(JSON.stringify(eventToEdit));
-    const observerEvent = jsonpatch.observe(event);
-    // fild for curUser at the array depends if is a participant
-    // yet or not
-    let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
-    // first check if cur exists as a participant
-    // if is not add the curUser as participant
-    if (!curParticipant) {
-      const { _id: userId } = curUser;
-      const participant = { userId };
-      event.participants.push(participant);
-      curParticipant = _.find(event.participants, ['userId', curUser._id]);
+    try {
+      const eventToEdit = await loadEventFull(this.state.event._id);
+      const event = JSON.parse(JSON.stringify(eventToEdit));
+      const observerEvent = jsonpatch.observe(event);
+      // fild for curUser at the array depends if is a participant
+      // yet or not
+      let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
+      // first check if cur exists as a participant
+      // if is not add the curUser as participant
+      if (!curParticipant) {
+        const { _id: userId } = curUser;
+        const participant = { userId };
+        event.participants.push(participant);
+        curParticipant = _.find(event.participants, ['userId', curUser._id]);
+      }
+      curParticipant.status = (availability.length === 0) ? 2 : 3;
+      const availabilityEdited = (availability.length > 0) ? availabilityReducer(availability) : [];
+      // because the patch jsonpatch dosent work as espected when you have a arrays of arrays
+      // we need to generate a patch to delete all availability and then add ther availability again
+      // then merge both patchs arrays.
+      curParticipant.availability = [];
+      const patchforDelete = jsonpatch.generate(observerEvent);
+      curParticipant.availability = availabilityEdited;
+      const patchesforAdd = jsonpatch.generate(observerEvent);
+      const patches = _.concat(patchforDelete, patchesforAdd);
+      await this.props.submitAvail(patches);
+    } catch (err) {
+      console.log('err at submit avail', err);
     }
-    curParticipant.status = (availability.length === 0) ? 2 : 3;
-    const availabilityEdited = (availability.length > 0) ? availabilityReducer(availability) : [];
-    curParticipant.availability = availabilityEdited;
-    const patches = jsonpatch.generate(observerEvent);
-    await this.props.submitAvail(patches);
   }
 
   @autobind
