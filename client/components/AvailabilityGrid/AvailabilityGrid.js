@@ -42,15 +42,21 @@ class AvailabilityGrid extends Component {
     return range;
   }
 
+  static rangeForAvailability(from, to) {
+    const datesRange = moment.range([moment(from), moment(to)]);
+    const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
+    const quartersToAvail = [];
+    quartersFromDtRange.forEach(date =>
+      quartersToAvail.push([moment(date).unix()]));
+    return quartersToAvail;
+  }
+
   static flattenedAvailability(event) {
     const flattenedAvailability = {};
     event.participants.forEach((participant) => {
-      flattenedAvailability[participant.userId._id] =
-        participant.availability.map((avail) => {
-          // correct the milliseconds to zero since its a unecessary information
-          const dateCorrect = moment(avail[0]).startOf('minute');
-          return dateCorrect.toJSON();
-        });
+      const avail = participant.availability.map(avail =>
+        _.flatten(AvailabilityGrid.rangeForAvailability(avail[0], avail[1])));
+      flattenedAvailability[participant.userId._id] = _.flatten(avail);
     });
     return flattenedAvailability;
   }
@@ -108,7 +114,7 @@ class AvailabilityGrid extends Component {
             const availForThatParticipant = flattenedAvailability[participant.userId._id];
             const guest = {};
             guest[participant.userId._id] = participant.userId.name;
-            if (availForThatParticipant.indexOf(dateHourForCell.toJSON()) > -1) {
+            if (availForThatParticipant.indexOf(dateHourForCell.unix()) > -1) {
               guests.push(guest);
             } else {
               notGuests.push(guest);
@@ -190,6 +196,37 @@ class AvailabilityGrid extends Component {
     return nGrid;
   }
 
+  static availabilityReducer(availability) {
+    // sort the array just to be sure
+    const availabilityToEdit = _.cloneDeep(availability);
+    availabilityToEdit.sort((a, b) => {
+      const x = moment(a[0]).clone().unix();
+      const y = moment(b[0]).clone().unix();
+      return x - y;
+    });
+    const availReduced = [];
+    let previousFrom = moment(availabilityToEdit[0][0]);
+    let previousTo = moment(availabilityToEdit[0][0]);
+
+    availabilityToEdit.forEach((quarter) => {
+      // if the old to is the same of the current from
+      // then is the same "range"
+      const curFrom = moment(quarter[0]);
+      const curTo = moment(quarter[1]);
+      if (previousTo.isSame(curFrom)) {
+        previousTo = curTo;
+      } else {
+        availReduced.push([previousFrom._d, previousTo._d]);
+        previousFrom = curFrom;
+        previousTo = curTo;
+      }
+    });
+    // at the and save the last [from to] sinse he dosen't have
+    // a pair to compare
+    const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
+    availReduced.push([previousFrom._d, to._d]);
+    return availReduced;
+  }
 
   constructor(props) {
     super(props);
@@ -243,6 +280,7 @@ class AvailabilityGrid extends Component {
   async submitAvailability() {
     const { curUser } = this.props;
     const { grid } = this.state;
+    const { availabilityReducer } = this.constructor;
     const availability = [];
     grid.forEach((row) => {
       row.quarters.forEach((quarter) => {
@@ -253,36 +291,37 @@ class AvailabilityGrid extends Component {
         }
       });
     });
-
-    // need to call the full event to edit... since he dont the
+    // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
-    const eventToEdit = await loadEventFull(this.state.event._id);
-    const event = JSON.parse(JSON.stringify(eventToEdit));
-    const observerEvent = jsonpatch.observe(event);
-    // first check if cur exists as a participant
-    // if is not add the curUser as participant
-    const isParticipant = event.participants.filter(
-      participant => participant.userId._id === curUser._id,
-    );
-    if (isParticipant.length === 0) {
-      const { _id: userId } = curUser;
-      const participant = { userId };
-      event.participants.push(participant);
-    }
-    event.participants = event.participants.map((participant) => {
-      if (participant.userId._id === curUser._id || participant.userId === curUser._id) {
-        participant.availability = availability;
-        if (availability.length === 0) {
-          participant.status = 2;
-        } else {
-          participant.status = 3;
-        }
+    try {
+      const eventToEdit = await loadEventFull(this.state.event._id);
+      const event = JSON.parse(JSON.stringify(eventToEdit));
+      const observerEvent = jsonpatch.observe(event);
+      // fild for curUser at the array depends if is a participant
+      // yet or not
+      let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
+      // first check if cur exists as a participant
+      // if is not add the curUser as participant
+      if (!curParticipant) {
+        const { _id: userId } = curUser;
+        const participant = { userId };
+        event.participants.push(participant);
+        curParticipant = _.find(event.participants, ['userId', curUser._id]);
       }
-      return participant;
-    });
-
-    const patches = jsonpatch.generate(observerEvent);
-    await this.props.submitAvail(patches);
+      curParticipant.status = (availability.length === 0) ? 2 : 3;
+      const availabilityEdited = (availability.length > 0) ? availabilityReducer(availability) : [];
+      // because the patch jsonpatch dosent work as espected when you have a arrays of arrays
+      // we need to generate a patch to delete all availability and then add ther availability again
+      // then merge both patchs arrays.
+      curParticipant.availability = [];
+      const patchforDelete = jsonpatch.generate(observerEvent);
+      curParticipant.availability = availabilityEdited;
+      const patchesforAdd = jsonpatch.generate(observerEvent);
+      const patches = _.concat(patchforDelete, patchesforAdd);
+      await this.props.submitAvail(patches);
+    } catch (err) {
+      console.log('err at submit avail', err);
+    }
   }
 
   @autobind
