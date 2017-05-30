@@ -10,6 +10,7 @@ import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
 import Infinite from 'react-infinite';
+import Divider from 'material-ui/Divider';
 
 import styles from './best-times-display.css';
 
@@ -167,21 +168,26 @@ class BestTimeDisplay extends Component {
 
   renderBestTime() {
     const { displayTimes } = this.state;
-    return Object.keys(displayTimes).map(date => (
-      <List key={date} styleName="BstTimeList" >
-        <ListItem
-          key={date}
-          style={{ height: '35px' }}
-          primaryTogglesNestedList
-          leftIcon={<DateRangeIcon />}
-          primaryText={date}
-          innerDivStyle={{ paddingLeft: '50px', height: '0px' }}
-          nestedItems={
-            this.constructor.renderRows(displayTimes[date].hours)
-          }
-        />
+    return (
+      <List styleName="BstTimeList" >
+        {
+          Object.keys(displayTimes).map((date, index) => (
+            <ListItem
+              key={date}
+              style={{ height: '35px' }}
+              primaryTogglesNestedList
+              leftIcon={<DateRangeIcon />}
+              initiallyOpen={(index < 3) ? true : false}
+              primaryText={date}
+              innerDivStyle={{ paddingLeft: '50px', height: '0px' }}
+              nestedItems={
+                this.constructor.renderRows(displayTimes[date].hours)
+              }
+            />
+          ))
+        }
       </List>
-    ));
+    );
   }
 
   renderDayPicker() {
@@ -248,7 +254,7 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
-            <Infinite elementHeight={58} containerHeight={lines}>
+            <Infinite elementHeight={39} containerHeight={lines}>
               {this.renderBestTime()}
             </Infinite>
           </div>
