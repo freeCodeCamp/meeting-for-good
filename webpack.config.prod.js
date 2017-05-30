@@ -127,6 +127,8 @@ module.exports = {
         appleStartup: false,
       },
       background: 'transparent',
+      persistentCache: true,
+      inject: true,
     }),
     new HtmlWebpackPlugin({
       title: 'Meeting for Good',

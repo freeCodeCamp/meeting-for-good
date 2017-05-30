@@ -58,8 +58,3 @@ main {
   src: url('../assets/fonts/lato/Lato-Light.ttf');
   font-weight: 200;
 }
-
-@font-face {
-  font-family: SaxMono;
-  src: url('../assets/fonts/saxo/saxmono.ttf');
-}

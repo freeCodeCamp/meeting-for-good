@@ -60,7 +60,6 @@ module.exports = {
       (!lintCode ? {
         test: /\.js$/,
         enforce: 'pre',
-
         loader: 'eslint-loader',
         options: {
           emitWarning: true,
@@ -80,7 +79,7 @@ module.exports = {
         use: [{
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: 1000,
           },
         },
         {
@@ -158,9 +157,11 @@ module.exports = {
         appleStartup: false,
       },
       background: 'transparent',
+      persistentCache: true,
+      inject: true,
     }),
     new HtmlWebpackPlugin({
-      title: 'Lets Meet',
+      title: 'Meeting for Good',
       template: 'html-loader!./client/index.html',
       filename: '../index.html',
       inject: 'body',
