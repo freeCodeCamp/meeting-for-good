@@ -12,6 +12,7 @@ import IconMenu from 'material-ui/IconMenu';
 import Divider from 'material-ui/Divider';
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import PropTypes from 'prop-types';
+import Dialog from 'material-ui/Dialog';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
@@ -36,6 +37,7 @@ class NavBar extends Component {
       toggleVisible: true,
       showPastEvents,
       events,
+      openModal: false,
     };
   }
 
@@ -68,6 +70,11 @@ class NavBar extends Component {
   @autobind
   handleAuthClick() {
     this.props.cbOpenLoginModal('/dashboard');
+  }
+
+  @autobind
+  handleAboutDialog() {
+    this.setState({ openModal: true });
   }
 
   @autobind
@@ -162,6 +169,11 @@ class NavBar extends Component {
             </MenuItem >
             <Divider />
             <MenuItem
+              onClick={this.handleAboutDialog}
+              primaryText="About Meeting for Good"
+              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px', textAlign: 'center' }}
+            />
+            <MenuItem
               href={'/api/auth/logout'}
               primaryText="Logout"
               style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px', textAlign: 'center' }}
@@ -185,6 +197,62 @@ class NavBar extends Component {
     );
   }
 
+  renderDialog() {
+    const { openModal } = this.state;
+    const actions = [
+      <FlatButton
+        label="close"
+        primary
+        onTouchTap={() => this.setState({ openModal: false })}
+      />,
+    ];
+    const inlineStyles = {
+      modal: {
+        content: {
+          width: '630px',
+          maxWidth: '630px',
+        },
+        bodyStyle: {
+          paddingTop: 10,
+          fontSize: '25px',
+        },
+      },
+    };
+    const titleStyle = {
+      color: 'green',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: '20px',
+    };
+    const versionStyle = {
+      textAlign: 'center',
+      marginBottom: '20px',
+    };
+    const descStyle = {
+      textAlign: 'center',
+      marginBottom: '40px',
+    };
+    const commentsStyle = {
+      textAlign: 'center',
+    };
+
+    return (
+      <Dialog
+        contentStyle={inlineStyles.modal.content}
+        bodyStyle={inlineStyles.modal.bodyStyle}
+        actions={actions}
+        modal
+        open={openModal}
+      >
+        <h1 style={titleStyle}>Meeting for Good</h1>
+        <h6 style={versionStyle}>Version 1.0</h6>
+        <h4 style={descStyle}>THE BEST MEETING COORDINATION APP</h4>
+        <h6 style={commentsStyle}>Created by campers
+          from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
+      </Dialog>
+    );
+  }
+
   render() {
     return (
       <Toolbar
@@ -203,6 +271,7 @@ class NavBar extends Component {
           </FlatButton>
         </ToolbarGroup >
         {this.renderRightGroup()}
+        {this.renderDialog()}
       </Toolbar>
     );
   }
