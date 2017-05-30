@@ -3,14 +3,13 @@ import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { List, ListItem } from 'material-ui/List';
 import _ from 'lodash';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
+import Infinite from 'react-infinite';
 
 import styles from './best-times-display.css';
 
@@ -21,10 +20,18 @@ class BestTimeDisplay extends Component {
   static renderRows(hours) {
     const rows = [];
     hours.forEach((hour) => {
+      const hourToShow = (
+        <spam style={{ fontColor: '#000000', fontWeight: 200 }}>
+          { hour }
+        </spam >
+      );
       const row = (
-        <ListItem key={hour} styleName="RowListItem" disabled>
-          {hour}
-        </ListItem>
+        <ListItem
+          key={hour}
+          disabled
+          primaryText={hourToShow}
+          innerDivStyle={{ height: '0px', paddingTop: '0px;' }}
+        />
       );
       rows.push(row);
     });
@@ -161,17 +168,18 @@ class BestTimeDisplay extends Component {
   renderBestTime() {
     const { displayTimes } = this.state;
     return Object.keys(displayTimes).map(date => (
-      <List key={date} disabled styleName="BstTimeList">
-        <Subheader styleName="SubHeader">
-          <DateRangeIcon styleName="DateRangeIcon" />
-          {date}
-        </Subheader>
-        <ListItem key={date} disabled styleName="BstTimeListItem">
-          <List>
-            {this.constructor.renderRows(displayTimes[date].hours)}
-          </List>
-          <Divider styleName="Divider" />
-        </ListItem>
+      <List key={date} styleName="BstTimeList" >
+        <ListItem
+          key={date}
+          style={{ height: '35px' }}
+          primaryTogglesNestedList
+          leftIcon={<DateRangeIcon />}
+          primaryText={date}
+          innerDivStyle={{ paddingLeft: '50px', height: '0px' }}
+          nestedItems={
+            this.constructor.renderRows(displayTimes[date].hours)
+          }
+        />
       </List>
     ));
   }
@@ -216,7 +224,7 @@ class BestTimeDisplay extends Component {
 
   render() {
     const { displayTimes, disablePicker } = this.state;
-
+    const lines = 189;
     // Only show timezone information when we're at the dashboard.
     let tzInfo;
     if (location.pathname === '/dashboard') {
@@ -240,7 +248,9 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
-            {this.renderBestTime()}
+            <Infinite elementHeight={58} containerHeight={lines}>
+              {this.renderBestTime()}
+            </Infinite>
           </div>
           :
           (disablePicker === false) ? this.renderDayPicker() : null
