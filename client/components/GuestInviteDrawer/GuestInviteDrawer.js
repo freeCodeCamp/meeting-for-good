@@ -103,13 +103,13 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   async handleInvite() {
-    const { activeCheckBoxes } = this.state;
+    const { activeCheckBoxes, curUser, event } = this.state;
     let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
     if (activeCheckBoxes.length > 0) {
       await Promise.all(
         activeCheckBoxes.map(async (guest) => {
           try {
-            await this.sendEmailInvite(guest);
+            await this.props.cbInviteEmail(guest, event, curUser);
             nActiveCheckBoxes = nActiveCheckBoxes.filter(x => x !== guest);
           } catch (err) {
             console.log('err at handleInvitem GuestInviteDrawer', err);
@@ -128,16 +128,6 @@ class GuestInviteDrawer extends Component {
         snackbarMsg: 'Error!!, Please select guests to invite.',
       });
     }
-  }
-
-  async sendEmailInvite(guestId) {
-    const { curUser, event } = this.state;
-    const result = await this.props.cbInviteEmail(guestId, event, curUser);
-    if (!result) {
-      console.log('sendEmailOwner Error');
-      return false;
-    }
-    return true;
   }
 
   @autobind
