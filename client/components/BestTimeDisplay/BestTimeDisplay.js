@@ -32,6 +32,7 @@ class BestTimeDisplay extends Component {
           key={hour}
           disabled
           primaryText={hourToShow}
+          style={{ paddingLeft: '40px' }}
           innerDivStyle={{ height: '0px', paddingTop: '0px' }}
         />
       );
@@ -236,9 +237,8 @@ class BestTimeDisplay extends Component {
         containerHeight -= 38;
         index += 1;
       }
-      return index;
+      return [index, (containerHeight < 0) ? 189 : containerHeight];
     };
-    const lines = 189;
     // Only show timezone information when we're at the dashboard.
     let tzInfo;
     if (location.pathname === '/dashboard') {
@@ -262,18 +262,19 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
-            <Infinite elementHeight={39} containerHeight={lines}>
+            <Infinite elementHeight={39} containerHeight={calcNumberOfDatesDisplayed()[1]}>
               {this.renderBestTime()}
             </Infinite>
             {
               (Object.keys(displayTimes).length -
-                calcNumberOfDatesDisplayed() > 0) ?
+                calcNumberOfDatesDisplayed()[0] > 0) ?
                   <div styleName="QuantMoreWrapper">
                     <div styleName="KeyBoardArrowDownWrapper">
                       <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
                     </div>
-                    <em> you have {Object.keys(displayTimes).length -
-                      calcNumberOfDatesDisplayed()} more dates </em>
+                    <em> you have {Object.keys(displayTimes).length} total possible dates. <br />
+                    Scrool down for nore.
+                    </em>
                   </div>
               : null
             }
