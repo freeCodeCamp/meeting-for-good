@@ -18,6 +18,18 @@ const moment = extendMoment(Moment);
 
 class BestTimeDisplay extends Component {
 
+  static calcContainerHeight(displayTimes) {
+    const containerMaxHeight = 190;
+    let containerHeight = 0;
+    let index = 0;
+    while (index < Object.keys(displayTimes).length) {
+      // add the date row and each one of hour rows
+      containerHeight += 30 + (displayTimes[Object.keys(displayTimes)[0]].hours.length * 30);
+      index += 1;
+    }
+    return (containerHeight > containerMaxHeight) ? containerMaxHeight : containerHeight;
+  }
+
   static renderRows(hours) {
     const rows = [];
     hours.forEach((hour) => {
@@ -133,21 +145,26 @@ class BestTimeDisplay extends Component {
     this.state = {
       event: this.props.event,
       disablePicker: false,
+      containerHeight: 190,
     };
   }
 
   componentWillMount() {
     const { event, disablePicker } = this.props;
-    const { buildBestTimes } = this.constructor;
+    const { buildBestTimes, calcContainerHeight } = this.constructor;
     const displayTimes = buildBestTimes(event);
-    this.setState({ event, displayTimes, disablePicker });
+    this.setState({
+      event, displayTimes, disablePicker, containerHeight: calcContainerHeight(displayTimes),
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, disablePicker } = nextProps;
-    const { buildBestTimes } = this.constructor;
+    const { buildBestTimes, calcContainerHeight } = this.constructor;
     const displayTimes = buildBestTimes(event);
-    this.setState({ event, displayTimes, disablePicker });
+    this.setState({
+      event, displayTimes, disablePicker, containerHeight: calcContainerHeight(displayTimes),
+    });
   }
 
   isBestTime() {
@@ -229,19 +246,8 @@ class BestTimeDisplay extends Component {
   }
 
   render() {
-    const { displayTimes, disablePicker } = this.state;
+    const { displayTimes, disablePicker, containerHeight } = this.state;
     const containerMaxHeight = 190;
-    const calcContainerHeight = () => {
-      let containerHeight = 0;
-      let index = 0;
-      while (index < Object.keys(displayTimes).length) {
-        // subtract the date row
-        containerHeight += 20 + (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
-        index += 1;
-      }
-
-      return (containerHeight > containerMaxHeight) ? containerMaxHeight : containerHeight;
-    };
     // Only show timezone information when we're at the dashboard.
     let tzInfo;
     if (location.pathname === '/dashboard') {
@@ -265,11 +271,11 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
-            <Infinite elementHeight={39} containerHeight={calcContainerHeight()}>
+            <Infinite elementHeight={39} containerHeight={containerHeight} >
               {this.renderBestTime()}
             </Infinite>
             {
-              (containerMaxHeight === calcContainerHeight()) ?
+              (containerMaxHeight === containerHeight) ?
                 <div styleName="QuantMoreWrapper">
                   <div styleName="KeyBoardArrowDownWrapper">
                     <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
