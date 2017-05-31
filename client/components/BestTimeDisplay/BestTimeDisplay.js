@@ -233,13 +233,12 @@ class BestTimeDisplay extends Component {
   render() {
     const { displayTimes, disablePicker } = this.state;
     const calcNumberOfDatesDisplayed = () => {
-      console.log(displayTimes);
       let containerHeight = 189;
       let index = 0;
       while (containerHeight > 0 && index < Object.keys(displayTimes).length) {
         // subtract the date row
         containerHeight -= 38;
-        console.log(displayTimes[Object.keys(displayTimes)[index]].hours.length);
+        // subtract each one of the hours;
         containerHeight -= displayTimes[Object.keys(displayTimes)[index]].hours.length * 16;
         index += 1;
       }
