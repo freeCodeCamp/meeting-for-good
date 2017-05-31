@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
-import { List, ListItem } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import _ from 'lodash';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
+import Infinite from 'react-infinite';
+import Divider from 'material-ui/Divider';
+import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 import styles from './best-times-display.css';
 
@@ -21,10 +22,19 @@ class BestTimeDisplay extends Component {
   static renderRows(hours) {
     const rows = [];
     hours.forEach((hour) => {
+      const hourToShow = (
+        <spam style={{ fontColor: '#000000', fontWeight: 200 }}>
+          { hour }
+        </spam >
+      );
       const row = (
-        <ListItem key={hour} styleName="RowListItem" disabled>
-          {hour}
-        </ListItem>
+        <ListItem
+          key={hour}
+          disabled
+          primaryText={hourToShow}
+          style={{ paddingLeft: '40px' }}
+          innerDivStyle={{ height: '0px', paddingTop: '0px' }}
+        />
       );
       rows.push(row);
     });
@@ -160,20 +170,23 @@ class BestTimeDisplay extends Component {
 
   renderBestTime() {
     const { displayTimes } = this.state;
-    return Object.keys(displayTimes).map(date => (
-      <List key={date} disabled styleName="BstTimeList">
-        <Subheader styleName="SubHeader">
-          <DateRangeIcon styleName="DateRangeIcon" />
-          {date}
-        </Subheader>
-        <ListItem key={date} disabled styleName="BstTimeListItem">
-          <List>
-            {this.constructor.renderRows(displayTimes[date].hours)}
-          </List>
-          <Divider styleName="Divider" />
-        </ListItem>
-      </List>
-    ));
+    return (
+      Object.keys(displayTimes).map((date, index) => (
+        <ListItem
+          key={date}
+          style={{ height: '38px', fontSize: '18px' }}
+          primaryTogglesNestedList
+          leftIcon={<DateRangeIcon />}
+          initiallyOpen={(index > 0) === false}
+          primaryText={date}
+          nestedListStyle={{ padding: '0px' }}
+          innerDivStyle={{ padding: '16px 0px 0px 50px' }}
+          nestedItems={
+            this.constructor.renderRows(displayTimes[date].hours)
+          }
+        />
+      ))
+    );
   }
 
   renderDayPicker() {
@@ -216,7 +229,16 @@ class BestTimeDisplay extends Component {
 
   render() {
     const { displayTimes, disablePicker } = this.state;
-
+    const calcNumberOfDatesDisplayed = () => {
+      let containerHeight = 189 - (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
+      let index = 0;
+      while (containerHeight > 0 && index < Object.keys(displayTimes).length) {
+        // subtract the date row
+        containerHeight -= 38;
+        index += 1;
+      }
+      return [index, (containerHeight < 0) ? 189 : containerHeight];
+    };
     // Only show timezone information when we're at the dashboard.
     let tzInfo;
     if (location.pathname === '/dashboard') {
@@ -240,7 +262,23 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
-            {this.renderBestTime()}
+            <Infinite elementHeight={39} containerHeight={calcNumberOfDatesDisplayed()[1]}>
+              {this.renderBestTime()}
+            </Infinite>
+            {
+              (Object.keys(displayTimes).length -
+                calcNumberOfDatesDisplayed()[0] > 0) ?
+                  <div styleName="QuantMoreWrapper">
+                    <div styleName="KeyBoardArrowDownWrapper">
+                      <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
+                    </div>
+                    <em> This event has {Object.keys(displayTimes).length} total possibles dates.
+                      <br />
+                      Scroll down for more.
+                    </em>
+                  </div>
+              : null
+            }
           </div>
           :
           (disablePicker === false) ? this.renderDayPicker() : null
