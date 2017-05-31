@@ -10,7 +10,6 @@ import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
 import Infinite from 'react-infinite';
-import Divider from 'material-ui/Divider';
 import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 import styles from './best-times-display.css';
@@ -24,7 +23,7 @@ class BestTimeDisplay extends Component {
     hours.forEach((hour) => {
       const hourToShow = (
         <spam style={{ fontColor: '#000000', fontWeight: 200 }}>
-          { hour }
+          {hour}
         </spam >
       );
       const row = (
@@ -229,15 +228,17 @@ class BestTimeDisplay extends Component {
 
   render() {
     const { displayTimes, disablePicker } = this.state;
-    const calcNumberOfDatesDisplayed = () => {
-      let containerHeight = 189 - (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
+    const containerMaxHeight = 190;
+    const calcContainerHeight = () => {
+      let containerHeight = (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
       let index = 0;
       while (containerHeight > 0 && index < Object.keys(displayTimes).length) {
         // subtract the date row
-        containerHeight -= 38;
+        containerHeight += 38;
         index += 1;
       }
-      return [index, (containerHeight < 0) ? 189 : containerHeight];
+
+      return (containerHeight > containerMaxHeight) ? containerMaxHeight : containerHeight;
     };
     // Only show timezone information when we're at the dashboard.
     let tzInfo;
@@ -262,22 +263,21 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
-            <Infinite elementHeight={39} containerHeight={calcNumberOfDatesDisplayed()[1]}>
+            <Infinite elementHeight={39} containerHeight={calcContainerHeight()}>
               {this.renderBestTime()}
             </Infinite>
             {
-              (Object.keys(displayTimes).length -
-                calcNumberOfDatesDisplayed()[0] > 0) ?
-                  <div styleName="QuantMoreWrapper">
-                    <div styleName="KeyBoardArrowDownWrapper">
-                      <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
-                    </div>
-                    <em> This event has {Object.keys(displayTimes).length} total possibles dates.
-                      <br />
-                      Scroll down for more.
-                    </em>
+              (containerMaxHeight === calcContainerHeight()) ?
+                <div styleName="QuantMoreWrapper">
+                  <div styleName="KeyBoardArrowDownWrapper">
+                    <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
                   </div>
-              : null
+                  <em> This event has {Object.keys(displayTimes).length} total possibles dates.
+                      <br />
+                    Scroll down for more.
+                    </em>
+                </div>
+                : null
             }
           </div>
           :
