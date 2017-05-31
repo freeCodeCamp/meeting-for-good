@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
 import Infinite from 'react-infinite';
 import Divider from 'material-ui/Divider';
+import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
 import styles from './best-times-display.css';
 
@@ -31,7 +32,7 @@ class BestTimeDisplay extends Component {
           key={hour}
           disabled
           primaryText={hourToShow}
-          innerDivStyle={{ height: '0px', paddingTop: '0px;' }}
+          innerDivStyle={{ height: '0px', paddingTop: '0px' }}
         />
       );
       rows.push(row);
@@ -174,12 +175,13 @@ class BestTimeDisplay extends Component {
           Object.keys(displayTimes).map((date, index) => (
             <ListItem
               key={date}
-              style={{ height: '35px' }}
+              style={{ height: '38px', fontSize: '18px' }}
               primaryTogglesNestedList
               leftIcon={<DateRangeIcon />}
-              initiallyOpen={(index < 3) ? true : false}
+              initiallyOpen={(index > 2) === false}
               primaryText={date}
-              innerDivStyle={{ paddingLeft: '50px', height: '0px' }}
+              nestedListStyle={{ padding: '0px' }}
+              innerDivStyle={{ padding: '16px 0px 0px 50px' }}
               nestedItems={
                 this.constructor.renderRows(displayTimes[date].hours)
               }
@@ -230,6 +232,19 @@ class BestTimeDisplay extends Component {
 
   render() {
     const { displayTimes, disablePicker } = this.state;
+    const calcNumberOfDatesDisplayed = () => {
+      console.log(displayTimes);
+      let containerHeight = 189;
+      let index = 0;
+      while (containerHeight > 0 && index < Object.keys(displayTimes).length) {
+        // subtract the date row
+        containerHeight -= 38;
+        console.log(displayTimes[Object.keys(displayTimes)[index]].hours.length);
+        containerHeight -= displayTimes[Object.keys(displayTimes)[index]].hours.length * 16;
+        index += 1;
+      }
+      return index;
+    };
     const lines = 189;
     // Only show timezone information when we're at the dashboard.
     let tzInfo;
@@ -257,6 +272,17 @@ class BestTimeDisplay extends Component {
             <Infinite elementHeight={39} containerHeight={lines}>
               {this.renderBestTime()}
             </Infinite>
+            {
+              (Object.keys(displayTimes).length > 3) ?
+                <div styleName="QuantMoreWrapper">
+                  <div styleName="KeyBoardArrowDownWrapper">
+                    <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
+                  </div>
+                  <em> you have {Object.keys(displayTimes).length -
+                    calcNumberOfDatesDisplayed()} dates more </em>
+                </div>
+              : null
+            }
           </div>
           :
           (disablePicker === false) ? this.renderDayPicker() : null
