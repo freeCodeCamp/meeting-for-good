@@ -173,11 +173,13 @@ class BestTimeDisplay extends Component {
       Object.keys(displayTimes).map(date => (
         <ListItem
           key={date}
-          style={{ height: '38px', fontSize: '18px' }}
+          style={{ height: '20px', fontSize: '18px' }}
           primaryTogglesNestedList
-          leftIcon={<DateRangeIcon />}
+          leftIcon={<DateRangeIcon style={{ paddingBottom: '0px', marginBottom: '0x' }} />}
           initiallyOpen
+          disabled
           primaryText={date}
+          autoGenerateNestedIndicator={false}
           nestedListStyle={{ padding: '0px' }}
           innerDivStyle={{ padding: '16px 0px 0px 50px' }}
           nestedItems={
@@ -234,7 +236,7 @@ class BestTimeDisplay extends Component {
       let index = 0;
       while (index < Object.keys(displayTimes).length) {
         // subtract the date row
-        containerHeight += 38 + (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
+        containerHeight += 20 + (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
         index += 1;
       }
 
