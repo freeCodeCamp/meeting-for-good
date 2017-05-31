@@ -272,8 +272,9 @@ class BestTimeDisplay extends Component {
                     <div styleName="KeyBoardArrowDownWrapper">
                       <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
                     </div>
-                    <em> This event has {Object.keys(displayTimes).length} total possibles dates. <br />
-                    Scroll down for more.
+                    <em> This event has {Object.keys(displayTimes).length} total possibles dates.
+                      <br />
+                      Scroll down for more.
                     </em>
                   </div>
               : null
