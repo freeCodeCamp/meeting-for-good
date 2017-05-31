@@ -15,6 +15,7 @@ import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import Infinite from 'react-infinite';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
@@ -34,7 +35,7 @@ class GuestInviteDrawer extends Component {
       event: this.props.event,
       guests: [],
       guestsToDisplay: [],
-      activeCheckboxes: [],
+      activeCheckBoxes: [],
       snackbarOpen: false,
       snackbarMsg: '',
       linearProgressVisible: 'hidden',
@@ -47,12 +48,12 @@ class GuestInviteDrawer extends Component {
   async componentWillMount() {
     await this.loadPastGuests();
     const { event, open, curUser } = this.props;
-    this.setState({ event, open, curUser, activeCheckboxes: [] });
+    this.setState({ event, open, curUser, activeCheckBoxes: [] });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, open, curUser } = nextProps;
-    this.setState({ event, open, curUser, activeCheckboxes: [], setFocusFullUrl: true });
+    this.setState({ event, open, curUser, activeCheckBoxes: [], setFocusFullUrl: true });
   }
 
   async loadPastGuests() {
@@ -84,41 +85,48 @@ class GuestInviteDrawer extends Component {
     this.setState({ snackbarOpen: false });
   }
 
+  @autobind
   handleCheck(id) {
-    const { activeCheckboxes } = this.state;
-    const found = activeCheckboxes.includes(id);
-    if (found) {
+    const { activeCheckBoxes } = this.state;
+    let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
+    if (nActiveCheckBoxes.includes(id)) {
       this.setState({
-        activeCheckboxes: activeCheckboxes.filter(x => x !== id),
+        activeCheckBoxes: nActiveCheckBoxes.filter(x => x !== id),
       });
     } else {
+      nActiveCheckBoxes = [...nActiveCheckBoxes, id];
       this.setState({
-        activeCheckboxes: [...activeCheckboxes, id],
+        activeCheckBoxes: nActiveCheckBoxes,
       });
     }
   }
 
   @autobind
-  handleInvite() {
-    const { activeCheckboxes } = this.state;
-    if (activeCheckboxes.length > 0) {
-      activeCheckboxes.forEach((guest) => {
-        this.sendEmailInvite(guest);
-      });
-      this.setState({ activeCheckboxes: [] });
+  async handleInvite() {
+    const { activeCheckBoxes, curUser, event } = this.state;
+    let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
+    if (activeCheckBoxes.length > 0) {
+      await Promise.all(
+        activeCheckBoxes.map(async (guest) => {
+          try {
+            await this.props.cbInviteEmail(guest, event, curUser);
+            nActiveCheckBoxes = nActiveCheckBoxes.filter(x => x !== guest);
+          } catch (err) {
+            console.log('err at handleInvitem GuestInviteDrawer', err);
+            this.setState({
+              snackbarOpen: true,
+              snackbarMsg: 'Error!!, sending invite for guest',
+            });
+          } finally {
+            this.setState({ activeCheckBoxes: nActiveCheckBoxes });
+          }
+        }),
+      );
     } else {
       this.setState({
         snackbarOpen: true,
         snackbarMsg: 'Error!!, Please select guests to invite.',
       });
-    }
-  }
-
-  async sendEmailInvite(guestId) {
-    const { curUser, event } = this.state;
-    const result = await this.props.cbInviteEmail(guestId, event, curUser);
-    if (!result) {
-      console.log('sendEmailOwner Error');
     }
   }
 
@@ -156,7 +164,7 @@ class GuestInviteDrawer extends Component {
   }
 
   renderRows() {
-    const { activeCheckboxes, guestsToDisplay } = this.state;
+    const { activeCheckBoxes, guestsToDisplay } = this.state;
     const inLineStyles = {
       listItem: {
         borderBottom: '1px solid #D4D4D4',
@@ -171,7 +179,7 @@ class GuestInviteDrawer extends Component {
           primaryText={guest.userId.name}
           leftCheckbox={<Checkbox
             onCheck={() => this.handleCheck(guest.userId._id)}
-            checked={activeCheckboxes.includes(guest.userId._id)}
+            checked={activeCheckBoxes.includes(guest.userId._id)}
           />}
           rightAvatar={<Avatar
             src={guest.userId.avatar}
