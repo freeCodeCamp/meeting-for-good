@@ -170,13 +170,13 @@ class BestTimeDisplay extends Component {
   renderBestTime() {
     const { displayTimes } = this.state;
     return (
-      Object.keys(displayTimes).map((date, index) => (
+      Object.keys(displayTimes).map(date => (
         <ListItem
           key={date}
           style={{ height: '38px', fontSize: '18px' }}
           primaryTogglesNestedList
           leftIcon={<DateRangeIcon />}
-          initiallyOpen={(index > 0) === false}
+          initiallyOpen
           primaryText={date}
           nestedListStyle={{ padding: '0px' }}
           innerDivStyle={{ padding: '16px 0px 0px 50px' }}
@@ -230,11 +230,11 @@ class BestTimeDisplay extends Component {
     const { displayTimes, disablePicker } = this.state;
     const containerMaxHeight = 190;
     const calcContainerHeight = () => {
-      let containerHeight = (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
+      let containerHeight = 0;
       let index = 0;
-      while (containerHeight > 0 && index < Object.keys(displayTimes).length) {
+      while (index < Object.keys(displayTimes).length) {
         // subtract the date row
-        containerHeight += 38;
+        containerHeight += 38 + (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
         index += 1;
       }
 
