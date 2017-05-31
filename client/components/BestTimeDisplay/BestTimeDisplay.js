@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
-import { List, ListItem } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import _ from 'lodash';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
@@ -170,25 +170,21 @@ class BestTimeDisplay extends Component {
   renderBestTime() {
     const { displayTimes } = this.state;
     return (
-      <List styleName="BstTimeList" >
-        {
-          Object.keys(displayTimes).map((date, index) => (
-            <ListItem
-              key={date}
-              style={{ height: '38px', fontSize: '18px' }}
-              primaryTogglesNestedList
-              leftIcon={<DateRangeIcon />}
-              initiallyOpen={(index > 2) === false}
-              primaryText={date}
-              nestedListStyle={{ padding: '0px' }}
-              innerDivStyle={{ padding: '16px 0px 0px 50px' }}
-              nestedItems={
-                this.constructor.renderRows(displayTimes[date].hours)
-              }
-            />
-          ))
-        }
-      </List>
+      Object.keys(displayTimes).map((date, index) => (
+        <ListItem
+          key={date}
+          style={{ height: '38px', fontSize: '18px' }}
+          primaryTogglesNestedList
+          leftIcon={<DateRangeIcon />}
+          initiallyOpen={(index > 0) === false}
+          primaryText={date}
+          nestedListStyle={{ padding: '0px' }}
+          innerDivStyle={{ padding: '16px 0px 0px 50px' }}
+          nestedItems={
+            this.constructor.renderRows(displayTimes[date].hours)
+          }
+        />
+      ))
     );
   }
 
@@ -233,13 +229,11 @@ class BestTimeDisplay extends Component {
   render() {
     const { displayTimes, disablePicker } = this.state;
     const calcNumberOfDatesDisplayed = () => {
-      let containerHeight = 189;
+      let containerHeight = 189 - (displayTimes[Object.keys(displayTimes)[0]].hours.length * 16);
       let index = 0;
       while (containerHeight > 0 && index < Object.keys(displayTimes).length) {
         // subtract the date row
         containerHeight -= 38;
-        // subtract each one of the hours;
-        containerHeight -= displayTimes[Object.keys(displayTimes)[index]].hours.length * 16;
         index += 1;
       }
       return index;
@@ -272,14 +266,15 @@ class BestTimeDisplay extends Component {
               {this.renderBestTime()}
             </Infinite>
             {
-              (Object.keys(displayTimes).length > 3) ?
-                <div styleName="QuantMoreWrapper">
-                  <div styleName="KeyBoardArrowDownWrapper">
-                    <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
+              (Object.keys(displayTimes).length -
+                calcNumberOfDatesDisplayed() > 0) ?
+                  <div styleName="QuantMoreWrapper">
+                    <div styleName="KeyBoardArrowDownWrapper">
+                      <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
+                    </div>
+                    <em> you have {Object.keys(displayTimes).length -
+                      calcNumberOfDatesDisplayed()} more dates </em>
                   </div>
-                  <em> you have {Object.keys(displayTimes).length -
-                    calcNumberOfDatesDisplayed()} dates more </em>
-                </div>
               : null
             }
           </div>
