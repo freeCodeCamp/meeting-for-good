@@ -178,6 +178,7 @@ class BestTimeDisplay extends Component {
           leftIcon={<DateRangeIcon />}
           initiallyOpen
           primaryText={date}
+          autoGenerateNestedIndicator={false}
           nestedListStyle={{ padding: '0px' }}
           innerDivStyle={{ padding: '16px 0px 0px 50px' }}
           nestedItems={
