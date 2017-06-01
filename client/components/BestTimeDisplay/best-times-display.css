@@ -50,10 +50,6 @@
   -webkit-transform: scale(18, 2); /* Safari */
 }
 
-.KeyBoardArrowUp {
-  composes: KeyBoardArrowDown;
-  transform: rotate(180);
-}
 .KeyBoardArrowDownWrapper {
   display: flex;
   justify-content: center;
