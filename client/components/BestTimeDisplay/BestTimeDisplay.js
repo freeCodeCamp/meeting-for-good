@@ -9,26 +9,16 @@ import cssModules from 'react-css-modules';
 import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
-import Infinite from 'react-infinite';
 import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import KeyBoardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
+
+import FlatButton from 'material-ui/FlatButton';
 
 import styles from './best-times-display.css';
 
 const moment = extendMoment(Moment);
 
 class BestTimeDisplay extends Component {
-
-  static calcContainerHeight(displayTimes) {
-    const containerMaxHeight = 190;
-    let containerHeight = 0;
-    let index = 0;
-    while (index < Object.keys(displayTimes).length) {
-      // add the date row and each one of hour rows
-      containerHeight += 30 + (displayTimes[Object.keys(displayTimes)[0]].hours.length * 30);
-      index += 1;
-    }
-    return (containerHeight > containerMaxHeight) ? containerMaxHeight : containerHeight;
-  }
 
   static renderRows(hours) {
     const rows = [];
@@ -146,24 +136,25 @@ class BestTimeDisplay extends Component {
       event: this.props.event,
       disablePicker: false,
       containerHeight: 190,
+      showAllDates: false,
     };
   }
 
   componentWillMount() {
     const { event, disablePicker } = this.props;
-    const { buildBestTimes, calcContainerHeight } = this.constructor;
+    const { buildBestTimes } = this.constructor;
     const displayTimes = buildBestTimes(event);
     this.setState({
-      event, displayTimes, disablePicker, containerHeight: calcContainerHeight(displayTimes),
+      event, displayTimes, disablePicker,
     });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, disablePicker } = nextProps;
-    const { buildBestTimes, calcContainerHeight } = this.constructor;
+    const { buildBestTimes } = this.constructor;
     const displayTimes = buildBestTimes(event);
     this.setState({
-      event, displayTimes, disablePicker, containerHeight: calcContainerHeight(displayTimes),
+      event, displayTimes, disablePicker,
     });
   }
 
@@ -185,9 +176,13 @@ class BestTimeDisplay extends Component {
   }
 
   renderBestTime() {
-    const { displayTimes } = this.state;
-    return (
-      Object.keys(displayTimes).map(date => (
+    const { displayTimes, showAllDates } = this.state;
+    let index = 0;
+    const quantToShow = (showAllDates) ? Object.keys(displayTimes).length : 3;
+    const rows = [];
+    while (index < quantToShow && index < Object.keys(displayTimes).length) {
+      const date = Object.keys(displayTimes)[index];
+      rows.push(
         <ListItem
           key={date}
           style={{ height: '20px', fontSize: '18px' }}
@@ -202,9 +197,12 @@ class BestTimeDisplay extends Component {
           nestedItems={
             this.constructor.renderRows(displayTimes[date].hours)
           }
-        />
-      ))
-    );
+        />,
+      );
+      index += 1;
+    }
+
+    return rows;
   }
 
   renderDayPicker() {
@@ -246,8 +244,7 @@ class BestTimeDisplay extends Component {
   }
 
   render() {
-    const { displayTimes, disablePicker, containerHeight } = this.state;
-    const containerMaxHeight = 190;
+    const { displayTimes, disablePicker, showAllDates } = this.state;
     // Only show timezone information when we're at the dashboard.
     let tzInfo;
     if (location.pathname === '/dashboard') {
@@ -262,7 +259,6 @@ class BestTimeDisplay extends Component {
     } else {
       tzInfo = null;
     }
-
     return (
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
@@ -271,19 +267,30 @@ class BestTimeDisplay extends Component {
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
-            <Infinite elementHeight={39} containerHeight={containerHeight} >
-              {this.renderBestTime()}
-            </Infinite>
+            {this.renderBestTime()}
             {
-              (containerMaxHeight === containerHeight) ?
+              (Object.keys(displayTimes).length > 3) ?
                 <div styleName="QuantMoreWrapper">
-                  <div styleName="KeyBoardArrowDownWrapper">
-                    <KeyBoardArrowDown styleName="KeyBoardArrowDown" color="#f2f2f2" />
-                  </div>
-                  <em> This event has {Object.keys(displayTimes).length} total possibles dates.
+                  <FlatButton
+                    styleName="KeyBoardArrowDownWrapper"
+                    onClick={() => this.setState({ showAllDates: !showAllDates })}
+                  >{(!showAllDates) ?
+                    <KeyBoardArrowDown
+                      styleName="KeyBoardArrowDown"
+                      color="#f2f2f2"
+                    />
+                    :
+                    <KeyBoardArrowUp
+                      styleName="KeyBoardArrowDown"
+                      color="#f2f2f2"
+                    />
+                  }
+                  </FlatButton>
+                  <em>
+                    This event has {Object.keys(displayTimes).length - 3} more possible dates.
                       <br />
-                    Scroll down for more.
-                    </em>
+                   Click to expand then all.
+                  </em>
                 </div>
                 : null
             }

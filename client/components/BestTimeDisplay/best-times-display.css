@@ -46,8 +46,14 @@
 .KeyBoardArrowDown {
   font-size: 18px;
   transform: scale(18, 2);
+  -ms-transform: scale(18, 2); /* IE 9 */
+  -webkit-transform: scale(18, 2); /* Safari */
 }
 
+.KeyBoardArrowUp {
+  composes: KeyBoardArrowDown;
+  transform: rotate(180);
+}
 .KeyBoardArrowDownWrapper {
   display: flex;
   justify-content: center;
