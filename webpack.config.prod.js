@@ -156,20 +156,9 @@ module.exports = {
       },
     }),
     new OfflinePlugin({
-      caches: {
-        main: [
-          'app.*.js',
-          '*.app.*.js',
-          'vendor.*.js',
-          'vendor.css',
-          '*.png',
-          '*.ttf',
-          '*.gif',
-        ],
-      },
-      externals: [
-        '/',
-      ],
+      caches: 'all',
+      updateStrategy: 'all',
+      autoUpdate: true,
       ServiceWorker: {
         navigateFallbackURL: '/',
       },
