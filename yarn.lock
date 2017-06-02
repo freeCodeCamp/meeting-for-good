@@ -2998,9 +2998,9 @@ fancy-log@^1.1.0:
     chalk "^1.1.1"
     time-stamp "^1.0.0"
 
-fast-json-patch@^1.1.10:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/fast-json-patch/-/fast-json-patch-1.1.10.tgz#d4e6739202ab948af82dd5f24496cab737b5c50a"
+fast-json-patch@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/fast-json-patch/-/fast-json-patch-1.2.0.tgz#30397e9553c236e891fd47bf7fed0585540f26fb"
 
 fast-levenshtein@~2.0.4:
   version "2.0.6"
@@ -6120,6 +6120,14 @@ react-event-listener@^0.4.5:
     fbjs "^0.8.4"
     prop-types "^15.5.4"
     warning "^3.0.0"
+
+react-ga@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.2.0.tgz#45235de1356e4d988d9b82214d615a08489c9291"
+  dependencies:
+    create-react-class "^15.5.2"
+    object-assign "^4.0.1"
+    prop-types "^15.5.6"
 
 react-hot-loader@^3.0.0-beta.7:
   version "3.0.0-beta.7"

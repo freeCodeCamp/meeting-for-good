@@ -142,7 +142,7 @@ class NavBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             styleName="iconMenu"
             iconStyle={inLineStyles.iconMenu.iconStyle}
-            menuItemStyle={{ height: '38px' }}
+            menuItemStyle={{ height: '38px', width: '150px' }}
             iconButtonElement={
               <IconButton style={{ padding: 0 }} aria-label="user button">
                 <div>
@@ -175,8 +175,9 @@ class NavBar extends Component {
             />
             <MenuItem
               href={'/api/auth/logout'}
+              styleName="LogoutButtom"
               primaryText="Logout"
-              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px', textAlign: 'center' }}
+              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
             />
           </IconMenu>
         </ToolbarGroup>

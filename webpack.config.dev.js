@@ -5,7 +5,6 @@ const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
@@ -60,7 +59,6 @@ module.exports = {
       (!lintCode ? {
         test: /\.js$/,
         enforce: 'pre',
-
         loader: 'eslint-loader',
         options: {
           emitWarning: true,
@@ -80,7 +78,7 @@ module.exports = {
         use: [{
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            limit: 1000,
           },
         },
         {
@@ -132,6 +130,8 @@ module.exports = {
 
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.GoogleAnalyticsID': JSON.stringify(process.env.GoogleAnalyticsID),
+      'process.env.GoogleAnalyticsDebug': JSON.stringify(process.env.GoogleAnalyticsDebug),
     }),
     new ExtractTextPlugin('vendor.css'),
     new OptimizeCSS({
@@ -156,9 +156,11 @@ module.exports = {
         appleStartup: false,
       },
       background: 'transparent',
+      persistentCache: true,
+      inject: true,
     }),
     new HtmlWebpackPlugin({
-      title: 'Lets Meet',
+      title: 'Meeting for Good',
       template: 'html-loader!./client/index.html',
       filename: '../index.html',
       inject: 'body',
@@ -183,20 +185,6 @@ module.exports = {
         manifest.set('name', 'Meeting For Good');
         manifest.set('background_color', '#FBFFFB');
         manifest.set('theme_color', '#FBFFFB');
-      },
-    }),
-    new OfflinePlugin({
-      caches: {
-        main: [
-          'vendor.*.js',
-          'bundle.*.js',
-        ],
-      },
-      externals: [
-        '/',
-      ],
-      ServiceWorker: {
-        navigateFallbackURL: '/',
       },
     }),
   ].filter(p => p),

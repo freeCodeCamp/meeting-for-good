@@ -1,10 +1,23 @@
 import React from 'react';
 import { Router, browserHistory } from 'react-router';
+import ReactGA from 'react-ga';
 // Import App
 import App from './components/App';
 import Home from './pages/home/';
 
 require('es6-promise').polyfill();
+
+// google analytics loader
+ReactGA.initialize(process.env.GoogleAnalyticsID, {
+  debug: process.env.GoogleAnalyticsDebug === 'true',
+  titleCase: false,
+});
+
+const logPageView = () => {
+  ReactGA.set({ page: window.location.pathname + window.location.search });
+  ReactGA.pageview(window.location.pathname + window.location.search);
+};
+
 
 const loadRoute = cb => module => cb(null, module.default);
 
@@ -54,7 +67,7 @@ const componentRoutes = {
 };
 
 const Routes = () => (
-  <Router history={browserHistory} routes={componentRoutes} />
+  <Router history={browserHistory} routes={componentRoutes} onUpdate={logPageView} />
 );
 
 export default Routes;

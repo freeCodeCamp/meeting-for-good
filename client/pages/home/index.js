@@ -8,6 +8,7 @@ import dashboardBanner from '../../assets/dashboard-banner.png';
 import mainBannerImage from '../../assets/main-banner.png';
 import enterAvailImage from '../../assets/enteravail.gif';
 import timeZonesImage from '../../assets/timezones.png';
+import dashboardBanner2 from '../../assets/dashboard-banner-2.png';
 
 class Home extends React.Component {
   async componentWillMount() {
@@ -29,6 +30,10 @@ class Home extends React.Component {
           <img
             src={dashboardBanner}
             alt="dashboard"
+          />
+          <img
+            src={dashboardBanner2}
+            alt="dashboard2"
           />
         </header>
         <div styleName="content">

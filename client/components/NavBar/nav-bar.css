@@ -50,6 +50,10 @@
   background-color: #ffffff !important;
 }
 
+.LogoutButtom {
+  font-size: 18px !important;
+}
+
 .leftToolbarGroup {
   margin: 0 !important;
 }
@@ -66,7 +70,7 @@
 
 @media (max-width:550px) {
   .logoButton {
-    font-size: 20px !important;
+    font-size: 14px !important;
   }
   .IconMenu {
     margin-right: 20px !important;

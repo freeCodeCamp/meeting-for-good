@@ -1,14 +1,23 @@
 .main {
 	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content:center;
+	align-items: center;
 }
 
 .main img {
-	width: 700px;
+	max-height: 80vh;
+	width: 50vw;
+	margin: 10px;
 }
 
 .header {
 	text-transform: uppercase;
-	min-height: 87vh;
+	
+}
+.header img {
+	margin-bottom: 4%;
 }
 
 .header h2 {
@@ -19,6 +28,7 @@
 	padding: 2% 0 2% 0;
 
 }
+
 .content {
 	width: 100vw;
 	height: auto;

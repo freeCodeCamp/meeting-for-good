@@ -103,7 +103,7 @@ export async function sendEmailInvite(guestId, event, curUser) {
     return true;
   } catch (err) {
     console.log('sendEmailOwner', err);
-    return false;
+    return err;
   } finally {
     nprogress.done();
   }
