@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
 import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 import KeyBoardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
+import Divider from 'material-ui/Divider';
 
 import FlatButton from 'material-ui/FlatButton';
 
@@ -33,7 +34,7 @@ class BestTimeDisplay extends Component {
           key={hour}
           disabled
           primaryText={hourToShow}
-          style={{ paddingLeft: '40px' }}
+          style={{ paddingLeft: '33px' }}
           innerDivStyle={{ height: '0px', paddingTop: '0px' }}
         />
       );
@@ -197,11 +198,15 @@ class BestTimeDisplay extends Component {
           nestedItems={
             this.constructor.renderRows(displayTimes[date].hours)
           }
-        />,
-      );
+        />);
+
+      if (index < quantToShow - 1) {
+        rows.push(
+          <Divider key={`Divider ${date}`} styleName="Divider" />,
+        );
+      }
       index += 1;
     }
-
     return rows;
   }
 
@@ -246,6 +251,13 @@ class BestTimeDisplay extends Component {
   render() {
     const { displayTimes, disablePicker, showAllDates } = this.state;
     // Only show timezone information when we're at the dashboard.
+    const inlineStyle = {
+      arrow: {
+        fontSize: '18px',
+        transform: 'scale(18, 2)',
+      },
+    };
+
     let tzInfo;
     if (location.pathname === '/dashboard') {
       tzInfo =
@@ -258,6 +270,31 @@ class BestTimeDisplay extends Component {
         </div>);
     } else {
       tzInfo = null;
+    }
+    let arrow = (
+      <KeyBoardArrowDown
+        style={inlineStyle.arrow}
+        color="#f2f2f2"
+      />
+    );
+    let arrowMsg = (
+      <em>
+        This event has {Object.keys(displayTimes).length - 3} more possible dates. <br />
+        Click to expand then all.
+      </em>
+    );
+    if (showAllDates) {
+      arrowMsg = (
+        <em>
+          click to hide
+        </em>
+      );
+      arrow = (
+        <KeyBoardArrowUp
+          style={inlineStyle.arrow}
+          color="#f2f2f2"
+        />
+      );
     }
     return (
       <div styleName="bestTimeDisplay">
@@ -272,25 +309,11 @@ class BestTimeDisplay extends Component {
               (Object.keys(displayTimes).length > 3) ?
                 <div styleName="QuantMoreWrapper">
                   <FlatButton
-                    styleName="KeyBoardArrowDownWrapper"
+                    fullWidth
                     onClick={() => this.setState({ showAllDates: !showAllDates })}
-                  >{(!showAllDates) ?
-                    <KeyBoardArrowDown
-                      styleName="KeyBoardArrowDown"
-                      color="#f2f2f2"
-                    />
-                    :
-                    <KeyBoardArrowUp
-                      styleName="KeyBoardArrowDown"
-                      color="#f2f2f2"
-                    />
-                  }
-                  </FlatButton>
-                  <em>
-                    This event has {Object.keys(displayTimes).length - 3} more possible dates.
-                      <br />
-                   Click to expand then all.
-                  </em>
+                    icon={arrow}
+                  />
+                  {arrowMsg}
                 </div>
                 : null
             }
