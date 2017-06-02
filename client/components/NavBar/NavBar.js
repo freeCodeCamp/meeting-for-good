@@ -170,8 +170,8 @@ class NavBar extends Component {
             <Divider />
             <MenuItem
               onClick={this.handleAboutDialog}
-              primaryText="About Meeting for Good"
-              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px', textAlign: 'center' }}
+              primaryText="About"
+              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
             />
             <MenuItem
               href={'/api/auth/logout'}
