@@ -50,7 +50,11 @@
   background-color: #ffffff !important;
 }
 
-.LogoutButtom {
+.LogoutButton {
+  font-size: 18px !important;
+}
+
+.AboutButton {
   font-size: 18px !important;
 }
 
