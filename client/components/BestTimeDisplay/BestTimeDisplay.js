@@ -6,7 +6,6 @@ import _ from 'lodash';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
-import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
 import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
@@ -214,8 +213,6 @@ class BestTimeDisplay extends Component {
     const { event } = this.state;
     let maxDate;
     let minDate;
-    let modifiers;
-
     const ranges = event.dates.map(({ fromDate, toDate }) => ({
       from: new Date(fromDate),
       to: new Date(toDate),
@@ -226,24 +223,23 @@ class BestTimeDisplay extends Component {
       toDate: new Date(toDate),
     }));
 
+    let selectedDays;
     if (ranges) {
-      modifiers = {
-        selected: day =>
-          DateUtils.isDayInRange(day, dates) ||
-          ranges.some(v => DateUtils.isDayInRange(day, v)),
-      };
-
+      selectedDays = day =>
+        DateUtils.isDayInRange(day, dates) ||
+        ranges.some(v => DateUtils.isDayInRange(day, v));
       const dateInRanges = _.flatten(ranges.map(range => [range.from, range.to]));
       maxDate = new Date(Math.max.apply(null, dateInRanges));
       minDate = new Date(Math.min.apply(null, dateInRanges));
     }
     return (
       <DayPicker
-        styleName="DayPicker"
+        classNames={styles}
         initialMonth={minDate}
         fromMonth={minDate}
         toMonth={maxDate}
-        modifiers={modifiers}
+        selectedDays={selectedDays}
+        onClick={() => {}}
       />
     );
   }
