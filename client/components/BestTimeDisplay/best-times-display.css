@@ -43,15 +43,13 @@
   margin-bottom: 5px;
 }
 
-.KeyBoardArrow {
-  font-size: 18px !important;
-  transform: scale(18, 2) !important;
-  -ms-transform: scale(18, 2); /* IE 9 */
-  -webkit-transform: scale(18, 2); /* Safari */
-}
-
 .QuantMoreWrapper {
   padding: 4px 0 0 0;
   display: flex;
   flex-direction: column;
+}
+
+.Divider {
+  max-width: 50px;
+  margin: 0 0 0 65px;
 }
