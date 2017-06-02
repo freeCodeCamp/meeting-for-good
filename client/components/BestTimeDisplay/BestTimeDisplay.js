@@ -272,7 +272,7 @@ class BestTimeDisplay extends Component {
               (Object.keys(displayTimes).length > 3) ?
                 <div styleName="QuantMoreWrapper">
                   <FlatButton
-                    styleName="KeyBoardArrowDownWrapper"
+                    fullWidth
                     onClick={() => this.setState({ showAllDates: !showAllDates })}
                   >{(!showAllDates) ?
                     <KeyBoardArrowDown

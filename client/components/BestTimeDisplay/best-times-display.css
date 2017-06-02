@@ -50,11 +50,6 @@
   -webkit-transform: scale(18, 2); /* Safari */
 }
 
-.KeyBoardArrowDownWrapper {
-  display: flex;
-  justify-content: center;
-}
-
 .QuantMoreWrapper {
   padding: 4px 0 0 0;
   display: flex;
