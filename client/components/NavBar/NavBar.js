@@ -251,6 +251,8 @@ class NavBar extends Component {
         <h4 style={descStyle}>THE BEST MEETING COORDINATION APP</h4>
         <h6 style={commentsStyle}>Created by campers
           from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
+        <h6 style={commentsStyle}><a href="https://github.com/freeCodeCamp/meeting-for-good/">
+          License and GitHub Repository</a></h6>
       </Dialog>
     );
   }
