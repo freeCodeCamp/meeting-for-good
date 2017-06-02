@@ -5,7 +5,6 @@ const OptimizeCSS = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
@@ -186,20 +185,6 @@ module.exports = {
         manifest.set('name', 'Meeting For Good');
         manifest.set('background_color', '#FBFFFB');
         manifest.set('theme_color', '#FBFFFB');
-      },
-    }),
-    new OfflinePlugin({
-      caches: {
-        main: [
-          'vendor.*.js',
-          'bundle.*.js',
-        ],
-      },
-      externals: [
-        '/',
-      ],
-      ServiceWorker: {
-        navigateFallbackURL: '/',
       },
     }),
   ].filter(p => p),
