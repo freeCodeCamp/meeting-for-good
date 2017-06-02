@@ -43,9 +43,9 @@
   margin-bottom: 5px;
 }
 
-.KeyBoardArrowDown {
-  font-size: 18px;
-  transform: scale(18, 2);
+.KeyBoardArrow {
+  font-size: 18px !important;
+  transform: scale(18, 2) !important;
   -ms-transform: scale(18, 2); /* IE 9 */
   -webkit-transform: scale(18, 2); /* Safari */
 }

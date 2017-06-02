@@ -246,6 +246,13 @@ class BestTimeDisplay extends Component {
   render() {
     const { displayTimes, disablePicker, showAllDates } = this.state;
     // Only show timezone information when we're at the dashboard.
+    const inlineStyle = {
+      arrow: {
+        fontSize: '18px',
+        transform: 'scale(18, 2)',
+      },
+    };
+
     let tzInfo;
     if (location.pathname === '/dashboard') {
       tzInfo =
@@ -258,6 +265,20 @@ class BestTimeDisplay extends Component {
         </div>);
     } else {
       tzInfo = null;
+    }
+    let arrow = (
+      <KeyBoardArrowDown
+        style={inlineStyle.arrow}
+        color="#f2f2f2"
+      />
+    );
+    if (showAllDates) {
+      arrow = (
+        <KeyBoardArrowUp
+          style={inlineStyle.arrow}
+          color="#f2f2f2"
+        />
+      );
     }
     return (
       <div styleName="bestTimeDisplay">
@@ -274,18 +295,8 @@ class BestTimeDisplay extends Component {
                   <FlatButton
                     fullWidth
                     onClick={() => this.setState({ showAllDates: !showAllDates })}
-                  >{(!showAllDates) ?
-                    <KeyBoardArrowDown
-                      styleName="KeyBoardArrowDown"
-                      color="#f2f2f2"
-                    />
-                    :
-                    <KeyBoardArrowUp
-                      styleName="KeyBoardArrowDown"
-                      color="#f2f2f2"
-                    />
-                  }
-                  </FlatButton>
+                    icon={arrow}
+                  />
                   <em>
                     This event has {Object.keys(displayTimes).length - 3} more possible dates.
                       <br />
