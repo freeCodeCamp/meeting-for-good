@@ -167,7 +167,9 @@ class NavBar extends Component {
                 onToggle={this.handleFilterToggle}
               />
             </MenuItem >
-            <Divider />
+            <Divider
+              styleName="Divider"
+            />
             <MenuItem
               onClick={this.handleAboutDialog}
               styleName="AboutButton"
