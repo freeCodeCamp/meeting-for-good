@@ -198,8 +198,7 @@ class BestTimeDisplay extends Component {
             this.constructor.renderRows(displayTimes[date].hours)
           }
         />);
-
-      if (index < quantToShow - 1) {
+      if (index !== Object.keys(displayTimes).length - 1 && index !== quantToShow - 1) {
         rows.push(
           <Divider key={`Divider ${date}`} styleName="Divider" />,
         );
