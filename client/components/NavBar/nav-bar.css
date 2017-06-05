@@ -50,7 +50,16 @@
   background-color: #ffffff !important;
 }
 
-.LogoutButtom {
+.Divider {
+  margin-top: 15px !important;
+  margin-bottom: 18px !important;
+}
+
+.LogoutButton {
+  font-size: 18px !important;
+}
+
+.AboutButton {
   font-size: 18px !important;
 }
 
