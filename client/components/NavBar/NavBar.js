@@ -142,7 +142,7 @@ class NavBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             styleName="iconMenu"
             iconStyle={inLineStyles.iconMenu.iconStyle}
-            menuItemStyle={{ height: '38px', width: '150px' }}
+            menuItemStyle={{ height: '38px', width: '168px' }}
             iconButtonElement={
               <IconButton style={{ padding: 0 }} aria-label="user button">
                 <div>
@@ -249,7 +249,7 @@ class NavBar extends Component {
         open={openModal}
       >
         <h1 style={titleStyle}>Meeting for Good</h1>
-        <h6 style={versionStyle}>Version 1.0</h6>
+        <h6 style={versionStyle}>Version {process.env.versionNumber}</h6>
         <h4 style={descStyle}>THE BEST MEETING COORDINATION APP</h4>
         <h6 style={commentsStyle}>Created by campers
           from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
