@@ -198,12 +198,9 @@ class NewEvent extends React.Component {
       },
     };
 
-    const modifiers = {
-      selected: day =>
-        DateUtils.isDayInRange(day, this.state) ||
-        ranges.some(v => DateUtils.isDayInRange(day, v)),
-    };
-
+    const selectedDays = day =>
+      DateUtils.isDayInRange(day, this.state) ||
+      ranges.some(v => DateUtils.isDayInRange(day, v));
     const { from, to } = ranges[0];
     const windowsSize = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     const numOfMonthstoDisplay = windowsSize > 550 ? 2 : 1;
@@ -243,9 +240,9 @@ class NewEvent extends React.Component {
                   numberOfMonths={numOfMonthstoDisplay}
                   fromMonth={new Date()}
                   disabledDays={DateUtils.isPastDay}
-                  modifiers={modifiers}
                   onDayClick={this.handleDayClick}
-                  styleName="daypicker"
+                  classNames={styles}
+                  selectedDays={selectedDays}
                 />
               </div>
               <Subheader styleName="subHeader">What times might work?</Subheader>

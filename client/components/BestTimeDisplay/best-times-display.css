@@ -104,10 +104,14 @@
 
 .weekday {
   display: table-cell;
-  padding: .5rem;
+  padding: .4rem;
   font-size: .875em;
   text-align: center;
   color: #8b9898;
+}
+
+.weekday abbr {
+  text-decoration: none;
 }
 
 .body {
@@ -121,13 +125,12 @@
 .day {
   display: table-cell;
   padding: .5rem;
-  border: 1px solid #eaecec;
+  border-radius : 100%;
   text-align: center;
   vertical-align: middle;
   color: #8b9898;
   outline: none;
 }
-
 
 /* Default modifiers */
 
