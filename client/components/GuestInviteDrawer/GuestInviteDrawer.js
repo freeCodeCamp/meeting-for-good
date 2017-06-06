@@ -32,7 +32,7 @@ class GuestInviteDrawer extends Component {
     this.state = {
       open: false,
       curUser: {},
-      event: this.props.event,
+      event: {},
       guests: [],
       guestsToDisplay: [],
       activeCheckBoxes: [],
@@ -163,6 +163,17 @@ class GuestInviteDrawer extends Component {
     this.props.cb(open);
   }
 
+  @autobind
+  handleSendEmail(ev) {
+    if (typeof this.state.event === 'undefined') {
+      ev.preventDefault();
+      this.setState({
+        snackbarOpen: true,
+        snackbarMsg: 'error generating email body! Please try reload the page',
+      });
+    }
+  }
+
   renderRows() {
     const { activeCheckBoxes, guestsToDisplay } = this.state;
     const inLineStyles = {
@@ -282,6 +293,7 @@ class GuestInviteDrawer extends Component {
             styleName="copyAndEmailButton"
             label="Send Email Invite"
             primary
+            onClick={ev => this.handleSendEmail(ev)}
             href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
           />
         </div>
