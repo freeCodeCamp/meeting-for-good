@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
-import { List, ListItem } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import _ from 'lodash';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
-import 'react-day-picker/lib/style.css';
 import PropTypes from 'prop-types';
 import jz from 'jstimezonedetect';
+import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import KeyBoardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
+import Divider from 'material-ui/Divider';
+
+import FlatButton from 'material-ui/FlatButton';
 
 import styles from './best-times-display.css';
 
@@ -21,10 +23,19 @@ class BestTimeDisplay extends Component {
   static renderRows(hours) {
     const rows = [];
     hours.forEach((hour) => {
-      const row = (
-        <ListItem key={hour} styleName="RowListItem" disabled>
+      const hourToShow = (
+        <spam style={{ fontColor: '#000000', fontWeight: 200 }}>
           {hour}
-        </ListItem>
+        </spam >
+      );
+      const row = (
+        <ListItem
+          key={hour}
+          disabled
+          primaryText={hourToShow}
+          style={{ paddingLeft: '33px' }}
+          innerDivStyle={{ height: '0px', paddingTop: '0px' }}
+        />
       );
       rows.push(row);
     });
@@ -124,6 +135,8 @@ class BestTimeDisplay extends Component {
     this.state = {
       event: this.props.event,
       disablePicker: false,
+      containerHeight: 190,
+      showAllDates: false,
     };
   }
 
@@ -131,14 +144,18 @@ class BestTimeDisplay extends Component {
     const { event, disablePicker } = this.props;
     const { buildBestTimes } = this.constructor;
     const displayTimes = buildBestTimes(event);
-    this.setState({ event, displayTimes, disablePicker });
+    this.setState({
+      event, displayTimes, disablePicker,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, disablePicker } = nextProps;
     const { buildBestTimes } = this.constructor;
     const displayTimes = buildBestTimes(event);
-    this.setState({ event, displayTimes, disablePicker });
+    this.setState({
+      event, displayTimes, disablePicker,
+    });
   }
 
   isBestTime() {
@@ -159,29 +176,42 @@ class BestTimeDisplay extends Component {
   }
 
   renderBestTime() {
-    const { displayTimes } = this.state;
-    return Object.keys(displayTimes).map(date => (
-      <List key={date} disabled styleName="BstTimeList">
-        <Subheader styleName="SubHeader">
-          <DateRangeIcon styleName="DateRangeIcon" />
-          {date}
-        </Subheader>
-        <ListItem key={date} disabled styleName="BstTimeListItem">
-          <List>
-            {this.constructor.renderRows(displayTimes[date].hours)}
-          </List>
-          <Divider styleName="Divider" />
-        </ListItem>
-      </List>
-    ));
+    const { displayTimes, showAllDates } = this.state;
+    let index = 0;
+    const quantToShow = (showAllDates) ? Object.keys(displayTimes).length : 3;
+    const rows = [];
+    while (index < quantToShow && index < Object.keys(displayTimes).length) {
+      const date = Object.keys(displayTimes)[index];
+      rows.push(
+        <ListItem
+          key={date}
+          style={{ height: '20px', fontSize: '18px' }}
+          primaryTogglesNestedList
+          leftIcon={<DateRangeIcon style={{ paddingBottom: '0px', marginBottom: '0x' }} />}
+          initiallyOpen
+          disabled
+          primaryText={date}
+          autoGenerateNestedIndicator={false}
+          nestedListStyle={{ padding: '0px' }}
+          innerDivStyle={{ padding: '16px 0px 0px 50px' }}
+          nestedItems={
+            this.constructor.renderRows(displayTimes[date].hours)
+          }
+        />);
+      if (index !== Object.keys(displayTimes).length - 1 && index !== quantToShow - 1) {
+        rows.push(
+          <Divider key={`Divider ${date}`} styleName="Divider" />,
+        );
+      }
+      index += 1;
+    }
+    return rows;
   }
 
   renderDayPicker() {
     const { event } = this.state;
     let maxDate;
     let minDate;
-    let modifiers;
-
     const ranges = event.dates.map(({ fromDate, toDate }) => ({
       from: new Date(fromDate),
       to: new Date(toDate),
@@ -192,32 +222,37 @@ class BestTimeDisplay extends Component {
       toDate: new Date(toDate),
     }));
 
+    let selectedDays;
     if (ranges) {
-      modifiers = {
-        selected: day =>
-          DateUtils.isDayInRange(day, dates) ||
-          ranges.some(v => DateUtils.isDayInRange(day, v)),
-      };
-
+      selectedDays = day =>
+        DateUtils.isDayInRange(day, dates) ||
+        ranges.some(v => DateUtils.isDayInRange(day, v));
       const dateInRanges = _.flatten(ranges.map(range => [range.from, range.to]));
       maxDate = new Date(Math.max.apply(null, dateInRanges));
       minDate = new Date(Math.min.apply(null, dateInRanges));
     }
     return (
       <DayPicker
-        styleName="DayPicker"
+        classNames={styles}
         initialMonth={minDate}
         fromMonth={minDate}
         toMonth={maxDate}
-        modifiers={modifiers}
+        selectedDays={selectedDays}
+        onClick={() => {}}
       />
     );
   }
 
   render() {
-    const { displayTimes, disablePicker } = this.state;
-
+    const { displayTimes, disablePicker, showAllDates } = this.state;
     // Only show timezone information when we're at the dashboard.
+    const inlineStyle = {
+      arrow: {
+        fontSize: '18px',
+        transform: 'scale(18, 2)',
+      },
+    };
+
     let tzInfo;
     if (location.pathname === '/dashboard') {
       tzInfo =
@@ -231,7 +266,31 @@ class BestTimeDisplay extends Component {
     } else {
       tzInfo = null;
     }
-
+    let arrow = (
+      <KeyBoardArrowDown
+        style={inlineStyle.arrow}
+        color="#f2f2f2"
+      />
+    );
+    let arrowMsg = (
+      <em>
+        This event has {Object.keys(displayTimes).length - 3} more possible dates. <br />
+        Click to expand then all.
+      </em>
+    );
+    if (showAllDates) {
+      arrowMsg = (
+        <em>
+          click to hide
+        </em>
+      );
+      arrow = (
+        <KeyBoardArrowUp
+          style={inlineStyle.arrow}
+          color="#f2f2f2"
+        />
+      );
+    }
     return (
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
@@ -241,6 +300,18 @@ class BestTimeDisplay extends Component {
               The following times work for everyone:
               </h6>
             {this.renderBestTime()}
+            {
+              (Object.keys(displayTimes).length > 3) ?
+                <div styleName="QuantMoreWrapper">
+                  <FlatButton
+                    fullWidth
+                    onClick={() => this.setState({ showAllDates: !showAllDates })}
+                    icon={arrow}
+                  />
+                  {arrowMsg}
+                </div>
+                : null
+            }
           </div>
           :
           (disablePicker === false) ? this.renderDayPicker() : null

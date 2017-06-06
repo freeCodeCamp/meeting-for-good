@@ -6,6 +6,7 @@ const path = require('path');
 const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const packageJSON = require('./package.json');
 
 const VENDOR_LIBS = [
   'autobind-decorator',
@@ -110,6 +111,7 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.GoogleAnalyticsID': JSON.stringify(process.env.GoogleAnalyticsID),
       'process.env.GoogleAnalyticsDebug': JSON.stringify(process.env.GoogleAnalyticsDebug),
+      'process.env.versionNumber': JSON.stringify(packageJSON.version),
     }),
     new ExtractTextPlugin('vendor.css'),
     new OptimizeCSS({
@@ -127,6 +129,8 @@ module.exports = {
         appleStartup: false,
       },
       background: 'transparent',
+      persistentCache: true,
+      inject: true,
     }),
     new HtmlWebpackPlugin({
       title: 'Meeting for Good',
@@ -154,20 +158,9 @@ module.exports = {
       },
     }),
     new OfflinePlugin({
-      caches: {
-        main: [
-          'app.*.js',
-          '*.app.*.js',
-          'vendor.*.js',
-          'vendor.css',
-          '*.png',
-          '*.ttf',
-          '*.gif',
-        ],
-      },
-      externals: [
-        '/',
-      ],
+      caches: 'all',
+      updateStrategy: 'all',
+      autoUpdate: true,
       ServiceWorker: {
         navigateFallbackURL: '/',
       },
