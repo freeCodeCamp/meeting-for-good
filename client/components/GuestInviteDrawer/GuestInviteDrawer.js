@@ -165,14 +165,12 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleSendEmail(ev) {
-    const { event } = this.state;
-    if (event === {} || typeof event === 'undefined') {
+    if (typeof this.state.event === 'undefined') {
       ev.preventDefault();
       this.setState({
         snackbarOpen: true,
         snackbarMsg: 'error generating email body! Please try reload the page',
       });
-      return false;
     }
   }
 
@@ -295,7 +293,7 @@ class GuestInviteDrawer extends Component {
             styleName="copyAndEmailButton"
             label="Send Email Invite"
             primary
-            onTouchTap={ev => this.handleSendEmail(ev)}
+            onClick={ev => this.handleSendEmail(ev)}
             href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
           />
         </div>
