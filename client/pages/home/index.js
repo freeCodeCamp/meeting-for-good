@@ -41,9 +41,11 @@ class Home extends React.Component {
           <h6>Creating an event is easy as saying 1, 2, 3.</h6>
           <img src={mainBannerImage} alt="new event" />
           <hr styleName="hr" />
-          <h3>Entering your availabily is a breeze</h3>
-          <h6>Using our simplistic availabily grid, entering your availabily just got easier</h6>
-          <img src={enterAvailImage} styleName="gif" alt="enter availabily" />
+          <h3>Entering your availability is a breeze</h3>
+          <h6>
+            Using our simplistic availability grid, entering your availability just got easier
+            </h6>
+          <img src={enterAvailImage} styleName="gif" alt="enter availability" />
           <hr styleName="hr" />
           <h3>Timezones supported</h3>
           <h6>
