@@ -32,8 +32,8 @@
     "url": "https://github.com/FreeCodeCamp/meeting-for-good/issues"
   },
   "engines": {
-    "node": "^7.9.0",
-    "npm": "^4.5.0"
+    "node": "^8.0.0",
+    "npm": "^5.0.0"
   },
   "dependencies": {
     "autobind-decorator": "^1.4.1",
@@ -111,6 +111,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "react-transform-hmr": "^1.0.4",
     "rimraf": "^2.5.4",
+    "rotating-file-stream": "^1.2.2",
     "shelljs": "^0.7.7",
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.7",
