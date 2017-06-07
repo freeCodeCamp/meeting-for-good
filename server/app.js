@@ -9,6 +9,11 @@ import connectMongo from 'connect-mongo';
 import 'dotenv/config';
 import routes from './app/routes/routes';
 
+const opbeat = require('opbeat').start({
+  appId: process.env.opBeatAppId,
+  organizationId: process.env.opBeatOrganizationId,
+  secretToken: process.env.opBeatsecretToken,
+});
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
