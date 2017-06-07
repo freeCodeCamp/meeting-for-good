@@ -22,6 +22,8 @@ app.use(compression({ threshold: 0 }));
 mongoose.Promise = bluebird;
 mongoose.connect(process.env.MONGO_URI);
 
+app.use(opbeat.middleware.express());
+
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
