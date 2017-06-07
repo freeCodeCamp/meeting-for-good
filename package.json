@@ -9,7 +9,7 @@
     "build:server": "babel -d ./build ./server -s",
     "build:client": "cross-env NODE_ENV=production babel-node ./tools/build.js",
     "build": "npm run clean && npm run copy && npm run build:server && npm run build:client",
-    "start": "cross-env NODE_ENV=production node -r dotenv/config ./build/app.js",
+    "start": " node ./build/app.js",
     "copy": "node tools/copy.js",
     "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
     "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",

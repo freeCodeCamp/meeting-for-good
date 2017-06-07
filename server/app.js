@@ -6,7 +6,9 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
+import 'dotenv/config';
 import routes from './app/routes/routes';
+
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
