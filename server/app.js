@@ -22,8 +22,6 @@ app.use(compression({ threshold: 0 }));
 mongoose.Promise = bluebird;
 mongoose.connect(process.env.MONGO_URI);
 
-app.use(opbeat.middleware.express());
-
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
@@ -78,6 +76,7 @@ app.use(passport.session());
 
 app.use('/', express.static(`${__dirname}/`, { maxAge: 31557600000 }));
 app.use('/client/', express.static(`${__dirname}/client/`, { maxAge: 31557600000 }));
+app.use(opbeat.middleware.express());
 routes(app);
 
 const port = process.env.PORT || 8080;
