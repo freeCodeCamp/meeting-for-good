@@ -6,12 +6,11 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
-import opbeat from 'opbeat';
 import 'dotenv/config';
 import routes from './app/routes/routes';
 
 
-const opbt = opbeat.start({
+const opbeat = require('opbeat').start({
   appId: process.env.opBeatAppId,
   organizationId: process.env.opBeatOrganizationId,
   secretToken: process.env.opBeatsecretToken,
@@ -78,7 +77,7 @@ app.use(passport.session());
 
 app.use('/', express.static(`${__dirname}/`, { maxAge: 31557600000 }));
 app.use('/client/', express.static(`${__dirname}/client/`, { maxAge: 31557600000 }));
-app.use(opbt.middleware.express());
+app.use(opbeat.middleware.express());
 routes(app);
 
 const port = process.env.PORT || 8080;
