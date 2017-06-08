@@ -7,4 +7,5 @@ jsconfig.json
 .vscode
 npm-debug.log
 antigen.zsh
+.nvmrc
 

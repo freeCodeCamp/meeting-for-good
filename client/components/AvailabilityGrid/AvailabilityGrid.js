@@ -225,7 +225,7 @@ class AvailabilityGrid extends Component {
     // a pair to compare
     const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
     availReduced.push([previousFrom._d, to._d]);
-    return availReduced;
+    return _.uniqWith(availReduced, _.isEqual);
   }
 
   constructor(props) {
