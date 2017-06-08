@@ -142,8 +142,8 @@ class NewEvent extends React.Component {
       }
 
       return {
-        fromDate: moment(from).set('h', fromHours).set('m', fromMinutes)._d,
-        toDate: moment(to).set('h', toHours).set('m', toMinutes)._d,
+        fromDate: moment(from).set('h', fromHours).set('m', fromMinutes).startOf('minute')._d,
+        toDate: moment(to).set('h', toHours).set('m', toMinutes).startOf('minute')._d,
       };
     });
 
