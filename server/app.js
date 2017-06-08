@@ -7,8 +7,8 @@ import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
 import 'dotenv/config';
+import morgan from 'morgan';
 import routes from './app/routes/routes';
-
 
 const opbeat = require('opbeat').start({
   appId: process.env.opBeatAppId,
@@ -65,6 +65,8 @@ if (process.env.NODE_ENV === 'development') {
     saveUninitialized: true,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
   }));
+  // setup the logger
+  app.use(morgan('combined'));
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -50,7 +50,7 @@ class Home extends React.Component {
           <h3>Timezones supported</h3>
           <h6>
             Don&#39;t worry about having to get everyone to convert to your timezone.
-            Let us take of it!
+            Let us take care of it!
           </h6>
           <img src={timeZonesImage} styleName="timezones" alt="timezone" />
           <p>
