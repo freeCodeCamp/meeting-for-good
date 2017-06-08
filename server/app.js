@@ -7,8 +7,14 @@ import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
 import 'dotenv/config';
+import morgan from 'morgan';
 import routes from './app/routes/routes';
 
+const opbeat = require('opbeat').start({
+  appId: process.env.opBeatAppId,
+  organizationId: process.env.opBeatOrganizationId,
+  secretToken: process.env.opBeatsecretToken,
+});
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -59,6 +65,8 @@ if (process.env.NODE_ENV === 'development') {
     saveUninitialized: true,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
   }));
+  // setup the logger
+  app.use(morgan('combined'));
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -71,6 +79,7 @@ app.use(passport.session());
 
 app.use('/', express.static(`${__dirname}/`, { maxAge: 31557600000 }));
 app.use('/client/', express.static(`${__dirname}/client/`, { maxAge: 31557600000 }));
+app.use(opbeat.middleware.express());
 routes(app);
 
 const port = process.env.PORT || 8080;
