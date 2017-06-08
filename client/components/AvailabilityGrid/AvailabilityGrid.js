@@ -43,11 +43,12 @@ class AvailabilityGrid extends Component {
   }
 
   static rangeForAvailability(from, to) {
-    const datesRange = moment.range([moment(from), moment(to)]);
+    const datesRange = moment.range([moment(from).startOf('minute'), moment(to).startOf('minute')]);
     const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
     const quartersToAvail = [];
-    quartersFromDtRange.forEach(date =>
-      quartersToAvail.push([moment(date).unix()]));
+    quartersFromDtRange.forEach((date) => {
+      return quartersToAvail.push([moment(date).unix()]);
+    });
     return quartersToAvail;
   }
 
@@ -62,18 +63,38 @@ class AvailabilityGrid extends Component {
   }
 
   static createTimesRange(dates) {
-    // construct all times range to load a the grid
     const startDate = moment(dates[0].fromDate);
-    const year = startDate.get('year');
-    const month = startDate.get('month');
-    const date = startDate.get('date');
-
     const endDate = moment(dates[0].toDate);
+    console.log('startDate', 'endDate', startDate._d, endDate._d);
     const hour = endDate.get('hour');
     const minute = endDate.get('minute');
-    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
+    const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
+    console.log(startDate._d, endDateToRange._d);
     const dateRange = moment.range(startDate, endDateToRange);
-    return Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    console.log('dif range', dateRange.diff('days'));
+    const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    // correctly sort times
+    let morningTimes = [];
+    let eveningTimes = [];
+    const cutTimeMorning = moment(startDate).startOf('date').hour(12);
+    // console.log('cutTimeMorning', cutTimeMorning._d);
+    timesRange.forEach((time) => {
+      console.log('time', time._d)
+      if (time.isBefore(cutTimeMorning)) {
+        morningTimes.push(time);
+      } else {
+        eveningTimes.push(time);
+      }
+    });
+
+    console.log('morningTimes', morningTimes);
+    console.log('eveningTimes', eveningTimes);
+    return timesRange.sort((a, b) => {
+      if (a.isAfter(b)) {
+        return -1;
+      }
+      return 1;
+    });
   }
 
   static createDatesRange(dates) {
@@ -100,14 +121,12 @@ class AvailabilityGrid extends Component {
     const grid = [];
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
     allDates.forEach((date) => {
-      const dateMoment = date;
       grid.push({
-        date: dateMoment,
+        date,
         quarters: allTimes.map((quarter) => {
-          // construct the time / date value for each cell
-          const dateHourForCell = moment(dateMoment)
+          const dateHourForCell = moment(date)
             .hour(moment(quarter).hour())
-            .minute(moment(quarter).minute());
+            .minute(moment(quarter).minute()).startOf('minute');
           const guests = [];
           const notGuests = [];
           event.participants.forEach((participant) => {
