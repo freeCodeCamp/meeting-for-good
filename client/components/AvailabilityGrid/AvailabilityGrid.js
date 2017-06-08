@@ -65,36 +65,20 @@ class AvailabilityGrid extends Component {
   static createTimesRange(dates) {
     const startDate = moment(dates[0].fromDate);
     const endDate = moment(dates[0].toDate);
-    console.log('startDate', 'endDate', startDate._d, endDate._d);
     const hour = endDate.get('hour');
     const minute = endDate.get('minute');
     const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
-    console.log(startDate._d, endDateToRange._d);
     const dateRange = moment.range(startDate, endDateToRange);
-    console.log('dif range', dateRange.diff('days'));
     const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
-    // correctly sort times
-    let morningTimes = [];
-    let eveningTimes = [];
-    const cutTimeMorning = moment(startDate).startOf('date').hour(12);
-    // console.log('cutTimeMorning', cutTimeMorning._d);
-    timesRange.forEach((time) => {
-      console.log('time', time._d)
-      if (time.isBefore(cutTimeMorning)) {
-        morningTimes.push(time);
-      } else {
-        eveningTimes.push(time);
-      }
-    });
-
-    console.log('morningTimes', morningTimes);
-    console.log('eveningTimes', eveningTimes);
-    return timesRange.sort((a, b) => {
-      if (a.isAfter(b)) {
+    // correct the date value since the range maybe create dates thats goes to the next day. 
+    const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
+    timesRangeFinal.sort((a, b) => {
+      if (a.isBefore(b)) {
         return -1;
       }
       return 1;
     });
+    return timesRangeFinal;
   }
 
   static createDatesRange(dates) {
