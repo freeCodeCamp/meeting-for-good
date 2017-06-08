@@ -7,9 +7,6 @@ import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
 import 'dotenv/config';
-import fs from 'fs';
-import path from 'path';
-import rfs from 'rotating-file-stream';
 import morgan from 'morgan';
 import routes from './app/routes/routes';
 
@@ -20,22 +17,6 @@ const app = express();
 app.use(compression({ threshold: 0 }));
 mongoose.Promise = bluebird;
 mongoose.connect(process.env.MONGO_URI);
-
-const logDirectory = path.join(__dirname, 'log');
-
-// ensure log directory exists
-if (!fs.existsSync(logDirectory)) {
-  fs.mkdirSync(logDirectory);
-}
-
-// create a rotating write stream
-const accessLogStream = rfs('access.log', {
-  interval: '1d', // rotate daily
-  path: logDirectory,
-});
-
-// setup the logger
-app.use(morgan('combined', { stream: accessLogStream }));
 
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
@@ -79,6 +60,8 @@ if (process.env.NODE_ENV === 'development') {
     saveUninitialized: true,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
   }));
+  // setup the logger
+  app.use(morgan('combined'));
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
