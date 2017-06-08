@@ -10,7 +10,6 @@ import 'dotenv/config';
 import morgan from 'morgan';
 import routes from './app/routes/routes';
 
-
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
