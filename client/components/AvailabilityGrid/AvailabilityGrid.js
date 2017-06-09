@@ -61,13 +61,21 @@ class AvailabilityGrid extends Component {
   }
 
   static createTimesRange(dates) {
+    // get the first to from dates from the dates range.
+    // so he has the hole hours ranges
     const startDate = moment(dates[0].fromDate);
     const endDate = moment(dates[0].toDate);
     const hour = endDate.get('hour');
     const minute = endDate.get('minute');
-    const endDateToRange = moment(endDate).startOf('date').hour(hour).minute(minute);
-    const dateRange = moment.range(startDate, endDateToRange);
+    const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
+    console.log(startDate._d, endDateToRange._d);
+    let dateRange = moment.range(startDate, endDateToRange);
+    // if the range has midnight then ajust the range for end at next day;
+    if (endDateToRange.hour() < startDate.hour()) {
+      dateRange = moment.range(startDate, moment(endDateToRange).add(1, 'days'));
+    }
     const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    console.log('timesRange', dateRange.toString());
     timesRange.forEach(time => console.log(time._d));
     // correct the date value since the range maybe create dates thats goes to the next day.
     const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
@@ -77,6 +85,8 @@ class AvailabilityGrid extends Component {
       }
       return 1;
     });
+    console.log('timetimesRangeFinalsRange');
+    timesRangeFinal.forEach(time => console.log(time._d));
     return timesRangeFinal;
   }
 
