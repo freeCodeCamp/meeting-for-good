@@ -7,7 +7,9 @@ const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const cssNano = require('cssnano');
 const packageJSON = require('./package.json');
+
 
 const noVisualization = process.env.ANALYSE_PACK.toString() === 'false';
 const lintCode = process.env.LINT_CODE.toString() === 'false';
@@ -137,10 +139,13 @@ module.exports = {
     }),
     new ExtractTextPlugin('vendor.css'),
     new OptimizeCSS({
+      assetNameRegExp: /\.optimize\.css$/g,
+      cssProcessor: cssNano,
       cssProcessorOptions: {
         discardComments: {
           removeAll: true,
         },
+        canPrint: true,
       },
     }),
     new webpack.optimize.CommonsChunkPlugin({
