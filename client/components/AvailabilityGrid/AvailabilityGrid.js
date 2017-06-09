@@ -43,11 +43,10 @@ class AvailabilityGrid extends Component {
   }
 
   static rangeForAvailability(from, to) {
-    const datesRange = moment.range([moment(from), moment(to)]);
+    const datesRange = moment.range([moment(from).startOf('minute'), moment(to).startOf('minute')]);
     const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
     const quartersToAvail = [];
-    quartersFromDtRange.forEach(date =>
-      quartersToAvail.push([moment(date).unix()]));
+    quartersFromDtRange.forEach(date => quartersToAvail.push([moment(date).unix()]));
     return quartersToAvail;
   }
 
@@ -62,18 +61,28 @@ class AvailabilityGrid extends Component {
   }
 
   static createTimesRange(dates) {
-    // construct all times range to load a the grid
+    // get the first to from dates from the dates range.
+    // so he has the hole hours ranges
     const startDate = moment(dates[0].fromDate);
-    const year = startDate.get('year');
-    const month = startDate.get('month');
-    const date = startDate.get('date');
-
     const endDate = moment(dates[0].toDate);
     const hour = endDate.get('hour');
     const minute = endDate.get('minute');
-    const endDateToRange = moment().set({ year, month, date, hour, minute }).startOf('minute');
-    const dateRange = moment.range(startDate, endDateToRange);
-    return Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
+    let dateRange = moment.range(startDate, endDateToRange);
+    // if the range has midnight then ajust the range for end at next day;
+    if (endDateToRange.hour() < startDate.hour()) {
+      dateRange = moment.range(startDate, moment(endDateToRange).add(1, 'days'));
+    }
+    const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    // correct the date value since the range maybe create dates thats goes to the next day.
+    const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
+    timesRangeFinal.sort((a, b) => {
+      if (a.isBefore(b)) {
+        return -1;
+      }
+      return 1;
+    });
+    return timesRangeFinal;
   }
 
   static createDatesRange(dates) {
@@ -100,14 +109,12 @@ class AvailabilityGrid extends Component {
     const grid = [];
     const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
     allDates.forEach((date) => {
-      const dateMoment = date;
       grid.push({
-        date: dateMoment,
+        date,
         quarters: allTimes.map((quarter) => {
-          // construct the time / date value for each cell
-          const dateHourForCell = moment(dateMoment)
+          const dateHourForCell = moment(date)
             .hour(moment(quarter).hour())
-            .minute(moment(quarter).minute());
+            .minute(moment(quarter).minute()).startOf('minute');
           const guests = [];
           const notGuests = [];
           event.participants.forEach((participant) => {
@@ -437,8 +444,7 @@ class AvailabilityGrid extends Component {
   renderGridHours() {
     const { allTimes } = this.state;
     // array only with full hours thats will be used to display at grid
-    const hourTime = allTimes
-      .filter(time => time.minute() === 0);
+    const hourTime = allTimes.filter(time => time.minute() === 0);
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
     // since we only whant display the full hours
@@ -446,12 +452,20 @@ class AvailabilityGrid extends Component {
       offSet = 4 - (allTimes[0].minutes() / 15);
     }
     const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
-    const colTitles = hourTime.map(time => (
-      <p
-        key={time}
-        styleName="grid-hour"
-      >{time.format('h a')}</p>
-    ));
+    let gridNotJump = true;
+    const colTitles = hourTime.map((time, index) => {
+      if (index !== 0) {
+        gridNotJump = (moment(time).subtract(1, 'hour').isSame(hourTime[index - 1])) === true;
+      }
+      return (
+        <p
+          key={time}
+          styleName={gridNotJump ? 'grid-hour' : 'grid-hourJump'}
+        >
+          {time.format('h a')}
+        </p>
+      );
+    });
     const timesTitle = (
       <div id="timesTitle" styleName="timesTitle" style={style}>
         {colTitles}
@@ -463,23 +477,30 @@ class AvailabilityGrid extends Component {
   renderGridRow(quarters, rowIndex) {
     const { backgroundColors, showHeatmap } = this.state;
     const { curUser } = this.props;
-    return quarters.map((quarter, columnIndex) => (
-      <CellGrid
-        heatMapMode={showHeatmap}
-        key={quarter.time}
-        date={quarter.time}
-        backgroundColors={backgroundColors}
-        participants={quarter.participants}
-        onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
-        onMouseLeave={ev => this.handleCellMouseLeave(ev)}
-        onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
-        onMouseUp={ev => this.handleCellMouseUp(ev)}
-        curUser={curUser}
-        rowIndex={rowIndex}
-        columnIndex={columnIndex}
-        heightlightedUser={this.props.heightlightedUser}
-      />
-    ));
+    return quarters.map((quarter, columnIndex) => {
+      let gridJump = false;
+      if (columnIndex > 0) {
+        gridJump = (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time)));
+      }
+      return (
+        <CellGrid
+          heatMapMode={showHeatmap}
+          key={quarter.time}
+          gridJump={gridJump}
+          date={quarter.time}
+          backgroundColors={backgroundColors}
+          participants={quarter.participants}
+          onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
+          onMouseLeave={ev => this.handleCellMouseLeave(ev)}
+          onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
+          onMouseUp={ev => this.handleCellMouseUp(ev)}
+          curUser={curUser}
+          rowIndex={rowIndex}
+          columnIndex={columnIndex}
+          heightlightedUser={this.props.heightlightedUser}
+        />
+      );
+    });
   }
 
   renderGrid() {
