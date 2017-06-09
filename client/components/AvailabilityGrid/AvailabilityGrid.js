@@ -46,9 +46,7 @@ class AvailabilityGrid extends Component {
     const datesRange = moment.range([moment(from).startOf('minute'), moment(to).startOf('minute')]);
     const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
     const quartersToAvail = [];
-    quartersFromDtRange.forEach((date) => {
-      return quartersToAvail.push([moment(date).unix()]);
-    });
+    quartersFromDtRange.forEach(date => quartersToAvail.push([moment(date).unix()]));
     return quartersToAvail;
   }
 
@@ -70,7 +68,7 @@ class AvailabilityGrid extends Component {
     const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
     const dateRange = moment.range(startDate, endDateToRange);
     const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
-    // correct the date value since the range maybe create dates thats goes to the next day. 
+    // correct the date value since the range maybe create dates thats goes to the next day.
     const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
     timesRangeFinal.sort((a, b) => {
       if (a.isBefore(b)) {
@@ -452,7 +450,6 @@ class AvailabilityGrid extends Component {
     const colTitles = hourTime.map((time, index) => {
       if (index !== 0) {
         gridNotJump = (moment(time).subtract(1, 'hour').isSame(hourTime[index - 1])) === true;
-        console.log(moment(time).subtract(1, 'hour')._d, moment(hourTime[index - 1])._d, gridNotJump);
       }
       return (
         <p
@@ -474,23 +471,30 @@ class AvailabilityGrid extends Component {
   renderGridRow(quarters, rowIndex) {
     const { backgroundColors, showHeatmap } = this.state;
     const { curUser } = this.props;
-    return quarters.map((quarter, columnIndex) => (
-      <CellGrid
-        heatMapMode={showHeatmap}
-        key={quarter.time}
-        date={quarter.time}
-        backgroundColors={backgroundColors}
-        participants={quarter.participants}
-        onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
-        onMouseLeave={ev => this.handleCellMouseLeave(ev)}
-        onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
-        onMouseUp={ev => this.handleCellMouseUp(ev)}
-        curUser={curUser}
-        rowIndex={rowIndex}
-        columnIndex={columnIndex}
-        heightlightedUser={this.props.heightlightedUser}
-      />
-    ));
+    return quarters.map((quarter, columnIndex) => {
+      let gridJump = false;
+      if (columnIndex > 0) {
+        gridJump = (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time)));
+      }
+      return (
+        <CellGrid
+          heatMapMode={showHeatmap}
+          key={quarter.time}
+          gridJump={gridJump}
+          date={quarter.time}
+          backgroundColors={backgroundColors}
+          participants={quarter.participants}
+          onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
+          onMouseLeave={ev => this.handleCellMouseLeave(ev)}
+          onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
+          onMouseUp={ev => this.handleCellMouseUp(ev)}
+          curUser={curUser}
+          rowIndex={rowIndex}
+          columnIndex={columnIndex}
+          heightlightedUser={this.props.heightlightedUser}
+        />
+      );
+    });
   }
 
   renderGrid() {

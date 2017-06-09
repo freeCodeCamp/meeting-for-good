@@ -9,16 +9,17 @@ import styles from './cell-grid.css';
 class CellGrid extends Component {
 
   static styleNameCompose(
-    heightlightedUser, heatMapMode, participants, backgroundColors, curUser, time) {
+    heightlightedUser, heatMapMode, participants, backgroundColors, curUser, time, gridJump) {
     // select the class for the border base style
     let style = 'cell';
     const minutes = time.minutes();
-    if (minutes === 0) {
+    if (gridJump) {
+      style += ' cellGridJump';
+    } else if (minutes === 0) {
       style += ' cellBorderHour';
     } else if (minutes === 30) {
       style += ' cellBorderHalfHour';
     }
-
     // if have a user to hightLight and is present at this cell
     if (heightlightedUser) {
       if (_.find(participants, heightlightedUser)) {
@@ -70,11 +71,11 @@ class CellGrid extends Component {
 
   render() {
     const { date, participants, heatMapMode, heightlightedUser } = this.state;
-    const { backgroundColors, curUser } = this.props;
+    const { backgroundColors, curUser, gridJump } = this.props;
     const { formatCellBackgroundColor, styleNameCompose } = this.constructor;
 
     const styleNames = styleNameCompose(
-      heightlightedUser, heatMapMode, participants, backgroundColors, curUser, date);
+      heightlightedUser, heatMapMode, participants, backgroundColors, curUser, date, gridJump);
 
     const inlineStyle = {
       backgroundColor: formatCellBackgroundColor(
@@ -115,6 +116,7 @@ CellGrid.propTypes = {
   rowIndex: PropTypes.number,
   columnIndex: PropTypes.number,
   heightlightedUser: PropTypes.string,
+  gridJump: PropTypes.bool.isRequired,
 
   // Current user
   curUser: PropTypes.shape({
