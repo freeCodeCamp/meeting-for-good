@@ -60,7 +60,7 @@
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.0.1",
     "cpy-cli": "^1.0.1",
-    "cross-env": "^3.2.4",
+    "cross-env": "^5.0.1",
     "css-loader": "^0.28.1",
     "cssnano": "^3.10.0",
     "dialog-polyfill": "^0.4.6",
@@ -87,7 +87,7 @@
     "moment-range": "^3.0.3",
     "mongoose": "^4.8.6",
     "morgan": "^1.8.2",
-    "nodemailer": "^3.1.8",
+    "nodemailer": "^4.0.1",
     "nodemailer-ses-transport": "^1.5.0",
     "nprogress": "^0.2.0",
     "offline-plugin": "^4.8.1",
@@ -117,11 +117,11 @@
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.5.1",
-    "webpack-assets-manifest": "^0.6.2",
+    "webpack-assets-manifest": "^0.7.0",
     "webpack-bundle-analyzer": "^2.7.0",
     "webpack-config": "^7.0.0",
     "write-file-webpack-plugin": "^4.0.0",
-    "yargs": "^7.0.1"
+    "yargs": "^8.0.1"
   },
   "devDependencies": {
     "eslint": "^3.17.1",
