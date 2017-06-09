@@ -440,8 +440,7 @@ class AvailabilityGrid extends Component {
   renderGridHours() {
     const { allTimes } = this.state;
     // array only with full hours thats will be used to display at grid
-    const hourTime = allTimes
-      .filter(time => time.minute() === 0);
+    const hourTime = allTimes.filter(time => time.minute() === 0);
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
     // since we only whant display the full hours
@@ -449,12 +448,21 @@ class AvailabilityGrid extends Component {
       offSet = 4 - (allTimes[0].minutes() / 15);
     }
     const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
-    const colTitles = hourTime.map(time => (
-      <p
-        key={time}
-        styleName="grid-hour"
-      >{time.format('h a')}</p>
-    ));
+    let gridNotJump = true;
+    const colTitles = hourTime.map((time, index) => {
+      if (index !== 0) {
+        gridNotJump = (moment(time).subtract(1, 'hour').isSame(hourTime[index - 1])) === true;
+        console.log(moment(time).subtract(1, 'hour')._d, moment(hourTime[index - 1])._d, gridNotJump);
+      }
+      return (
+        <p
+          key={time}
+          styleName={gridNotJump ? 'grid-hour' : 'grid-hourJump'}
+        >
+          {time.format('h a')}
+        </p>
+      );
+    });
     const timesTitle = (
       <div id="timesTitle" styleName="timesTitle" style={style}>
         {colTitles}
