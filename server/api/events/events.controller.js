@@ -67,6 +67,9 @@ const handleError = (res, statusCode) => {
 };
 
 const filterOutStatusZeroParticipants = (event) => {
+  if (!event) {
+    return null;
+  }
   event.participants = event.participants.filter(participant => participant.status !== 0);
   return event;
 };
