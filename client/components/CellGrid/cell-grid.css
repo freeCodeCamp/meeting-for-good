@@ -18,6 +18,7 @@
 
 .cellGridJump {
   border-left: 6px double #787878;
+  width: 18px;
 }
 .cellBorderHour {
   border-left: 1px solid rgb(120, 120, 120);
