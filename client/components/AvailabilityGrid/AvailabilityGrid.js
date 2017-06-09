@@ -443,16 +443,6 @@ class AvailabilityGrid extends Component {
     );
   }
 
-  static calculateDateCellOffSetforJump(time) {
-    let offSet = 0;
-    // calculate the numbers of cells to offset the hours grid
-    // since we only whant display the full hours
-    if (time.minutes() !== 0) {
-      offSet = 4 - (time.minutes() / 15);
-    }
-    return { margin: `0 0 0 ${(offSet * 13)}px` };
-  }
-
   renderGridHours() {
     const { allTimes } = this.state;
     // array only with full hours thats will be used to display at grid
@@ -462,7 +452,6 @@ class AvailabilityGrid extends Component {
         hourTime.push({ time, index });
       }
     });
-    console.log('hourTime', hourTime);
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
     // since we only whant display the full hours
