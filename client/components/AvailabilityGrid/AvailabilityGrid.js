@@ -69,12 +69,14 @@ class AvailabilityGrid extends Component {
     const minute = endDate.get('minute');
     const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
     let dateRange = moment.range(startDate, endDateToRange);
-    // if the range has midnight then ajust the range for end at next day;
+    // if the end range hour is before the start hour then ajust the range for end at next day;
+    // so the range can be calculated correctly.
     if (endDateToRange.hour() < startDate.hour()) {
       dateRange = moment.range(startDate, moment(endDateToRange).add(1, 'days'));
     }
     const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
-    // correct the date value since the range maybe create dates thats goes to the next day.
+    // correct the date value for each hour at the array since the range maybe create dates thats goes to the next day.
+    // but we whant all dates at the same day.
     const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
     timesRangeFinal.sort((a, b) => {
       if (a.isBefore(b)) {
@@ -441,10 +443,26 @@ class AvailabilityGrid extends Component {
     );
   }
 
+  static calculateDateCellOffSetforJump(time) {
+    let offSet = 0;
+    // calculate the numbers of cells to offset the hours grid
+    // since we only whant display the full hours
+    if (time.minutes() !== 0) {
+      offSet = 4 - (time.minutes() / 15);
+    }
+    return { margin: `0 0 0 ${(offSet * 13)}px` };
+  }
+
   renderGridHours() {
     const { allTimes } = this.state;
     // array only with full hours thats will be used to display at grid
-    const hourTime = allTimes.filter(time => time.minute() === 0);
+    const hourTime = [];
+    allTimes.forEach((time, index) => {
+      if (time.minute() === 0) {
+        hourTime.push({ time, index });
+      }
+    });
+    console.log('hourTime', hourTime);
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
     // since we only whant display the full hours
@@ -453,16 +471,17 @@ class AvailabilityGrid extends Component {
     }
     const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
     let gridNotJump = true;
-    const colTitles = hourTime.map((time, index) => {
+    const colTitles = hourTime.map((hour, index) => {
       if (index !== 0) {
-        gridNotJump = (moment(time).subtract(1, 'hour').isSame(hourTime[index - 1])) === true;
+        gridNotJump = (moment(hour.time).subtract(1, 'hour').isSame(hourTime[index - 1].time)) === true;
       }
       return (
         <p
-          key={time}
+          key={hour.time}
           styleName={gridNotJump ? 'grid-hour' : 'grid-hourJump'}
+          style={!gridNotJump ? { paddingLeft: `${((13 * (hour.index % 4)) + 3)}px` } : null}
         >
-          {time.format('h a')}
+          {hour.time.format('h a')}
         </p>
       );
     });
