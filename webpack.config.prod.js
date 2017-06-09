@@ -6,6 +6,7 @@ const path = require('path');
 const OfflinePlugin = require('offline-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const cssNano = require('cssnano');
 const packageJSON = require('./package.json');
 
 const VENDOR_LIBS = [
@@ -115,7 +116,14 @@ module.exports = {
     }),
     new ExtractTextPlugin('vendor.css'),
     new OptimizeCSS({
-      cssProcessorOptions: { discardComments: { removeAll: true } },
+      assetNameRegExp: /\.optimize\.css$/g,
+      cssProcessor: cssNano,
+      cssProcessorOptions: {
+        discardComments: {
+          removeAll: true,
+        },
+        canPrint: true,
+      },
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
