@@ -65,9 +65,10 @@ class AvailabilityGrid extends Component {
     const endDate = moment(dates[0].toDate);
     const hour = endDate.get('hour');
     const minute = endDate.get('minute');
-    const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
+    const endDateToRange = moment(endDate).startOf('date').hour(hour).minute(minute);
     const dateRange = moment.range(startDate, endDateToRange);
     const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
+    timesRange.forEach(time => console.log(time._d));
     // correct the date value since the range maybe create dates thats goes to the next day.
     const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
     timesRangeFinal.sort((a, b) => {
