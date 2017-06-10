@@ -66,7 +66,7 @@ const handleError = (res, statusCode) => {
   };
 };
 
-const filterOutStatusZeroParticipants = (event) => {
+const filterOutStatusZeroParticipants = () => (event) => {
   if (!event) {
     return null;
   }
@@ -101,7 +101,7 @@ export const indexById = (req, res) => {
   const uid = req.params.uid;
   return Events.find({ uid, active: true })
     .exec()
-    .then(event => filterOutStatusZeroParticipants(event))
+    .then(filterOutStatusZeroParticipants())
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -118,7 +118,12 @@ export const indexByUser = (req, res) => {
     .populate('participants.userId', 'avatar emails name')
     .exec()
     .then((events) => {
-      events.forEach(event => filterOutStatusZeroParticipants(event));
+      events.forEach((event) => {
+        event.participants = event.participants.filter(participant => participant.status !== 0);
+        console.log();
+        console.log("nbr participants = " + event.participants.length);
+        console.log();
+      });
       return events;
     })
     .then(respondWithResult(res))
@@ -130,7 +135,7 @@ export const show = (req, res) =>
   Events.findById(req.params.id)
     .populate('participants.userId', 'avatar emails name')
     .exec()
-    .then(event => filterOutStatusZeroParticipants(event))
+    .then(filterOutStatusZeroParticipants())
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
@@ -148,7 +153,7 @@ export const patch = (req, res) => {
     .then(res => Events.findById(res._id)
         .populate('participants.userId', 'avatar emails name')
         .exec())
-    .then(event => filterOutStatusZeroParticipants(event))
+    .then(filterOutStatusZeroParticipants())
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
@@ -226,7 +231,7 @@ export const setGuestInactive = (req, res) =>
       Events.findById({ _id: res._id })
         .populate('participants.userId', 'avatar emails name')
         .exec())
-    .then(event => filterOutStatusZeroParticipants(event))
+    .then(filterOutStatusZeroParticipants())
     .then(respondWithResult(res))
     .catch(handleError(res));
 
