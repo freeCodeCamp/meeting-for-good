@@ -120,9 +120,6 @@ export const indexByUser = (req, res) => {
     .then((events) => {
       events.forEach((event) => {
         event.participants = event.participants.filter(participant => participant.status !== 0);
-        console.log();
-        console.log("nbr participants = " + event.participants.length);
-        console.log();
       });
       return events;
     })
