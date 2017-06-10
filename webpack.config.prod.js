@@ -8,6 +8,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const cssNano = require('cssnano');
 const packageJSON = require('./package.json');
+require('dotenv').config();
 
 const VENDOR_LIBS = [
   'autobind-decorator',
