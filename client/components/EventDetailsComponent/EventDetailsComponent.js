@@ -10,6 +10,7 @@ import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
+import SelectedDatesEditor from '../../components/SelectedDatesEditor/SelectedDatesEditor';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -206,6 +207,7 @@ class EventDetailsComponent extends React.Component {
             <CardTitle styleName="cardTitle">{event.name}</CardTitle>
             <CardText>
               <BestTimesDisplay event={event} disablePicker />
+              {isOwner ? <SelectedDatesEditor event={event} /> : null}
               <AvailabilityGrid
                 event={event}
                 curUser={curUser}
