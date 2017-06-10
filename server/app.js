@@ -66,7 +66,7 @@ if (process.env.NODE_ENV === 'development') {
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
   }));
   // setup the logger
-  app.use(morgan('combined'));
+  app.use(morgan(':status :method :response-time ms - :url'));
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
