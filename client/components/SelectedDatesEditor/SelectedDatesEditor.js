@@ -4,7 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import autobind from 'autobind-decorator';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
-import DayPicker, { DateUtils } from 'react-day-picker';
+import DayPicker from 'react-day-picker';
 import Moment from 'moment';
 import jsonpatch from 'fast-json-patch';
 import { extendMoment } from 'moment-range';
@@ -32,40 +32,12 @@ class SelectedDatesEditor extends Component {
     return datesRanges;
   }
 
-  constructor(props) {
-    super(props);
-    const { event } = props;
-    this.state = {
-      DialogOpen: false,
-      event,
-      selectedDates: [],
-    };
-  }
-
-  componentWillMount() {
-    const { event } = this.props;
-    const { createDatesRange } = this.constructor;
-    const selectedDates = createDatesRange(event.dates);
-    this.setState({ selectedDates });
-  }
-
-  @autobind
-  handleCloseDialog() {
-    this.setState({ DialogOpen: false });
-  }
-
-  @autobind
-  handleOpenDialog() {
-    this.setState({ DialogOpen: true });
-  }
-
   static dateRangeReducer(selectedDates, event) {
     // first save the inicial and  final original times
     const initialHour = moment(event.dates[0].fromDate).hour();
     const initialMinutes = moment(event.dates[0].fromDate).minutes();
     const finalHour = moment(event.dates[0].toDate).hour();
     const finalMinutes = moment(event.dates[0].toDate).minutes();
-    console.log('initial', event.dates[0], finalHour, finalMinutes);
     const nSelectedDates = _.cloneDeep(selectedDates);
     nSelectedDates.sort((a, b) => {
       const x = moment(a).unix();
@@ -83,7 +55,6 @@ class SelectedDatesEditor extends Component {
         finalDate = moment(date).startOf('date').hour(finalHour).minutes(finalMinutes);
         // if is adjacent expand the range
         const dateToCompare = moment(rangeToCompare.end).startOf('date').add(1, 'day');
-        console.log(dateToCompare);
         if (dateToCompare.isSame(moment(date).startOf('date'))) {
           rangeToCompare = moment.range(rangeToCompare.start, finalDate);
         } else {
@@ -95,19 +66,56 @@ class SelectedDatesEditor extends Component {
       });
       allRanges.push(rangeToCompare);
     }
-    // allRanges.forEach(range => console.log(range.start._d, range.end._d));
     return allRanges.map(range => ({ fromDate: range.start._d, toDate: range.end._d }));
   }
 
+  constructor(props) {
+    super(props);
+    const { event } = props;
+    this.state = {
+      dialogOpen: false,
+      event,
+      selectedDates: [],
+    };
+  }
+
+  componentWillMount() {
+    const { event } = this.props;
+    const { createDatesRange } = this.constructor;
+    const selectedDates = createDatesRange(event.dates);
+    this.setState({ selectedDates });
+  }
 
   @autobind
-  handleEditEventDates() {
+  handleCloseDialog() {
+    this.setState({ dialogOpen: false });
+  }
+
+  @autobind
+  handleOpenDialog() {
+    this.setState({ dialogOpen: true });
+  }
+
+  @autobind
+  async handleEditEventDates() {
     const { event } = this.props;
     const { selectedDates } = this.state;
     const { dateRangeReducer } = this.constructor;
-    // const nEvent = _.cloneDeep(event);
-    const nDates = dateRangeReducer(selectedDates, event);
-    console.log('Dates', nDates);
+    const nEvent = _.cloneDeep(event);
+    const observerEvent = jsonpatch.observe(nEvent);
+    nEvent.dates = [];
+    const patchforDelete = jsonpatch.generate(observerEvent);
+    nEvent.dates = dateRangeReducer(selectedDates, event);
+    const patchesforAdd = jsonpatch.generate(observerEvent);
+    const patches = _.concat(patchforDelete, patchesforAdd);
+    try {
+      console.log(patches);
+      await this.props.submitDates(patches);
+    } catch (err) {
+      console.log('err at submit avail', err);
+    } finally { 
+      this.setState({ dialogOpen: false });
+    };
   }
 
   @autobind
@@ -163,7 +171,7 @@ class SelectedDatesEditor extends Component {
         onTouchTap={this.handleEditEventDates}
       />,
     ];
-    const { DialogOpen, selectedDates } = this.state;
+    const { dialogOpen, selectedDates } = this.state;
     return (
       <div>
         <FlatButton
@@ -173,7 +181,7 @@ class SelectedDatesEditor extends Component {
         <Dialog
           title="Event Dates Editor"
           actions={actions}
-          open={DialogOpen}
+          open={dialogOpen}
           titleStyle={inlineStyles.modal.title}
           contentStyle={inlineStyles.modal.content}
           bodyStyle={inlineStyles.modal.bodyStyle}
@@ -190,7 +198,12 @@ class SelectedDatesEditor extends Component {
   }
 }
 
+SelectedDatesEditor.defaultProps = {
+  submitDates: () => { console.log('submitDates func not passed in!'); },
+};
+
 SelectedDatesEditor.propTypes = {
+  submitDates: PropTypes.func,
   // Event containing list of event participants
   event: PropTypes.shape({
     _id: PropTypes.string,

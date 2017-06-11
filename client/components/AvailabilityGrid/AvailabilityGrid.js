@@ -307,7 +307,7 @@ class AvailabilityGrid extends Component {
       const eventToEdit = await loadEventFull(this.state.event._id);
       const event = JSON.parse(JSON.stringify(eventToEdit));
       const observerEvent = jsonpatch.observe(event);
-      // fild for curUser at the array depends if is a participant
+      // find for curUser at the array depends if is a participant
       // yet or not
       let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
       // first check if cur exists as a participant
