@@ -17,6 +17,24 @@ const moment = extendMoment(Moment);
 
 class SelectedDatesEditor extends Component {
 
+  static filterAvailabilitysOutsideDatesRange(event) {
+    const nEvent = _.cloneDeep(event);
+    event.dates.forEach((date) => {
+      const rangeDates = moment.range(moment(date.fromDate), moment(date.toDate));
+      event.participants.forEach((participant, index) => {
+        const nAvailability = [];
+        participant.availability.forEach((avail) => {
+          const rangeAvail = moment.range(moment(avail[0]), moment(avail[1]));
+          if (rangeAvail.overlaps(rangeDates, { adjacent: false })) {
+            nAvailability.push(avail);
+          }
+        });
+        nEvent.participants[index].availability = nAvailability;
+      });
+    });
+    return nEvent;
+  }
+
   static createDatesRange(dates) {
     let datesRanges = dates.map((date) => {
       const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
@@ -45,8 +63,8 @@ class SelectedDatesEditor extends Component {
       return x - y;
     });
     // create the first range with the fist select date
-    let initialDate = moment(selectedDates[0]).startOf('date').hour(initialHour).minutes(initialMinutes);
-    let finalDate = moment(selectedDates[0]).startOf('date').hour(finalHour).minutes(finalMinutes);
+    let initialDate = moment(nSelectedDates[0]).startOf('date').hour(initialHour).minutes(initialMinutes);
+    let finalDate = moment(nSelectedDates[0]).startOf('date').hour(finalHour).minutes(finalMinutes);
     let rangeToCompare = moment.range(initialDate, finalDate);
     const allRanges = [];
     if (selectedDates.length > 1) {
@@ -104,24 +122,6 @@ class SelectedDatesEditor extends Component {
   @autobind
   handleOpenDialog() {
     this.setState({ dialogOpen: true });
-  }
-
-  static filterAvailabilitysOutsideDatesRange(event) {
-    const nEvent = _.cloneDeep(event);
-    event.dates.forEach((date) => {
-      const rangeDates = moment.range(date.fromDate, date.toDate);
-      event.participants.forEach((participant, index) => {
-        const nAvailability = [];
-        participant.availability.forEach((avail) => {
-          const rangeAvail = moment.range(avail[0], avail[1]);
-          if (rangeAvail.overlaps(rangeDates, { adjacent: false })) {
-            nAvailability.push(avail);
-          }
-        });
-        nEvent.participants[index].availability = nAvailability;
-      });
-    });
-    return nEvent;
   }
 
   @autobind
