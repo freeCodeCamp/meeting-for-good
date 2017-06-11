@@ -19,17 +19,23 @@ class SelectedDatesEditor extends Component {
 
   static filterAvailabilitysOutsideDatesRange(event) {
     const nEvent = _.cloneDeep(event);
+    // clear all availiability of each participant at nEvent
+    // so i can push only the valid ones
+    nEvent.participants.forEach((participant) => {
+      if (participant.availability.length > 0) {
+        participant.availability = [];
+      }
+    },
+    );
     event.dates.forEach((date) => {
       const rangeDates = moment.range(moment(date.fromDate), moment(date.toDate));
       event.participants.forEach((participant, index) => {
-        const nAvailability = [];
         participant.availability.forEach((avail) => {
           const rangeAvail = moment.range(moment(avail[0]), moment(avail[1]));
           if (rangeAvail.overlaps(rangeDates, { adjacent: false })) {
-            nAvailability.push(avail);
+            nEvent.participants[index].availability.push(avail);
           }
         });
-        nEvent.participants[index].availability = nAvailability;
       });
     });
     return nEvent;
@@ -135,15 +141,20 @@ class SelectedDatesEditor extends Component {
     const patchforDelete = jsonpatch.generate(observerEvent);
     nEvent.dates = dateRangeReducer(selectedDates, event);
     const patchesforAddDates = jsonpatch.generate(observerEvent);
+    const eventAvailFilter = filterAvailabilitysOutsideDatesRange(nEvent);
+    console.log('eventAvailFilter', eventAvailFilter);
     nEvent.participants.forEach((participant) => {
       participant.availability = [];
     });
     const patchesforDeleteAvail = jsonpatch.generate(observerEvent);
-    const eventAvailFilter = filterAvailabilitysOutsideDatesRange(nEvent);
     nEvent.participants.forEach((participant, index) => {
       participant.availability = eventAvailFilter.participants[index].availability;
     });
-    const patches = _.concat(patchforDelete, patchesforAddDates, patchesforDeleteAvail);
+    const patchesforAddAvail = jsonpatch.generate(observerEvent);
+    const patches = _.concat(patchforDelete,
+      patchesforAddDates,
+      patchesforDeleteAvail,
+      patchesforAddAvail);
     try {
       await this.props.submitDates(patches);
     } catch (err) {
