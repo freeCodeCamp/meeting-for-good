@@ -121,7 +121,6 @@ class EventDetailsComponent extends React.Component {
     const { event } = this.props;
     try {
       const responseEvent = await this.props.cbEditEvent(patches, event._id);
-      console.log('responseEvent', responseEvent);
       this.setState({ event: responseEvent });
     } catch (err) {
       console.log('err at submitEditDates, EventDtailComponent', err);

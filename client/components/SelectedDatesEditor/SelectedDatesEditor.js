@@ -142,7 +142,6 @@ class SelectedDatesEditor extends Component {
     nEvent.dates = dateRangeReducer(selectedDates, event);
     const patchesforAddDates = jsonpatch.generate(observerEvent);
     const eventAvailFilter = filterAvailabilitysOutsideDatesRange(nEvent);
-    console.log('eventAvailFilter', eventAvailFilter);
     nEvent.participants.forEach((participant) => {
       participant.availability = [];
     });
