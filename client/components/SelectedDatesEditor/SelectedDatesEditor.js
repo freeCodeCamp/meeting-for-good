@@ -98,6 +98,7 @@ class SelectedDatesEditor extends Component {
     const { event } = props;
     this.state = {
       dialogOpen: false,
+      dialogWarningOpen: false,
       event,
       selectedDates: [],
     };
@@ -159,7 +160,7 @@ class SelectedDatesEditor extends Component {
     } catch (err) {
       console.log('err at submit avail', err);
     } finally {
-      this.setState({ dialogOpen: false });
+      this.setState({ dialogWarningOpen: false });
     }
   }
 
@@ -183,6 +184,58 @@ class SelectedDatesEditor extends Component {
     this.setState({ selectedDates });
   }
 
+
+  renderDialogWarning() {
+    const { dialogWarningOpen } = this.state;
+    const inlineStyles = {
+      modal: {
+        title: {
+          backgroundColor: 'red',
+          color: '#ffffff',
+          fontSize: '25px',
+          height: '25px',
+          paddingTop: 6,
+        },
+        content: {
+          width: '22%',
+          maxWidth: '22%',
+        },
+        bodyStyle: {
+          paddingTop: 10,
+        },
+      },
+    };
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onTouchTap={() => this.setState({ dialogWarningOpen: false })}
+      />,
+      <FlatButton
+        label="save"
+        secondary
+        onTouchTap={this.handleEditEventDates}
+      />,
+    ];
+    return (
+      <Dialog
+        title="Warning"
+        open={dialogWarningOpen}
+        actions={actions}
+        titleStyle={inlineStyles.modal.title}
+        contentStyle={inlineStyles.modal.content}
+        bodyStyle={inlineStyles.modal.bodyStyle}
+      >
+        <p>
+          {'Maybe you delete some existing availabilitys.'}
+        </p>
+        <p>
+          {'Are you sure you want edit this dates ?'}
+        </p>
+      </Dialog>
+    );
+  }
+
   render() {
     const inlineStyles = {
       modal: {
@@ -194,9 +247,8 @@ class SelectedDatesEditor extends Component {
           paddingTop: 6,
         },
         content: {
-          width: '18%',
-          maxWidth: '18%',
-          minWidth: '270px',
+          width: '17%',
+          maxWidth: '17%',
         },
         bodyStyle: {
           paddingTop: 10,
@@ -213,7 +265,7 @@ class SelectedDatesEditor extends Component {
       <FlatButton
         label="save"
         secondary
-        onTouchTap={this.handleEditEventDates}
+        onTouchTap={() => this.setState({ dialogOpen: false, dialogWarningOpen: true })}
       />,
     ];
     const { dialogOpen, selectedDates } = this.state;
@@ -238,6 +290,7 @@ class SelectedDatesEditor extends Component {
             selectedDays={selectedDates}
           />
         </Dialog>
+        {this.renderDialogWarning()}
       </div>
     );
   }
