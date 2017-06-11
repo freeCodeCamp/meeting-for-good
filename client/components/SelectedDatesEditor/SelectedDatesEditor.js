@@ -6,6 +6,7 @@ import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import Moment from 'moment';
+import jsonpatch from 'fast-json-patch';
 import { extendMoment } from 'moment-range';
 import _ from 'lodash';
 
@@ -19,7 +20,7 @@ class SelectedDatesEditor extends Component {
   static createDatesRange(dates) {
     let datesRanges = dates.map((date) => {
       const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
-      return Array.from(range.by('days', { step: 1 }));
+      return Array.from(range.by('days'));
     });
     datesRanges = _.flatten(datesRanges);
     datesRanges.sort((a, b) => {
@@ -58,10 +59,55 @@ class SelectedDatesEditor extends Component {
     this.setState({ DialogOpen: true });
   }
 
+  static dateRangeReducer(selectedDates, event) {
+    // first save the inicial and  final original times
+    const initialHour = moment(event.dates[0].fromDate).hour();
+    const initialMinutes = moment(event.dates[0].fromDate).minutes();
+    const finalHour = moment(event.dates[0].toDate).hour();
+    const finalMinutes = moment(event.dates[0].toDate).minutes();
+    console.log('initial', event.dates[0], finalHour, finalMinutes);
+    const nSelectedDates = _.cloneDeep(selectedDates);
+    nSelectedDates.sort((a, b) => {
+      const x = moment(a).unix();
+      const y = moment(b).unix();
+      return x - y;
+    });
+    // create the first range with the fist select date
+    let initialDate = moment(selectedDates[0]).startOf('date').hour(initialHour).minutes(initialMinutes);
+    let finalDate = moment(selectedDates[0]).startOf('date').hour(finalHour).minutes(finalMinutes);
+    let rangeToCompare = moment.range(initialDate, finalDate);
+    const allRanges = [];
+    if (selectedDates.length > 1) {
+      nSelectedDates.shift();
+      nSelectedDates.forEach((date) => {
+        finalDate = moment(date).startOf('date').hour(finalHour).minutes(finalMinutes);
+        // if is adjacent expand the range
+        const dateToCompare = moment(rangeToCompare.end).startOf('date').add(1, 'day');
+        console.log(dateToCompare);
+        if (dateToCompare.isSame(moment(date).startOf('date'))) {
+          rangeToCompare = moment.range(rangeToCompare.start, finalDate);
+        } else {
+          // its a new range
+          allRanges.push(rangeToCompare);
+          initialDate = moment(date).startOf('date').hour(initialHour).minutes(initialMinutes);
+          rangeToCompare = moment.range(initialDate, finalDate);
+        }
+      });
+      allRanges.push(rangeToCompare);
+    }
+    // allRanges.forEach(range => console.log(range.start._d, range.end._d));
+    return allRanges.map(range => ({ fromDate: range.start._d, toDate: range.end._d }));
+  }
+
+
   @autobind
   handleEditEventDates() {
     const { event } = this.props;
-    console.log(event.name);
+    const { selectedDates } = this.state;
+    const { dateRangeReducer } = this.constructor;
+    // const nEvent = _.cloneDeep(event);
+    const nDates = dateRangeReducer(selectedDates, event);
+    console.log('Dates', nDates);
   }
 
   @autobind
@@ -112,7 +158,7 @@ class SelectedDatesEditor extends Component {
         onTouchTap={this.handleCloseDialog}
       />,
       <FlatButton
-        label="yes"
+        label="save"
         secondary
         onTouchTap={this.handleEditEventDates}
       />,
@@ -134,7 +180,6 @@ class SelectedDatesEditor extends Component {
         >
           <DayPicker
             fromMonth={selectedDates[0]}
-            disabledDays={DateUtils.isPastDay}
             onDayClick={this.handleDayClick}
             classNames={styles}
             selectedDays={selectedDates}
