@@ -86,9 +86,19 @@ class SelectedDatesEditor extends Component {
     this.setState({ selectedDates });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { event } = nextProps;
+    const { createDatesRange } = this.constructor;
+    const selectedDates = createDatesRange(event.dates);
+    this.setState({ selectedDates });
+  }
+
   @autobind
   handleCloseDialog() {
-    this.setState({ dialogOpen: false });
+    const { event } = this.props;
+    const { createDatesRange } = this.constructor;
+    const selectedDates = createDatesRange(event.dates);
+    this.setState({ dialogOpen: false, selectedDates });
   }
 
   @autobind
@@ -96,26 +106,51 @@ class SelectedDatesEditor extends Component {
     this.setState({ dialogOpen: true });
   }
 
+  static filterAvailabilitysOutsideDatesRange(event) {
+    const nEvent = _.cloneDeep(event);
+    event.dates.forEach((date) => {
+      const rangeDates = moment.range(date.fromDate, date.toDate);
+      event.participants.forEach((participant, index) => {
+        const nAvailability = [];
+        participant.availability.forEach((avail) => {
+          const rangeAvail = moment.range(avail[0], avail[1]);
+          if (rangeAvail.overlaps(rangeDates, { adjacent: false })) {
+            nAvailability.push(avail);
+          }
+        });
+        nEvent.participants[index].availability = nAvailability;
+      });
+    });
+    return nEvent;
+  }
+
   @autobind
   async handleEditEventDates() {
     const { event } = this.props;
     const { selectedDates } = this.state;
-    const { dateRangeReducer } = this.constructor;
+    const { dateRangeReducer, filterAvailabilitysOutsideDatesRange } = this.constructor;
     const nEvent = _.cloneDeep(event);
     const observerEvent = jsonpatch.observe(nEvent);
     nEvent.dates = [];
     const patchforDelete = jsonpatch.generate(observerEvent);
     nEvent.dates = dateRangeReducer(selectedDates, event);
-    const patchesforAdd = jsonpatch.generate(observerEvent);
-    const patches = _.concat(patchforDelete, patchesforAdd);
+    const patchesforAddDates = jsonpatch.generate(observerEvent);
+    nEvent.participants.forEach((participant) => {
+      participant.availability = [];
+    });
+    const patchesforDeleteAvail = jsonpatch.generate(observerEvent);
+    const eventAvailFilter = filterAvailabilitysOutsideDatesRange(nEvent);
+    nEvent.participants.forEach((participant, index) => {
+      participant.availability = eventAvailFilter.participants[index].availability;
+    });
+    const patches = _.concat(patchforDelete, patchesforAddDates, patchesforDeleteAvail);
     try {
-      console.log(patches);
       await this.props.submitDates(patches);
     } catch (err) {
       console.log('err at submit avail', err);
-    } finally { 
+    } finally {
       this.setState({ dialogOpen: false });
-    };
+    }
   }
 
   @autobind
