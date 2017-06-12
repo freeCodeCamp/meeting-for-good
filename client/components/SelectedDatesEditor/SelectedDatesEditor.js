@@ -156,6 +156,7 @@ class SelectedDatesEditor extends Component {
       patchesforAddDates,
       patchesforDeleteAvail,
       patchesforAddAvail);
+    console.log(nEvent);
     try {
       await this.props.submitDates(patches);
     } catch (err) {
@@ -188,10 +189,11 @@ class SelectedDatesEditor extends Component {
   @autobind
   handleSaveDates() {
     const { selectedDates } = this.state;
-    if (selectedDates.length === 0) {
-      this.setState({ dialogMinimumDateOpen: true });
-    } else {
+    console.log(selectedDates, selectedDates.length);
+    if (selectedDates.length > 0) {
       this.setState({ dialogOpen: false, dialogWarningOpen: true });
+    } else {
+      this.setState({ dialogMinimumDateOpen: true });
     }
   }
 
@@ -308,6 +310,7 @@ class SelectedDatesEditor extends Component {
           minWidth: '290px',
         },
         bodyStyle: {
+          minHeight: '260px',
           paddingTop: 10,
         },
       },
