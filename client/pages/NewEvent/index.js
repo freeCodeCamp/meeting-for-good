@@ -111,7 +111,6 @@ class NewEvent extends React.Component {
   @autobind
   async createEvent() {
     const { eventName: name, ranges, selectedTimeRange: [fromTime, toTime] } = this.state;
-    console.log(fromTime, toTime);
     const fromTimeFormat = formatTime(fromTime);
     const toTimeFormat = formatTime(toTime);
 
