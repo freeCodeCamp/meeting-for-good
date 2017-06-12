@@ -27,6 +27,16 @@ class GuestInviteDrawer extends Component {
     browserHistory.push(`/event/${id}`);
   }
 
+  static fullUrl(event) {
+    return `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+  }
+
+  static emailText(event) {
+    return `Hey there,%0D%0A%0D%0AUse this tool to let me know your availablility for ${event.name}:
+    %0D%0A%0D%0A${GuestInviteDrawer.fullUrl(event)}
+    %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -204,30 +214,17 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const {
-      open,
-      event,
-      snackbarOpen,
-      searchText,
-      snackbarMsg,
-      linearProgressVisible,
-    } = this.state;
-
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-
+    const { open, event, snackbarOpen, searchText, snackbarMsg,
+      linearProgressVisible } = this.state;
+    const { fullUrl, emailText } = this.constructor;
     const focusUrlTextField = (input) => {
       if (input) {
         if (this.state.setFocusFullUrl) {
           this.setState({ setFocusFullUrl: false });
-          setTimeout(() => {
-            input.focus();
-            input.select();
-          }
-            , 100);
+          setTimeout(() => { input.focus(); input.select(); }, 100);
         }
       }
     };
-    const lines = 174;
     const inLineStyles = {
       drawer: {
         container: {
@@ -257,10 +254,6 @@ class GuestInviteDrawer extends Component {
       },
     };
 
-    const emailText = `Hey there,%0D%0A%0D%0AUse this tool to let me know your availablility for ${event.name}:
-    %0D%0A%0D%0A${fullUrl}
-    %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
-
     return (
       <Drawer
         docked={false}
@@ -274,7 +267,7 @@ class GuestInviteDrawer extends Component {
         <TextField
           id="fullUrl"
           styleName="textUrl"
-          value={fullUrl}
+          value={fullUrl(event)}
           underlineShow={false}
           fullWidth
           label="Full Url"
@@ -294,7 +287,7 @@ class GuestInviteDrawer extends Component {
             label="Send Email Invite"
             primary
             onClick={ev => this.handleSendEmail(ev)}
-            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
+            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
           />
         </div>
         <Divider styleName="Divider" />
@@ -311,7 +304,7 @@ class GuestInviteDrawer extends Component {
             inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
           />
         </div>
-        <Infinite elementHeight={58} containerHeight={lines}>
+        <Infinite elementHeight={58} containerHeight={174}>
           {this.renderRows()}
         </Infinite>
         <RaisedButton
