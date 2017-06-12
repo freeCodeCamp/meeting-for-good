@@ -213,10 +213,33 @@ class GuestInviteDrawer extends Component {
     return rows;
   }
 
+  renderActions() {
+    const { event } = this.state;
+    const { emailText } = this.constructor;
+    return (
+      <div styleName="Row">
+        <RaisedButton
+          styleName="copyAndEmailButton"
+          className="cpBtn"
+          primary
+          onTouchTap={this.handleCopyButtonClick}
+          label="Copy Link"
+        />
+        <RaisedButton
+          styleName="copyAndEmailButton"
+          label="Send Email Invite"
+          primary
+          onClick={ev => this.handleSendEmail(ev)}
+          href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
+        />
+      </div>
+    );
+  }
+
   render() {
     const { open, event, snackbarOpen, searchText, snackbarMsg,
       linearProgressVisible } = this.state;
-    const { fullUrl, emailText } = this.constructor;
+    const { fullUrl } = this.constructor;
     const focusUrlTextField = (input) => {
       if (input) {
         if (this.state.setFocusFullUrl) {
@@ -274,22 +297,7 @@ class GuestInviteDrawer extends Component {
           ref={focusUrlTextField}
           aria-label="Full Url"
         />
-        <div styleName="Row">
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            className="cpBtn"
-            primary
-            onTouchTap={this.handleCopyButtonClick}
-            label="Copy Link"
-          />
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            label="Send Email Invite"
-            primary
-            onClick={ev => this.handleSendEmail(ev)}
-            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
-          />
-        </div>
+        {this.renderActions()}
         <Divider styleName="Divider" />
         <h6 styleName="inviteEventText">Recent Guests</h6>
         <div styleName="Row">
