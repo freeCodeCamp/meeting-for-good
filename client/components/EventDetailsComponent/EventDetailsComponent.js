@@ -10,6 +10,7 @@ import AvailabilityGrid from '../AvailabilityGrid/AvailabilityGrid';
 import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
+import SelectedDatesEditor from '../../components/SelectedDatesEditor/SelectedDatesEditor';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -79,7 +80,11 @@ class EventDetailsComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ event: nextProps.event });
+    const dates = nextProps.event.dates.map(({ fromDate, toDate }) => ({
+      fromDate: new Date(fromDate),
+      toDate: new Date(toDate),
+    }));
+    this.setState({ event: nextProps.event, dates });
   }
 
   async sendEmailOwner(event) {
@@ -109,6 +114,17 @@ class EventDetailsComponent extends React.Component {
   @autobind
   editAvail() {
     this.setState({ showHeatmap: false, showButtonAviability: 'none', showAvailabilityGrid: 'block' });
+  }
+
+  @autobind
+  async submitEditDates(patches) {
+    const { event } = this.props;
+    try {
+      const responseEvent = await this.props.cbEditEvent(patches, event._id);
+      this.setState({ event: responseEvent });
+    } catch (err) {
+      console.log('err at submitEditDates, EventDtailComponent', err);
+    }
   }
 
   @autobind
@@ -156,6 +172,7 @@ class EventDetailsComponent extends React.Component {
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const nEvent = await this.props.cbDeleteGuest(guestToDelete);
+    console.log('nEvent', nEvent);
     this.setState({ event: nEvent });
     return nEvent;
   }
@@ -206,6 +223,11 @@ class EventDetailsComponent extends React.Component {
             <CardTitle styleName="cardTitle">{event.name}</CardTitle>
             <CardText>
               <BestTimesDisplay event={event} disablePicker />
+              {isOwner ?
+                <SelectedDatesEditor
+                  event={event}
+                  submitDates={this.submitEditDates}
+                /> : null}
               <AvailabilityGrid
                 event={event}
                 curUser={curUser}
