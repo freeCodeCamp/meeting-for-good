@@ -35,61 +35,39 @@ const sendEmail = (message) => {
   return transporter.sendMail(message);
 };
 
-const ownerNotification = (req, res) => {
-  const message = req.body;
+const emailTemplateSender = (template, message, res) => {
+  const templateDir = path.join(__dirname, 'templates', template);
+  const emailTemplate = new EmailTemplate(templateDir);
   message.from = process.env.emailFrom;
-  const templateDir = path.join(__dirname, 'templates', 'ownerNotification');
-  const template = new EmailTemplate(templateDir);
-  template.render(message, (err, result) => {
+  emailTemplate.render(message, (err, result) => {
     if (err) {
-      console.log('err at render of ownerNotification', err);
+      console.log(`err at emailSender for template ${template}`, err);
       return err;
     }
-    message.subject = 'Meeting for Good Invite Accepeted';
     message.text = result.text;
     message.html = result.html;
     return sendEmail(message)
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+      .then(respondWithResult(res))
+      .catch(handleError(res));
   });
+};
+
+const ownerNotification = (req, res) => {
+  const message = req.body;
+  message.subject = 'Meeting for Good Invite accepted';
+  emailTemplateSender('ownerNotification', message, res);
 };
 
 const sendInvite = (req, res) => {
   const message = req.body;
-  message.from = process.env.emailFrom;
-  const templateDir = path.join(__dirname, 'templates', 'inviteGuests');
-  const template = new EmailTemplate(templateDir);
-  template.render(message, (err, result) => {
-    if (err) {
-      console.log('err at render of sendInvite', err);
-      return err;
-    }
-    message.subject = `Meeting for Good Invite from ${message.eventOwnerName}`;
-    message.text = result.text;
-    message.html = result.html;
-    return sendEmail(message)
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  });
+  message.subject = `Meeting for Good Invite from ${message.eventOwnerName}`;
+  emailTemplateSender('inviteGuests', message, res);
 };
 
 const ownerNotificationForEdit = (req, res) => {
   const message = req.body;
-  message.from = process.env.emailFrom;
-  const templateDir = path.join(__dirname, 'templates', 'editAvailability');
-  const template = new EmailTemplate(templateDir);
-  template.render(message, (err, result) => {
-    if (err) {
-      console.log('err at render of ownerNotificationForEdit', err);
-      return err;
-    }
-    message.subject = 'Meeting for Good Availability Change';
-    message.text = result.text;
-    message.html = result.html;
-    return sendEmail(message)
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  });
+  message.subject = 'Meeting for Good Availability Change';
+  emailTemplateSender('editAvailability', message, res);
 };
 
 export { ownerNotification, sendInvite, ownerNotificationForEdit };
