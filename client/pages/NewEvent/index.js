@@ -19,6 +19,17 @@ import dateRangeReducer from '../../util/dates.utils';
 import styles from './new-event.css';
 
 class NewEvent extends React.Component {
+  static removeRange = (ranges, range) => {
+    const newRange = ranges.filter(r => !_.isEqual(r, range));
+    if (newRange.length === 0) {
+      return [{
+        from: null,
+        to: null,
+      }];
+    }
+    return newRange;
+  };
+
   constructor() {
     super();
     this.state = {
@@ -60,25 +71,14 @@ class NewEvent extends React.Component {
     }
   }
 
-    @autobind
+  @autobind
   handleDayClick(day, { disabled }) {
     if (disabled) return;
-
-    const removeRange = (ranges, range) => {
-      const newRange = ranges.filter(r => !_.isEqual(r, range));
-      if (newRange.length === 0) {
-        return [{
-          from: null,
-          to: null,
-        }];
-      }
-      return newRange;
-    };
-
+    const { removeRange } = this.constructor;
     // Deep copy this.state.ranges to ranges
     let ranges = _.cloneDeep(this.state.ranges);
-
     let found = false;
+
     for (let i = 0; i < ranges.length; i += 1) {
       const range = ranges[i];
       if (DateUtils.isDayInRange(day, range)) {
@@ -87,14 +87,12 @@ class NewEvent extends React.Component {
         break;
       }
     }
-
     if (!found) {
       if (ranges.length > 0 && !ranges[0].from) {
         ranges = [];
       }
       ranges.push({ from: day, to: day });
     }
-
     this.setState({ ranges }, () => this.toggleSubmitDisabled());
   }
 
@@ -133,8 +131,8 @@ class NewEvent extends React.Component {
       }
 
       return {
-        fromDate: moment(from).set('h', fromHours).set('m', fromMinutes).startOf('minute')._d,
-        toDate: moment(to).set('h', toHours).set('m', toMinutes).startOf('minute')._d,
+        fromDate: moment(from).hour(fromHours).minute(fromMinutes).startOf('minute')._d,
+        toDate: moment(to).hour(toHours).minute(toMinutes).startOf('minute')._d,
       };
     });
 
@@ -160,9 +158,7 @@ class NewEvent extends React.Component {
 
   render() {
     const {
-      ranges,
-      eventName, selectedTimeRange,
-      disableSubmit } = this.state;
+      ranges, eventName, selectedTimeRange, disableSubmit } = this.state;
 
     const inLineStyles = {
       card: {
