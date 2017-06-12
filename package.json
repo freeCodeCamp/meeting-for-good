@@ -12,7 +12,8 @@
     "start": " node ./build/app.js",
     "copy": "node tools/copy.js",
     "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
-    "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js"
+    "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
