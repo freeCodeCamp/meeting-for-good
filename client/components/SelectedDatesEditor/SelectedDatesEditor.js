@@ -185,6 +185,15 @@ class SelectedDatesEditor extends Component {
     this.setState({ selectedDates });
   }
 
+  @autobind
+  handleSaveDates() {
+    const { selectedDates } = this.state;
+    if (selectedDates.length === 0) {
+      this.setState({ dialogMinimumDateOpen: true });
+    } else {
+      this.setState({ dialogOpen: false, dialogWarningOpen: true });
+    }
+  }
 
   renderDialogWarning() {
     const { dialogWarningOpen } = this.state;
@@ -263,12 +272,7 @@ class SelectedDatesEditor extends Component {
       <FlatButton
         label="Cancel"
         primary
-        onTouchTap={() => this.setState({ dialogWarningOpen: false })}
-      />,
-      <FlatButton
-        label="save"
-        secondary
-        onTouchTap={this.handleEditEventDates}
+        onTouchTap={() => this.setState({ dialogMinimumDateOpen: false })}
       />,
     ];
     return (
@@ -283,7 +287,7 @@ class SelectedDatesEditor extends Component {
         <p>
           {'You need at least one date.'}
         </p>
-        
+
       </Dialog>
     );
   }
@@ -301,7 +305,7 @@ class SelectedDatesEditor extends Component {
         content: {
           width: '290px',
           maxWidth: '290px',
-          minWidth: '290px'
+          minWidth: '290px',
         },
         bodyStyle: {
           paddingTop: 10,
@@ -318,7 +322,7 @@ class SelectedDatesEditor extends Component {
       <FlatButton
         label="save"
         secondary
-        onTouchTap={() => this.setState({ dialogOpen: false, dialogWarningOpen: true })}
+        onTouchTap={this.handleSaveDates}
       />,
     ];
     const { dialogOpen, selectedDates } = this.state;
@@ -344,6 +348,7 @@ class SelectedDatesEditor extends Component {
           />
         </Dialog>
         {this.renderDialogWarning()}
+        {this.renderDialogMinimumDate()}
       </div>
     );
   }
