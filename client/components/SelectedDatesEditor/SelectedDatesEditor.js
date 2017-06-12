@@ -27,7 +27,9 @@ class SelectedDatesEditor extends Component {
       }
     },
     );
+    // only push availability on range
     event.dates.forEach((date) => {
+      console.log('date', date);
       const rangeDates = moment.range(moment(date.fromDate), moment(date.toDate));
       event.participants.forEach((participant, index) => {
         participant.availability.forEach((avail) => {
@@ -89,7 +91,10 @@ class SelectedDatesEditor extends Component {
         }
       });
       allRanges.push(rangeToCompare);
+    } else {
+      return [{ fromDate: initialDate._d, toDate: finalDate._d }];
     }
+
     return allRanges.map(range => ({ fromDate: range.start._d, toDate: range.end._d }));
   }
 
@@ -189,7 +194,6 @@ class SelectedDatesEditor extends Component {
   @autobind
   handleSaveDates() {
     const { selectedDates } = this.state;
-    console.log(selectedDates, selectedDates.length);
     if (selectedDates.length > 0) {
       this.setState({ dialogOpen: false, dialogWarningOpen: true });
     } else {
