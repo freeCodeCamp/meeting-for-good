@@ -10,7 +10,6 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
-import Snackbar from 'material-ui/Snackbar';
 import InputRange from 'react-input-range';
 import PropTypes from 'prop-types';
 
@@ -37,8 +36,6 @@ class NewEvent extends React.Component {
       selectedTimeRange: [9, 17],
       disableSubmit: true,
       curUser: {},
-      snackBarOpen: false,
-      snackBarMsg: '',
       value4: {
         min: 5,
         max: 10,
@@ -171,8 +168,7 @@ class NewEvent extends React.Component {
     const {
       ranges,
       eventName, selectedTimeRange,
-      disableSubmit,
-      snackBarOpen, snackBarMsg } = this.state;
+      disableSubmit } = this.state;
 
     const inLineStyles = {
       card: {
@@ -184,15 +180,6 @@ class NewEvent extends React.Component {
           floatingLabelFocusStyle: {
             color: '#26A69A',
           },
-        },
-      },
-      snackBar: {
-        border: '5px solid #fffae6',
-        contentSyle: {
-          fontSize: '20px',
-          width: '360px',
-          lineHeight: '30px',
-          textAlign: 'center',
         },
       },
     };
@@ -275,17 +262,6 @@ class NewEvent extends React.Component {
             </form>
           </CardText>
         </Card>
-        <Snackbar
-          style={inLineStyles.snackBar}
-          bodyStyle={{ height: 'flex' }}
-          contentStyle={inLineStyles.snackBar.contentSyle}
-          open={snackBarOpen}
-          message={snackBarMsg}
-          action="dismiss"
-          autoHideDuration={10000}
-          onRequestClose={this.handleSnackBarRequestClose}
-          onActionTouchTap={this.handleSnackBarRequestClose}
-        />
       </div>
     );
   }
