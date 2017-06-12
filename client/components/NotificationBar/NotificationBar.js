@@ -107,10 +107,7 @@ class NotificationBar extends Component {
         if (event.owner.toString() === curUser._id) {
           event.participants.forEach((participant) => {
             if (participant.userId._id !== curUser._id && participant.status > 1) {
-              let bkgColor = '#ffffff';
-              if (!participant.ownerNotified) {
-                bkgColor = '#EEEEFF';
-              }
+              const bkgColor = (!participant.ownerNotified) ? '#EEEEFF' : '#ffffff';
               const row = (
                 <MenuItem
                   key={`${participant._id} first`}
