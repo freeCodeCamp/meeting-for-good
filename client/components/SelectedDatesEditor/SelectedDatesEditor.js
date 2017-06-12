@@ -197,8 +197,9 @@ class SelectedDatesEditor extends Component {
           paddingTop: 6,
         },
         content: {
-          width: '22%',
-          maxWidth: '22%',
+          width: '380px',
+          maxWidth: '380px',
+          minWidth: '380px',
         },
         bodyStyle: {
           paddingTop: 10,
@@ -227,10 +228,10 @@ class SelectedDatesEditor extends Component {
         bodyStyle={inlineStyles.modal.bodyStyle}
       >
         <p>
-          {'Perhaps you are deleting some existing availabilities..'}
+          {'Perhaps you are deleting some existing availabilities.'}
         </p>
         <p>
-          {'Are you sure you want to edit this/these dates?” ?'}
+          {'Are you sure you want to edit this/these dates? '}
         </p>
       </Dialog>
     );
@@ -247,8 +248,9 @@ class SelectedDatesEditor extends Component {
           paddingTop: 6,
         },
         content: {
-          width: '17%',
-          maxWidth: '17%',
+          width: '290px',
+          maxWidth: '290px',
+          minWidth: '290px'
         },
         bodyStyle: {
           paddingTop: 10,
