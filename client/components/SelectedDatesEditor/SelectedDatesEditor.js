@@ -99,6 +99,7 @@ class SelectedDatesEditor extends Component {
     this.state = {
       dialogOpen: false,
       dialogWarningOpen: false,
+      dialogMinimumDateOpen: false,
       event,
       selectedDates: [],
     };
@@ -233,6 +234,56 @@ class SelectedDatesEditor extends Component {
         <p>
           {'Are you sure you want to edit this/these dates? '}
         </p>
+      </Dialog>
+    );
+  }
+
+  renderDialogMinimumDate() {
+    const { dialogMinimumDateOpen } = this.state;
+    const inlineStyles = {
+      modal: {
+        title: {
+          backgroundColor: 'red',
+          color: '#ffffff',
+          fontSize: '25px',
+          height: '25px',
+          paddingTop: 6,
+        },
+        content: {
+          width: '380px',
+          maxWidth: '380px',
+          minWidth: '380px',
+        },
+        bodyStyle: {
+          paddingTop: 10,
+        },
+      },
+    };
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onTouchTap={() => this.setState({ dialogWarningOpen: false })}
+      />,
+      <FlatButton
+        label="save"
+        secondary
+        onTouchTap={this.handleEditEventDates}
+      />,
+    ];
+    return (
+      <Dialog
+        title="Warning"
+        open={dialogMinimumDateOpen}
+        actions={actions}
+        titleStyle={inlineStyles.modal.title}
+        contentStyle={inlineStyles.modal.content}
+        bodyStyle={inlineStyles.modal.bodyStyle}
+      >
+        <p>
+          {'You need at least one date.'}
+        </p>
+        
       </Dialog>
     );
   }
