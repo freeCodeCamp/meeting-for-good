@@ -227,10 +227,10 @@ class SelectedDatesEditor extends Component {
         bodyStyle={inlineStyles.modal.bodyStyle}
       >
         <p>
-          {'Maybe you delete some existing availabilitys.'}
+          {'Perhaps you are deleting some existing availabilities..'}
         </p>
         <p>
-          {'Are you sure you want edit this dates ?'}
+          {'Are you sure you want to edit this/these dates?” ?'}
         </p>
       </Dialog>
     );
