@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/jrogatis/meeting-for-good.svg?branch=master)](https://travis-ci.org/jrogatis/meeting-for-good)
 # Meeting for Good
 A meeting coordination app for your team.
 
