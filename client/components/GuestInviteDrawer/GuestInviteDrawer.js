@@ -213,33 +213,9 @@ class GuestInviteDrawer extends Component {
     return rows;
   }
 
-  renderActions() {
+  renderUrlActions() {
     const { event } = this.state;
-    const { emailText } = this.constructor;
-    return (
-      <div styleName="Row">
-        <RaisedButton
-          styleName="copyAndEmailButton"
-          className="cpBtn"
-          primary
-          onTouchTap={this.handleCopyButtonClick}
-          label="Copy Link"
-        />
-        <RaisedButton
-          styleName="copyAndEmailButton"
-          label="Send Email Invite"
-          primary
-          onClick={ev => this.handleSendEmail(ev)}
-          href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
-        />
-      </div>
-    );
-  }
-
-  render() {
-    const { open, event, snackbarOpen, searchText, snackbarMsg,
-      linearProgressVisible } = this.state;
-    const { fullUrl } = this.constructor;
+    const { emailText, fullUrl } = this.constructor;
     const focusUrlTextField = (input) => {
       if (input) {
         if (this.state.setFocusFullUrl) {
@@ -248,6 +224,41 @@ class GuestInviteDrawer extends Component {
         }
       }
     };
+    return (
+      <div>
+        <TextField
+          id="fullUrl"
+          styleName="textUrl"
+          value={fullUrl(event)}
+          underlineShow={false}
+          fullWidth
+          label="Full Url"
+          ref={focusUrlTextField}
+          aria-label="Full Url"
+        />
+        <div styleName="Row">
+          <RaisedButton
+            styleName="copyAndEmailButton"
+            className="cpBtn"
+            primary
+            onTouchTap={this.handleCopyButtonClick}
+            label="Copy Link"
+          />
+          <RaisedButton
+            styleName="copyAndEmailButton"
+            label="Send Email Invite"
+            primary
+            onClick={ev => this.handleSendEmail(ev)}
+            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { open, event, snackbarOpen, searchText, snackbarMsg,
+      linearProgressVisible } = this.state;
     const inLineStyles = {
       drawer: {
         container: {
@@ -287,17 +298,7 @@ class GuestInviteDrawer extends Component {
       >
         <LinearProgress style={inLineStyles.drawer.linearProgress} />
         <h3 styleName="header"> {event.name} </h3>
-        <TextField
-          id="fullUrl"
-          styleName="textUrl"
-          value={fullUrl(event)}
-          underlineShow={false}
-          fullWidth
-          label="Full Url"
-          ref={focusUrlTextField}
-          aria-label="Full Url"
-        />
-        {this.renderActions()}
+        {this.renderUrlActions()}
         <Divider styleName="Divider" />
         <h6 styleName="inviteEventText">Recent Guests</h6>
         <div styleName="Row">
