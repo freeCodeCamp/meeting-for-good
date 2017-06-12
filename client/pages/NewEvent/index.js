@@ -23,14 +23,8 @@ class NewEvent extends React.Component {
     super();
     this.state = {
       ranges: [{
-        from: moment()
-          .hour(0)
-          .minute(0)
-          .second(0)._d,
-        to: moment()
-          .hour(0)
-          .minute(0)
-          .second(0)._d,
+        from: moment().startOf('date')._d,
+        to: moment().startOf('date')._d,
       }],
       eventName: '',
       selectedTimeRange: [9, 17],
