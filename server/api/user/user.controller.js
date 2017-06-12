@@ -150,11 +150,10 @@ export const relatedUsers = (req, res) => {
       events.forEach((event) => {
         event.participants.forEach((participant) => {
           const participantId = participant.userId._id.toString();
-          if (participantId !== curUserId) {
-            if (listIds.indexOf(participantId) === -1) {
-              listIds.push(participantId);
-              guests.push(participant);
-            }
+          // if is not the current participant and its not pushed yet
+          if (participantId !== curUserId && listIds.indexOf(participantId) === -1) {
+            listIds.push(participantId);
+            guests.push(participant);
           }
         });
       });

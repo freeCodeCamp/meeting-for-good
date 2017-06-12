@@ -27,6 +27,16 @@ class GuestInviteDrawer extends Component {
     browserHistory.push(`/event/${id}`);
   }
 
+  static fullUrl(event) {
+    return `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
+  }
+
+  static emailText(event) {
+    return `Hey there,%0D%0A%0D%0AUse this tool to let me know your availablility for ${event.name}:
+    %0D%0A%0D%0A${GuestInviteDrawer.fullUrl(event)}
+    %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -203,31 +213,52 @@ class GuestInviteDrawer extends Component {
     return rows;
   }
 
-  render() {
-    const {
-      open,
-      event,
-      snackbarOpen,
-      searchText,
-      snackbarMsg,
-      linearProgressVisible,
-    } = this.state;
-
-    const fullUrl = `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-
+  renderUrlActions() {
+    const { event } = this.state;
+    const { emailText, fullUrl } = this.constructor;
     const focusUrlTextField = (input) => {
       if (input) {
         if (this.state.setFocusFullUrl) {
           this.setState({ setFocusFullUrl: false });
-          setTimeout(() => {
-            input.focus();
-            input.select();
-          }
-            , 100);
+          setTimeout(() => { input.focus(); input.select(); }, 100);
         }
       }
     };
-    const lines = 174;
+    return (
+      <div>
+        <TextField
+          id="fullUrl"
+          styleName="textUrl"
+          value={fullUrl(event)}
+          underlineShow={false}
+          fullWidth
+          label="Full Url"
+          ref={focusUrlTextField}
+          aria-label="Full Url"
+        />
+        <div styleName="Row">
+          <RaisedButton
+            styleName="copyAndEmailButton"
+            className="cpBtn"
+            primary
+            onTouchTap={this.handleCopyButtonClick}
+            label="Copy Link"
+          />
+          <RaisedButton
+            styleName="copyAndEmailButton"
+            label="Send Email Invite"
+            primary
+            onClick={ev => this.handleSendEmail(ev)}
+            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { open, event, snackbarOpen, searchText, snackbarMsg,
+      linearProgressVisible } = this.state;
     const inLineStyles = {
       drawer: {
         container: {
@@ -257,10 +288,6 @@ class GuestInviteDrawer extends Component {
       },
     };
 
-    const emailText = `Hey there,%0D%0A%0D%0AUse this tool to let me know your availablility for ${event.name}:
-    %0D%0A%0D%0A${fullUrl}
-    %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
-
     return (
       <Drawer
         docked={false}
@@ -271,32 +298,7 @@ class GuestInviteDrawer extends Component {
       >
         <LinearProgress style={inLineStyles.drawer.linearProgress} />
         <h3 styleName="header"> {event.name} </h3>
-        <TextField
-          id="fullUrl"
-          styleName="textUrl"
-          value={fullUrl}
-          underlineShow={false}
-          fullWidth
-          label="Full Url"
-          ref={focusUrlTextField}
-          aria-label="Full Url"
-        />
-        <div styleName="Row">
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            className="cpBtn"
-            primary
-            onTouchTap={this.handleCopyButtonClick}
-            label="Copy Link"
-          />
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            label="Send Email Invite"
-            primary
-            onClick={ev => this.handleSendEmail(ev)}
-            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText}`}
-          />
-        </div>
+        {this.renderUrlActions()}
         <Divider styleName="Divider" />
         <h6 styleName="inviteEventText">Recent Guests</h6>
         <div styleName="Row">
@@ -311,7 +313,7 @@ class GuestInviteDrawer extends Component {
             inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
           />
         </div>
-        <Infinite elementHeight={58} containerHeight={lines}>
+        <Infinite elementHeight={58} containerHeight={174}>
           {this.renderRows()}
         </Infinite>
         <RaisedButton

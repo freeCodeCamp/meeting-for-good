@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jrogatis/meeting-for-good.svg?branch=master)](https://travis-ci.org/jrogatis/meeting-for-good)
+[![codebeat badge](https://codebeat.co/badges/6f1e024c-3e83-4137-b8ae-b34dd088c309)](https://codebeat.co/projects/github-com-jrogatis-meeting-for-good-development-70f431f9-1e70-4bab-8318-0d348bab0998)
 # Meeting for Good
 A meeting coordination app for your team.
 
