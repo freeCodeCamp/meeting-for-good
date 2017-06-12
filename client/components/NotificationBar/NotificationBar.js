@@ -99,38 +99,34 @@ class NotificationBar extends Component {
 
   renderMenuRows() {
     const { events, curUser } = this.state;
+    if (!events) {
+      return;
+    }
     const { handleEventLinkClick } = this.constructor;
     const rows = [];
-
-    if (events) {
-      events.forEach((event) => {
-        if (event.owner.toString() === curUser._id) {
-          event.participants.forEach((participant) => {
-            if (participant.userId._id !== curUser._id && participant.status > 1) {
-              let bkgColor = '#ffffff';
-              if (!participant.ownerNotified) {
-                bkgColor = '#EEEEFF';
-              }
-              const row = (
-                <MenuItem
-                  key={`${participant._id} first`}
-                  value={participant._id}
-                  style={{ backgroundColor: bkgColor }}
-                  styleName="menuItem"
-                >
-                  {participant.userId.name} <span>accepted your invitation for &#32;</span>
-                  <a
-                    onTouchTap={() => handleEventLinkClick(event._id)}
-                    styleName="eventLink"
-                  >{event.name}</a>.
-              </MenuItem>
-              );
-              rows.push(row);
-            }
-          });
+    const filtEvent = events.filter(event => event.owner.toString() === curUser._id);
+    filtEvent.forEach((event) => {
+      event.participants.forEach((participant) => {
+        if (participant.userId._id !== curUser._id && participant.status > 1) {
+          const bkgColor = (!participant.ownerNotified) ? '#EEEEFF' : '#ffffff';
+          const row = (
+            <MenuItem
+              key={`${participant._id} first`}
+              value={participant._id}
+              style={{ backgroundColor: bkgColor }}
+              styleName="menuItem"
+            >
+              {participant.userId.name} <span>accepted your invitation for &#32;</span>
+              <a
+                onTouchTap={() => handleEventLinkClick(event._id)}
+                styleName="eventLink"
+              >{event.name}</a>.
+          </MenuItem>
+          );
+          rows.push(row);
         }
       });
-    }
+    });
     return rows;
   }
 
