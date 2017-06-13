@@ -256,8 +256,35 @@ class GuestInviteDrawer extends Component {
     );
   }
 
+  renderSnackBar() {
+    const { snackbarOpen, snackbarMsg } = this.state;
+    const inLineStyles = {
+      snackbar: {
+        bodyStyle: {
+          height: 'flex',
+        },
+        contentStyle: {
+          borderBottom: '0.2px solid',
+        },
+      },
+    };
+    return (
+      <Snackbar
+        styleName="Snackbar"
+        bodyStyle={inLineStyles.snackbar.bodyStyle}
+        contentStyle={inLineStyles.snackbar.contentStyle}
+        open={snackbarOpen}
+        message={snackbarMsg}
+        action="Dismiss"
+        autoHideDuration={3000}
+        onActionTouchTap={this.handleSnackbarRequestClose}
+        onRequestClose={this.handleSnackbarRequestClose}
+      />
+    );
+  }
+
   render() {
-    const { open, event, snackbarOpen, searchText, snackbarMsg,
+    const { open, event, searchText,
       linearProgressVisible } = this.state;
     const inLineStyles = {
       drawer: {
@@ -273,14 +300,6 @@ class GuestInviteDrawer extends Component {
         },
         inviteButton: {
           paddingTop: '15px',
-        },
-        snackbar: {
-          bodyStyle: {
-            height: 'flex',
-          },
-          contentStyle: {
-            borderBottom: '0.2px solid',
-          },
         },
         linearProgress: {
           visibility: linearProgressVisible,
@@ -323,17 +342,7 @@ class GuestInviteDrawer extends Component {
           fullWidth
           primary
         />
-        <Snackbar
-          styleName="Snackbar"
-          bodyStyle={inLineStyles.drawer.snackbar.bodyStyle}
-          contentStyle={inLineStyles.drawer.snackbar.contentStyle}
-          open={snackbarOpen}
-          message={snackbarMsg}
-          action="Dismiss"
-          autoHideDuration={3000}
-          onActionTouchTap={this.handleSnackbarRequestClose}
-          onRequestClose={this.handleSnackbarRequestClose}
-        />
+        {this.renderSnackBar()}
       </Drawer>
     );
   }
