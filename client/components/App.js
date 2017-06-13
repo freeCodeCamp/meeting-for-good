@@ -335,8 +335,7 @@ class App extends Component {
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
         if (child.type.displayName === 'Dashboard') {
-          return cloneElement(child, {
-            showPastEvents,
+          return cloneElement(child, { showPastEvents,
             curUser,
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
@@ -365,18 +364,14 @@ class App extends Component {
           });
         }
         if (child.type.displayName === 'NewEvent') {
-          return cloneElement(child, {
-            curUser,
+          return cloneElement(child, { curUser,
             isAuthenticated,
             cbOpenLoginModal: this.handleOpenLoginModal,
             cbNewEvent: this.handleNewEvent,
           });
         }
-        return cloneElement(child, {
-          curUser,
-          isAuthenticated,
-          cbOpenLoginModal: this.handleOpenLoginModal,
-        });
+        return cloneElement(child,
+          { curUser, isAuthenticated, cbOpenLoginModal: this.handleOpenLoginModal });
       });
 
     return (
