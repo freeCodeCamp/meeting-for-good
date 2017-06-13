@@ -311,8 +311,37 @@ class AvailabilityGrid extends Component {
     );
   }
 
+  renderActionButtons() {
+    const { showHeatmap } = this.state;
+    return (
+      <div styleName="actionButtonsWrapper">
+        {showHeatmap ?
+          <RaisedButton
+            primary
+            label="Edit Availability"
+            onClick={this.props.editAvail}
+          />
+          :
+          <div>
+            <RaisedButton
+              primary
+              label="Submit"
+              onClick={this.submitAvailability}
+            />
+            <RaisedButton
+              primary
+              label="Cancel"
+              styleName="cancelButton"
+              onClick={this.handleCancelBtnClick}
+            />
+          </div>
+        }
+      </div>
+    );
+  }
+
   render() {
-    const { snackBarGuests, snackBarNoGuests, openSnackBar, showHeatmap } = this.state;
+    const { snackBarGuests, snackBarNoGuests, openSnackBar } = this.state;
     return (
       <div styleName="column">
         <div styleName="row">
@@ -335,29 +364,7 @@ class AvailabilityGrid extends Component {
           </p>
         </div>
         <br />
-        <div styleName="actionButtonsWrapper">
-          {showHeatmap ?
-            <RaisedButton
-              primary
-              label="Edit Availability"
-              onClick={this.props.editAvail}
-            />
-            :
-            <div>
-              <RaisedButton
-                primary
-                label="Submit"
-                onClick={this.submitAvailability}
-              />
-              <RaisedButton
-                primary
-                label="Cancel"
-                styleName="cancelButton"
-                onClick={this.handleCancelBtnClick}
-              />
-            </div>
-          }
-        </div>
+        {this.renderActionButtons()}
         <SnackBarGrid
           guests={snackBarGuests}
           noGuests={snackBarNoGuests}
