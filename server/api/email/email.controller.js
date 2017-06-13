@@ -29,8 +29,8 @@ const handleError = (res, statusCode) => {
 
 const sendEmail = (message) => {
   const transporter = nodemailer.createTransport(sesTransport({
-    accessKeyId: process.env.AWSAccessKeyID,
-    secretAccessKey: process.env.AWSSecretKey,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
   }));
   return transporter.sendMail(message);
 };
@@ -38,7 +38,7 @@ const sendEmail = (message) => {
 const emailTemplateSender = (template, message, res) => {
   const templateDir = path.join(__dirname, 'templates', template);
   const emailTemplate = new EmailTemplate(templateDir);
-  message.from = process.env.emailFrom;
+  message.from = process.env.EMAIL_FROM;
   emailTemplate.render(message, (err, result) => {
     if (err) {
       console.log(`err at emailSender for template ${template}`, err);

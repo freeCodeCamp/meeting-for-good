@@ -8,8 +8,8 @@ import Home from './pages/home/';
 require('es6-promise').polyfill();
 
 // google analytics loader
-ReactGA.initialize(process.env.GoogleAnalyticsID, {
-  debug: process.env.GoogleAnalyticsDebug === 'true',
+ReactGA.initialize(process.env.GOOGLE_ANALYTICS_ID, {
+  debug: process.env.GOOGLE_ANALYTICS_DEBUG === 'true',
   titleCase: false,
 });
 
