@@ -313,38 +313,12 @@ class App extends Component {
   renderNotifications() {
     const style = {
       NotificationItem: { // Override the notification item
-        DefaultStyle: { // Applied to every notification, regardless of the notification level
-          margin: '10px 5px 2px 1px',
-          fontSize: '15px',
-        },
-        success: { // Applied only to the success notification item
-          backgroundColor: 'white',
-          color: '#006400',
-          borderTop: '4px solid #006400',
-        },
-        error: {
-          backgroundColor: 'white',
-          color: 'red',
-          borderTop: '2px solid red',
-        },
-        info: {
-          backgroundColor: 'white',
-          color: 'blue',
-          borderTop: '2px solid blue',
-        },
-        Containers: {
-          tr: {
-            top: '40px',
-            bottom: 'auto',
-            left: 'auto',
-            right: '0px',
-          },
-        },
-        Title: {
-          DefaultStyle: {
-            fontSize: '18px',
-            fontWeight: 'bold',
-          },
+        DefaultStyle: { margin: '10px 5px 2px 1px', fontSize: '15px' },
+        success: { backgroundColor: 'white', color: '#006400', borderTop: '4px solid #006400' },
+        error: { backgroundColor: 'white', color: 'red', borderTop: '2px solid red' },
+        info: { backgroundColor: 'white', color: 'blue', borderTop: '2px solid blue' },
+        Containers: { tr: { top: '40px', bottom: 'auto', left: 'auto', right: '0px' } },
+        Title: { DefaultStyle: { fontSize: '18px', fontWeight: 'bold' },
         },
       },
     };
