@@ -172,7 +172,6 @@ class EventDetailsComponent extends React.Component {
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const nEvent = await this.props.cbDeleteGuest(guestToDelete);
-    console.log('nEvent', nEvent);
     this.setState({ event: nEvent });
     return nEvent;
   }
