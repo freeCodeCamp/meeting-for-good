@@ -58,4 +58,4 @@ Type `npm run dev` to start the application in development mode. If all goes wel
 ------------
 ###Contributing
 
-We welcome pull requests from seasoned Javascript developers. Please read our[guide](CONTRIBUTING.md)  first, then check out our open issues.
+We welcome pull requests from seasoned Javascript developers. Please read our [guide](CONTRIBUTING.md)  first, then check out our open issues.
