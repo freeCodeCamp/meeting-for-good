@@ -310,17 +310,7 @@ class App extends Component {
     return events;
   }
 
-  render() {
-    const { location } = this.props;
-    const {
-      showPastEvents,
-      curUser,
-      openLoginModal,
-      isAuthenticated,
-      loginFail,
-      events,
-    } = this.state;
-
+  renderNotifications() {
     const style = {
       NotificationItem: { // Override the notification item
         DefaultStyle: { // Applied to every notification, regardless of the notification level
@@ -342,22 +332,31 @@ class App extends Component {
           color: 'blue',
           borderTop: '2px solid blue',
         },
-      },
-      Containers: {
-        tr: {
-          top: '40px',
-          bottom: 'auto',
-          left: 'auto',
-          right: '0px',
+        Containers: {
+          tr: {
+            top: '40px',
+            bottom: 'auto',
+            left: 'auto',
+            right: '0px',
+          },
         },
-      },
-      Title: {
-        DefaultStyle: {
-          fontSize: '18px',
-          fontWeight: 'bold',
+        Title: {
+          DefaultStyle: {
+            fontSize: '18px',
+            fontWeight: 'bold',
+          },
         },
       },
     };
+    return (
+      <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
+    );
+  }
+
+  render() {
+    const { location } = this.props;
+    const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail, events,
+    } = this.state;
 
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => {
@@ -408,7 +407,7 @@ class App extends Component {
 
     return (
       <div>
-        <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
+        {this.renderNotifications()}
         <LoginModal
           open={openLoginModal}
           logFail={loginFail}
