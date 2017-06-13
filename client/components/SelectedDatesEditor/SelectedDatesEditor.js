@@ -29,7 +29,6 @@ class SelectedDatesEditor extends Component {
     );
     // only push availability on range
     event.dates.forEach((date) => {
-      console.log('date', date);
       const rangeDates = moment.range(moment(date.fromDate), moment(date.toDate));
       event.participants.forEach((participant, index) => {
         participant.availability.forEach((avail) => {
