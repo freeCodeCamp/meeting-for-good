@@ -10,9 +10,16 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
-import chroma from 'chroma-js';
 
 import CellGrid from '../CellGrid/CellGrid';
+import {
+  createGridComplete,
+  editParticipantToCellGrid,
+  genHeatMapBackgroundColors,
+  createTimesRange,
+  createDatesRange,
+  availabilityReducer,
+} from '../AvailabilityGrid/availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
@@ -21,222 +28,6 @@ import styles from './availability-grid.css';
 const moment = extendMoment(Moment);
 
 class AvailabilityGrid extends Component {
-
-  static generateRange(num1, num2) {
-    let rangeStart;
-    let rangeEnd;
-    const range = [];
-
-    if (num1 > num2) {
-      rangeStart = num2;
-      rangeEnd = num1;
-    } else {
-      rangeStart = num1;
-      rangeEnd = num2;
-    }
-
-    for (let i = rangeStart; i <= rangeEnd; i += 1) {
-      range.push(i);
-    }
-
-    return range;
-  }
-
-  static rangeForAvailability(from, to) {
-    const datesRange = moment.range([moment(from).startOf('minute'), moment(to).startOf('minute')]);
-    const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
-    const quartersToAvail = [];
-    quartersFromDtRange.forEach(date => quartersToAvail.push([moment(date).unix()]));
-    return quartersToAvail;
-  }
-
-  static flattenedAvailability(event) {
-    const flattenedAvailability = {};
-    event.participants.forEach((participant) => {
-      const avail = participant.availability.map(avail =>
-        _.flatten(AvailabilityGrid.rangeForAvailability(avail[0], avail[1])));
-      flattenedAvailability[participant.userId._id] = _.flatten(avail);
-    });
-    return flattenedAvailability;
-  }
-
-  static createTimesRange(dates) {
-    // get the first to from dates from the dates range.
-    // so he has the hole hours ranges
-    const startDate = moment(dates[0].fromDate);
-    const endDate = moment(dates[0].toDate);
-    const hour = endDate.get('hour');
-    const minute = endDate.get('minute');
-    const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
-    let dateRange = moment.range(startDate, endDateToRange);
-    // if the end range hour is before the start hour then ajust the range for end at next day;
-    // so the range can be calculated correctly.
-    if (endDateToRange.hour() < startDate.hour()) {
-      dateRange = moment.range(startDate, moment(endDateToRange).add(1, 'days'));
-    }
-    const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
-    // correct the date value for each hour at the array since the
-    // range maybe create dates thats goes to the next day.
-    // but we whant all dates at the same day.
-    const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
-    timesRangeFinal.sort((a, b) => {
-      if (a.isBefore(b)) {
-        return -1;
-      }
-      return 1;
-    });
-    return timesRangeFinal;
-  }
-
-  static createDatesRange(dates) {
-    let datesRanges = dates.map((date) => {
-      const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
-      return Array.from(range.by('days', { step: 1 }));
-    });
-    datesRanges = _.flatten(datesRanges);
-    datesRanges.sort((a, b) => {
-      const x = a.clone().unix();
-      const y = b.clone().unix();
-      return x - y;
-    });
-    return datesRanges;
-  }
-
-  /**
-   *
-   * @param {array} allDates
-   * @param {array} allTimes
-   * @param {Object} event
-   */
-  static createGridComplete(allDates, allTimes, event) {
-    const grid = [];
-    const flattenedAvailability = AvailabilityGrid.flattenedAvailability(event);
-    allDates.forEach((date) => {
-      grid.push({
-        date,
-        quarters: allTimes.map((quarter) => {
-          const dateHourForCell = moment(date)
-            .hour(moment(quarter).hour())
-            .minute(moment(quarter).minute()).startOf('minute');
-          const guests = [];
-          const notGuests = [];
-          event.participants.forEach((participant) => {
-            const availForThatParticipant = flattenedAvailability[participant.userId._id];
-            const guest = {};
-            guest[participant.userId._id] = participant.userId.name;
-            if (availForThatParticipant.indexOf(dateHourForCell.unix()) > -1) {
-              guests.push(guest);
-            } else {
-              notGuests.push(guest);
-            }
-          });
-          return {
-            time: dateHourForCell.toDate(),
-            participants: guests,
-            notParticipants: notGuests,
-          };
-        }),
-      });
-    });
-    return grid;
-  }
-
-  static generateHeatMapBackgroundColors(participants) {
-    let quantOfParticipants = participants.filter(
-      participant => participant.availability.length > 0).length;
-    quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
-    if (quantOfParticipants < 3) {
-      return chroma.scale(['#AECDE0', '#8191CD']).colors(quantOfParticipants);
-    }
-    if (quantOfParticipants < 5) {
-      return chroma.scale(['#AECDE0', '#5456BA']).colors(quantOfParticipants);
-    }
-    return chroma.scale(['#AECDE0', '#3E38B1']).colors(quantOfParticipants);
-  }
-
-  /**
-   *
-   * @param {*} quarter
-   * @param {*} operation
-   * @param {*} cellRowIndex
-   * @param {*} cellColumnIndex
-   * @param {*} cellInitialRow
-   * @param {*} cellInitialColumn
-   * @param {*} curUser
-   * @param {*} grid
-   */
-  static editParticipantToCellGrid(
-    quarter, operation,
-    cellRowIndex,
-    cellColumnIndex,
-    cellInitialRow,
-    cellInitialColumn,
-    curUser, grid) {
-    const nGrid = _.cloneDeep(grid);
-    const rows = AvailabilityGrid.generateRange(cellInitialRow, cellRowIndex);
-    const columns = AvailabilityGrid.generateRange(cellInitialColumn, cellColumnIndex);
-
-    rows.forEach((row) => {
-      columns.forEach((cell) => {
-        const nQuarter = nGrid[row].quarters[cell];
-        const indexAtParticipant = _.findIndex(nQuarter.participants, curUser._id);
-        const indexAtNotParticipant = _.findIndex(nQuarter.notParticipants, curUser._id);
-        if (operation === 'add' && indexAtParticipant === -1) {
-          if (indexAtNotParticipant > -1) {
-            const temp = nQuarter.notParticipants.splice(indexAtNotParticipant, 1);
-            nQuarter.participants.push(temp[0]);
-          } else {
-            const temp = {};
-            temp[curUser._id] = curUser.name;
-            nQuarter.participants.push(temp);
-          }
-        }
-        if (operation === 'remove' && indexAtNotParticipant === -1) {
-          if (indexAtParticipant > -1) {
-            const temp = nQuarter.participants.splice(indexAtParticipant, 1);
-            nQuarter.notParticipants.push(temp[0]);
-          } else {
-            const temp = {};
-            temp[curUser._id] = curUser.name;
-            nQuarter.notParticipants.push(temp);
-          }
-        }
-      });
-    });
-    return nGrid;
-  }
-
-  static availabilityReducer(availability) {
-    // sort the array just to be sure
-    const availabilityToEdit = _.cloneDeep(availability);
-    availabilityToEdit.sort((a, b) => {
-      const x = moment(a[0]).clone().unix();
-      const y = moment(b[0]).clone().unix();
-      return x - y;
-    });
-    const availReduced = [];
-    let previousFrom = moment(availabilityToEdit[0][0]);
-    let previousTo = moment(availabilityToEdit[0][0]);
-
-    availabilityToEdit.forEach((quarter) => {
-      // if the old to is the same of the current from
-      // then is the same "range"
-      const curFrom = moment(quarter[0]);
-      const curTo = moment(quarter[1]);
-      if (previousTo.isSame(curFrom)) {
-        previousTo = curTo;
-      } else {
-        availReduced.push([previousFrom._d, previousTo._d]);
-        previousFrom = curFrom;
-        previousTo = curTo;
-      }
-    });
-    // at the and save the last [from to] sinse he dosen't have
-    // a pair to compare
-    const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
-    availReduced.push([previousFrom._d, to._d]);
-    return _.uniqWith(availReduced, _.isEqual);
-  }
 
   constructor(props) {
     super(props);
@@ -258,30 +49,22 @@ class AvailabilityGrid extends Component {
 
   componentWillMount() {
     const { event, dates, showHeatmap } = this.props;
-    const {
-      createGridComplete, generateHeatMapBackgroundColors,
-      createTimesRange, createDatesRange,
-    } = this.constructor;
 
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
-    const backgroundColors = generateHeatMapBackgroundColors(event.participants);
+    const backgroundColors = genHeatMapBackgroundColors(event.participants);
 
     this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, dates, showHeatmap } = nextProps;
-    const {
-      createGridComplete, generateHeatMapBackgroundColors,
-      createTimesRange, createDatesRange,
-    } = this.constructor;
 
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
-    const backgroundColors = generateHeatMapBackgroundColors(event.participants);
+    const backgroundColors = genHeatMapBackgroundColors(event.participants);
 
     this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
   }
@@ -290,7 +73,6 @@ class AvailabilityGrid extends Component {
   async submitAvailability() {
     const { curUser } = this.props;
     const { grid } = this.state;
-    const { availabilityReducer } = this.constructor;
     const availability = [];
     grid.forEach((row) => {
       row.quarters.forEach((quarter) => {
@@ -307,7 +89,7 @@ class AvailabilityGrid extends Component {
       const eventToEdit = await loadEventFull(this.state.event._id);
       const event = JSON.parse(JSON.stringify(eventToEdit));
       const observerEvent = jsonpatch.observe(event);
-      // fild for curUser at the array depends if is a participant
+      // find for curUser at the array depends if is a participant
       // yet or not
       let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
       // first check if cur exists as a participant
@@ -339,7 +121,6 @@ class AvailabilityGrid extends Component {
     ev.preventDefault();
     const { showHeatmap, grid } = this.state;
     const { curUser } = this.props;
-    const { editParticipantToCellGrid } = this.constructor;
     // is at showing heatMap then ignore click
     if (showHeatmap) {
       return;
@@ -359,10 +140,8 @@ class AvailabilityGrid extends Component {
   @autobind
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
-    const { showHeatmap, mouseDown, editOperation, cellInitialRow,
-      cellInitialColumn } = this.state;
+    const { showHeatmap, mouseDown, editOperation, cellInitialRow, cellInitialColumn } = this.state;
     const { curUser } = this.props;
-    const { editParticipantToCellGrid } = this.constructor;
     if (!showHeatmap) {
       if (mouseDown) {
         this.setState(oldState => ({
@@ -402,7 +181,6 @@ class AvailabilityGrid extends Component {
   @autobind
   handleCancelBtnClick() {
     const { allDates, allTimes, event } = this.state;
-    const { createGridComplete } = this.constructor;
     const grid = createGridComplete(allDates, allTimes, event);
     this.setState({ grid });
     this.props.closeEditorGrid();
