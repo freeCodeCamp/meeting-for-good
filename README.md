@@ -3,12 +3,14 @@
 # Meeting for Good
 A meeting coordination app for your team.
 
-### Get Meeting for Good running locally
+## Get Meeting for Good running locally
 
-###Prerequisites
+------------
+### Prerequisites
 - [NodeJS](https://nodejs.org)
 - [MongoDB](https://www.mongodb.org)
 
+------------
 ### Quick Start Steps:
 - Fork the repo to your own account
 - Clone it to your computer:
@@ -39,6 +41,7 @@ OP_BEAT_SECRET_TOKEN=[YOUR_OPBEAT_SECRET_TOKEN]
 
 To build the app instead, run `npm run build`
 
+------------
 ### Detailed local development installation steps
 
 You'll need to have the latest verison of **Node.js** installed. Either use your OS's package manager or follow the installation instructions on the [official website](http://nodejs.org).
