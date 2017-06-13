@@ -20,21 +20,12 @@ import _ from 'lodash';
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import nameInitials from '../../util/string.utils';
+import { fullUrl, emailText } from './guestInviteDrawerUtils';
 
 class GuestInviteDrawer extends Component {
   @autobind
   static handleEventLinkClick(id) {
     browserHistory.push(`/event/${id}`);
-  }
-
-  static fullUrl(event) {
-    return `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-  }
-
-  static emailText(event) {
-    return `Hey there,%0D%0A%0D%0AUse this tool to let me know your availablility for ${event.name}:
-    %0D%0A%0D%0A${GuestInviteDrawer.fullUrl(event)}
-    %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
   }
 
   constructor(props) {
@@ -215,7 +206,6 @@ class GuestInviteDrawer extends Component {
 
   renderUrlActions() {
     const { event } = this.state;
-    const { emailText, fullUrl } = this.constructor;
     const focusUrlTextField = (input) => {
       if (input) {
         if (this.state.setFocusFullUrl) {
