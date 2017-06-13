@@ -154,9 +154,41 @@ class NewEvent extends React.Component {
     });
   }
 
+  renderDayPicker() {
+    const { ranges } = this.state;
+    const selectedDays = day =>
+      DateUtils.isDayInRange(day, this.state) ||
+      ranges.some(v => DateUtils.isDayInRange(day, v));
+    const { from, to } = ranges[0];
+    const windowsSize = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const numOfMonthstoDisplay = windowsSize > 550 ? 2 : 1;
+
+    return (
+      <div>
+        <h6 styleName="heading-dates">What dates might work for you?</h6>
+        <div styleName="reset-button">
+          {from && to &&
+            <FlatButton
+              href="#reset"
+              label="reset"
+              onClick={this.handleResetClick}
+            />
+          }
+        </div>
+        <DayPicker
+          numberOfMonths={numOfMonthstoDisplay}
+          fromMonth={new Date()}
+          disabledDays={DateUtils.isPastDay}
+          onDayClick={this.handleDayClick}
+          classNames={styles}
+          selectedDays={selectedDays}
+        />
+      </div>
+    );
+  }
+
   render() {
-    const {
-      ranges, eventName, selectedTimeRange, disableSubmit } = this.state;
+    const { eventName, selectedTimeRange, disableSubmit } = this.state;
 
     const inLineStyles = {
       card: {
@@ -171,13 +203,6 @@ class NewEvent extends React.Component {
         },
       },
     };
-
-    const selectedDays = day =>
-      DateUtils.isDayInRange(day, this.state) ||
-      ranges.some(v => DateUtils.isDayInRange(day, v));
-    const { from, to } = ranges[0];
-    const windowsSize = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    const numOfMonthstoDisplay = windowsSize > 550 ? 2 : 1;
 
     return (
       <div styleName="wrapper">
@@ -199,26 +224,7 @@ class NewEvent extends React.Component {
                 autoFocus
                 inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
               />
-              <div>
-                <h6 styleName="heading-dates">What dates might work for you?</h6>
-                <div styleName="reset-button">
-                  {from && to &&
-                  <FlatButton
-                    href="#reset"
-                    label="reset"
-                    onClick={this.handleResetClick}
-                  />
-                  }
-                </div>
-                <DayPicker
-                  numberOfMonths={numOfMonthstoDisplay}
-                  fromMonth={new Date()}
-                  disabledDays={DateUtils.isPastDay}
-                  onDayClick={this.handleDayClick}
-                  classNames={styles}
-                  selectedDays={selectedDays}
-                />
-              </div>
+              {this.renderDayPicker()}
               <Subheader styleName="subHeader">What times might work?</Subheader>
               <div styleName="rangeSelectorWrapper">
                 <InputRange
