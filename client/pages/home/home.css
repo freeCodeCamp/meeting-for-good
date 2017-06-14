@@ -14,7 +14,6 @@
 
 .header {
 	text-transform: uppercase;
-	
 }
 .header img {
 	margin-bottom: 4%;
@@ -25,9 +24,25 @@
 	font-weight: 500;
 	text-transform: none;
 	font-size: 80px;
-	padding: 2% 0 2% 0;
-
+	padding: 2% 0 0 0;
 }
+
+.loginButton {
+	margin: 30px !important;
+}
+
+.loginButton button {
+	background-image: linear-gradient(#ffcc4d, #ffac33) !important;
+	background-color: #ffac33 !important;
+	text-transform: none !important;
+	min-width: 500px !important;
+	height: 50px !important;
+}
+
+.loginButton button div div span {
+	font-size: 30px !important;
+}
+
 
 .content {
 	width: 100vw;
@@ -81,6 +96,7 @@ footer a:hover {
 	border-width: 0.2px;
 	border-color: lightgrey;
 }
+
 
 @media (min-width:550px) and (max-width:850px) {
   .main img {
