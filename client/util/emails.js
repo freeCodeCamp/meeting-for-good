@@ -15,7 +15,6 @@ const msg = (curUser, event) => ({
 });
 
 async function sendEmail(ms, endpoint) {
-  console.log('sendEmail', ms, endpoint);
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   const response = await fetch(endpoint, {

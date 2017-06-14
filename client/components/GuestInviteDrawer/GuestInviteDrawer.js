@@ -277,25 +277,10 @@ class GuestInviteDrawer extends Component {
     const { open, event, searchText,
       linearProgressVisible } = this.state;
     const inLineStyles = {
-      drawer: {
-        container: {
-          paddingLeft: '9px',
-          paddingRight: '10px',
-        },
-        textField: {
-          floatingLabel: {
-            fontSize: '15px',
-            paddingLeft: 8,
-          },
-        },
-        inviteButton: {
-          paddingTop: '15px',
-        },
-        linearProgress: {
-          visibility: linearProgressVisible,
-        },
-      },
-    };
+      drawer: { container: { paddingLeft: '9px', paddingRight: '10px' },
+        textField: { floatingLabel: { fontSize: '15px', paddingLeft: 8 } },
+        inviteButton: { paddingTop: '15px' },
+        linearProgress: { visibility: linearProgressVisible } } };
 
     return (
       <Drawer
@@ -325,13 +310,7 @@ class GuestInviteDrawer extends Component {
         <Infinite elementHeight={58} containerHeight={174}>
           {this.renderRows()}
         </Infinite>
-        <RaisedButton
-          label="Invite"
-          styleName="inviteButton"
-          onTouchTap={this.handleInvite}
-          fullWidth
-          primary
-        />
+        <RaisedButton label="Invite" styleName="inviteButton" onTouchTap={this.handleInvite} fullWidth primary />
         {this.renderSnackBar()}
       </Drawer>
     );
