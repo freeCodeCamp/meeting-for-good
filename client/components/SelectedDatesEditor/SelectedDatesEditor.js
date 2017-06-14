@@ -196,11 +196,6 @@ class SelectedDatesEditor extends Component {
 
   renderDialogWarning() {
     const { dialogWarningOpen } = this.state;
-    const inlineStyles = {
-      title: { backgroundColor: 'red', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6 },
-      content: { width: '380px', maxWidth: '380px', minWidth: '380px' },
-      bodyStyle: { paddingTop: 10 },
-    };
     const actions = [
       <FlatButton label="Cancel" primary onTouchTap={() => this.setState({ dialogWarningOpen: false })} />,
       <FlatButton label="save" secondary onTouchTap={this.handleEditEventDates} />,
@@ -210,9 +205,7 @@ class SelectedDatesEditor extends Component {
         title="Warning"
         open={dialogWarningOpen}
         actions={actions}
-        titleStyle={inlineStyles.title}
-        contentStyle={inlineStyles.content}
-        bodyStyle={inlineStyles.bodyStyle}
+        styleName="DialogWarningDate"
       >
         <p>
           {'Perhaps you are deleting some existing availabilities.'}
@@ -226,11 +219,6 @@ class SelectedDatesEditor extends Component {
 
   renderDialogMinimumDate() {
     const { dialogMinimumDateOpen } = this.state;
-    const inlineStyles = {
-      title: { backgroundColor: 'red', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6 },
-      content: { width: '380px', maxWidth: '380px', minWidth: '380px' },
-      bodyStyle: { paddingTop: 10 },
-    };
     const actions = [
       <FlatButton
         label="Cancel"
@@ -241,11 +229,9 @@ class SelectedDatesEditor extends Component {
     return (
       <Dialog
         title="Warning"
+        styleName="DialogWarningMin"
         open={dialogMinimumDateOpen}
         actions={actions}
-        titleStyle={inlineStyles.title}
-        contentStyle={inlineStyles.content}
-        bodyStyle={inlineStyles.bodyStyle}
       >
         <p>
           {'You need at least one date.'}
