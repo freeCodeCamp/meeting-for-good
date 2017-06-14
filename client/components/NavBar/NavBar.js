@@ -91,23 +91,8 @@ class NavBar extends Component {
   renderAvatarMenu() {
     const { curUser, userAvatar, showPastEvents } = this.state;
     const inLineStyles = {
-      iconMenu: {
-        iconStyle: {
-          minWidth: 70,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        },
-        toggle: {
-          label: {
-            fontSize: '18px',
-          },
-          thumbSwitched: {
-            backgroundColor: 'red',
-          },
-        },
-      },
-    };
+      iconMenu: { iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
+        toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } } } };
 
     return (
       <IconMenu
@@ -119,11 +104,7 @@ class NavBar extends Component {
         iconButtonElement={
           <IconButton style={{ padding: 0 }} aria-label="user button">
             <div>
-              <Avatar
-                size={34}
-                src={userAvatar}
-                alt={nameInitials(curUser.name)}
-              />
+              <Avatar size={34} src={userAvatar} alt={nameInitials(curUser.name)} />
               <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
             </div>
           </IconButton>}
