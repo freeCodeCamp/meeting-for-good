@@ -17,25 +17,56 @@ import styles from './snack-bar-grid.css';
 
 class SnackBarGrid extends Component {
 
-  createMsgSnackBar() {
-    const { guests, noGuests } = this.props;
-    const interactor = (guests.length > noGuests.length) ? guests : noGuests;
-
+  static createMsgHeaderSnackBar() {
     const inlineStyles = {
-      backgroundColor: 'transparent',
-      maxWidth: '100%',
       tableHeader: {
         tableRow: {
           tableHeaderColumn: {
             textAlign: 'center',
             fontSize: '20px',
             color: '#000000',
-            iconStyles: {
-              margin: 0,
-            },
+            iconStyles: { margin: 0 },
           },
         },
       },
+    };
+    return (
+      <TableHeader
+        displaySelectAll={false}
+        adjustForCheckbox={false}
+      >
+        <TableRow>
+          <TableHeaderColumn
+            style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
+          >
+            <ThumbUp
+              style={{ fontSize: '100px' }}
+              viewBox="0 0 28 21"
+              color={'#000000'}
+            /> Available
+            </TableHeaderColumn>
+          <TableHeaderColumn
+            style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
+          >
+            <ThumbDown
+              style={{ fontSize: '24px' }}
+              viewBox="0 0 28 21"
+              color={'#000000'}
+            /> Not Available
+            </TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+    );
+  }
+
+  createMsgSnackBar() {
+    const { createMsgHeaderSnackBar } = this.constructor;
+    const { guests, noGuests } = this.props;
+    const interactor = (guests.length > noGuests.length) ? guests : noGuests;
+
+    const inlineStyles = {
+      backgroundColor: 'transparent',
+      maxWidth: '100%',
       tableBody: {
         tableRow: {
           borderBottom: 'none',
@@ -59,32 +90,7 @@ class SnackBarGrid extends Component {
         style={inlineStyles}
         selectable={false}
       >
-        <TableHeader
-          style={inlineStyles.tableHeader}
-          displaySelectAll={false}
-          adjustForCheckbox={false}
-        >
-          <TableRow>
-            <TableHeaderColumn
-              style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
-            >
-              <ThumbUp
-                style={{ fontSize: '100px' }}
-                viewBox="0 0 28 21"
-                color={'#000000'}
-              /> Available
-            </TableHeaderColumn>
-            <TableHeaderColumn
-              style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
-            >
-              <ThumbDown
-                style={{ fontSize: '24px' }}
-                viewBox="0 0 28 21"
-                color={'#000000'}
-              /> Not Available
-            </TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
+        {createMsgHeaderSnackBar()}
         <TableBody
           displayRowCheckbox={false}
         >{interactor.map((inter, index) =>
