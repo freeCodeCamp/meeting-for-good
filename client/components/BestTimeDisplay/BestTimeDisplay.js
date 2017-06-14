@@ -1,134 +1,19 @@
 import React, { Component } from 'react';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import { ListItem } from 'material-ui/List';
 import _ from 'lodash';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
-import jz from 'jstimezonedetect';
 import KeyBoardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 import KeyBoardArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
 import Divider from 'material-ui/Divider';
-
 import FlatButton from 'material-ui/FlatButton';
 
 import styles from './best-times-display.css';
-
-const moment = extendMoment(Moment);
+import { renderTzInfo, renderRows, buildBestTimes } from './besttimesDisplayUtils';
 
 class BestTimeDisplay extends Component {
-
-  static renderRows(hours) {
-    const rows = [];
-    hours.forEach((hour) => {
-      const hourToShow = (
-        <spam style={{ fontColor: '#000000', fontWeight: 200 }}>
-          {hour}
-        </spam >
-      );
-      const row = (
-        <ListItem
-          key={hour}
-          disabled
-          primaryText={hourToShow}
-          style={{ paddingLeft: '33px' }}
-          innerDivStyle={{ height: '0px', paddingTop: '0px' }}
-        />
-      );
-      rows.push(row);
-    });
-    return rows;
-  }
-
-  static buildAvailabilitys(event) {
-    const availabilitys = [];
-    // clean the availability and tranform each avail in a range of moments with 15 min long
-    // to be able to calculate the overlaps
-    event.participants.forEach((participant) => {
-      if (participant.availability !== undefined) {
-        const availability = participant.availability.map((avail) => {
-          const datesRange = moment.range([moment(avail[0]), moment(avail[1])]);
-          const quartersFromDtRange = Array.from(datesRange.by('minutes', { exclusive: true, step: 15 }));
-          const quartersToAvail = [];
-          quartersFromDtRange.forEach(date =>
-            quartersToAvail.push([moment(date), moment(date).add(15, 'm')]));
-          return quartersToAvail;
-        });
-        availabilitys.push(_.flatten(availability));
-      }
-    });
-    return availabilitys;
-  }
-
-  static createOverlaps(availabilitys) {
-    const overlaps = [];
-    if (availabilitys.length > 1) {
-      // need to find the participant with less availabilitys to be the base one;
-      availabilitys.sort((a, b) => a.length - b.length);
-      // now calculate the overlaps
-      const smallestAvail = availabilitys.splice(0, 1);
-      // calculates the overlaps
-      for (let i = 0; i < smallestAvail[0].length; i += 1) {
-        const currentQuarter = smallestAvail[0][i];
-        let count = 0;
-        for (let j = 0; j < availabilitys.length; j += 1) {
-          let k = 0;
-          while (k < availabilitys[j].length && !currentQuarter[0].isSame(availabilitys[j][k][0])) {
-            k += 1;
-          }
-          if (k < availabilitys[j].length) {
-            count += 1;
-          }
-        }
-        if (count === availabilitys.length) {
-          overlaps.push(currentQuarter);
-        }
-      }
-    }
-    overlaps.sort((a, b) => {
-      const x = a[0].clone().unix();
-      const y = b[0].clone().unix();
-      return x - y;
-    });
-
-    return overlaps;
-  }
-
-  static buildBestTimes(event) {
-    const availabilitys = BestTimeDisplay.buildAvailabilitys(event);
-    const overlaps = BestTimeDisplay.createOverlaps(availabilitys);
-    const displayTimes = {};
-    if (overlaps.length !== 0) {
-      let index = 0;
-      // for all overlaps calculated
-      for (let i = 0; i < overlaps.length; i += 1) {
-        const curOverlapDay = overlaps[index][0].format('DD MMM');
-        const curOverlapEnd = overlaps[i][1];
-        if (overlaps[i + 1] !== undefined && !curOverlapEnd.isSame(overlaps[i + 1][0])) {
-          // if dosn't alreedy have that day create that day
-          if (displayTimes[curOverlapDay] === undefined) {
-            displayTimes[curOverlapDay] = {};
-            displayTimes[curOverlapDay].hours = [];
-          }
-          // push the overlaped range
-          displayTimes[curOverlapDay]
-            .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
-          index = i + 1;
-          // dont have a next overlap, its the last one
-        } else if (overlaps[i + 1] === undefined) {
-          if (displayTimes[curOverlapDay] === undefined) {
-            displayTimes[curOverlapDay] = {};
-            displayTimes[curOverlapDay].hours = [];
-          }
-          displayTimes[curOverlapDay]
-            .hours.push(`${overlaps[index][0].format('h:mm a')} to ${curOverlapEnd.format('h:mm a')}`);
-        }
-      }
-    }
-    return displayTimes;
-  }
 
   constructor(props) {
     super(props);
@@ -142,7 +27,6 @@ class BestTimeDisplay extends Component {
 
   componentWillMount() {
     const { event, disablePicker } = this.props;
-    const { buildBestTimes } = this.constructor;
     const displayTimes = buildBestTimes(event);
     this.setState({
       event, displayTimes, disablePicker,
@@ -151,7 +35,6 @@ class BestTimeDisplay extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { event, disablePicker } = nextProps;
-    const { buildBestTimes } = this.constructor;
     const displayTimes = buildBestTimes(event);
     this.setState({
       event, displayTimes, disablePicker,
@@ -194,9 +77,7 @@ class BestTimeDisplay extends Component {
           autoGenerateNestedIndicator={false}
           nestedListStyle={{ padding: '0px' }}
           innerDivStyle={{ padding: '16px 0px 0px 50px' }}
-          nestedItems={
-            this.constructor.renderRows(displayTimes[date].hours)
-          }
+          nestedItems={renderRows(displayTimes[date].hours)}
         />);
       if (index !== Object.keys(displayTimes).length - 1 && index !== quantToShow - 1) {
         rows.push(
@@ -243,59 +124,33 @@ class BestTimeDisplay extends Component {
     );
   }
 
+  renderArrowMsg() {
+    const { showAllDates, displayTimes } = this.state;
+    return (showAllDates) ?
+      (<em> click to hide</em>)
+      :
+      (<em>
+        This event has {Object.keys(displayTimes).length - 3} more possible dates. <br />
+        Click to expand then all.
+      </em>);
+  }
+
+  renderArrow() {
+    const { showAllDates } = this.state;
+    const inlineStyle = { arrow: { fontSize: '18px', transform: 'scale(18, 2)' } };
+    return (showAllDates) ?
+      (<KeyBoardArrowDown style={inlineStyle.arrow} color="#f2f2f2" />) :
+      (<KeyBoardArrowUp style={inlineStyle.arrow} color="#f2f2f2" />);
+  }
+
   render() {
     const { displayTimes, disablePicker, showAllDates } = this.state;
     // Only show timezone information when we're at the dashboard.
-    const inlineStyle = {
-      arrow: {
-        fontSize: '18px',
-        transform: 'scale(18, 2)',
-      },
-    };
-
-    let tzInfo;
-    if (location.pathname === '/dashboard') {
-      tzInfo =
-        (<div styleName="info">
-          <p>
-            <em>
-              Displaying all times in your local timezone: {jz.determine().name()}
-            </em>
-          </p>
-        </div>);
-    } else {
-      tzInfo = null;
-    }
-    let arrow = (
-      <KeyBoardArrowDown
-        style={inlineStyle.arrow}
-        color="#f2f2f2"
-      />
-    );
-    let arrowMsg = (
-      <em>
-        This event has {Object.keys(displayTimes).length - 3} more possible dates. <br />
-        Click to expand then all.
-      </em>
-    );
-    if (showAllDates) {
-      arrowMsg = (
-        <em>
-          click to hide
-        </em>
-      );
-      arrow = (
-        <KeyBoardArrowUp
-          style={inlineStyle.arrow}
-          color="#f2f2f2"
-        />
-      );
-    }
     return (
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
           <div>
-            {tzInfo}
+            {renderTzInfo()}
             <h6 styleName="bestTimeTitle">
               The following times work for everyone:
               </h6>
@@ -306,15 +161,13 @@ class BestTimeDisplay extends Component {
                   <FlatButton
                     fullWidth
                     onClick={() => this.setState({ showAllDates: !showAllDates })}
-                    icon={arrow}
+                    icon={this.renderArrow()}
                   />
-                  {arrowMsg}
-                </div>
-                : null
+                  {this.renderArrowMsg()}
+                </div> : null
             }
           </div>
-          :
-          (disablePicker === false) ? this.renderDayPicker() : null
+          : (disablePicker === false) ? this.renderDayPicker() : null
         }
       </div>
     );
