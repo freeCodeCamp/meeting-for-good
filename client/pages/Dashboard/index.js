@@ -125,11 +125,17 @@ class Dashboard extends Component {
 }
 
 Dashboard.defaultProps = {
-  cbInviteEmail: undefined,
+  cbInviteEmail: () => { console.log('cbInviteEmail func not passed in!'); },
+  cbOpenLoginModal: () => { console.log('cbOpenLoginModal func not passed in!'); },
+  cbDeleteEvent: () => { console.log('cbDeleteEvent func not passed in!'); },
+  cbDeleteGuest: () => { console.log('cbDeleteGuest func not passed in!'); },
 };
 
 Dashboard.propTypes = {
   cbInviteEmail: PropTypes.func,
+  cbOpenLoginModal: PropTypes.func,
+  cbDeleteEvent: PropTypes.func,
+  cbDeleteGuest: PropTypes.func,
 };
 
 export default cssModules(Dashboard, styles);

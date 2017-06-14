@@ -43,13 +43,7 @@ class NavBar extends Component {
 
   componentWillMount() {
     const { location, curUser, isAuthenticated, showPastEvents, events } = this.props;
-    this.setState({
-      curUser,
-      isAuthenticated,
-      userAvatar: curUser.Avatar,
-      showPastEvents,
-      events,
-    });
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents, events });
     this.MenuVisibility(location);
   }
 
@@ -109,9 +103,7 @@ class NavBar extends Component {
             </div>
           </IconButton>}
       >
-        <MenuItem
-          style={{ maxHeight: '30px', minHeight: '20px' }}
-        >
+        <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
           <Toggle
             label={'Past Events'}
             toggled={showPastEvents}
@@ -121,9 +113,7 @@ class NavBar extends Component {
             onToggle={this.handleFilterToggle}
           />
         </MenuItem >
-        <Divider
-          styleName="Divider"
-        />
+        <Divider styleName="Divider" />
         <MenuItem
           onClick={this.handleAboutDialog}
           styleName="AboutButton"
