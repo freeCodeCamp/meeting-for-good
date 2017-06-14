@@ -30,9 +30,6 @@ class NewEvent extends React.Component {
     return newRange;
   };
 
-  static selectDays = (day, ranges) => DateUtils.isDayInRange(day, this.state) ||
-    ranges.some(v => DateUtils.isDayInRange(day, v));
-
   static windowsSize = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 
   constructor() {
@@ -161,8 +158,10 @@ class NewEvent extends React.Component {
 
   renderDayPicker() {
     const { ranges } = this.state;
-    const { selectedDays, windowsSize } = this.constructor;
+    const { windowsSize } = this.constructor;
     const { from, to } = ranges[0];
+    const selectedDays = day => DateUtils.isDayInRange(day, this.state) ||
+    ranges.some(v => DateUtils.isDayInRange(day, v));
 
     return (
       <div>
