@@ -1,6 +1,6 @@
 {
   "name": "meeting-for-good",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Schedule events with ease!",
   "homepage": "https://github.com/FreeCodeCamp/meeting-for-good/#readme",
   "main": "index.js",
@@ -98,7 +98,7 @@
     "pngquant-bin": "^3.1.1",
     "prop-types": "^15.5.10",
     "react": "^15.4.1",
-    "react-addons-update": "^15.4.1",
+    "react-addons-update": "^15.6.0",
     "react-css-modules": "^4.3.0",
     "react-day-picker": "^5.5.1",
     "react-dom": "^15.4.1",
@@ -123,7 +123,7 @@
     "yargs": "^8.0.1"
   },
   "devDependencies": {
-    "eslint": "^3.17.1",
+    "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.0",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.7.0",
