@@ -73,35 +73,22 @@ class SnackBarGrid extends Component {
       },
     };
     return (
-      <Table
-        style={inlineStyles}
-        selectable={false}
-      >
+      <Table style={inlineStyles} selectable={false}>
         {createMsgHeaderSnackBar()}
-        <TableBody
-          displayRowCheckbox={false}
-        >{interactor.map((inter, index) =>
+        <TableBody displayRowCheckbox={false}>
+          {interactor.map((inter, index) =>
           (
-            <TableRow
-              key={`${inter} ${Math.random()}`}
-              style={inlineStyles.tableBody.tableRow}
-            >
-              <TableRowColumn
-                style={inlineStyles.tableBody.tableRow.tableRowColumn}
-              >
+            <TableRow key={`${inter} ${Math.random()}`} style={inlineStyles.tableBody.tableRow}>
+              <TableRowColumn style={inlineStyles.tableBody.tableRow.tableRowColumn}>
                 {guests[index]}
               </TableRowColumn>
-              <TableRowColumn
-                style={inlineStyles.tableBody.tableRow.tableRowColumn}
-              >
+              <TableRowColumn style={inlineStyles.tableBody.tableRow.tableRowColumn}>
                 {noGuests[index]}
               </TableRowColumn>
             </TableRow>
-          ))
-        }
+          ))}
         </TableBody>
       </Table>
-
     );
   }
 
