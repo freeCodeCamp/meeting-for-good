@@ -124,21 +124,28 @@ class BestTimeDisplay extends Component {
     );
   }
 
+  renderArrowMsg() {
+    const { showAllDates, displayTimes } = this.state;
+    return (showAllDates) ?
+      (<em> click to hide</em>)
+      :
+      (<em>
+        This event has {Object.keys(displayTimes).length - 3} more possible dates. <br />
+        Click to expand then all.
+      </em>);
+  }
+
+  renderArrow() {
+    const { showAllDates } = this.state;
+    const inlineStyle = { arrow: { fontSize: '18px', transform: 'scale(18, 2)' } };
+    return (showAllDates) ?
+      (<KeyBoardArrowDown style={inlineStyle.arrow} color="#f2f2f2" />) :
+      (<KeyBoardArrowUp style={inlineStyle.arrow} color="#f2f2f2" />);
+  }
+
   render() {
     const { displayTimes, disablePicker, showAllDates } = this.state;
     // Only show timezone information when we're at the dashboard.
-    const inlineStyle = { arrow: { fontSize: '18px', transform: 'scale(18, 2)' } };
-    let arrow = (<KeyBoardArrowDown style={inlineStyle.arrow} color="#f2f2f2" />);
-    let arrowMsg = (
-      <em>
-        This event has {Object.keys(displayTimes).length - 3} more possible dates. <br />
-        Click to expand then all.
-      </em>
-    );
-    if (showAllDates) {
-      arrowMsg = (<em> click to hide</em>);
-      arrow = (<KeyBoardArrowUp style={inlineStyle.arrow} color="#f2f2f2" />);
-    }
     return (
       <div styleName="bestTimeDisplay">
         {this.isBestTime(displayTimes) ?
@@ -154,9 +161,9 @@ class BestTimeDisplay extends Component {
                   <FlatButton
                     fullWidth
                     onClick={() => this.setState({ showAllDates: !showAllDates })}
-                    icon={arrow}
+                    icon={this.renderArrow()}
                   />
-                  {arrowMsg}
+                  {this.renderArrowMsg()}
                 </div> : null
             }
           </div>

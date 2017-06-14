@@ -62,6 +62,7 @@ export const buildAvailabilitys = (event) => {
   });
   return availabilitys;
 };
+
 export const createOverlaps = (availabilitys) => {
   const overlaps = [];
   if (availabilitys.length > 1) {

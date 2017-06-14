@@ -60,6 +60,7 @@ class SnackBarGrid extends Component {
           fontSize: '15px',
           color: '#000000',
         } } };
+
     return (
       <Table style={inlineStyles} selectable={false}>
         {createMsgHeaderSnackBar()}
