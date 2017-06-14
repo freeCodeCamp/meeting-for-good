@@ -13,7 +13,8 @@
     "copy": "node tools/copy.js",
     "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
     "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "postinstall": "node ./tools/postinstall"
   },
   "repository": {
     "type": "git",
