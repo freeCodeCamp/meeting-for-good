@@ -7,10 +7,8 @@ import User from '../api/user/user.model';
 const router = express.Router();
 
 // Passport Configuration
-require('./facebook/passport').setup(User, config);
 require('./google/passport').setup(User, config);
 
-router.use('/facebook', require('./facebook'));
 router.use('/google', require('./google'));
 
 router.get('/current', ((req, res) => {
