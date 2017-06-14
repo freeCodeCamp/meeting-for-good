@@ -213,42 +213,15 @@ class NavBar extends Component {
 
   renderDialog() {
     const { openModal } = this.state;
-    const actions = [
-      <FlatButton
-        label="close"
-        primary
-        onTouchTap={() => this.setState({ openModal: false })}
-      />,
-    ];
+    const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
     const inlineStyles = {
-      modal: {
-        content: {
-          width: '630px',
-          maxWidth: '630px',
-        },
-        bodyStyle: {
-          paddingTop: 10,
-          fontSize: '25px',
-        },
-      },
-    };
-    const titleStyle = {
-      color: 'green',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: '20px',
-    };
-    const versionStyle = {
-      textAlign: 'center',
-      marginBottom: '20px',
-    };
-    const descStyle = {
-      textAlign: 'center',
-      marginBottom: '40px',
-    };
-    const commentsStyle = {
-      textAlign: 'center',
-    };
+      modal: { content: { width: '630px', maxWidth: '630px' },
+        bodyStyle: { paddingTop: 10, fontSize: '25px' },
+      } };
+    const titleStyle = { color: 'green', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' };
+    const versionStyle = { textAlign: 'center', marginBottom: '20px' };
+    const descStyle = { textAlign: 'center', marginBottom: '40px' };
+    const commentsStyle = { textAlign: 'center' };
 
     return (
       <Dialog
