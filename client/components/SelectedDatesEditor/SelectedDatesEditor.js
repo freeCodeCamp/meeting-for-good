@@ -157,7 +157,6 @@ class SelectedDatesEditor extends Component {
       patchesforAddDates,
       patchesforDeleteAvail,
       patchesforAddAvail);
-    console.log(nEvent);
     try {
       await this.props.submitDates(patches);
     } catch (err) {
