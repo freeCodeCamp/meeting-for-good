@@ -14,7 +14,6 @@ import styles from './selected-dates-editor.css';
 
 const moment = extendMoment(Moment);
 
-
 class SelectedDatesEditor extends Component {
 
   static filterAvailabilitysOutsideDatesRange(event) {
@@ -22,9 +21,7 @@ class SelectedDatesEditor extends Component {
     // clear all availiability of each participant at nEvent
     // so i can push only the valid ones
     nEvent.participants.forEach((participant) => {
-      if (participant.availability.length > 0) {
-        participant.availability = [];
-      }
+      if (participant.availability.length > 0) participant.availability = [];
     },
     );
     // only push availability on range
@@ -160,7 +157,6 @@ class SelectedDatesEditor extends Component {
       patchesforAddDates,
       patchesforDeleteAvail,
       patchesforAddAvail);
-    console.log(nEvent);
     try {
       await this.props.submitDates(patches);
     } catch (err) {
@@ -184,9 +180,7 @@ class SelectedDatesEditor extends Component {
       index += 1;
     }
 
-    if (dateNotFound) {
-      selectedDates.push(day);
-    }
+    if (dateNotFound) selectedDates.push(day);
     this.setState({ selectedDates });
   }
 
@@ -202,45 +196,16 @@ class SelectedDatesEditor extends Component {
 
   renderDialogWarning() {
     const { dialogWarningOpen } = this.state;
-    const inlineStyles = {
-      modal: {
-        title: {
-          backgroundColor: 'red',
-          color: '#ffffff',
-          fontSize: '25px',
-          height: '25px',
-          paddingTop: 6,
-        },
-        content: {
-          width: '380px',
-          maxWidth: '380px',
-          minWidth: '380px',
-        },
-        bodyStyle: {
-          paddingTop: 10,
-        },
-      },
-    };
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary
-        onTouchTap={() => this.setState({ dialogWarningOpen: false })}
-      />,
-      <FlatButton
-        label="save"
-        secondary
-        onTouchTap={this.handleEditEventDates}
-      />,
+      <FlatButton label="Cancel" primary onTouchTap={() => this.setState({ dialogWarningOpen: false })} />,
+      <FlatButton label="save" secondary onTouchTap={this.handleEditEventDates} />,
     ];
     return (
       <Dialog
         title="Warning"
         open={dialogWarningOpen}
         actions={actions}
-        titleStyle={inlineStyles.modal.title}
-        contentStyle={inlineStyles.modal.content}
-        bodyStyle={inlineStyles.modal.bodyStyle}
+        styleName="DialogWarningDate"
       >
         <p>
           {'Perhaps you are deleting some existing availabilities.'}
@@ -254,25 +219,6 @@ class SelectedDatesEditor extends Component {
 
   renderDialogMinimumDate() {
     const { dialogMinimumDateOpen } = this.state;
-    const inlineStyles = {
-      modal: {
-        title: {
-          backgroundColor: 'red',
-          color: '#ffffff',
-          fontSize: '25px',
-          height: '25px',
-          paddingTop: 6,
-        },
-        content: {
-          width: '380px',
-          maxWidth: '380px',
-          minWidth: '380px',
-        },
-        bodyStyle: {
-          paddingTop: 10,
-        },
-      },
-    };
     const actions = [
       <FlatButton
         label="Cancel"
@@ -283,11 +229,9 @@ class SelectedDatesEditor extends Component {
     return (
       <Dialog
         title="Warning"
+        styleName="DialogWarningMin"
         open={dialogMinimumDateOpen}
         actions={actions}
-        titleStyle={inlineStyles.modal.title}
-        contentStyle={inlineStyles.modal.content}
-        bodyStyle={inlineStyles.modal.bodyStyle}
       >
         <p>
           {'You need at least one date.'}
@@ -299,52 +243,26 @@ class SelectedDatesEditor extends Component {
 
   render() {
     const inlineStyles = {
-      modal: {
-        title: {
-          backgroundColor: '#006400',
-          color: '#ffffff',
-          fontSize: '25px',
-          height: '25px',
-          paddingTop: 6,
-        },
-        content: {
-          width: '290px',
-          maxWidth: '290px',
-          minWidth: '290px',
-        },
-        bodyStyle: {
-          minHeight: '260px',
-          paddingTop: 10,
-        },
-      },
+      title: { backgroundColor: '#006400', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6 },
+      content: { width: '290px', maxWidth: '290px', minWidth: '290px' },
+      bodyStyle: { minHeight: '260px', paddingTop: 10 },
     };
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary
-        onTouchTap={this.handleCloseDialog}
-      />,
-      <FlatButton
-        label="save"
-        secondary
-        onTouchTap={this.handleSaveDates}
-      />,
+      <FlatButton label="Cancel" primary onTouchTap={this.handleCloseDialog} />,
+      <FlatButton label="save" secondary onTouchTap={this.handleSaveDates} />,
     ];
     const { dialogOpen, selectedDates } = this.state;
     return (
       <div>
-        <FlatButton
-          label="Edit dates"
-          onTouchTap={this.handleOpenDialog}
-        />
+        <FlatButton label="Edit dates" onTouchTap={this.handleOpenDialog} />
         <Dialog
           title="Event Dates Editor"
           actions={actions}
           open={dialogOpen}
-          titleStyle={inlineStyles.modal.title}
-          contentStyle={inlineStyles.modal.content}
-          bodyStyle={inlineStyles.modal.bodyStyle}
+          titleStyle={inlineStyles.title}
+          contentStyle={inlineStyles.content}
+          bodyStyle={inlineStyles.bodyStyle}
         >
           <DayPicker
             fromMonth={selectedDates[0]}
