@@ -53,21 +53,19 @@ class SnackBarGrid extends Component {
     const inlineStyles = {
       backgroundColor: 'transparent',
       maxWidth: '100%',
-      tableBody: {
-        tableRow: {
-          borderBottom: 'none',
-          borderTop: 'none',
+      tableRow: {
+        borderBottom: 'none',
+        borderTop: 'none',
+        height: '30px',
+        lineHeight: '30px',
+        tableRowColumn: {
           height: '30px',
           lineHeight: '30px',
-          tableRowColumn: {
-            height: '30px',
-            lineHeight: '30px',
-            textAlign: 'center',
-            borderBottom: 'none',
-            borderTop: 'none',
-            fontSize: '15px',
-            color: '#000000',
-          },
+          textAlign: 'center',
+          borderBottom: 'none',
+          borderTop: 'none',
+          fontSize: '15px',
+          color: '#000000',
         },
       },
     };
@@ -77,11 +75,11 @@ class SnackBarGrid extends Component {
         <TableBody displayRowCheckbox={false}>
           {interactor.map((inter, index) =>
           (
-            <TableRow key={`${inter} ${Math.random()}`} style={inlineStyles.tableBody.tableRow}>
+            <TableRow key={`${inter} ${Math.random()}`} style={inlineStyles.tableRow}>
               <TableRowColumn style={inlineStyles.tableBody.tableRow.tableRowColumn}>
                 {guests[index]}
               </TableRowColumn>
-              <TableRowColumn style={inlineStyles.tableBody.tableRow.tableRowColumn}>
+              <TableRowColumn style={inlineStyles.tableBody.tableRowColumn}>
                 {noGuests[index]}
               </TableRowColumn>
             </TableRow>
