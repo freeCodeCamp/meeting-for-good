@@ -238,10 +238,7 @@ class AvailabilityGrid extends Component {
     const { backgroundColors, showHeatmap } = this.state;
     const { curUser } = this.props;
     return quarters.map((quarter, columnIndex) => {
-      let gridJump = false;
-      if (columnIndex > 0) {
-        gridJump = (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time)));
-      }
+      const gridJump = (columnIndex > 0) ? (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time))) : false;
       return (
         <CellGrid
           heatMapMode={showHeatmap}
