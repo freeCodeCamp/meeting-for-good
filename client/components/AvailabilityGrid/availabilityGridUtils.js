@@ -103,6 +103,22 @@ export const createDatesRange = (dates) => {
   return datesRanges;
 };
 
+const createGuestNotGuestList = (participants, flattenedAvailability, dateHourForCell) => {
+  const guests = [];
+  const notGuests = [];
+  participants.forEach((participant) => {
+    const availForThatParticipant = flattenedAvailability[participant.userId._id];
+    const guest = {};
+    guest[participant.userId._id] = participant.userId.name;
+    if (availForThatParticipant.indexOf(dateHourForCell.unix()) > -1) {
+      guests.push(guest);
+    } else {
+      notGuests.push(guest);
+    }
+  });
+  return { guests, notGuests };
+};
+
 /**
  *
  * @param {array} allDates
@@ -119,22 +135,12 @@ export const createGridComplete = (allDates, allTimes, event) => {
         const dateHourForCell = moment(date)
           .hour(moment(quarter).hour())
           .minute(moment(quarter).minute()).startOf('minute');
-        const guests = [];
-        const notGuests = [];
-        event.participants.forEach((participant) => {
-          const availForThatParticipant = flattenedAvailability[participant.userId._id];
-          const guest = {};
-          guest[participant.userId._id] = participant.userId.name;
-          if (availForThatParticipant.indexOf(dateHourForCell.unix()) > -1) {
-            guests.push(guest);
-          } else {
-            notGuests.push(guest);
-          }
-        });
+        const listGuests =
+          createGuestNotGuestList(event.participants, flattenedAvailability, dateHourForCell);
         return {
           time: dateHourForCell.toDate(),
-          participants: guests,
-          notParticipants: notGuests,
+          participants: listGuests.guests,
+          notParticipants: listGuests.notGuests,
         };
       }),
     });

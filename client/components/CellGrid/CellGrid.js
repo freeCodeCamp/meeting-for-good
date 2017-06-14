@@ -43,7 +43,7 @@ class CellGrid extends Component {
       return '#000000';
     }
     if (participants.length > 0) {
-      return '#DADADA';
+      return '#AECDE0';
     }
     return 'transparent';
   }
@@ -58,15 +58,22 @@ class CellGrid extends Component {
 
   componentWillMount() {
     const {
-      date, participants, heatMapMode, rowIndex, columnIndex, heightlightedUser } = this.props;
+      date, participants, heatMapMode, rowIndex, columnIndex, heightlightedUser, disable,
+    } = this.props;
     this.setState({
-      date: moment(date), participants, heatMapMode, rowIndex, columnIndex, heightlightedUser,
+      date: moment(date),
+      participants,
+      heatMapMode,
+      rowIndex,
+      columnIndex,
+      heightlightedUser,
+      disable,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { date, participants, heatMapMode, heightlightedUser } = nextProps;
-    this.setState({ date: moment(date), participants, heatMapMode, heightlightedUser });
+    const { date, participants, heatMapMode, heightlightedUser, disable } = nextProps;
+    this.setState({ date: moment(date), participants, heatMapMode, heightlightedUser, disable });
   }
 
   render() {
@@ -102,6 +109,7 @@ CellGrid.defaultProps = {
   rowIndex: 0,
   columnIndex: 0,
   heightlightedUser: '',
+  disable: false,
 };
 
 CellGrid.propTypes = {
@@ -117,6 +125,7 @@ CellGrid.propTypes = {
   columnIndex: PropTypes.number,
   heightlightedUser: PropTypes.string,
   gridJump: PropTypes.bool.isRequired,
+  disable: PropTypes.bool,
 
   // Current user
   curUser: PropTypes.shape({
