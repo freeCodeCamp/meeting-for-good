@@ -50,16 +50,13 @@ class SnackBarGrid extends Component {
     const { createMsgHeaderSnackBar } = this.constructor;
     const { guests, noGuests } = this.props;
     const interactor = (guests.length > noGuests.length) ? guests : noGuests;
-    const inlineStyles = {
-      backgroundColor: 'transparent',
+    const inlineStyles = { backgroundColor: 'transparent',
       maxWidth: '100%',
-      tableRow: {
-        borderBottom: 'none',
+      tableRow: { borderBottom: 'none',
         borderTop: 'none',
         height: '30px',
         lineHeight: '30px',
-        tableRowColumn: {
-          height: '30px',
+        tableRowColumn: { height: '30px',
           lineHeight: '30px',
           textAlign: 'center',
           borderBottom: 'none',
@@ -76,10 +73,10 @@ class SnackBarGrid extends Component {
           {interactor.map((inter, index) =>
           (
             <TableRow key={`${inter} ${Math.random()}`} style={inlineStyles.tableRow}>
-              <TableRowColumn style={inlineStyles.tableBody.tableRow.tableRowColumn}>
+              <TableRowColumn style={inlineStyles.tableRow.tableRowColumn}>
                 {guests[index]}
               </TableRowColumn>
-              <TableRowColumn style={inlineStyles.tableBody.tableRowColumn}>
+              <TableRowColumn style={inlineStyles.tableRow.tableRowColumn}>
                 {noGuests[index]}
               </TableRowColumn>
             </TableRow>
