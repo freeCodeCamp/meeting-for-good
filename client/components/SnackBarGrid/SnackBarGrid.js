@@ -50,7 +50,6 @@ class SnackBarGrid extends Component {
     const { createMsgHeaderSnackBar } = this.constructor;
     const { guests, noGuests } = this.props;
     const interactor = (guests.length > noGuests.length) ? guests : noGuests;
-
     const inlineStyles = {
       backgroundColor: 'transparent',
       maxWidth: '100%',
