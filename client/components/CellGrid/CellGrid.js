@@ -31,7 +31,10 @@ class CellGrid extends Component {
     return style;
   }
 
-  static formatCellBackgroundColor(heatMapMode, participants, backgroundColors, curUser) {
+  static formatCellBackgroundColor(heatMapMode, participants, backgroundColors, curUser, disable) {
+    if (disable) {
+      return '#DADADA';
+    }
     if (heatMapMode) {
       if (participants.length > 0) {
         return backgroundColors[participants.length - 1];
@@ -77,7 +80,7 @@ class CellGrid extends Component {
   }
 
   render() {
-    const { date, participants, heatMapMode, heightlightedUser } = this.state;
+    const { date, participants, heatMapMode, heightlightedUser, disable } = this.state;
     const { backgroundColors, curUser, gridJump } = this.props;
     const { formatCellBackgroundColor, styleNameCompose } = this.constructor;
 
@@ -86,7 +89,7 @@ class CellGrid extends Component {
 
     const inlineStyle = {
       backgroundColor: formatCellBackgroundColor(
-        heatMapMode, participants, backgroundColors, curUser),
+        heatMapMode, participants, backgroundColors, curUser, disable),
     };
 
     return (

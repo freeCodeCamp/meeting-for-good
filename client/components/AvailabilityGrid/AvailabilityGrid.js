@@ -131,6 +131,7 @@ class AvailabilityGrid extends Component {
   @autobind
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
+    if (quarter.disable) return;
     const { showHeatmap, mouseDown, editOperation, cellInitialRow, cellInitialColumn } = this.state;
     const { curUser } = this.props;
     if (!showHeatmap) {
@@ -257,6 +258,7 @@ class AvailabilityGrid extends Component {
           rowIndex={rowIndex}
           columnIndex={columnIndex}
           heightlightedUser={this.props.heightlightedUser}
+          disable={quarter.disable}
         />
       );
     });

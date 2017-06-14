@@ -5,6 +5,18 @@ import chroma from 'chroma-js';
 
 const moment = extendMoment(Moment);
 
+const datesMinMax = (event) => {
+  let dates = _.cloneDeep(event.dates);
+  dates = _.flatMap(dates, v => [v.fromDate, v.toDate]);
+  dates.sort((a, b) => moment(a).isAfter(moment(b)));
+  return { max: moment(dates[dates.length - 1]), min: moment(dates[0]) };
+};
+
+/**
+ * creaates slots of 15 minutes for a range of availability
+ * @param {*} from inicial time for that range
+ * @param {*} to end time for that range
+ */
 const rangeForAvailability = (from, to) => {
   const datesRange = moment.range([moment(from).startOf('minute'), moment(to).startOf('minute')]);
   const quartersFromDtRange = Array.from(datesRange.by('minutes', {
@@ -126,6 +138,7 @@ const createGuestNotGuestList = (participants, flattenedAvailability, dateHourFo
  * @param {Object} event
  */
 export const createGridComplete = (allDates, allTimes, event) => {
+  const dtsMinMax = datesMinMax(event);
   const grid = [];
   const flattenedAvailability = flattenedAvailabilitys(event);
   allDates.forEach((date) => {
@@ -135,6 +148,14 @@ export const createGridComplete = (allDates, allTimes, event) => {
         const dateHourForCell = moment(date)
           .hour(moment(quarter).hour())
           .minute(moment(quarter).minute()).startOf('minute');
+        if (dateHourForCell.isAfter(dtsMinMax.max) || dateHourForCell.isBefore(dtsMinMax.min)) {
+          return {
+            time: dateHourForCell.toDate(),
+            participants: [],
+            notParticipants: [],
+            disable: true,
+          };
+        }
         const listGuests =
           createGuestNotGuestList(event.participants, flattenedAvailability, dateHourForCell);
         return {
