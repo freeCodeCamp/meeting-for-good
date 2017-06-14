@@ -17,98 +17,67 @@ import styles from './snack-bar-grid.css';
 
 class SnackBarGrid extends Component {
 
+  static createMsgHeaderSnackBar() {
+    const inlineStyles = {
+      tableHeader: { tableRow: { tableHeaderColumn: {
+        textAlign: 'center',
+        fontSize: '20px',
+        color: '#000000',
+        iconStyles: { margin: 0 },
+      } } } };
+
+    return (
+      <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+        <TableRow>
+          <TableHeaderColumn style={inlineStyles.tableHeader.tableRow.tableHeaderColumn} >
+            <ThumbUp style={{ fontSize: '100px' }} viewBox="0 0 28 21" color={'#000000'} />
+            Available
+            </TableHeaderColumn>
+          <TableHeaderColumn style={inlineStyles.tableHeader.tableRow.tableHeaderColumn} >
+            <ThumbDown style={{ fontSize: '24px' }} viewBox="0 0 28 21" color={'#000000'} />
+            Not Available
+            </TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+    );
+  }
+
   createMsgSnackBar() {
+    const { createMsgHeaderSnackBar } = this.constructor;
     const { guests, noGuests } = this.props;
     const interactor = (guests.length > noGuests.length) ? guests : noGuests;
-
-    const inlineStyles = {
-      backgroundColor: 'transparent',
+    const inlineStyles = { backgroundColor: 'transparent',
       maxWidth: '100%',
-      tableHeader: {
-        tableRow: {
-          tableHeaderColumn: {
-            textAlign: 'center',
-            fontSize: '20px',
-            color: '#000000',
-            iconStyles: {
-              margin: 0,
-            },
-          },
-        },
-      },
-      tableBody: {
-        tableRow: {
+      tableRow: { borderBottom: 'none',
+        borderTop: 'none',
+        height: '30px',
+        lineHeight: '30px',
+        tableRowColumn: { height: '30px',
+          lineHeight: '30px',
+          textAlign: 'center',
           borderBottom: 'none',
           borderTop: 'none',
-          height: '30px',
-          lineHeight: '30px',
-          tableRowColumn: {
-            height: '30px',
-            lineHeight: '30px',
-            textAlign: 'center',
-            borderBottom: 'none',
-            borderTop: 'none',
-            fontSize: '15px',
-            color: '#000000',
-          },
-        },
-      },
-    };
+          fontSize: '15px',
+          color: '#000000',
+        } } };
+
     return (
-      <Table
-        style={inlineStyles}
-        selectable={false}
-      >
-        <TableHeader
-          style={inlineStyles.tableHeader}
-          displaySelectAll={false}
-          adjustForCheckbox={false}
-        >
-          <TableRow>
-            <TableHeaderColumn
-              style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
-            >
-              <ThumbUp
-                style={{ fontSize: '100px' }}
-                viewBox="0 0 28 21"
-                color={'#000000'}
-              /> Available
-            </TableHeaderColumn>
-            <TableHeaderColumn
-              style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
-            >
-              <ThumbDown
-                style={{ fontSize: '24px' }}
-                viewBox="0 0 28 21"
-                color={'#000000'}
-              /> Not Available
-            </TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          displayRowCheckbox={false}
-        >{interactor.map((inter, index) =>
+      <Table style={inlineStyles} selectable={false}>
+        {createMsgHeaderSnackBar()}
+        <TableBody displayRowCheckbox={false}>
+          {interactor.map((inter, index) =>
           (
-            <TableRow
-              key={`${inter} ${Math.random()}`}
-              style={inlineStyles.tableBody.tableRow}
-            >
-              <TableRowColumn
-                style={inlineStyles.tableBody.tableRow.tableRowColumn}
-              >
+            <TableRow key={`${inter} ${Math.random()}`} style={inlineStyles.tableRow}>
+              <TableRowColumn style={inlineStyles.tableRow.tableRowColumn}>
                 {guests[index]}
               </TableRowColumn>
-              <TableRowColumn
-                style={inlineStyles.tableBody.tableRow.tableRowColumn}
-              >
+              <TableRowColumn style={inlineStyles.tableRow.tableRowColumn}>
                 {noGuests[index]}
               </TableRowColumn>
             </TableRow>
-          ))
-        }
+          ))}
         </TableBody>
       </Table>
-
     );
   }
 

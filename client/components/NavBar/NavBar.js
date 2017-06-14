@@ -43,13 +43,7 @@ class NavBar extends Component {
 
   componentWillMount() {
     const { location, curUser, isAuthenticated, showPastEvents, events } = this.props;
-    this.setState({
-      curUser,
-      isAuthenticated,
-      userAvatar: curUser.Avatar,
-      showPastEvents,
-      events,
-    });
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents, events });
     this.MenuVisibility(location);
   }
 
@@ -88,25 +82,57 @@ class NavBar extends Component {
     this.props.cbHandleDismissGuest(participantId);
   }
 
+  renderAvatarMenu() {
+    const { curUser, userAvatar, showPastEvents } = this.state;
+    const inLineStyles = {
+      iconMenu: { iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
+        toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } } } };
+
+    return (
+      <IconMenu
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        styleName="iconMenu"
+        iconStyle={inLineStyles.iconMenu.iconStyle}
+        menuItemStyle={{ height: '38px', width: '168px' }}
+        iconButtonElement={
+          <IconButton style={{ padding: 0 }} aria-label="user button">
+            <div>
+              <Avatar size={34} src={userAvatar} alt={nameInitials(curUser.name)} />
+              <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
+            </div>
+          </IconButton>}
+      >
+        <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
+          <Toggle
+            label={'Past Events'}
+            toggled={showPastEvents}
+            styleName="Toggle"
+            labelStyle={inLineStyles.iconMenu.toggle.label}
+            thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
+            onToggle={this.handleFilterToggle}
+          />
+        </MenuItem >
+        <Divider styleName="Divider" />
+        <MenuItem
+          onClick={this.handleAboutDialog}
+          styleName="AboutButton"
+          primaryText="About"
+          style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
+        />
+        <MenuItem
+          href={'/api/auth/logout'}
+          styleName="LogoutButton"
+          primaryText="Logout"
+          style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
+        />
+      </IconMenu>
+    );
+  }
+
   renderRightGroup() {
     const { toggleVisible } = this.state;
     const inLineStyles = {
-      iconMenu: {
-        iconStyle: {
-          minWidth: 70,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        },
-        toggle: {
-          label: {
-            fontSize: '18px',
-          },
-          thumbSwitched: {
-            backgroundColor: 'red',
-          },
-        },
-      },
       loginButton: {
         label: {
           fontWeight: 200,
@@ -114,7 +140,7 @@ class NavBar extends Component {
         },
       },
     };
-    const { isAuthenticated, curUser, userAvatar, showPastEvents, events } = this.state;
+    const { isAuthenticated, curUser, events } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -137,52 +163,7 @@ class NavBar extends Component {
             </FlatButton>
             : null
           }
-          <IconMenu
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            styleName="iconMenu"
-            iconStyle={inLineStyles.iconMenu.iconStyle}
-            menuItemStyle={{ height: '38px', width: '168px' }}
-            iconButtonElement={
-              <IconButton style={{ padding: 0 }} aria-label="user button">
-                <div>
-                  <Avatar
-                    size={34}
-                    src={userAvatar}
-                    alt={nameInitials(curUser.name)}
-                  />
-                  <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
-                </div>
-              </IconButton>}
-          >
-            <MenuItem
-              style={{ maxHeight: '30px', minHeight: '20px' }}
-            >
-              <Toggle
-                label={'Past Events'}
-                toggled={showPastEvents}
-                styleName="Toggle"
-                labelStyle={inLineStyles.iconMenu.toggle.label}
-                thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
-                onToggle={this.handleFilterToggle}
-              />
-            </MenuItem >
-            <Divider
-              styleName="Divider"
-            />
-            <MenuItem
-              onClick={this.handleAboutDialog}
-              styleName="AboutButton"
-              primaryText="About"
-              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
-            />
-            <MenuItem
-              href={'/api/auth/logout'}
-              styleName="LogoutButton"
-              primaryText="Logout"
-              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
-            />
-          </IconMenu>
+          {this.renderAvatarMenu()}
         </ToolbarGroup>
       );
     }
@@ -203,42 +184,15 @@ class NavBar extends Component {
 
   renderDialog() {
     const { openModal } = this.state;
-    const actions = [
-      <FlatButton
-        label="close"
-        primary
-        onTouchTap={() => this.setState({ openModal: false })}
-      />,
-    ];
+    const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
     const inlineStyles = {
-      modal: {
-        content: {
-          width: '630px',
-          maxWidth: '630px',
-        },
-        bodyStyle: {
-          paddingTop: 10,
-          fontSize: '25px',
-        },
-      },
-    };
-    const titleStyle = {
-      color: 'green',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: '20px',
-    };
-    const versionStyle = {
-      textAlign: 'center',
-      marginBottom: '20px',
-    };
-    const descStyle = {
-      textAlign: 'center',
-      marginBottom: '40px',
-    };
-    const commentsStyle = {
-      textAlign: 'center',
-    };
+      modal: { content: { width: '630px', maxWidth: '630px' },
+        bodyStyle: { paddingTop: 10, fontSize: '25px' },
+      } };
+    const titleStyle = { color: 'green', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' };
+    const versionStyle = { textAlign: 'center', marginBottom: '20px' };
+    const descStyle = { textAlign: 'center', marginBottom: '40px' };
+    const commentsStyle = { textAlign: 'center' };
 
     return (
       <Dialog

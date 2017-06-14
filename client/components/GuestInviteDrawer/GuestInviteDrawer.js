@@ -20,21 +20,12 @@ import _ from 'lodash';
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import nameInitials from '../../util/string.utils';
+import { fullUrl, emailText } from './guestInviteDrawerUtils';
 
 class GuestInviteDrawer extends Component {
   @autobind
   static handleEventLinkClick(id) {
     browserHistory.push(`/event/${id}`);
-  }
-
-  static fullUrl(event) {
-    return `${location.protocol}//${location.hostname}${(location.port ? `:${location.port}` : '')}/event/${event._id}`;
-  }
-
-  static emailText(event) {
-    return `Hey there,%0D%0A%0D%0AUse this tool to let me know your availablility for ${event.name}:
-    %0D%0A%0D%0A${GuestInviteDrawer.fullUrl(event)}
-    %0D%0A%0D%0A All times will be automatically converted to your local timezone.`;
   }
 
   constructor(props) {
@@ -215,7 +206,6 @@ class GuestInviteDrawer extends Component {
 
   renderUrlActions() {
     const { event } = this.state;
-    const { emailText, fullUrl } = this.constructor;
     const focusUrlTextField = (input) => {
       if (input) {
         if (this.state.setFocusFullUrl) {
@@ -256,37 +246,41 @@ class GuestInviteDrawer extends Component {
     );
   }
 
-  render() {
-    const { open, event, snackbarOpen, searchText, snackbarMsg,
-      linearProgressVisible } = this.state;
+  renderSnackBar() {
+    const { snackbarOpen, snackbarMsg } = this.state;
     const inLineStyles = {
-      drawer: {
-        container: {
-          paddingLeft: '9px',
-          paddingRight: '10px',
+      snackbar: {
+        bodyStyle: {
+          height: 'flex',
         },
-        textField: {
-          floatingLabel: {
-            fontSize: '15px',
-            paddingLeft: 8,
-          },
-        },
-        inviteButton: {
-          paddingTop: '15px',
-        },
-        snackbar: {
-          bodyStyle: {
-            height: 'flex',
-          },
-          contentStyle: {
-            borderBottom: '0.2px solid',
-          },
-        },
-        linearProgress: {
-          visibility: linearProgressVisible,
+        contentStyle: {
+          borderBottom: '0.2px solid',
         },
       },
     };
+    return (
+      <Snackbar
+        styleName="Snackbar"
+        bodyStyle={inLineStyles.snackbar.bodyStyle}
+        contentStyle={inLineStyles.snackbar.contentStyle}
+        open={snackbarOpen}
+        message={snackbarMsg}
+        action="Dismiss"
+        autoHideDuration={3000}
+        onActionTouchTap={this.handleSnackbarRequestClose}
+        onRequestClose={this.handleSnackbarRequestClose}
+      />
+    );
+  }
+
+  render() {
+    const { open, event, searchText,
+      linearProgressVisible } = this.state;
+    const inLineStyles = {
+      drawer: { container: { paddingLeft: '9px', paddingRight: '10px' },
+        textField: { floatingLabel: { fontSize: '15px', paddingLeft: 8 } },
+        inviteButton: { paddingTop: '15px' },
+        linearProgress: { visibility: linearProgressVisible } } };
 
     return (
       <Drawer
@@ -316,24 +310,8 @@ class GuestInviteDrawer extends Component {
         <Infinite elementHeight={58} containerHeight={174}>
           {this.renderRows()}
         </Infinite>
-        <RaisedButton
-          label="Invite"
-          styleName="inviteButton"
-          onTouchTap={this.handleInvite}
-          fullWidth
-          primary
-        />
-        <Snackbar
-          styleName="Snackbar"
-          bodyStyle={inLineStyles.drawer.snackbar.bodyStyle}
-          contentStyle={inLineStyles.drawer.snackbar.contentStyle}
-          open={snackbarOpen}
-          message={snackbarMsg}
-          action="Dismiss"
-          autoHideDuration={3000}
-          onActionTouchTap={this.handleSnackbarRequestClose}
-          onRequestClose={this.handleSnackbarRequestClose}
-        />
+        <RaisedButton label="Invite" styleName="inviteButton" onTouchTap={this.handleInvite} fullWidth primary />
+        {this.renderSnackBar()}
       </Drawer>
     );
   }
