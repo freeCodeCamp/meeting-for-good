@@ -19,17 +19,13 @@ class SnackBarGrid extends Component {
 
   static createMsgHeaderSnackBar() {
     const inlineStyles = {
-      tableHeader: {
-        tableRow: {
-          tableHeaderColumn: {
-            textAlign: 'center',
-            fontSize: '20px',
-            color: '#000000',
-            iconStyles: { margin: 0 },
-          },
-        },
-      },
-    };
+      tableHeader: { tableRow: { tableHeaderColumn: {
+        textAlign: 'center',
+        fontSize: '20px',
+        color: '#000000',
+        iconStyles: { margin: 0 },
+      } } } };
+
     return (
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
