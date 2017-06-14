@@ -31,28 +31,15 @@ class SnackBarGrid extends Component {
       },
     };
     return (
-      <TableHeader
-        displaySelectAll={false}
-        adjustForCheckbox={false}
-      >
+      <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
-          <TableHeaderColumn
-            style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
-          >
-            <ThumbUp
-              style={{ fontSize: '100px' }}
-              viewBox="0 0 28 21"
-              color={'#000000'}
-            /> Available
+          <TableHeaderColumn style={inlineStyles.tableHeader.tableRow.tableHeaderColumn} >
+            <ThumbUp style={{ fontSize: '100px' }} viewBox="0 0 28 21" color={'#000000'} />
+            Available
             </TableHeaderColumn>
-          <TableHeaderColumn
-            style={inlineStyles.tableHeader.tableRow.tableHeaderColumn}
-          >
-            <ThumbDown
-              style={{ fontSize: '24px' }}
-              viewBox="0 0 28 21"
-              color={'#000000'}
-            /> Not Available
+          <TableHeaderColumn style={inlineStyles.tableHeader.tableRow.tableHeaderColumn} >
+            <ThumbDown style={{ fontSize: '24px' }} viewBox="0 0 28 21" color={'#000000'} />
+            Not Available
             </TableHeaderColumn>
         </TableRow>
       </TableHeader>
