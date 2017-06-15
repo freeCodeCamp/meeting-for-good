@@ -207,12 +207,7 @@ class EventDetailsComponent extends React.Component {
     const inLineStyles = {
       snackBar: {
         border: '5px solid #fffae6',
-        contentSyle: {
-          fontSize: '16px',
-          textAlign: 'center',
-        },
-      },
-    };
+        contentSyle: { fontSize: '16px', textAlign: 'center' } } };
 
     return (
       <div styleName="wrapper">

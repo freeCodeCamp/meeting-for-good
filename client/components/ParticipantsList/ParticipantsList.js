@@ -98,7 +98,7 @@ class ParticipantsList extends Component {
         key={participant._id}
         styleName={(location.pathname === '/dashboard') ? 'chip' : 'chipHover'}
         labelStyle={{ flexGrow: 100 }}
-        onRequestDelete={onRequestDeleteEnable()}
+        onRequestDelete={onRequestDeleteEnable}
         onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
         onMouseLeave={this.props.cbOnChipMouseLeave}
       >
