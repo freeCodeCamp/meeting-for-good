@@ -11,6 +11,7 @@ import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 import SelectedDatesEditor from '../../components/SelectedDatesEditor/SelectedDatesEditor';
+import { allDates, allRanges, isCurParticip } from './EventDetailsComponentUtil';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -19,21 +20,10 @@ class EventDetailsComponent extends React.Component {
       participant => participant.userId._id,
     );
     const { event } = props;
-
-    const ranges = event.dates.map(({ fromDate, toDate }) => ({
-      from: new Date(fromDate),
-      to: new Date(toDate),
-    }));
-
-    const dates = event.dates.map(({ fromDate, toDate }) => ({
-      fromDate: new Date(fromDate),
-      toDate: new Date(toDate),
-    }));
-
     this.state = {
       event,
-      ranges,
-      dates,
+      ranges: allRanges(event),
+      dates: allDates(event),
       eventParticipantsIds,
       showHeatmap: false,
       myAvailability: [],
@@ -55,9 +45,7 @@ class EventDetailsComponent extends React.Component {
       let myAvailability = [];
       const isOwner = event.owner === curUser._id;
       // find actual user participant record
-      const isCurParticipant = event.participants.find(participant =>
-        participant.userId._id === curUser._id,
-      );
+      const isCurParticipant = isCurParticip(curUser, event);
       // if curUser have aviability show heatMap
       if (isCurParticipant) {
         if (isCurParticipant.availability) {
@@ -81,10 +69,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const dates = nextProps.event.dates.map(({ fromDate, toDate }) => ({
-      fromDate: new Date(fromDate),
-      toDate: new Date(toDate),
-    }));
+    const dates = allDates(nextProps.event);
     this.setState({ event: nextProps.event, dates });
   }
 
