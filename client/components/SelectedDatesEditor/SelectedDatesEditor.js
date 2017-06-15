@@ -153,10 +153,8 @@ class SelectedDatesEditor extends Component {
       participant.availability = eventAvailFilter.participants[index].availability;
     });
     const patchesforAddAvail = jsonpatch.generate(observerEvent);
-    const patches = _.concat(patchforDelete,
-      patchesforAddDates,
-      patchesforDeleteAvail,
-      patchesforAddAvail);
+    const patches =
+      _.concat(patchforDelete, patchesforAddDates, patchesforDeleteAvail, patchesforAddAvail);
     try {
       await this.props.submitDates(patches);
     } catch (err) {
@@ -207,36 +205,18 @@ class SelectedDatesEditor extends Component {
         actions={actions}
         styleName="DialogWarningDate"
       >
-        <p>
-          {'Perhaps you are deleting some existing availabilities.'}
-        </p>
-        <p>
-          {'Are you sure you want to edit this/these dates? '}
-        </p>
+        <p> {'Perhaps you are deleting some existing availabilities.'} </p>
+        <p> {'Are you sure you want to edit this/these dates? '}</p>
       </Dialog>
     );
   }
 
   renderDialogMinimumDate() {
     const { dialogMinimumDateOpen } = this.state;
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary
-        onTouchTap={() => this.setState({ dialogMinimumDateOpen: false })}
-      />,
-    ];
+    const actions = [<FlatButton label="Cancel" primary onTouchTap={() => this.setState({ dialogMinimumDateOpen: false })} />];
     return (
-      <Dialog
-        title="Warning"
-        styleName="DialogWarningMin"
-        open={dialogMinimumDateOpen}
-        actions={actions}
-      >
-        <p>
-          {'You need at least one date.'}
-        </p>
-
+      <Dialog title="Warning" styleName="DialogWarningMin" open={dialogMinimumDateOpen} actions={actions} >
+        <p> {'You need at least one date.'} </p>
       </Dialog>
     );
   }
