@@ -25,6 +25,7 @@ export const styleNameCompose = (
 };
 
 export const formatCellBackgroundColor = (heatMapMode, backgroundColors, curUser, quarter) => {
+  // background for disabled cells
   if (quarter.disable) {
     return '#DADADA';
   }

@@ -43,6 +43,7 @@ class EventDetailsComponent extends React.Component {
       snackBarOpen: false,
       snackBarMsg: '',
       heightlightedUser: '',
+      isOwner: false,
     };
   }
 
@@ -52,7 +53,7 @@ class EventDetailsComponent extends React.Component {
       let showHeatmap = false;
       let showAvailabilityGrid = 'block';
       let myAvailability = [];
-
+      const isOwner = event.owner === curUser._id;
       // find actual user participant record
       const isCurParticipant = event.participants.find(participant =>
         participant.userId._id === curUser._id,
@@ -75,7 +76,7 @@ class EventDetailsComponent extends React.Component {
           snackBarMsg: 'Please add your availability to join the event.',
         });
       }
-      this.setState({ showHeatmap, showAvailabilityGrid, myAvailability });
+      this.setState({ showHeatmap, showAvailabilityGrid, myAvailability, isOwner });
     }
   }
 
@@ -193,35 +194,46 @@ class EventDetailsComponent extends React.Component {
     this.setState({ heightlightedUser: '' });
   }
 
+  renderSnackBar() {
+    const { snackBarOpen, snackBarMsg } = this.state;
+    return (
+      <Snackbar
+        style={{ border: '5px solid #fffae6' }}
+        bodyStyle={{ height: 'flex' }}
+        contentStyle={{ fontSize: '16px', textAlign: 'center' }}
+        open={snackBarOpen}
+        message={snackBarMsg}
+        action="dismiss"
+        autoHideDuration={5000}
+        onRequestClose={this.handleSnackBarRequestClose}
+        onActionTouchTap={this.handleSnackBarRequestClose}
+      />
+    );
+  }
+
+  renderDeleteButton() {
+    const { isOwner, event } = this.state;
+    return (isOwner) ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null;
+  }
+
+  renderEditDatesButton() {
+    const { isOwner, event } = this.state;
+    return (isOwner) ?
+      <SelectedDatesEditor event={event} submitDates={this.submitEditDates} /> : null;
+  }
+
   render() {
-    const {
-      event, showHeatmap, dates, snackBarOpen, snackBarMsg, heightlightedUser,
-    } = this.state;
+    const { event, showHeatmap, dates, heightlightedUser } = this.state;
     const { curUser } = this.props;
-    let isOwner;
-    // check if the curUser is owner
-    if (curUser !== undefined) {
-      isOwner = event.owner === curUser._id;
-    }
-
-    const inLineStyles = {
-      snackBar: {
-        border: '5px solid #fffae6',
-        contentSyle: { fontSize: '16px', textAlign: 'center' } } };
-
     return (
       <div styleName="wrapper">
         <div>
           <Card styleName="card">
-            {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null}
+            {this.renderDeleteButton()}
             <CardTitle styleName="cardTitle">{event.name}</CardTitle>
             <CardText>
               <BestTimesDisplay event={event} disablePicker />
-              {isOwner ?
-                <SelectedDatesEditor
-                  event={event}
-                  submitDates={this.submitEditDates}
-                /> : null}
+              {this.renderEditDatesButton()}
               <AvailabilityGrid
                 event={event}
                 curUser={curUser}
@@ -244,17 +256,7 @@ class EventDetailsComponent extends React.Component {
             </CardText>
           </Card>
         </div>
-        <Snackbar
-          style={inLineStyles.snackBar}
-          bodyStyle={{ height: 'flex' }}
-          contentStyle={inLineStyles.snackBar.contentSyle}
-          open={snackBarOpen}
-          message={snackBarMsg}
-          action="dismiss"
-          autoHideDuration={5000}
-          onRequestClose={this.handleSnackBarRequestClose}
-          onActionTouchTap={this.handleSnackBarRequestClose}
-        />
+        {this.renderSnackBar()}
       </div>
     );
   }

@@ -35,18 +35,12 @@ class NewEvent extends React.Component {
   constructor() {
     super();
     this.state = {
-      ranges: [{
-        from: moment().startOf('date')._d,
-        to: moment().startOf('date')._d,
-      }],
+      ranges: [{ from: moment().startOf('date')._d, to: moment().startOf('date')._d }],
       eventName: '',
       selectedTimeRange: [9, 17],
       disableSubmit: true,
       curUser: {},
-      value4: {
-        min: 5,
-        max: 10,
-      },
+      value4: { min: 5, max: 10 },
     };
   }
 
@@ -101,13 +95,7 @@ class NewEvent extends React.Component {
   @autobind
   handleResetClick(e) {
     e.preventDefault();
-    this.setState({
-      ranges: [{
-        from: null,
-        to: null,
-      }],
-      disableSubmit: true,
-    });
+    this.setState({ ranges: [{ from: null, to: null }], disableSubmit: true });
   }
 
   @autobind
@@ -189,21 +177,6 @@ class NewEvent extends React.Component {
 
   render() {
     const { eventName, selectedTimeRange, disableSubmit } = this.state;
-
-    const inLineStyles = {
-      card: {
-        textField: {
-          floatingLabelStyle: {
-            color: '#000000',
-            fontSize: '24px',
-          },
-          floatingLabelFocusStyle: {
-            color: '#26A69A',
-          },
-        },
-      },
-    };
-
     return (
       <div styleName="wrapper">
         <Card styleName="card">
@@ -212,8 +185,8 @@ class NewEvent extends React.Component {
             <form>
               <TextField
                 fullWidth
-                floatingLabelStyle={inLineStyles.card.textField.floatingLabelStyle}
-                floatingLabelFocusStyle={inLineStyles.card.textField.floatingLabelFocusStyle}
+                floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
+                floatingLabelFocusStyle={{ color: '#26A69A' }}
                 styleName="textField"
                 id="event_name"
                 value={eventName}

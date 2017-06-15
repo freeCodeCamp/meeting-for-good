@@ -138,7 +138,7 @@ class BestTimeDisplay extends Component {
   renderArrow() {
     const { showAllDates } = this.state;
     const inlineStyle = { arrow: { fontSize: '18px', transform: 'scale(18, 2)' } };
-    return (showAllDates) ?
+    return (!showAllDates) ?
       (<KeyBoardArrowDown style={inlineStyle.arrow} color="#f2f2f2" />) :
       (<KeyBoardArrowUp style={inlineStyle.arrow} color="#f2f2f2" />);
   }
