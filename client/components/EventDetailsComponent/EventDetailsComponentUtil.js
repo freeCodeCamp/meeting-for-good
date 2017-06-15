@@ -1,8 +1,8 @@
-export const eventAllParticipantsIds = event => event.participants.map(
+export const eventAllParticipIds = event => event.participants.map(
     participant => participant.userId._id);
 
 
-export const allDates = event => event.dates.map(({ fromDate, toDate }) =>
+export const datesToDatesObject = event => event.dates.map(({ fromDate, toDate }) =>
   ({
     fromDate: new Date(fromDate),
     toDate: new Date(toDate),

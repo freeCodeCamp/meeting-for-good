@@ -11,19 +11,16 @@ import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 import SelectedDatesEditor from '../../components/SelectedDatesEditor/SelectedDatesEditor';
-import { allDates, isCurParticip } from './EventDetailsComponentUtil';
+import { datesToDatesObject, isCurParticip, eventAllParticipIds } from './EventDetailsComponentUtil';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
-    const eventParticipantsIds = props.event.participants.map(
-      participant => participant.userId._id,
-    );
     const { event } = props;
     this.state = {
       event,
-      dates: allDates(event),
-      eventParticipantsIds,
+      dates: datesToDatesObject(event),
+      eventParticipantsIds: eventAllParticipIds(event),
       showHeatmap: false,
       myAvailability: [],
       showButtonAviability: 'none',
@@ -68,7 +65,7 @@ class EventDetailsComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const dates = allDates(nextProps.event);
+    const dates = datesToDatesObject(nextProps.event);
     this.setState({ event: nextProps.event, dates });
   }
 
@@ -143,12 +140,6 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  handleDelete() {
-    const { event } = this.state;
-    this.props.cbDeleteEvent(event._id);
-  }
-
-  @autobind
   async handleDeleteGuest(guestToDelete) {
     const nEvent = await this.props.cbDeleteGuest(guestToDelete);
     this.setState({ event: nEvent });
@@ -158,16 +149,6 @@ class EventDetailsComponent extends React.Component {
   @autobind
   handleSnackBarRequestClose() {
     this.setState({ snackBarOpen: false });
-  }
-
-  @autobind
-  handleOnMouseOverPrtcList(guest) {
-    this.setState({ heightlightedUser: guest });
-  }
-
-  @autobind
-  handleOnMouseLeavePrtcList() {
-    this.setState({ heightlightedUser: '' });
   }
 
   renderSnackBar() {
@@ -189,7 +170,9 @@ class EventDetailsComponent extends React.Component {
 
   renderDeleteButton() {
     const { isOwner, event } = this.state;
-    return (isOwner) ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null;
+    const { cbDeleteEvent } = this.props;
+    return (isOwner) ? <DeleteModal event={event} cbEventDelete={() => cbDeleteEvent(event._id)} />
+      : null;
   }
 
   renderEditDatesButton() {
@@ -226,8 +209,8 @@ class EventDetailsComponent extends React.Component {
                 curUser={curUser}
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
                 cbDeleteGuest={this.handleDeleteGuest}
-                cbOnChipMouseOver={guest => this.handleOnMouseOverPrtcList(guest)}
-                cbOnChipMouseLeave={guest => this.handleOnMouseLeavePrtcList(guest)}
+                cbOnChipMouseOver={guest => this.setState({ heightlightedUser: guest })}
+                cbOnChipMouseLeave={this.setState({ heightlightedUser: '' })}
               />
             </CardText>
           </Card>
