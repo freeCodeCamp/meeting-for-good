@@ -6,16 +6,11 @@ const moment = extendMoment(Moment);
 
 export const filterAvailabilitysOutsideDatesRange = (event) => {
   const nEvent = _.cloneDeep(event);
-  // clear all availiability of each participant at nEvent
-  // so i can push only the valid ones
-  nEvent.participants.forEach((participant) => {
-    if (participant.availability.length > 0) participant.availability = [];
-  },
-  );
   // only push availability on range
   event.dates.forEach((date) => {
     const rangeDates = moment.range(moment(date.fromDate), moment(date.toDate));
     event.participants.forEach((participant, index) => {
+      nEvent.participants[index].availability = [];
       participant.availability.forEach((avail) => {
         const rangeAvail = moment.range(moment(avail[0]), moment(avail[1]));
         if (rangeAvail.overlaps(rangeDates, { adjacent: false })) {
@@ -26,7 +21,6 @@ export const filterAvailabilitysOutsideDatesRange = (event) => {
   });
   return nEvent;
 };
-
 
 const sortDateArray = datesArray => datesArray.sort((a, b) => {
   const x = moment(a).unix();
