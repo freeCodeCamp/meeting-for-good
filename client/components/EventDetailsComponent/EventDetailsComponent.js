@@ -146,11 +146,6 @@ class EventDetailsComponent extends React.Component {
     return nEvent;
   }
 
-  @autobind
-  handleSnackBarRequestClose() {
-    this.setState({ snackBarOpen: false });
-  }
-
   renderSnackBar() {
     const { snackBarOpen, snackBarMsg } = this.state;
     return (
@@ -162,8 +157,8 @@ class EventDetailsComponent extends React.Component {
         message={snackBarMsg}
         action="dismiss"
         autoHideDuration={5000}
-        onRequestClose={this.handleSnackBarRequestClose}
-        onActionTouchTap={this.handleSnackBarRequestClose}
+        onRequestClose={this.setState({ snackBarOpen: false })}
+        onActionTouchTap={this.setState({ snackBarOpen: false })}
       />
     );
   }
