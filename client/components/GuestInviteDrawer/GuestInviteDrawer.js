@@ -59,11 +59,7 @@ class GuestInviteDrawer extends Component {
 
   async loadPastGuests() {
     this.setState({ linearProgressVisible: 'visible' });
-
-    const response = await fetch('/api/user/relatedUsers', {
-      credentials: 'same-origin',
-    });
-
+    const response = await fetch('/api/user/relatedUsers', { credentials: 'same-origin' });
     let guests;
     try {
       checkStatus(response);
@@ -83,9 +79,7 @@ class GuestInviteDrawer extends Component {
     const { activeCheckBoxes } = this.state;
     let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
     if (nActiveCheckBoxes.includes(id)) {
-      this.setState({
-        activeCheckBoxes: nActiveCheckBoxes.filter(x => x !== id),
-      });
+      this.setState({ activeCheckBoxes: nActiveCheckBoxes.filter(x => x !== id) });
     } else {
       nActiveCheckBoxes = [...nActiveCheckBoxes, id];
       this.setState({ activeCheckBoxes: nActiveCheckBoxes });
@@ -123,10 +117,7 @@ class GuestInviteDrawer extends Component {
     });
 
     clipboard.on('success', (e) => {
-      this.setState({
-        snackbarOpen: true,
-        snackbarMsg: `${event.name} link copied to clipboard!`,
-      });
+      this.setState({ snackbarOpen: true, snackbarMsg: `${event.name} link copied to clipboard!` });
       e.clearSelection();
     });
   }
@@ -222,21 +213,11 @@ class GuestInviteDrawer extends Component {
 
   renderSnackBar() {
     const { snackbarOpen, snackbarMsg } = this.state;
-    const inLineStyles = {
-      snackbar: {
-        bodyStyle: {
-          height: 'flex',
-        },
-        contentStyle: {
-          borderBottom: '0.2px solid',
-        },
-      },
-    };
     return (
       <Snackbar
         styleName="Snackbar"
-        bodyStyle={inLineStyles.snackbar.bodyStyle}
-        contentStyle={inLineStyles.snackbar.contentStyle}
+        bodyStyle={{ height: 'flex' }}
+        contentStyle={{ borderBottom: '0.2px solid' }}
         open={snackbarOpen}
         message={snackbarMsg}
         action="Dismiss"
