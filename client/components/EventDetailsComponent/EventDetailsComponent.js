@@ -11,7 +11,7 @@ import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 import SelectedDatesEditor from '../../components/SelectedDatesEditor/SelectedDatesEditor';
-import { allDates, allRanges, isCurParticip } from './EventDetailsComponentUtil';
+import { allDates, isCurParticip } from './EventDetailsComponentUtil';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -22,7 +22,6 @@ class EventDetailsComponent extends React.Component {
     const { event } = props;
     this.state = {
       event,
-      ranges: allRanges(event),
       dates: allDates(event),
       eventParticipantsIds,
       showHeatmap: false,
@@ -75,16 +74,12 @@ class EventDetailsComponent extends React.Component {
 
   async sendEmailOwner(event) {
     const response = this.props.cbHandleEmailOwner(event);
-    if (!response) {
-      console.log('sendEmailOwner error');
-    }
+    if (!response) console.log('sendEmailOwner error');
   }
 
   async sendEmailOwnerEdit(event) {
     const response = this.props.cbHandleEmailOwnerEdit(event);
-    if (!response) {
-      console.log('sendEmailOwnerEdit error');
-    }
+    if (!response) console.log('sendEmailOwnerEdit error');
   }
 
   @autobind
@@ -121,9 +116,7 @@ class EventDetailsComponent extends React.Component {
     );
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
     if (responseEvent) {
-      const me = responseEvent.participants.find(participant =>
-        participant.userId._id === curUser._id,
-      );
+      const me = isCurParticip(curUser, responseEvent);
       this.setState({
         showHeatmap: true,
         event: responseEvent,
@@ -164,9 +157,7 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   handleSnackBarRequestClose() {
-    this.setState({
-      snackBarOpen: false,
-    });
+    this.setState({ snackBarOpen: false });
   }
 
   @autobind
