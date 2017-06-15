@@ -71,19 +71,11 @@ class GuestInviteDrawer extends Component {
       this.setState({ guests, guestsToDisplay: guests });
     } catch (err) {
       console.log('loadPassGuests', err);
-      this.setState({
-        snackbarOpen: true,
-        snackbarMsg: 'Error!!, Failed to load guests. Please try again later.',
-      });
+      this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, Failed to load guests. Please try again later.' });
       return;
     } finally {
       this.setState({ linearProgressVisible: 'hidden' });
     }
-  }
-
-  @autobind
-  handleSnackbarRequestClose() {
-    this.setState({ snackbarOpen: false });
   }
 
   @autobind
@@ -96,9 +88,7 @@ class GuestInviteDrawer extends Component {
       });
     } else {
       nActiveCheckBoxes = [...nActiveCheckBoxes, id];
-      this.setState({
-        activeCheckBoxes: nActiveCheckBoxes,
-      });
+      this.setState({ activeCheckBoxes: nActiveCheckBoxes });
     }
   }
 
@@ -114,20 +104,14 @@ class GuestInviteDrawer extends Component {
             nActiveCheckBoxes = nActiveCheckBoxes.filter(x => x !== guest);
           } catch (err) {
             console.log('err at handleInvitem GuestInviteDrawer', err);
-            this.setState({
-              snackbarOpen: true,
-              snackbarMsg: 'Error!!, sending invite for guest',
-            });
+            this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, sending invite for guest' });
           } finally {
             this.setState({ activeCheckBoxes: nActiveCheckBoxes });
           }
         }),
       );
     } else {
-      this.setState({
-        snackbarOpen: true,
-        snackbarMsg: 'Error!!, Please select guests to invite.',
-      });
+      this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, Please select guests to invite.' });
     }
   }
 
@@ -168,20 +152,13 @@ class GuestInviteDrawer extends Component {
   handleSendEmail(ev) {
     if (typeof this.state.event === 'undefined') {
       ev.preventDefault();
-      this.setState({
-        snackbarOpen: true,
-        snackbarMsg: 'error generating email body! Please try reload the page',
-      });
+      this.setState({ snackbarOpen: true, snackbarMsg: 'error generating email body! Please try reload the page' });
     }
   }
 
   renderRows() {
     const { activeCheckBoxes, guestsToDisplay } = this.state;
-    const inLineStyles = {
-      listItem: {
-        borderBottom: '1px solid #D4D4D4',
-      },
-    };
+    const inLineStyles = { listItem: { borderBottom: '1px solid #D4D4D4' } };
     const rows = [];
     guestsToDisplay.forEach((guest) => {
       const row = (
@@ -193,10 +170,7 @@ class GuestInviteDrawer extends Component {
             onCheck={() => this.handleCheck(guest.userId._id)}
             checked={activeCheckBoxes.includes(guest.userId._id)}
           />}
-          rightAvatar={<Avatar
-            src={guest.userId.avatar}
-            alt={nameInitials(guest.userId.name)}
-          />}
+          rightAvatar={<Avatar src={guest.userId.avatar} alt={nameInitials(guest.userId.name)} />}
         />
       );
       rows.push(row);
@@ -267,7 +241,7 @@ class GuestInviteDrawer extends Component {
         message={snackbarMsg}
         action="Dismiss"
         autoHideDuration={3000}
-        onActionTouchTap={this.handleSnackbarRequestClose}
+        onActionTouchTap={() => this.setState({ snackbarOpen: false })}
         onRequestClose={this.handleSnackbarRequestClose}
       />
     );
