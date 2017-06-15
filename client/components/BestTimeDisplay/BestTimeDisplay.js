@@ -151,9 +151,7 @@ class BestTimeDisplay extends Component {
         {this.isBestTime(displayTimes) ?
           <div>
             {renderTzInfo()}
-            <h6 styleName="bestTimeTitle">
-              The following times work for everyone:
-              </h6>
+            <h6 styleName="bestTimeTitle"> The following times work for everyone: </h6>
             {this.renderBestTime()}
             {
               (Object.keys(displayTimes).length > 3) ?
