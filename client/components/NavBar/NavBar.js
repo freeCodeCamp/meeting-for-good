@@ -229,6 +229,13 @@ class NavBar extends Component {
           >
             Meeting for Good
           </FlatButton>
+          <FlatButton
+            href="https://www.freecodecamp.com/donate/"
+            styleName="donateButton"
+            aria-label="Donate"
+          >
+            Donate
+        </FlatButton>
         </ToolbarGroup >
         {this.renderRightGroup()}
         {this.renderDialog()}
