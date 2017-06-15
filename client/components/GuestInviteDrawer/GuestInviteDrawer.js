@@ -277,10 +277,10 @@ class GuestInviteDrawer extends Component {
     const { open, event, searchText,
       linearProgressVisible } = this.state;
     const inLineStyles = {
-      drawer: { container: { paddingLeft: '9px', paddingRight: '10px' },
-        textField: { floatingLabel: { fontSize: '15px', paddingLeft: 8 } },
-        inviteButton: { paddingTop: '15px' },
-        linearProgress: { visibility: linearProgressVisible } } };
+      container: { paddingLeft: '9px', paddingRight: '10px' },
+      textField: { floatingLabel: { fontSize: '15px', paddingLeft: 8 } },
+      linearProgress: { visibility: linearProgressVisible },
+    };
 
     return (
       <Drawer
@@ -288,9 +288,9 @@ class GuestInviteDrawer extends Component {
         width={350}
         open={open}
         onRequestChange={open => this.handleOnRequestChange(open)}
-        containerStyle={inLineStyles.drawer.container}
+        containerStyle={inLineStyles.container}
       >
-        <LinearProgress style={inLineStyles.drawer.linearProgress} />
+        <LinearProgress style={inLineStyles.linearProgress} />
         <h3 styleName="header"> {event.name} </h3>
         {this.renderUrlActions()}
         <Divider styleName="Divider" />
@@ -298,7 +298,7 @@ class GuestInviteDrawer extends Component {
         <div styleName="Row">
           <SearchIcon styleName="searchIcon" />
           <TextField
-            floatingLabelStyle={inLineStyles.drawer.textField.floatingLabel}
+            floatingLabelStyle={inLineStyles.textField.floatingLabel}
             fullWidth
             label="Search Guests"
             floatingLabelText="Search guests"
