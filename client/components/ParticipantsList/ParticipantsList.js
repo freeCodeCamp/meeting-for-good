@@ -70,13 +70,6 @@ class ParticipantsList extends Component {
 
   renderChip(participant) {
     const { curUser, event } = this.state;
-    const inLinestyles = {
-      chip: {
-        label: {
-          flexGrow: 100,
-        },
-      },
-    };
     let borderColor;
     let text;
 
@@ -96,19 +89,16 @@ class ParticipantsList extends Component {
       default:
         break;
     }
-    const onRequestDeleteEnable = () => {
-      if (curUser._id !== participant.userId._id && event.owner === curUser._id) {
-        return () => this.handleOpenDeleteModal(participant._id);
-      }
-      return null;
-    };
+    const onRequestDeleteEnable =
+      (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
+        () => this.handleOpenDeleteModal(participant._id) : null;
 
     return (
       <Chip
         key={participant._id}
         styleName={(location.pathname === '/dashboard') ? 'chip' : 'chipHover'}
-        labelStyle={inLinestyles.chip.label}
-        onRequestDelete={onRequestDeleteEnable()}
+        labelStyle={{ flexGrow: 100 }}
+        onRequestDelete={onRequestDeleteEnable}
         onMouseOver={ev => this.handleChipOnMouseOver(ev, participant.userId._id)}
         onMouseLeave={this.props.cbOnChipMouseLeave}
       >
@@ -130,12 +120,7 @@ class ParticipantsList extends Component {
     const { event } = this.state;
     const rows = [];
     event.participants.forEach((participant) => {
-      const row = (
-        <div key={participant._id}>
-          {this.renderChip(participant)}
-        </div>
-      );
-      rows.push(row);
+      rows.push(<div key={participant._id}> {this.renderChip(participant)} </div>);
     });
     return rows;
   }
@@ -143,44 +128,21 @@ class ParticipantsList extends Component {
   renderDeleteModal() {
     const { openDeleteModal } = this.state;
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary
-        onTouchTap={this.handleCloseDeleteModal}
-      />,
-      <FlatButton
-        label="yes"
-        secondary
-        onTouchTap={this.handleDeleteGuest}
-      />,
+      <FlatButton label="Cancel" primary onTouchTap={this.handleCloseDeleteModal} />,
+      <FlatButton label="yes" secondary onTouchTap={this.handleDeleteGuest} />,
     ];
     const inLineStyles = {
-      modal: {
-        title: {
-          backgroundColor: '#FF4025',
-          color: '#ffffff',
-          fontSize: '25px',
-          height: '30px',
-          paddingTop: 6,
-        },
-        content: {
-          width: '22%',
-          maxWidth: '22%',
-          minWidth: '300px',
-        },
-        bodyStyle: {
-          paddingTop: 10,
-          fontSize: '25px',
-        },
-      },
+      title: { backgroundColor: '#FF4025', color: '#ffffff', fontSize: '25px', height: '30px', paddingTop: 6 },
+      content: { width: '22%', maxWidth: '22%', minWidth: '300px' },
+      bodyStyle: { paddingTop: 10, fontSize: '25px' },
     };
 
     return (
       <Dialog
         title="Delete Guest"
-        titleStyle={inLineStyles.modal.title}
-        contentStyle={inLineStyles.modal.content}
-        bodyStyle={inLineStyles.modal.bodyStyle}
+        titleStyle={inLineStyles.title}
+        contentStyle={inLineStyles.content}
+        bodyStyle={inLineStyles.bodyStyle}
         actions={actions}
         modal
         open={openDeleteModal}
@@ -198,15 +160,8 @@ class ParticipantsList extends Component {
         width: 40,
         height: 40,
         padding: 0,
-        iconStyle: {
-          borderRadius: '50%',
-          width: 24,
-          height: 24,
-          color: '#FFF',
-        },
-        hoveredStyle: {
-          backgroundColor: '#006400',
-        },
+        iconStyle: { borderRadius: '50%', width: 24, height: 24, color: '#FFF' },
+        hoveredStyle: { backgroundColor: '#006400' },
       },
     };
 
@@ -227,12 +182,9 @@ class ParticipantsList extends Component {
             <ContentAdd />
           </IconButton >
         </div>
-        <div styleName="guestsContainer">
-          {this.renderGuestList()}
-        </div>
+        <div styleName="guestsContainer"> {this.renderGuestList()} </div>
         {this.renderDeleteModal()}
       </div>
-
     );
   }
 }

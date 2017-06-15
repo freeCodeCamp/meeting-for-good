@@ -138,7 +138,7 @@ class BestTimeDisplay extends Component {
   renderArrow() {
     const { showAllDates } = this.state;
     const inlineStyle = { arrow: { fontSize: '18px', transform: 'scale(18, 2)' } };
-    return (showAllDates) ?
+    return (!showAllDates) ?
       (<KeyBoardArrowDown style={inlineStyle.arrow} color="#f2f2f2" />) :
       (<KeyBoardArrowUp style={inlineStyle.arrow} color="#f2f2f2" />);
   }
@@ -151,9 +151,7 @@ class BestTimeDisplay extends Component {
         {this.isBestTime(displayTimes) ?
           <div>
             {renderTzInfo()}
-            <h6 styleName="bestTimeTitle">
-              The following times work for everyone:
-              </h6>
+            <h6 styleName="bestTimeTitle"> The following times work for everyone: </h6>
             {this.renderBestTime()}
             {
               (Object.keys(displayTimes).length > 3) ?
