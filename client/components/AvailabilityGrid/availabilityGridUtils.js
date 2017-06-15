@@ -90,12 +90,7 @@ export const createTimesRange = (dates) => {
   // range maybe create dates thats goes to the next day.
   // but we whant all dates at the same day.
   const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
-  timesRangeFinal.sort((a, b) => {
-    if (a.isBefore(b)) {
-      return -1;
-    }
-    return 1;
-  });
+  timesRangeFinal.sort((a, b) => a.clone().unix() - b.clone().unix());
   return timesRangeFinal;
 };
 
@@ -107,11 +102,7 @@ export const createDatesRange = (dates) => {
     }));
   });
   datesRanges = _.flatten(datesRanges);
-  datesRanges.sort((a, b) => {
-    const x = a.clone().unix();
-    const y = b.clone().unix();
-    return x - y;
-  });
+  datesRanges.sort((a, b) => a.clone().unix() - b.clone().unix());
   return datesRanges;
 };
 
@@ -131,6 +122,28 @@ const createGuestNotGuestList = (participants, flattenedAvailability, dateHourFo
   return { guests, notGuests };
 };
 
+const createQuartersForGrid =
+  (allTimes, date, flattenedAvailability, dtsMinMax, participants) => allTimes.map((quarter) => {
+    const quarterM = moment(quarter);
+    const dateHourForCell = moment(date).hour(quarterM.hour()).minute(quarterM.minute()).startOf('minute');
+    if (dateHourForCell.isAfter(dtsMinMax.max) || dateHourForCell.isBefore(dtsMinMax.min)) {
+      return {
+        time: dateHourForCell.toDate(),
+        participants: [],
+        notParticipants: [],
+        disable: true,
+      };
+    }
+    const listGuests =
+      createGuestNotGuestList(participants, flattenedAvailability, dateHourForCell);
+    return {
+      time: dateHourForCell.toDate(),
+      participants: listGuests.guests,
+      notParticipants: listGuests.notGuests,
+    };
+  });
+
+
 /**
  *
  * @param {array} allDates
@@ -138,32 +151,14 @@ const createGuestNotGuestList = (participants, flattenedAvailability, dateHourFo
  * @param {Object} event
  */
 export const createGridComplete = (allDates, allTimes, event) => {
-  const dtsMinMax = datesMinMax(event);
   const grid = [];
+  const dtsMinMax = datesMinMax(event);
   const flattenedAvailability = flattenedAvailabilitys(event);
   allDates.forEach((date) => {
     grid.push({
       date,
-      quarters: allTimes.map((quarter) => {
-        const dateHourForCell = moment(date)
-          .hour(moment(quarter).hour())
-          .minute(moment(quarter).minute()).startOf('minute');
-        if (dateHourForCell.isAfter(dtsMinMax.max) || dateHourForCell.isBefore(dtsMinMax.min)) {
-          return {
-            time: dateHourForCell.toDate(),
-            participants: [],
-            notParticipants: [],
-            disable: true,
-          };
-        }
-        const listGuests =
-          createGuestNotGuestList(event.participants, flattenedAvailability, dateHourForCell);
-        return {
-          time: dateHourForCell.toDate(),
-          participants: listGuests.guests,
-          notParticipants: listGuests.notGuests,
-        };
-      }),
+      quarters: createQuartersForGrid(allTimes,
+        date, flattenedAvailability, dtsMinMax, event.participants),
     });
   });
   return grid;
