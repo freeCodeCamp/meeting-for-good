@@ -7,6 +7,7 @@ args += '-d "branch=git rev-parse --abbrev-ref HEAD" ';
 args += '-d status=completed ';
 args += `https://opbeat.com/api/v1/organizations${process.env.OP_BEAT_ORGANIZATION_ID}/apps/${process.env.OP_BEAT_APP_ID}/releases/ `;
 
+console.log(args);
 exec(`curl ${args}`, (error, stdout, stderr) => {
   console.log(`stdout: ${stdout}`);
   console.log(`stderr: ${stderr}`);
