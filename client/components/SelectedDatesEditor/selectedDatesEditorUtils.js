@@ -27,17 +27,20 @@ export const filterAvailabilitysOutsideDatesRange = (event) => {
   return nEvent;
 };
 
+
+const sortDateArray = datesArray => datesArray.sort((a, b) => {
+  const x = moment(a).unix();
+  const y = moment(b).unix();
+  return x - y;
+});
+
 export const createDatesRange = (dates) => {
   let datesRanges = dates.map((date) => {
     const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
     return Array.from(range.by('days'));
   });
   datesRanges = _.flatten(datesRanges);
-  datesRanges.sort((a, b) => {
-    const x = a.clone().unix();
-    const y = b.clone().unix();
-    return x - y;
-  });
+  datesRanges = sortDateArray(datesRanges);
   datesRanges = datesRanges.map(date => moment(date)._d);
   return datesRanges;
 };
@@ -48,12 +51,8 @@ export const dateRangeReducer = (selectedDates, event) => {
   const initialMinutes = moment(event.dates[0].fromDate).minutes();
   const finalHour = moment(event.dates[0].toDate).hour();
   const finalMinutes = moment(event.dates[0].toDate).minutes();
-  const nSelectedDates = _.cloneDeep(selectedDates);
-  nSelectedDates.sort((a, b) => {
-    const x = moment(a).unix();
-    const y = moment(b).unix();
-    return x - y;
-  });
+  let nSelectedDates = _.cloneDeep(selectedDates);
+  nSelectedDates = sortDateArray(nSelectedDates);
   // create the first range with the fist select date
   let initialDate = moment(nSelectedDates[0]).startOf('date').hour(initialHour).minutes(initialMinutes);
   let finalDate = moment(nSelectedDates[0]).startOf('date').hour(finalHour).minutes(finalMinutes);
