@@ -49,7 +49,7 @@ const flattenedAvailabilitys = (event) => {
   const flattenedAvailability = {};
   event.participants.forEach((participant) => {
     const avail = participant.availability.map(avail =>
-      _.flatten(rangeForAvailability(avail[0], avail[1])));
+ _.flatten(rangeForAvailability(avail[0], avail[1])));
     flattenedAvailability[participant.userId._id] = _.flatten(avail);
   });
   return flattenedAvailability;
@@ -82,10 +82,7 @@ export const createTimesRange = (dates) => {
   if (endDateToRange.hour() < startDate.hour()) {
     dateRange = moment.range(startDate, moment(endDateToRange).add(1, 'days'));
   }
-  const timesRange = Array.from(dateRange.by('minutes', {
-    exclusive: true,
-    step: 15,
-  }));
+  const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
   // correct the date value for each hour at the array since the
   // range maybe create dates thats goes to the next day.
   // but we whant all dates at the same day.
@@ -97,9 +94,7 @@ export const createTimesRange = (dates) => {
 export const createDatesRange = (dates) => {
   let datesRanges = dates.map((date) => {
     const range = moment.range(moment(date.fromDate).startOf('date'), moment(date.toDate).startOf('date'));
-    return Array.from(range.by('days', {
-      step: 1,
-    }));
+    return Array.from(range.by('days', { step: 1 }));
   });
   datesRanges = _.flatten(datesRanges);
   datesRanges.sort((a, b) => a.clone().unix() - b.clone().unix());
@@ -122,8 +117,8 @@ const createGuestNotGuestList = (participants, flattenedAvailability, dateHourFo
   return { guests, notGuests };
 };
 
-const createQuartersForGrid =
-  (allTimes, date, flattenedAvailability, dtsMinMax, participants) => allTimes.map((quarter) => {
+const createQuartersForGrid = (allTimes, date, flattenedAvailability, dtsMinMax, participants) =>
+  allTimes.map((quarter) => {
     const quarterM = moment(quarter);
     const dateHourForCell = moment(date).hour(quarterM.hour()).minute(quarterM.minute()).startOf('minute');
     if (dateHourForCell.isAfter(dtsMinMax.max) || dateHourForCell.isBefore(dtsMinMax.min)) {
@@ -142,7 +137,6 @@ const createQuartersForGrid =
       notParticipants: listGuests.notGuests,
     };
   });
-
 
 /**
  *
