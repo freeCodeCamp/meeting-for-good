@@ -131,34 +131,18 @@ class NavBar extends Component {
   }
 
   renderRightGroup() {
-    const { toggleVisible } = this.state;
-    const inLineStyles = {
-      loginButton: {
-        label: {
-          fontWeight: 200,
-          fontSize: '20px',
-        },
-      },
-    };
-    const { isAuthenticated, curUser, events } = this.state;
+    const { toggleVisible, isAuthenticated, curUser, events } = this.state;
 
     if (isAuthenticated) {
       return (
-        <ToolbarGroup
-          lastChild
-          styleName="rightToolbarGroup"
-        >
+        <ToolbarGroup lastChild styleName="rightToolbarGroup" >
           <NotificationBar
             curUser={curUser}
             events={events}
             cbHandleDismissGuest={this.HandleDismissGuest}
           />
           {!toggleVisible ?
-            <FlatButton
-              styleName="DashButton"
-              onTouchTap={this.constructor.handleDashboardClick}
-              aria-label="Dashboard"
-            >
+            <FlatButton styleName="DashButton" onTouchTap={this.constructor.handleDashboardClick} aria-label="Dashboard" >
               Dashboard
             </FlatButton>
             : null
@@ -168,14 +152,8 @@ class NavBar extends Component {
       );
     }
     return (
-      <ToolbarGroup
-        lastChild
-      >
-        <FlatButton
-          styleName="loginButton"
-          onTouchTap={this.handleAuthClick}
-          labelStyle={inLineStyles.loginButton.label}
-        >
+      <ToolbarGroup lastChild >
+        <FlatButton styleName="loginButton" onTouchTap={this.handleAuthClick} labelStyle={{ fontWeight: 200, fontSize: '20px' }} >
           Sign In
         </FlatButton>
       </ToolbarGroup>
@@ -186,9 +164,7 @@ class NavBar extends Component {
     const { openModal } = this.state;
     const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
     const inlineStyles = {
-      modal: { content: { width: '630px', maxWidth: '630px' },
-        bodyStyle: { paddingTop: 10, fontSize: '25px' },
-      } };
+      modal: { content: { width: '630px', maxWidth: '630px' }, bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
     const titleStyle = { color: 'green', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' };
     const versionStyle = { textAlign: 'center', marginBottom: '20px' };
     const descStyle = { textAlign: 'center', marginBottom: '40px' };
@@ -205,35 +181,20 @@ class NavBar extends Component {
         <h1 style={titleStyle}>Meeting for Good</h1>
         <h6 style={versionStyle}>Version {process.env.versionNumber}</h6>
         <h4 style={descStyle}>THE BEST MEETING COORDINATION APP</h4>
-        <h6 style={commentsStyle}>Created by campers
-          from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
-        <h6 style={commentsStyle}><a href="https://github.com/freeCodeCamp/meeting-for-good/">
-          License and GitHub Repository</a></h6>
+        <h6 style={commentsStyle}>Created by campers from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
+        <h6 style={commentsStyle}><a href="https://github.com/freeCodeCamp/meeting-for-good/"> License and GitHub Repository</a></h6>
       </Dialog>
     );
   }
 
   render() {
     return (
-      <Toolbar
-        styleName="toolBar"
-      >
-        <ToolbarGroup
-          firstChild
-          styleName="leftToolbarGroup"
-        >
-          <FlatButton
-            href={this.state.conditionalHomeLink}
-            styleName="logoButton"
-            aria-label="reload app"
-          >
+      <Toolbar styleName="toolBar" >
+        <ToolbarGroup firstChild styleName="leftToolbarGroup">
+          <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
             Meeting for Good
           </FlatButton>
-          <FlatButton
-            href="https://www.freecodecamp.com/donate/"
-            styleName="donateButton"
-            aria-label="Donate"
-          >
+          <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
             Donate
         </FlatButton>
         </ToolbarGroup >

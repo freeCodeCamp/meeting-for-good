@@ -24,11 +24,7 @@ export const renderTzInfo = () => {
 export const renderRows = (hours) => {
   const rows = [];
   hours.forEach((hour) => {
-    const hourToShow = (
-      <spam style={{ fontColor: '#000000', fontWeight: 200 }}>
-        {hour}
-      </spam >
-    );
+    const hourToShow = (<spam style={{ fontColor: '#000000', fontWeight: 200 }}> {hour} </spam >);
     const row = (
       <ListItem
         key={hour}
