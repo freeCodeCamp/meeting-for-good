@@ -64,7 +64,6 @@ CellGrid.defaultProps = {
 
 CellGrid.propTypes = {
   heatMapMode: PropTypes.bool.isRequired,
-  backgroundColors: PropTypes.arrayOf(PropTypes.string),
   onMouseOver: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
@@ -75,11 +74,6 @@ CellGrid.propTypes = {
   gridJump: PropTypes.bool.isRequired,
 
   // Current user
-  curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
-  }).isRequired,
   quarter: PropTypes.shape({
     time: PropTypes.instanceOf(Date).isRequired,
     participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
