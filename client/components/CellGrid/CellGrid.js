@@ -113,8 +113,6 @@ CellGrid.defaultProps = {
 
 CellGrid.propTypes = {
   heatMapMode: PropTypes.bool.isRequired,
-  // date: PropTypes.instanceOf(Date).isRequired,
-  // participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
   backgroundColors: PropTypes.arrayOf(PropTypes.string),
   onMouseOver: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
@@ -124,7 +122,6 @@ CellGrid.propTypes = {
   columnIndex: PropTypes.number,
   heightlightedUser: PropTypes.string,
   gridJump: PropTypes.bool.isRequired,
-  // disable: PropTypes.bool,
 
   // Current user
   curUser: PropTypes.shape({
