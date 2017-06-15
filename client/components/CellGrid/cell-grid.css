@@ -27,3 +27,7 @@
 .cellBorderHalfHour {
   border-left: 1px solid #c3bebe;
 }
+
+.cellDisable {
+   cursor: none;
+}
