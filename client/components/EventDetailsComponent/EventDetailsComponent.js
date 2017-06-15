@@ -157,8 +157,8 @@ class EventDetailsComponent extends React.Component {
         message={snackBarMsg}
         action="dismiss"
         autoHideDuration={5000}
-        onRequestClose={this.setState({ snackBarOpen: false })}
-        onActionTouchTap={this.setState({ snackBarOpen: false })}
+        onRequestClose={() => this.setState({ snackBarOpen: false })}
+        onActionTouchTap={() => this.setState({ snackBarOpen: false })}
       />
     );
   }
@@ -205,7 +205,7 @@ class EventDetailsComponent extends React.Component {
                 showInviteGuests={this.handleShowInviteGuestsDrawer}
                 cbDeleteGuest={this.handleDeleteGuest}
                 cbOnChipMouseOver={guest => this.setState({ heightlightedUser: guest })}
-                cbOnChipMouseLeave={this.setState({ heightlightedUser: '' })}
+                cbOnChipMouseLeave={() => this.setState({ heightlightedUser: '' })}
               />
             </CardText>
           </Card>
