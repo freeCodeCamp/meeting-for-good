@@ -8,11 +8,27 @@
   border: 0px;
 }
 
-.logoButton {
-  font-size: 22px !important;
-  color: #ffffff !important;
-  font-weight: 400;
+.leftToolbarGroup {
+  margin: 0 !important;
+  width: 370px !important;
+  justify-content: left !important;
+  align-items: center !important;
 }
+
+  .logoButton {
+    font-size: 22px !important;
+    color: #ffffff !important;
+    font-weight: 400;
+    margin-right: 10px !important;
+
+  }
+
+  .donateButton {
+    font-size: 22px !important;
+    color: #ffffff !important;
+    font-weight: 400;
+    margin-left: 0px !important;
+  }
 
 .DashButton {
   font-size: 16px !important;
@@ -63,9 +79,6 @@
   font-size: 18px !important;
 }
 
-.leftToolbarGroup {
-  margin: 0 !important;
-}
 
 .rightToolbarGroup {
   margin: 0 !important;
@@ -79,6 +92,9 @@
 
 @media (max-width:550px) {
   .logoButton {
+    font-size: 14px !important;
+  }
+    .donateButton {
     font-size: 14px !important;
   }
   .IconMenu {
