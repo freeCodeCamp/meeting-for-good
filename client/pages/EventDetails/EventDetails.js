@@ -124,7 +124,7 @@ EventDetails.defaultProps = {
 };
 
 EventDetails.propTypes = {
-  params: React.PropTypes.objectOf(PropTypes.object),
+  params: PropTypes.objectOf(PropTypes.string),
   cbDeleteEvent: PropTypes.func,
   cbEditEvent: PropTypes.func,
   cbEmailOwner: PropTypes.func,
