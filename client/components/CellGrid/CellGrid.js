@@ -16,29 +16,27 @@ class CellGrid extends Component {
   }
 
   componentWillMount() {
-    const { heatMapMode, rowIndex, columnIndex, heightlightedUser, quarter } = this.props;
+    const { heatMapMode, rowIndex, columnIndex, heightlightedUser, quarter, gridJump } = this.props;
     this.setState({
       heatMapMode,
       rowIndex,
       columnIndex,
       heightlightedUser,
       quarter,
+      gridJump,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { heatMapMode, heightlightedUser, quarter } = nextProps;
-    this.setState({ heatMapMode, heightlightedUser, quarter });
+    const { heatMapMode, heightlightedUser, quarter, gridJump } = nextProps;
+    this.setState({ heatMapMode, heightlightedUser, quarter, gridJump });
   }
 
   render() {
-    const { heatMapMode, heightlightedUser, quarter } = this.state;
-    const { backgroundColors, curUser, gridJump } = this.props;
-    const styleNames = styleNameCompose(
-      heightlightedUser, heatMapMode, backgroundColors, curUser, gridJump, quarter);
+    const { quarter } = this.props;
+    const styleNames = styleNameCompose(this.state, this.props);
     const inlineStyle = {
-      backgroundColor: formatCellBackgroundColor(
-        heatMapMode, backgroundColors, curUser, quarter),
+      backgroundColor: formatCellBackgroundColor(this.state, this.props),
     };
 
     return (

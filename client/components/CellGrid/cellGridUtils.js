@@ -1,9 +1,10 @@
 import moment from 'moment';
 import _ from 'lodash';
 
-export const styleNameCompose = (
-  heightlightedUser, heatMapMode, backgroundColors, curUser, gridJump, quarter) => {
+export const styleNameCompose = (state, props) => {
   // select the class for the border base style
+  const { heightlightedUser, gridJump } = state;
+  const { quarter } = props;
   let style = 'cell';
   const minutes = moment(quarter.time).minutes();
   if (gridJump) {
@@ -24,7 +25,9 @@ export const styleNameCompose = (
   return style;
 };
 
-export const formatCellBackgroundColor = (heatMapMode, backgroundColors, curUser, quarter) => {
+export const formatCellBackgroundColor = (state, props) => {
+  const { heatMapMode } = state;
+  const { backgroundColors, curUser, quarter } = props;
   // background for disabled cells
   if (quarter.disable) {
     return '#DADADA';
