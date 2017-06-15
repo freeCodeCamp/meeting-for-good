@@ -9,10 +9,10 @@ import styles from './cell-grid.css';
 class CellGrid extends Component {
 
   static styleNameCompose(
-    heightlightedUser, heatMapMode, participants, backgroundColors, curUser, time, gridJump) {
+    heightlightedUser, heatMapMode, backgroundColors, curUser, gridJump, quarter) {
     // select the class for the border base style
     let style = 'cell';
-    const minutes = time.minutes();
+    const minutes = moment(quarter.time).minutes();
     if (gridJump) {
       style += ' cellGridJump';
     } else if (minutes === 0) {
@@ -22,7 +22,7 @@ class CellGrid extends Component {
     }
     // if have a user to hightLight and is present at this cell
     if (heightlightedUser) {
-      if (_.find(participants, heightlightedUser)) {
+      if (_.find(quarter.participants, heightlightedUser)) {
         style += ' cellHighlighted';
       } else {
         style += ' cellNotHeiglighted';
@@ -31,21 +31,21 @@ class CellGrid extends Component {
     return style;
   }
 
-  static formatCellBackgroundColor(heatMapMode, participants, backgroundColors, curUser, disable) {
-    if (disable) {
+  static formatCellBackgroundColor(heatMapMode, backgroundColors, curUser, quarter) {
+    if (quarter.disable) {
       return '#DADADA';
     }
     if (heatMapMode) {
-      if (participants.length > 0) {
-        return backgroundColors[participants.length - 1];
+      if (quarter.participants.length > 0) {
+        return backgroundColors[quarter.participants.length - 1];
       }
       return 'transparent';
     }
 
-    if (_.find(participants, curUser._id)) {
+    if (_.find(quarter.participants, curUser._id)) {
       return '#000000';
     }
-    if (participants.length > 0) {
+    if (quarter.participants.length > 0) {
       return '#AECDE0';
     }
     return 'transparent';
@@ -60,36 +60,32 @@ class CellGrid extends Component {
   }
 
   componentWillMount() {
-    const {
-      date, participants, heatMapMode, rowIndex, columnIndex, heightlightedUser, disable,
-    } = this.props;
+    const { heatMapMode, rowIndex, columnIndex, heightlightedUser, quarter } = this.props;
     this.setState({
-      date: moment(date),
-      participants,
       heatMapMode,
       rowIndex,
       columnIndex,
       heightlightedUser,
-      disable,
+      quarter,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { date, participants, heatMapMode, heightlightedUser, disable } = nextProps;
-    this.setState({ date: moment(date), participants, heatMapMode, heightlightedUser, disable });
+    const { heatMapMode, heightlightedUser, quarter } = nextProps;
+    this.setState({ heatMapMode, heightlightedUser, quarter });
   }
 
   render() {
-    const { date, participants, heatMapMode, heightlightedUser, disable } = this.state;
+    const { heatMapMode, heightlightedUser, quarter } = this.state;
     const { backgroundColors, curUser, gridJump } = this.props;
     const { formatCellBackgroundColor, styleNameCompose } = this.constructor;
 
     const styleNames = styleNameCompose(
-      heightlightedUser, heatMapMode, participants, backgroundColors, curUser, date, gridJump);
+      heightlightedUser, heatMapMode, backgroundColors, curUser, gridJump, quarter);
 
     const inlineStyle = {
       backgroundColor: formatCellBackgroundColor(
-        heatMapMode, participants, backgroundColors, curUser, disable),
+        heatMapMode, backgroundColors, curUser, quarter),
     };
 
     return (
@@ -97,7 +93,7 @@ class CellGrid extends Component {
         role="presentation"
         style={inlineStyle}
         styleName={styleNames}
-        key={date}
+        key={quarter.date}
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}
         onMouseDown={this.props.onMouseDown}
@@ -117,8 +113,8 @@ CellGrid.defaultProps = {
 
 CellGrid.propTypes = {
   heatMapMode: PropTypes.bool.isRequired,
-  date: PropTypes.instanceOf(Date).isRequired,
-  participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
+  // date: PropTypes.instanceOf(Date).isRequired,
+  // participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
   backgroundColors: PropTypes.arrayOf(PropTypes.string),
   onMouseOver: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
@@ -128,13 +124,19 @@ CellGrid.propTypes = {
   columnIndex: PropTypes.number,
   heightlightedUser: PropTypes.string,
   gridJump: PropTypes.bool.isRequired,
-  disable: PropTypes.bool,
+  // disable: PropTypes.bool,
 
   // Current user
   curUser: PropTypes.shape({
     _id: PropTypes.string,      // Unique user id
     name: PropTypes.string,     // User name
     avatar: PropTypes.string,   // URL to image representing user(?)
+  }).isRequired,
+  quarter: PropTypes.shape({
+    time: PropTypes.instanceOf(Date).isRequired,
+    participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
+    notParticipants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
+    disable: PropTypes.bool,
   }).isRequired,
 };
 

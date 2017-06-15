@@ -241,12 +241,11 @@ class AvailabilityGrid extends Component {
       const gridJump = (columnIndex > 0) ? (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time))) : false;
       return (
         <CellGrid
+          quarter={quarter}
           heatMapMode={showHeatmap}
           key={quarter.time}
           gridJump={gridJump}
-          date={quarter.time}
           backgroundColors={backgroundColors}
-          participants={quarter.participants}
           onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
           onMouseLeave={ev => this.handleCellMouseLeave(ev)}
           onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
@@ -255,7 +254,6 @@ class AvailabilityGrid extends Component {
           rowIndex={rowIndex}
           columnIndex={columnIndex}
           heightlightedUser={this.props.heightlightedUser}
-          disable={quarter.disable}
         />
       );
     });
