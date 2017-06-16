@@ -15,7 +15,7 @@
   align-items: center !important;
 }
 
-  .logoButton {
+  .leftToolbarGroup  .logoButton {
     font-size: 22px !important;
     color: #ffffff !important;
     font-weight: 400;
@@ -23,36 +23,53 @@
 
   }
 
-  .donateButton {
-    font-size: 22px !important;
+  .leftToolbarGroup  .donateButton {
+    font-size: 21px !important;
     color: #ffffff !important;
     font-weight: 400;
     margin-left: 0px !important;
   }
 
-.DashButton {
+.rightToolbarGroup {
+  margin: 0 !important;
+}
+
+.rightToolbarGroup .DashButton {
   font-size: 16px !important;
   margin: 0 15px 0 0 !important;
   border: 0px  !important;
   color: #ffffff !important;
 }
 
-.DashButton :hover {
+.rightToolbarGroup .DashButton :hover {
   color: #006400 !important;
   background-color: #ffffff !important;
 }
 
-.iconMenu {
+.rightToolbarGroup .AvatarMenu {
   margin: 0 !important;
 }
 
-.Toggle {
+.rightToolbarGroup .AvatarMenu .Toggle {
   margin: 5px 0px 5px 0px !important;
   height: 30px !important;
   line-height: 30px !important;
 }
 
-.loginButton {
+.rightToolbarGroup  .AvatarMenu .Divider {
+  margin-top: 15px !important;
+  margin-bottom: 18px !important;
+}
+
+.rightToolbarGroup  .AvatarMenu .LogoutButton {
+  font-size: 18px !important;
+}
+
+.rightToolbarGroup .AvatarMenu .AboutButton {
+  font-size: 18px !important;
+}
+
+.rightToolbarGroup .loginButton {
   color: #ffffff !important;
   background-color: #006400 !important;
   padding: 0px !important;
@@ -61,27 +78,9 @@
   border: 0px !important;
 }
 
-.loginButton :hover {
+.rightToolbarGroup  .loginButton :hover {
   color: #006400 !important;
   background-color: #ffffff !important;
-}
-
-.Divider {
-  margin-top: 15px !important;
-  margin-bottom: 18px !important;
-}
-
-.LogoutButton {
-  font-size: 18px !important;
-}
-
-.AboutButton {
-  font-size: 18px !important;
-}
-
-
-.rightToolbarGroup {
-  margin: 0 !important;
 }
 
 @media (min-width:550px) and (max-width:850px) {
@@ -91,27 +90,26 @@
 }
 
 @media (max-width:550px) {
-  .logoButton {
-    font-size: 14px !important;
-  }
-    .donateButton {
-    font-size: 14px !important;
-  }
-  .IconMenu {
-    margin-right: 20px !important;
-  }
-
   .toolBar {
     padding: 0px !important;
   }
+    .rightToolbarGroup {
+      margin: 0px 10px 0px 0px !important;
+    }
 
-  .rightToolbarGroup {
-    padding: 0;
-    margin: 0px;
-  }
-  .leftToolbarGroup {
-    padding-left: 0px !important; 
-    margin: 0px !important;
-  }
+      .rightToolbarGroup .IconMenu {
+        margin-right: 20px !important;
+      }
+
+    .leftToolbarGroup {
+      padding-left: 0px !important;
+      margin: 0px !important;
+    }
+      .leftToolbarGroup .logoButton {
+        font-size: 14px !important;
+      }
+      .leftToolbarGroup .donateButton {
+        font-size: 14px !important;
+      }
   
 }

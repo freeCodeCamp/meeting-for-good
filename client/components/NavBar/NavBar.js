@@ -92,7 +92,7 @@ class NavBar extends Component {
       <IconMenu
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        styleName="iconMenu"
+        styleName="AvatarMenu"
         iconStyle={inLineStyles.iconMenu.iconStyle}
         menuItemStyle={{ height: '38px', width: '168px' }}
         iconButtonElement={
@@ -152,7 +152,7 @@ class NavBar extends Component {
       );
     }
     return (
-      <ToolbarGroup lastChild >
+      <ToolbarGroup lastChild styleName="rightToolbarGroup">
         <FlatButton styleName="loginButton" onTouchTap={this.handleAuthClick} labelStyle={{ fontWeight: 200, fontSize: '20px' }} >
           Sign In
         </FlatButton>
