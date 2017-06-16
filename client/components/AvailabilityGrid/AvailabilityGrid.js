@@ -19,6 +19,7 @@ import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
+import GridHours from './availabilityGridHoursTitle';
 
 const moment = extendMoment(Moment);
 
@@ -123,8 +124,7 @@ class AvailabilityGrid extends Component {
       cellInitialColumn: columnIndex,
       cellInitialRow: rowIndex,
       grid: editParticipantToCellGrid(
-        quarter, editOperation, rowIndex,
-        columnIndex, rowIndex, columnIndex, curUser, grid),
+        quarter, editOperation, rowIndex, columnIndex, rowIndex, columnIndex, curUser, grid),
     });
   }
 
@@ -193,43 +193,6 @@ class AvailabilityGrid extends Component {
     );
   }
 
-  renderGridHours() {
-    const { allTimes } = this.state;
-    // array only with full hours thats will be used to display at grid
-    const hourTime = [];
-    allTimes.forEach((time, index) => {
-      if (time.minute() === 0) {
-        hourTime.push({ time, index });
-      }
-    });
-    let offSet = 0;
-    // calculate the numbers of cells to offset the hours grid
-    // since we only want display the full hours
-    if (allTimes[0].minutes() !== 0) {
-      offSet = 4 - (allTimes[0].minutes() / 15);
-    }
-    const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
-    let gridNotJump = true;
-    const colTitles = hourTime.map((hour, index) => {
-      if (index !== 0) {
-        gridNotJump = (moment(hour.time).subtract(1, 'hour').isSame(hourTime[index - 1].time)) === true;
-      }
-      return (
-        <p
-          key={hour.time}
-          styleName={gridNotJump ? 'grid-hour' : 'grid-hourJump'}
-          style={!gridNotJump ? { paddingLeft: `${((13 * (hour.index % 4)) + 3)}px` } : null}
-        >
-          {hour.time.format('h a')}
-        </p>
-      );
-    });
-    const timesTitle = (
-      <div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>
-    );
-    return timesTitle;
-  }
-
   renderGridRow(quarters, rowIndex) {
     const { backgroundColors, showHeatmap } = this.state;
     const { curUser } = this.props;
@@ -256,10 +219,10 @@ class AvailabilityGrid extends Component {
   }
 
   renderGrid() {
-    const { grid } = this.state;
+    const { grid, allTimes } = this.state;
     return (
       <div>
-        {this.renderGridHours()}
+        <GridHours allTimes={allTimes} />
         {
           grid.map((row, rowIndex) => (
             <div key={row.date} styleName="column">
