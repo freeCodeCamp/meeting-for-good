@@ -56,6 +56,6 @@ Move to the `meeting-for-good` directory and run the `npm install` command to in
 Type `npm run dev` to start the application in development mode. If all goes well, it will be available at `http://localhost:8080`
 
 ------------
-###Contributing
+### Contributing
 
 We welcome pull requests from seasoned Javascript developers. Please read our [guide](CONTRIBUTING.md)  first, then check out our open issues.
