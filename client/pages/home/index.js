@@ -20,7 +20,7 @@ class Home extends React.Component {
 
     this.state = {
       stats: { users: 0, events: 0, participants: 0 },
-      openLoginModal: false, 
+      openLoginModal: false,
       loginFail: false,
     };
   }
@@ -61,18 +61,18 @@ class Home extends React.Component {
       <div styleName="main">
         <header styleName="header">
           <h2>Meeting for Good</h2>
-          <hr />
-          <h6>The best meeting coordination app</h6>
-          <h6 styleName="statistics">Event owners: {this.state.stats.users}, Events: {this.state.stats.events},
-            Participants: {this.state.stats.participants}</h6>
-          <img src={dashboardBanner} alt="dashboard" />
-          <img src={dashboardBanner2} alt="dashboard2" />
           <RaisedButton
             label="Login (it's free!)"
             styleName="loginButton"
             labelStyle={inlineStyle.loginButton}
             onTouchTap={this.handleOpenLoginModal}
           />
+          <hr />
+          <h6>The best meeting coordination app</h6>
+          <h6 styleName="statistics">Event owners: {this.state.stats.users}, Events: {this.state.stats.events},
+            Participants: {this.state.stats.participants}</h6>
+          <img src={dashboardBanner} alt="dashboard" />
+          <img src={dashboardBanner2} alt="dashboard2" />
           <hr />
           <h3>The best meeting coordination app</h3>
           <img src={dashboardBanner} alt="dashboard" />
