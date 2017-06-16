@@ -1,5 +1,6 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
+ * GET     /api/getStats                              ->  getStats
  * GET     /api/events                                ->  index
  * GET     /api/events/getbyuid/:uid'                 ->  indexById
  * GET    /api/events/getbyUser                       ->  indexByUser
@@ -73,9 +74,27 @@ const filterOutStatusZeroParticipants = () => (event) => {
   return event;
 };
 
+// Calculate application statistics
 export const getStats = (req, res) => {
-  const stats = { users: 123, events: 234, participants: 345 };
-  return res.status(200).json(stats);
+  let nbrUsers = 0;
+  let nbrEvents = 0;
+  let nbrActiveEvents = 0;
+  let nbrParticipants = 0;
+  const usersMap = {};
+  Events.find({}, (err, events) => {
+    nbrEvents = events.length;
+    events.forEach((event) => {
+      if (event.active) {
+        nbrActiveEvents += 1;
+      }
+      nbrParticipants += event.participants.length + 1;
+      usersMap[event.owner] = true;
+    });
+    nbrUsers = Object.keys(usersMap).length;
+
+    const stats = { users: nbrUsers, events: nbrEvents, activeEvents: nbrActiveEvents, participants: nbrParticipants };
+    return res.status(200).json(stats);
+  });
 };
 
 // Make a false delete setting the active to false

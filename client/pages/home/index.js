@@ -19,7 +19,7 @@ class Home extends React.Component {
     super(props);
 
     this.state = {
-      stats: { users: 0, events: 0, participants: 0 },
+      stats: { users: 0, events: 0, activeEvents: 0, participants: 0 },
       openLoginModal: false,
       loginFail: false,
     };
@@ -69,8 +69,8 @@ class Home extends React.Component {
           />
           <hr />
           <h6>The best meeting coordination app</h6>
-          <h6 styleName="statistics">Event owners: {this.state.stats.users}, Events: {this.state.stats.events},
-            Participants: {this.state.stats.participants}</h6>
+          <h6 styleName="statistics">Event owners: {this.state.stats.users}, Total events: {this.state.stats.events},
+            Active events: {this.state.stats.activeEvents}, Participants: {this.state.stats.participants}</h6>
           <img src={dashboardBanner} alt="dashboard" />
           <img src={dashboardBanner2} alt="dashboard2" />
           <hr />
