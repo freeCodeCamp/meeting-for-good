@@ -159,30 +159,26 @@ class NavBar extends Component {
       </ToolbarGroup>
     );
   }
-
+  
   renderDialog() {
     const { openModal } = this.state;
     const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
     const inlineStyles = {
       modal: { content: { width: '630px', maxWidth: '630px' }, bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
-    const titleStyle = { color: 'green', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' };
-    const versionStyle = { textAlign: 'center', marginBottom: '20px' };
-    const descStyle = { textAlign: 'center', marginBottom: '40px' };
-    const commentsStyle = { textAlign: 'center' };
-
     return (
       <Dialog
         contentStyle={inlineStyles.modal.content}
         bodyStyle={inlineStyles.modal.bodyStyle}
         actions={actions}
         modal
+        styleName="AboutDialog"
         open={openModal}
       >
-        <h1 style={titleStyle}>Meeting for Good</h1>
-        <h6 style={versionStyle}>Version {process.env.versionNumber}</h6>
-        <h4 style={descStyle}>THE BEST MEETING COORDINATION APP</h4>
-        <h6 style={commentsStyle}>Created by campers from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
-        <h6 style={commentsStyle}><a href="https://github.com/freeCodeCamp/meeting-for-good/"> License and GitHub Repository</a></h6>
+        <h1 styleName="titleStyle">Meeting for Good</h1>
+        <h6 styleName="versionStyle">Version {process.env.versionNumber}</h6>
+        <h4 styleName="descStyle">THE BEST MEETING COORDINATION APP</h4>
+        <h6>Created by campers from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
+        <h6><a href="https://github.com/freeCodeCamp/meeting-for-good/"> License and GitHub Repository</a></h6>
       </Dialog>
     );
   }
