@@ -9,8 +9,17 @@ import mainBannerImage from '../../assets/main-banner.png';
 import enterAvailImage from '../../assets/enteravail.gif';
 import timeZonesImage from '../../assets/timezones.png';
 import dashboardBanner2 from '../../assets/dashboard-banner-2.png';
+import { loadStats } from '../../util/events';
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      stats: { users: 0, events: 0, participants: 0 },
+    };
+  }
+
   async componentWillMount() {
     if (sessionStorage.getItem('redirectTo')) {
       browserHistory.push(sessionStorage.getItem('redirectTo'));
@@ -18,15 +27,21 @@ class Home extends React.Component {
     }
 
     if (await isAuthenticated()) browserHistory.push('/dashboard');
+
+    const stats = await loadStats();
+    this.setState({ stats });
   }
 
   render() {
+    console.log("In render");
     return (
       <div styleName="main">
         <header styleName="header">
           <h2>Meeting for Good</h2>
           <hr />
           <h6>The best meeting coordination app</h6>
+          <h6 styleName="statistics">Event owners: {this.state.stats.users}, Events: {this.state.stats.events}, 
+            Participants: {this.state.stats.participants}</h6>
           <img
             src={dashboardBanner}
             alt="dashboard"

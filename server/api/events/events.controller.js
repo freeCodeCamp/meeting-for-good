@@ -18,7 +18,6 @@
 import jsonpatch from 'fast-json-patch';
 import Events from './events.model';
 
-
 const respondWithResult = (res, statusCode) => {
   statusCode = statusCode || 200;
   return (entity) => {
@@ -72,6 +71,11 @@ const filterOutStatusZeroParticipants = () => (event) => {
   }
   event.participants = event.participants.filter(participant => participant.status !== 0);
   return event;
+};
+
+export const getStats = (req, res) => {
+  const stats = { users: 123, events: 234, participants: 345 };
+  return res.status(200).json(stats);
 };
 
 // Make a false delete setting the active to false
