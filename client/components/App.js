@@ -310,105 +310,80 @@ class App extends Component {
     return events;
   }
 
-  render() {
-    const { location } = this.props;
-    const {
-      showPastEvents,
-      curUser,
-      openLoginModal,
-      isAuthenticated,
-      loginFail,
-      events,
-    } = this.state;
+  injectPropsChildren(child) {
+    const { showPastEvents, curUser, isAuthenticated, events } = this.state;
+    if (child.type.displayName === 'Dashboard') {
+      return cloneElement(child, {
+        showPastEvents,
+        curUser,
+        isAuthenticated,
+        cbOpenLoginModal: this.handleOpenLoginModal,
+        cbDeleteEvent: this.handleDeleteEvent,
+        cbDeleteGuest: this.handleDeleteGuest,
+        cbInviteEmail: this.handleInviteEmail,
+        events,
+      });
+    }
+    if (child.type.name === 'LoginController') {
+      return cloneElement(child, { handleAuthentication: this.handleAuthentication });
+    }
+    if (child.type.displayName === 'EventDetails') {
+      return cloneElement(child, {
+        curUser,
+        isAuthenticated,
+        cbOpenLoginModal: this.handleOpenLoginModal,
+        cbLoadEvent: this.handleLoadEvent,
+        cbDeleteEvent: this.handleDeleteEvent,
+        cbEditEvent: this.handleEditEvent,
+        cbEmailOwner: this.handleEmailOwner,
+        cbEmailOwnerEdit: this.handleEmailOwnerEdit,
+        cbDeleteGuest: this.handleDeleteGuest,
+        cbInviteEmail: this.handleInviteEmail,
 
+      });
+    }
+    if (child.type.displayName === 'NewEvent') {
+      return cloneElement(child, {
+        curUser,
+        isAuthenticated,
+        cbOpenLoginModal: this.handleOpenLoginModal,
+        cbNewEvent: this.handleNewEvent,
+      });
+    }
+    return cloneElement(child,
+      { curUser, isAuthenticated, cbOpenLoginModal: this.handleOpenLoginModal });
+  }
+
+  renderNotifications() {
     const style = {
       NotificationItem: { // Override the notification item
-        DefaultStyle: { // Applied to every notification, regardless of the notification level
-          margin: '10px 5px 2px 1px',
-          fontSize: '15px',
-        },
-        success: { // Applied only to the success notification item
-          backgroundColor: 'white',
-          color: '#006400',
-          borderTop: '4px solid #006400',
-        },
-        error: {
-          backgroundColor: 'white',
-          color: 'red',
-          borderTop: '2px solid red',
-        },
-        info: {
-          backgroundColor: 'white',
-          color: 'blue',
-          borderTop: '2px solid blue',
-        },
-      },
-      Containers: {
-        tr: {
-          top: '40px',
-          bottom: 'auto',
-          left: 'auto',
-          right: '0px',
-        },
-      },
-      Title: {
-        DefaultStyle: {
-          fontSize: '18px',
-          fontWeight: 'bold',
+        DefaultStyle: { margin: '10px 5px 2px 1px', fontSize: '15px' },
+        success: { backgroundColor: 'white', color: '#006400', borderTop: '4px solid #006400' },
+        error: { backgroundColor: 'white', color: 'red', borderTop: '2px solid red' },
+        info: { backgroundColor: 'white', color: 'blue', borderTop: '2px solid blue' },
+        Containers: { tr: { top: '40px', bottom: 'auto', left: 'auto', right: '0px' } },
+        Title: {
+          DefaultStyle: { fontSize: '18px', fontWeight: 'bold' },
         },
       },
     };
+    return (
+      <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
+    );
+  }
+
+  render() {
+    const { location } = this.props;
+    const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail, events,
+    } = this.state;
 
     const childrenWithProps = React.Children.map(this.props.children,
-      (child) => {
-        if (child.type.displayName === 'Dashboard') {
-          return cloneElement(child, {
-            showPastEvents,
-            curUser,
-            isAuthenticated,
-            cbOpenLoginModal: this.handleOpenLoginModal,
-            cbDeleteEvent: this.handleDeleteEvent,
-            cbDeleteGuest: this.handleDeleteGuest,
-            cbInviteEmail: this.handleInviteEmail,
-            events,
-          });
-        }
-        if (child.type.name === 'LoginController') {
-          return cloneElement(child, { handleAuthentication: this.handleAuthentication });
-        }
-        if (child.type.displayName === 'EventDetails') {
-          return cloneElement(child, {
-            curUser,
-            isAuthenticated,
-            cbOpenLoginModal: this.handleOpenLoginModal,
-            cbLoadEvent: this.handleLoadEvent,
-            cbDeleteEvent: this.handleDeleteEvent,
-            cbEditEvent: this.handleEditEvent,
-            cbEmailOwner: this.handleEmailOwner,
-            cbEmailOwnerEdit: this.handleEmailOwnerEdit,
-            cbDeleteGuest: this.handleDeleteGuest,
-            cbInviteEmail: this.handleInviteEmail,
-
-          });
-        }
-        if (child.type.displayName === 'NewEvent') {
-          return cloneElement(child, {
-            curUser,
-            isAuthenticated,
-            cbOpenLoginModal: this.handleOpenLoginModal,
-            cbNewEvent: this.handleNewEvent,
-          });
-        }
-        return cloneElement(child, {
-          curUser,
-          isAuthenticated,
-          cbOpenLoginModal: this.handleOpenLoginModal,
-        });
-      });
+      child => this.injectPropsChildren(child),
+    );
 
     return (
       <div>
-        <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
+        {this.renderNotifications()}
         <LoginModal
           open={openLoginModal}
           logFail={loginFail}

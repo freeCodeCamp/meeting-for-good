@@ -1,52 +1,11 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import _ from 'lodash';
 
+import { styleNameCompose, formatCellBackgroundColor } from './cellGridUtils';
 import styles from './cell-grid.css';
 
 class CellGrid extends Component {
-
-  static styleNameCompose(
-    heightlightedUser, heatMapMode, participants, backgroundColors, curUser, time, gridJump) {
-    // select the class for the border base style
-    let style = 'cell';
-    const minutes = time.minutes();
-    if (gridJump) {
-      style += ' cellGridJump';
-    } else if (minutes === 0) {
-      style += ' cellBorderHour';
-    } else if (minutes === 30) {
-      style += ' cellBorderHalfHour';
-    }
-    // if have a user to hightLight and is present at this cell
-    if (heightlightedUser) {
-      if (_.find(participants, heightlightedUser)) {
-        style += ' cellHighlighted';
-      } else {
-        style += ' cellNotHeiglighted';
-      }
-    }
-    return style;
-  }
-
-  static formatCellBackgroundColor(heatMapMode, participants, backgroundColors, curUser) {
-    if (heatMapMode) {
-      if (participants.length > 0) {
-        return backgroundColors[participants.length - 1];
-      }
-      return 'transparent';
-    }
-
-    if (_.find(participants, curUser._id)) {
-      return '#000000';
-    }
-    if (participants.length > 0) {
-      return '#DADADA';
-    }
-    return 'transparent';
-  }
 
   constructor(props) {
     super(props);
@@ -57,29 +16,27 @@ class CellGrid extends Component {
   }
 
   componentWillMount() {
-    const {
-      date, participants, heatMapMode, rowIndex, columnIndex, heightlightedUser } = this.props;
+    const { heatMapMode, rowIndex, columnIndex, heightlightedUser, quarter, gridJump } = this.props;
     this.setState({
-      date: moment(date), participants, heatMapMode, rowIndex, columnIndex, heightlightedUser,
+      heatMapMode,
+      rowIndex,
+      columnIndex,
+      heightlightedUser,
+      quarter,
+      gridJump,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { date, participants, heatMapMode, heightlightedUser } = nextProps;
-    this.setState({ date: moment(date), participants, heatMapMode, heightlightedUser });
+    const { heatMapMode, heightlightedUser, quarter, gridJump } = nextProps;
+    this.setState({ heatMapMode, heightlightedUser, quarter, gridJump });
   }
 
   render() {
-    const { date, participants, heatMapMode, heightlightedUser } = this.state;
-    const { backgroundColors, curUser, gridJump } = this.props;
-    const { formatCellBackgroundColor, styleNameCompose } = this.constructor;
-
-    const styleNames = styleNameCompose(
-      heightlightedUser, heatMapMode, participants, backgroundColors, curUser, date, gridJump);
-
+    const { quarter } = this.props;
+    const styleNames = styleNameCompose(this.state, this.props);
     const inlineStyle = {
-      backgroundColor: formatCellBackgroundColor(
-        heatMapMode, participants, backgroundColors, curUser),
+      backgroundColor: formatCellBackgroundColor(this.state, this.props),
     };
 
     return (
@@ -87,7 +44,7 @@ class CellGrid extends Component {
         role="presentation"
         style={inlineStyle}
         styleName={styleNames}
-        key={date}
+        key={quarter.date}
         onMouseOver={this.props.onMouseOver}
         onMouseLeave={this.props.onMouseLeave}
         onMouseDown={this.props.onMouseDown}
@@ -102,13 +59,11 @@ CellGrid.defaultProps = {
   rowIndex: 0,
   columnIndex: 0,
   heightlightedUser: '',
+  disable: false,
 };
 
 CellGrid.propTypes = {
   heatMapMode: PropTypes.bool.isRequired,
-  date: PropTypes.instanceOf(Date).isRequired,
-  participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
-  backgroundColors: PropTypes.arrayOf(PropTypes.string),
   onMouseOver: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
@@ -119,10 +74,11 @@ CellGrid.propTypes = {
   gridJump: PropTypes.bool.isRequired,
 
   // Current user
-  curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
+  quarter: PropTypes.shape({
+    time: PropTypes.instanceOf(Date).isRequired,
+    participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
+    notParticipants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
+    disable: PropTypes.bool,
   }).isRequired,
 };
 

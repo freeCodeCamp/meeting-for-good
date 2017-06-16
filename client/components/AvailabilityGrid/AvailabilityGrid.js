@@ -12,13 +12,8 @@ import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 
 import CellGrid from '../CellGrid/CellGrid';
-import {
-  createGridComplete,
-  editParticipantToCellGrid,
-  genHeatMapBackgroundColors,
-  createTimesRange,
-  createDatesRange,
-  availabilityReducer,
+import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
+  createTimesRange, createDatesRange, availabilityReducer,
 } from '../AvailabilityGrid/availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import enteravailGif from '../../assets/enteravail.gif';
@@ -31,8 +26,7 @@ class AvailabilityGrid extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      openModal: false,
+    this.state = { openModal: false,
       grid: {},
       backgroundColors: [],
       openSnackBar: false,
@@ -43,8 +37,7 @@ class AvailabilityGrid extends Component {
       editOperation: null,
       cellInitialRow: null,
       cellInitialColumn: null,
-      event: {},
-    };
+      event: {} };
   }
 
   componentWillMount() {
@@ -122,9 +115,7 @@ class AvailabilityGrid extends Component {
     const { showHeatmap, grid } = this.state;
     const { curUser } = this.props;
     // is at showing heatMap then ignore click
-    if (showHeatmap) {
-      return;
-    }
+    if (showHeatmap) return;
     const editOperation = (_.findIndex(quarter.participants, curUser._id) > -1) ? 'remove' : 'add';
     this.setState({
       mouseDown: true,
@@ -140,17 +131,15 @@ class AvailabilityGrid extends Component {
   @autobind
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
+    if (quarter.disable) return;
     const { showHeatmap, mouseDown, editOperation, cellInitialRow, cellInitialColumn } = this.state;
     const { curUser } = this.props;
     if (!showHeatmap) {
       if (mouseDown) {
         this.setState(oldState => ({
           grid: editParticipantToCellGrid(
-            quarter, editOperation, rowIndex,
-            columnIndex, cellInitialRow,
-            cellInitialColumn, curUser, oldState.grid),
-        }),
-        );
+            quarter, editOperation, rowIndex, columnIndex, cellInitialRow,
+            cellInitialColumn, curUser, oldState.grid) }));
       }
     } else {
       const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
@@ -164,17 +153,14 @@ class AvailabilityGrid extends Component {
   handleCellMouseUp(ev) {
     ev.preventDefault();
     this.setState({
-      mouseDown: false, cellInitialColumn: null, cellInitialRow: null, editOperation: null,
-    });
+      mouseDown: false, cellInitialColumn: null, cellInitialRow: null, editOperation: null });
   }
 
   @autobind
   handleCellMouseLeave(ev) {
     ev.preventDefault();
     const { showHeatmap } = this.state;
-    if (!showHeatmap) {
-      return;
-    }
+    if (!showHeatmap) return;
     this.setState({ openSnackBar: false });
   }
 
@@ -188,25 +174,10 @@ class AvailabilityGrid extends Component {
 
   renderDialog() {
     const { openModal } = this.state;
-    const actions = [
-      <FlatButton
-        label="close"
-        primary
-        onTouchTap={() => this.setState({ openModal: false })}
-      />,
-    ];
-    const inlineStyles = {
-      modal: {
-        content: {
-          width: '630px',
-          maxWidth: '630px',
-        },
-        bodyStyle: {
-          paddingTop: 10,
-          fontSize: '25px',
-        },
-      },
-    };
+    const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
+    const inlineStyles = { modal: {
+      content: { width: '630px', maxWidth: '630px' },
+      bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
 
     return (
       <Dialog
@@ -233,7 +204,7 @@ class AvailabilityGrid extends Component {
     });
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
-    // since we only whant display the full hours
+    // since we only want display the full hours
     if (allTimes[0].minutes() !== 0) {
       offSet = 4 - (allTimes[0].minutes() / 15);
     }
@@ -254,9 +225,7 @@ class AvailabilityGrid extends Component {
       );
     });
     const timesTitle = (
-      <div id="timesTitle" styleName="timesTitle" style={style}>
-        {colTitles}
-      </div>
+      <div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>
     );
     return timesTitle;
   }
@@ -265,18 +234,14 @@ class AvailabilityGrid extends Component {
     const { backgroundColors, showHeatmap } = this.state;
     const { curUser } = this.props;
     return quarters.map((quarter, columnIndex) => {
-      let gridJump = false;
-      if (columnIndex > 0) {
-        gridJump = (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time)));
-      }
+      const gridJump = (columnIndex > 0) ? (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time))) : false;
       return (
         <CellGrid
+          quarter={quarter}
           heatMapMode={showHeatmap}
           key={quarter.time}
           gridJump={gridJump}
-          date={quarter.time}
           backgroundColors={backgroundColors}
-          participants={quarter.participants}
           onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
           onMouseLeave={ev => this.handleCellMouseLeave(ev)}
           onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
@@ -311,15 +276,26 @@ class AvailabilityGrid extends Component {
     );
   }
 
+  renderActionButtons() {
+    const { showHeatmap } = this.state;
+    return (
+      <div styleName="actionButtonsWrapper">
+        {showHeatmap ? <RaisedButton primary label="Edit Availability" onClick={this.props.editAvail} />
+        : <div>
+          <RaisedButton primary label="Submit" onClick={this.submitAvailability} />
+          <RaisedButton primary label="Cancel" styleName="cancelButton" onClick={this.handleCancelBtnClick} />
+        </div>
+        }
+      </div>
+    );
+  }
+
   render() {
-    const { snackBarGuests, snackBarNoGuests, openSnackBar, showHeatmap } = this.state;
+    const { snackBarGuests, snackBarNoGuests, openSnackBar } = this.state;
     return (
       <div styleName="column">
         <div styleName="row">
-          <FlatButton
-            primary
-            onClick={() => this.setState({ openModal: true })}
-          >
+          <FlatButton primary onClick={() => this.setState({ openModal: true })} >
             How do I use the grid?
           </FlatButton>
         </div>
@@ -335,29 +311,7 @@ class AvailabilityGrid extends Component {
           </p>
         </div>
         <br />
-        <div styleName="actionButtonsWrapper">
-          {showHeatmap ?
-            <RaisedButton
-              primary
-              label="Edit Availability"
-              onClick={this.props.editAvail}
-            />
-            :
-            <div>
-              <RaisedButton
-                primary
-                label="Submit"
-                onClick={this.submitAvailability}
-              />
-              <RaisedButton
-                primary
-                label="Cancel"
-                styleName="cancelButton"
-                onClick={this.handleCancelBtnClick}
-              />
-            </div>
-          }
-        </div>
+        {this.renderActionButtons()}
         <SnackBarGrid
           guests={snackBarGuests}
           noGuests={snackBarNoGuests}

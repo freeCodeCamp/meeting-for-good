@@ -43,13 +43,7 @@ class NavBar extends Component {
 
   componentWillMount() {
     const { location, curUser, isAuthenticated, showPastEvents, events } = this.props;
-    this.setState({
-      curUser,
-      isAuthenticated,
-      userAvatar: curUser.Avatar,
-      showPastEvents,
-      events,
-    });
+    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents, events });
     this.MenuVisibility(location);
   }
 
@@ -88,113 +82,78 @@ class NavBar extends Component {
     this.props.cbHandleDismissGuest(participantId);
   }
 
-  renderRightGroup() {
-    const { toggleVisible } = this.state;
+  renderAvatarMenu() {
+    const { curUser, userAvatar, showPastEvents } = this.state;
     const inLineStyles = {
-      iconMenu: {
-        iconStyle: {
-          minWidth: 70,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        },
-        toggle: {
-          label: {
-            fontSize: '18px',
-          },
-          thumbSwitched: {
-            backgroundColor: 'red',
-          },
-        },
-      },
-      loginButton: {
-        label: {
-          fontWeight: 200,
-          fontSize: '20px',
-        },
-      },
-    };
-    const { isAuthenticated, curUser, userAvatar, showPastEvents, events } = this.state;
+      iconMenu: { iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
+        toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } } } };
+
+    return (
+      <IconMenu
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        styleName="iconMenu"
+        iconStyle={inLineStyles.iconMenu.iconStyle}
+        menuItemStyle={{ height: '38px', width: '168px' }}
+        iconButtonElement={
+          <IconButton style={{ padding: 0 }} aria-label="user button">
+            <div>
+              <Avatar size={34} src={userAvatar} alt={nameInitials(curUser.name)} />
+              <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
+            </div>
+          </IconButton>}
+      >
+        <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
+          <Toggle
+            label={'Past Events'}
+            toggled={showPastEvents}
+            styleName="Toggle"
+            labelStyle={inLineStyles.iconMenu.toggle.label}
+            thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
+            onToggle={this.handleFilterToggle}
+          />
+        </MenuItem >
+        <Divider styleName="Divider" />
+        <MenuItem
+          onClick={this.handleAboutDialog}
+          styleName="AboutButton"
+          primaryText="About"
+          style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
+        />
+        <MenuItem
+          href={'/api/auth/logout'}
+          styleName="LogoutButton"
+          primaryText="Logout"
+          style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
+        />
+      </IconMenu>
+    );
+  }
+
+  renderRightGroup() {
+    const { toggleVisible, isAuthenticated, curUser, events } = this.state;
 
     if (isAuthenticated) {
       return (
-        <ToolbarGroup
-          lastChild
-          styleName="rightToolbarGroup"
-        >
+        <ToolbarGroup lastChild styleName="rightToolbarGroup" >
           <NotificationBar
             curUser={curUser}
             events={events}
             cbHandleDismissGuest={this.HandleDismissGuest}
           />
           {!toggleVisible ?
-            <FlatButton
-              styleName="DashButton"
-              onTouchTap={this.constructor.handleDashboardClick}
-              aria-label="Dashboard"
-            >
+            <FlatButton styleName="DashButton" onTouchTap={this.constructor.handleDashboardClick} aria-label="Dashboard" >
               Dashboard
             </FlatButton>
             : null
           }
-          <IconMenu
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            styleName="iconMenu"
-            iconStyle={inLineStyles.iconMenu.iconStyle}
-            menuItemStyle={{ height: '38px', width: '168px' }}
-            iconButtonElement={
-              <IconButton style={{ padding: 0 }} aria-label="user button">
-                <div>
-                  <Avatar
-                    size={34}
-                    src={userAvatar}
-                    alt={nameInitials(curUser.name)}
-                  />
-                  <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
-                </div>
-              </IconButton>}
-          >
-            <MenuItem
-              style={{ maxHeight: '30px', minHeight: '20px' }}
-            >
-              <Toggle
-                label={'Past Events'}
-                toggled={showPastEvents}
-                styleName="Toggle"
-                labelStyle={inLineStyles.iconMenu.toggle.label}
-                thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
-                onToggle={this.handleFilterToggle}
-              />
-            </MenuItem >
-            <Divider
-              styleName="Divider"
-            />
-            <MenuItem
-              onClick={this.handleAboutDialog}
-              styleName="AboutButton"
-              primaryText="About"
-              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
-            />
-            <MenuItem
-              href={'/api/auth/logout'}
-              styleName="LogoutButton"
-              primaryText="Logout"
-              style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
-            />
-          </IconMenu>
+          {this.renderAvatarMenu()}
         </ToolbarGroup>
       );
     }
     return (
-      <ToolbarGroup
-        lastChild
-      >
-        <FlatButton
-          styleName="loginButton"
-          onTouchTap={this.handleAuthClick}
-          labelStyle={inLineStyles.loginButton.label}
-        >
+      <ToolbarGroup lastChild >
+        <FlatButton styleName="loginButton" onTouchTap={this.handleAuthClick} labelStyle={{ fontWeight: 200, fontSize: '20px' }} >
           Sign In
         </FlatButton>
       </ToolbarGroup>
@@ -203,42 +162,13 @@ class NavBar extends Component {
 
   renderDialog() {
     const { openModal } = this.state;
-    const actions = [
-      <FlatButton
-        label="close"
-        primary
-        onTouchTap={() => this.setState({ openModal: false })}
-      />,
-    ];
+    const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
     const inlineStyles = {
-      modal: {
-        content: {
-          width: '630px',
-          maxWidth: '630px',
-        },
-        bodyStyle: {
-          paddingTop: 10,
-          fontSize: '25px',
-        },
-      },
-    };
-    const titleStyle = {
-      color: 'green',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: '20px',
-    };
-    const versionStyle = {
-      textAlign: 'center',
-      marginBottom: '20px',
-    };
-    const descStyle = {
-      textAlign: 'center',
-      marginBottom: '40px',
-    };
-    const commentsStyle = {
-      textAlign: 'center',
-    };
+      modal: { content: { width: '630px', maxWidth: '630px' }, bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
+    const titleStyle = { color: 'green', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' };
+    const versionStyle = { textAlign: 'center', marginBottom: '20px' };
+    const descStyle = { textAlign: 'center', marginBottom: '40px' };
+    const commentsStyle = { textAlign: 'center' };
 
     return (
       <Dialog
@@ -251,30 +181,22 @@ class NavBar extends Component {
         <h1 style={titleStyle}>Meeting for Good</h1>
         <h6 style={versionStyle}>Version {process.env.versionNumber}</h6>
         <h4 style={descStyle}>THE BEST MEETING COORDINATION APP</h4>
-        <h6 style={commentsStyle}>Created by campers
-          from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
-        <h6 style={commentsStyle}><a href="https://github.com/freeCodeCamp/meeting-for-good/">
-          License and GitHub Repository</a></h6>
+        <h6 style={commentsStyle}>Created by campers from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
+        <h6 style={commentsStyle}><a href="https://github.com/freeCodeCamp/meeting-for-good/"> License and GitHub Repository</a></h6>
       </Dialog>
     );
   }
 
   render() {
     return (
-      <Toolbar
-        styleName="toolBar"
-      >
-        <ToolbarGroup
-          firstChild
-          styleName="leftToolbarGroup"
-        >
-          <FlatButton
-            href={this.state.conditionalHomeLink}
-            styleName="logoButton"
-            aria-label="reload app"
-          >
+      <Toolbar styleName="toolBar" >
+        <ToolbarGroup firstChild styleName="leftToolbarGroup">
+          <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
             Meeting for Good
           </FlatButton>
+          <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
+            Donate
+        </FlatButton>
         </ToolbarGroup >
         {this.renderRightGroup()}
         {this.renderDialog()}

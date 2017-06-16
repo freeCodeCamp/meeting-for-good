@@ -120,9 +120,11 @@ EventDetails.defaultProps = {
   cbEmailOwnerEdit: () => { console.log('cbEmailEdit func not passed in!'); },
   cbDeleteGuest: () => { console.log('cbDeleteGuest func not passed in!'); },
   cbInviteEmail: () => { console.log('cbInviteEmail func not passed in!'); },
+  params: () => { console.log('params not passed in!'); },
 };
 
 EventDetails.propTypes = {
+  params: PropTypes.objectOf(PropTypes.string),
   cbDeleteEvent: PropTypes.func,
   cbEditEvent: PropTypes.func,
   cbEmailOwner: PropTypes.func,

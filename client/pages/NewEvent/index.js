@@ -30,21 +30,17 @@ class NewEvent extends React.Component {
     return newRange;
   };
 
+  static windowsSize = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+
   constructor() {
     super();
     this.state = {
-      ranges: [{
-        from: moment().startOf('date')._d,
-        to: moment().startOf('date')._d,
-      }],
+      ranges: [{ from: moment().startOf('date')._d, to: moment().startOf('date')._d }],
       eventName: '',
       selectedTimeRange: [9, 17],
       disableSubmit: true,
       curUser: {},
-      value4: {
-        min: 5,
-        max: 10,
-      },
+      value4: { min: 5, max: 10 },
     };
   }
 
@@ -99,13 +95,7 @@ class NewEvent extends React.Component {
   @autobind
   handleResetClick(e) {
     e.preventDefault();
-    this.setState({
-      ranges: [{
-        from: null,
-        to: null,
-      }],
-      disableSubmit: true,
-    });
+    this.setState({ ranges: [{ from: null, to: null }], disableSubmit: true });
   }
 
   @autobind
@@ -154,31 +144,39 @@ class NewEvent extends React.Component {
     });
   }
 
-  render() {
-    const {
-      ranges, eventName, selectedTimeRange, disableSubmit } = this.state;
-
-    const inLineStyles = {
-      card: {
-        textField: {
-          floatingLabelStyle: {
-            color: '#000000',
-            fontSize: '24px',
-          },
-          floatingLabelFocusStyle: {
-            color: '#26A69A',
-          },
-        },
-      },
-    };
-
-    const selectedDays = day =>
-      DateUtils.isDayInRange(day, this.state) ||
-      ranges.some(v => DateUtils.isDayInRange(day, v));
+  renderDayPicker() {
+    const { ranges } = this.state;
+    const { windowsSize } = this.constructor;
     const { from, to } = ranges[0];
-    const windowsSize = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    const numOfMonthstoDisplay = windowsSize > 550 ? 2 : 1;
+    const selectedDays = day => DateUtils.isDayInRange(day, this.state) ||
+    ranges.some(v => DateUtils.isDayInRange(day, v));
 
+    return (
+      <div>
+        <h6 styleName="heading-dates">What dates might work for you?</h6>
+        <div styleName="reset-button">
+          {from && to &&
+            <FlatButton
+              href="#reset"
+              label="reset"
+              onClick={this.handleResetClick}
+            />
+          }
+        </div>
+        <DayPicker
+          numberOfMonths={windowsSize > 550 ? 2 : 1}
+          fromMonth={new Date()}
+          disabledDays={DateUtils.isPastDay}
+          onDayClick={this.handleDayClick}
+          classNames={styles}
+          selectedDays={selectedDays}
+        />
+      </div>
+    );
+  }
+
+  render() {
+    const { eventName, selectedTimeRange, disableSubmit } = this.state;
     return (
       <div styleName="wrapper">
         <Card styleName="card">
@@ -187,8 +185,8 @@ class NewEvent extends React.Component {
             <form>
               <TextField
                 fullWidth
-                floatingLabelStyle={inLineStyles.card.textField.floatingLabelStyle}
-                floatingLabelFocusStyle={inLineStyles.card.textField.floatingLabelFocusStyle}
+                floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
+                floatingLabelFocusStyle={{ color: '#26A69A' }}
                 styleName="textField"
                 id="event_name"
                 value={eventName}
@@ -199,26 +197,7 @@ class NewEvent extends React.Component {
                 autoFocus
                 inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
               />
-              <div>
-                <h6 styleName="heading-dates">What dates might work for you?</h6>
-                <div styleName="reset-button">
-                  {from && to &&
-                  <FlatButton
-                    href="#reset"
-                    label="reset"
-                    onClick={this.handleResetClick}
-                  />
-                  }
-                </div>
-                <DayPicker
-                  numberOfMonths={numOfMonthstoDisplay}
-                  fromMonth={new Date()}
-                  disabledDays={DateUtils.isPastDay}
-                  onDayClick={this.handleDayClick}
-                  classNames={styles}
-                  selectedDays={selectedDays}
-                />
-              </div>
+              {this.renderDayPicker()}
               <Subheader styleName="subHeader">What times might work?</Subheader>
               <div styleName="rangeSelectorWrapper">
                 <InputRange
