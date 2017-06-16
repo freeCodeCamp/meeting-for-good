@@ -183,17 +183,22 @@ class NavBar extends Component {
     );
   }
 
+  renderLeftGroup() {
+    return (
+      <ToolbarGroup firstChild styleName="leftToolbarGroup">
+        <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
+          Meeting for Good
+          </FlatButton>
+        <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
+          Donate
+        </FlatButton>
+      </ToolbarGroup >
+    );
+  }  
   render() {
     return (
       <Toolbar styleName="toolBar" >
-        <ToolbarGroup firstChild styleName="leftToolbarGroup">
-          <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
-            Meeting for Good
-          </FlatButton>
-          <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
-            Donate
-        </FlatButton>
-        </ToolbarGroup >
+        {this.renderLeftGroup()}
         {this.renderRightGroup()}
         {this.renderDialog()}
       </Toolbar>
