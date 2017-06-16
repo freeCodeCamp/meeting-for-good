@@ -87,7 +87,7 @@ export const getStats = (req, res) => {
       if (event.active) {
         nbrActiveEvents += 1;
       }
-      nbrParticipants += event.participants.length + 1;
+      nbrParticipants += event.participants.length;
       usersMap[event.owner] = true;
     });
     nbrUsers = Object.keys(usersMap).length;
