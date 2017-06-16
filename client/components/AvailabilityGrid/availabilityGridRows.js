@@ -10,16 +10,14 @@ import CellGrid from '../CellGrid/CellGrid';
 const moment = extendMoment(Moment);
 
 const Cell = (quarter, columnIndex, props) => {
-  const { backgroundColors, showHeatmap, curUser, quarters, rowIndex,
+  const { backgroundColors, showHeatmap, curUser, rowIndex,
     handleCellMouseOver, handleCellMouseLeave, handleCellMouseDown,
     handleCellMouseUp, heightlightedUser } = props;
-  const gridJump = (columnIndex > 0) ? (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time))) : false;
   return (
     <CellGrid
       quarter={quarter}
       heatMapMode={showHeatmap}
       key={quarter.time}
-      gridJump={gridJump}
       backgroundColors={backgroundColors}
       onMouseOver={ev => handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
       onMouseLeave={ev => handleCellMouseLeave(ev)}
@@ -64,7 +62,6 @@ GridRow.propTypes = {
 Cell.propTypes = {
   backgroundColors: PropTypes.arrayOf(PropTypes.string).isRequired,
   showHeatmap: PropTypes.bool.isRequired,
-  quarters: PropTypes.arrayOf(PropTypes.object).isRequired,
   rowIndex: PropTypes.number.isRequired,
   curUser: PropTypes.shape({
     _id: PropTypes.string,      // Unique user id
