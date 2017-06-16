@@ -39,8 +39,7 @@ const GridHours = (props) => {
 };
 
 GridHours.propTypes = {
-  allTimes: PropTypes.arrayOf(momentPropTypes.momentObj
-    .withPredicate(momentObject => momentObject.isUTC()).isRequired).isRequired,
+  allTimes: PropTypes.arrayOf(momentPropTypes.momentObj).isRequired,
 };
 
 export default cssModules(GridHours, styles);
