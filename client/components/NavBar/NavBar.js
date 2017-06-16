@@ -159,7 +159,7 @@ class NavBar extends Component {
       </ToolbarGroup>
     );
   }
-  
+
   renderDialog() {
     const { openModal } = this.state;
     const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
@@ -194,7 +194,8 @@ class NavBar extends Component {
         </FlatButton>
       </ToolbarGroup >
     );
-  }  
+  }
+
   render() {
     return (
       <Toolbar styleName="toolBar" >
