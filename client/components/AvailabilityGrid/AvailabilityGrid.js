@@ -11,7 +11,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 
-import CellGrid from '../CellGrid/CellGrid';
+import GridHours from './availabilityGridHoursTitle';
+import GridRow from './availabilityGridRows';
 import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
   createTimesRange, createDatesRange, availabilityReducer,
 } from '../AvailabilityGrid/availabilityGridUtils';
@@ -19,8 +20,7 @@ import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
-import GridHours from './availabilityGridHoursTitle';
-import GridRow from './availabilityGridRows';
+
 
 const moment = extendMoment(Moment);
 
@@ -192,31 +192,6 @@ class AvailabilityGrid extends Component {
         <img src={enteravailGif} alt="entering availablity gif" />
       </Dialog>
     );
-  }
-
-  renderGridRow(quarters, rowIndex) {
-    const { backgroundColors, showHeatmap } = this.state;
-    const { curUser } = this.props;
-    return quarters.map((quarter, columnIndex) => {
-      const gridJump = (columnIndex > 0) ? (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time))) : false;
-      return (
-        <CellGrid
-          quarter={quarter}
-          heatMapMode={showHeatmap}
-          key={quarter.time}
-          gridJump={gridJump}
-          backgroundColors={backgroundColors}
-          onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
-          onMouseLeave={ev => this.handleCellMouseLeave(ev)}
-          onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
-          onMouseUp={ev => this.handleCellMouseUp(ev)}
-          curUser={curUser}
-          rowIndex={rowIndex}
-          columnIndex={columnIndex}
-          heightlightedUser={this.props.heightlightedUser}
-        />
-      );
-    });
   }
 
   renderGrid() {
