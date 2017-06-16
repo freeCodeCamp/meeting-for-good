@@ -24,7 +24,6 @@ class GridHours extends Component {
     let offSet = 0;
     // calculate the numbers of cells to offset the hours grid
     // since we only want display the full hours
-    //
     if (allTimes[0].minutes() !== 0) offSet = 4 - (allTimes[0].minutes() / 15);
     const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
     let gridNotJump = true;
@@ -40,8 +39,7 @@ class GridHours extends Component {
         </p>
       );
     });
-    const timesTitle = (<div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
-    return timesTitle;
+    return (<div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
   }
 }
 
