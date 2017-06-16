@@ -40,11 +40,6 @@
   border-left: 1px solid #787878;
 }
 
-.grid-hourJump {
- composes: grid-hourBasic;
-  border-left: 6px double #787878;
-}
-
 .timesTitle {
   display: flex;
   flex-direction: row;
@@ -68,3 +63,17 @@
 .cancelButton {
   margin-left: 15px;
 }
+
+.jumperCellWrapper {
+  display: flex;
+  flex-direction: row;
+   border-left: 2px solid #787878;
+}
+  .jumperIcon {
+    max-width: 17px;
+    border-right: 1px solid #787878;
+  }
+  .rowWrapper {
+    display: flex;
+    flex-direction: row;
+  }

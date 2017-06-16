@@ -20,6 +20,7 @@ import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
 import GridHours from './availabilityGridHoursTitle';
+import GridRow from './availabilityGridRows';
 
 const moment = extendMoment(Moment);
 
@@ -219,7 +220,8 @@ class AvailabilityGrid extends Component {
   }
 
   renderGrid() {
-    const { grid, allTimes } = this.state;
+    const { grid, allTimes, backgroundColors, showHeatmap } = this.state;
+    const { curUser, heightlightedUser } = this.props;
     return (
       <div>
         <GridHours allTimes={allTimes} />
@@ -230,7 +232,18 @@ class AvailabilityGrid extends Component {
                 <div styleName="date-cell">
                   {row.date.format('Do MMM')} <br /> {row.date.format('ddd')}
                 </div>
-                {this.renderGridRow(row.quarters, rowIndex)}
+                <GridRow
+                  backgroundColors={backgroundColors}
+                  showHeatmap={showHeatmap}
+                  curUser={curUser}
+                  quarters={row.quarters}
+                  rowIndex={rowIndex}
+                  handleCellMouseOver={this.handleCellMouseOver}
+                  handleCellMouseLeave={this.handleCellMouseLeave}
+                  handleCellMouseDown={this.handleCellMouseDown}
+                  handleCellMouseUp={this.handleCellMouseUp}
+                  heightlightedUser={heightlightedUser}
+                />
               </div>
             </div>
           ))
