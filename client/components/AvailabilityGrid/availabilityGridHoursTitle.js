@@ -38,20 +38,28 @@ const colTitlesAjust = (jumpCellIndex, colTitles, allTimes, jumpIndexAllTimes) =
   return colTit;
 };
 
+const calcHourTime = (allTimes) => {
+  const hourTime = [];
+  allTimes.forEach((time, index) => {
+    if (time.minute() === 0) hourTime.push({ time, index });
+  });
+};
+
+// calculate the numbers of cells to offset the hours grid
+// since we only want display the full hours
+const inicialOffSet = (allTimes) => {
+  if (allTimes[0].minutes() !== 0) {
+    return 4 - (allTimes[0].minutes() / 15);
+  }
+  return 0;
+};
 
 const GridHours = (props) => {
   const { allTimes, jumpIndexAllTimes } = props;
 
   // array only with full hours thats will be used to display at grid
-  const hourTime = [];
-  allTimes.forEach((time, index) => {
-    if (time.minute() === 0) hourTime.push({ time, index });
-  });
-  let offSet = 0;
-  // calculate the numbers of cells to offset the hours grid
-  // since we only want display the full hours
-  if (allTimes[0].minutes() !== 0) offSet = 4 - (allTimes[0].minutes() / 15);
-  const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
+  const hourTime = calcHourTime(allTimes);
+  const style = { margin: `0 0 0 ${75 + (inicialOffSet(allTimes) * 13)}px` };
   let gridJump = false;
   let jumpCellIndex = null;
   let colTitles = hourTime.map((hour, index) => {
