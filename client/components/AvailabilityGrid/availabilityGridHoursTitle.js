@@ -51,9 +51,14 @@ const colTitlesAjust = (jumpCellIndex, colTitles, props) => {
 
 const calcHourTime = (allTimes) => {
   const hourTime = [];
-  allTimes.forEach((time, index) => {
-    if (time.minute() === 0) hourTime.push({ time, index });
+  allTimes.forEach((time) => {
+    if (time.minute() === 0) hourTime.push(time);
   });
+  // check if last time is more the 45 min if was add to.
+  console.log('last ', allTimes[allTimes.length - 1].minutes());
+  if (allTimes[allTimes.length - 1].minutes() >= 45) {
+    hourTime.push(allTimes[allTimes.length - 1].startOf('hour'));
+  }
   return hourTime;
 };
 
@@ -75,14 +80,14 @@ const GridHours = (props) => {
   let gridJump = false;
   let jumpCellIndex = null;
   let colTitles = hourTime.map((hour, index) => {
-    if (index !== 0) gridJump = (moment(hour.time).subtract(1, 'hour').isSame(hourTime[index - 1].time)) === false;
+    if (index !== 0 && index !== hourTime.length - 1) gridJump = (moment(hour).subtract(1, 'hour').isSame(hourTime[index - 1])) === false;
     if (gridJump) {
       jumpCellIndex = index;
-      return JumpCell(hour.time, jumpIndexAllTimes, allTimes);
+      return JumpCell(hour, jumpIndexAllTimes, allTimes);
     }
-    return cell(hour.time);
+    return cell(hour);
   });
-  if (jumpCellIndex) {
+  if (gridJump) {
     colTitles = colTitlesAjust(jumpCellIndex, colTitles, props);
   }
   return (<div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
