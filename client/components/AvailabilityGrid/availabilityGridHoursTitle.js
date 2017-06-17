@@ -24,7 +24,8 @@ const JumpCell = time => (
 
 const sizeLastCell = (allTimes, jumpIndexAllTimes) => `${(allTimes[jumpIndexAllTimes].minute() / 15) * 12}px`;
 
-const colTitlesAjust = (jumpCellIndex, colTitles, allTimes, jumpIndexAllTimes) => {
+const colTitlesAjust = (jumpCellIndex, colTitles, props) => {
+  const { allTimes, jumpIndexAllTimes } = props;
   const size = sizeLastCell(allTimes, jumpIndexAllTimes);
   const style = { width: size, minWidth: size };
   const colTit = _.cloneDeep(colTitles);
@@ -43,6 +44,7 @@ const calcHourTime = (allTimes) => {
   allTimes.forEach((time, index) => {
     if (time.minute() === 0) hourTime.push({ time, index });
   });
+  return hourTime;
 };
 
 // calculate the numbers of cells to offset the hours grid
@@ -55,7 +57,7 @@ const inicialOffSet = (allTimes) => {
 };
 
 const GridHours = (props) => {
-  const { allTimes, jumpIndexAllTimes } = props;
+  const { allTimes } = props;
 
   // array only with full hours thats will be used to display at grid
   const hourTime = calcHourTime(allTimes);
@@ -71,14 +73,14 @@ const GridHours = (props) => {
     return cell(hour.time);
   });
   if (jumpCellIndex) {
-    colTitles = colTitlesAjust(jumpCellIndex, colTitles, allTimes, jumpIndexAllTimes);
+    colTitles = colTitlesAjust(jumpCellIndex, colTitles, props);
   }
   return (<div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
 };
 
 GridHours.propTypes = {
   allTimes: PropTypes.arrayOf(momentPropTypes.momentObj).isRequired,
-  jumpIndexAllTimes: PropTypes.number.isRequired,
 };
+
 
 export default cssModules(GridHours, styles);
