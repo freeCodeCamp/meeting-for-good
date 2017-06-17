@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import GridHours from './availabilityGridHoursTitle';
 import GridRow from './availabilityGridRows';
 import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
-  createTimesRange, createDatesRange, availabilityReducer,
+  createTimesRange, createDatesRange, availabilityReducer, jumpTimeIndex,
 } from '../AvailabilityGrid/availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import enteravailGif from '../../assets/enteravail.gif';
@@ -39,6 +39,7 @@ class AvailabilityGrid extends Component {
       editOperation: null,
       cellInitialRow: null,
       cellInitialColumn: null,
+      jumpTimeIdx: null,
       event: {} };
   }
 
@@ -49,8 +50,9 @@ class AvailabilityGrid extends Component {
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
+    const jumpTimeIdx = jumpTimeIndex(allTimes);
 
-    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
+    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event, jumpTimeIdx });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -60,6 +62,7 @@ class AvailabilityGrid extends Component {
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
+    // const jumpTimeIdx = jumpTimeIndex(allTimes);
 
     this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
   }
@@ -195,11 +198,11 @@ class AvailabilityGrid extends Component {
   }
 
   renderGrid() {
-    const { grid, allTimes, backgroundColors, showHeatmap } = this.state;
+    const { grid, allTimes, backgroundColors, showHeatmap, jumpTimeIdx } = this.state;
     const { curUser, heightlightedUser } = this.props;
     return (
       <div>
-        <GridHours allTimes={allTimes} />
+        <GridHours allTimes={allTimes} jumpIndexAllTimes={jumpTimeIdx} />
         {
           grid.map((row, rowIndex) => (
             <div key={row.date} styleName="column">

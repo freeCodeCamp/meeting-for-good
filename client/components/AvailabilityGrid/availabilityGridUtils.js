@@ -241,3 +241,11 @@ export const availabilityReducer = (availability) => {
   availReduced.push([previousFrom._d, to._d]);
   return _.uniqWith(availReduced, _.isEqual);
 };
+
+export const jumpTimeIndex = (allTimes) => {
+  let index = 1;
+  while (moment(allTimes[index]).subtract(15, 'm').isSame(allTimes[index - 1]) && index < allTimes.length) {
+    index += 1;
+  }
+  return (index > 1) ? index : null;
+};

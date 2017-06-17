@@ -32,8 +32,7 @@ const Cell = (quarter, columnIndex, props) => {
 };
 
 const JumpCell = (quarter, columnIndex, props) => (
-  <div styleName="jumperCellWrapper" key={`jumper ${quarter.time}`}>
-    JJJ
+  <div styleName="jumperCellGridWrapper" key={`jumper ${quarter.time}`}>
     {Cell(quarter, columnIndex, props)}
   </div>
 );
