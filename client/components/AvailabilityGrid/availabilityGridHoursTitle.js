@@ -8,7 +8,6 @@ import SettingsEthernet from 'material-ui/svg-icons/action/settings-ethernet';
 import _ from 'lodash';
 import styles from './availability-grid.css';
 
-
 const moment = extendMoment(Moment);
 
 const cell = time => (
@@ -16,9 +15,18 @@ const cell = time => (
     {time.format('h a')}
   </p>
 );
-const JumpCell = time => (
+
+const cellForOffsetAfterjump = (jumpIndexAllTimes, allTimes) => {
+  const nextfullHour = moment(allTimes[jumpIndexAllTimes]).startOf('hour').add(1, 'h');
+  const numCells = nextfullHour.diff(moment(allTimes[jumpIndexAllTimes]), 'minutes') / 15;
+  const cell = <div style={{ minWidth: `${numCells * 13}px` }} />;
+  return cell;
+};
+
+const JumpCell = (time, jumpIndexAllTimes, allTimes) => (
   <div styleName="jumperCellWrapper" key={`jumper ${time}`}>
     <SettingsEthernet styleName="jumperIcon" />
+    {cellForOffsetAfterjump(jumpIndexAllTimes, allTimes)}
     {cell(time)}
   </div>);
 
@@ -57,7 +65,7 @@ const inicialOffSet = (allTimes) => {
 };
 
 const GridHours = (props) => {
-  const { allTimes } = props;
+  const { allTimes, jumpIndexAllTimes } = props;
 
   // array only with full hours thats will be used to display at grid
   const hourTime = calcHourTime(allTimes);
@@ -68,7 +76,7 @@ const GridHours = (props) => {
     if (index !== 0) gridJump = (moment(hour.time).subtract(1, 'hour').isSame(hourTime[index - 1].time)) === false;
     if (gridJump) {
       jumpCellIndex = index;
-      return JumpCell(hour.time);
+      return JumpCell(hour.time, jumpIndexAllTimes, allTimes);
     }
     return cell(hour.time);
   });
@@ -79,6 +87,7 @@ const GridHours = (props) => {
 };
 
 GridHours.propTypes = {
+  jumpIndexAllTimes: PropTypes.number.isRequired,
   allTimes: PropTypes.arrayOf(momentPropTypes.momentObj).isRequired,
 };
 
