@@ -10,15 +10,14 @@ import styles from './availability-grid.css';
 
 const moment = extendMoment(Moment);
 
-const cell = time => (
-  <p key={time} styleName="grid-hour" >
-    {time.format('h a')}
+const cell = hour => (
+  <p key={hour._d} styleName="grid-hour" >
+    {hour.format('h a')}
   </p>
 );
 
 const cellForOffsetAfterjump = (jumpIndexAllTimes, allTimes) => {
   const nextfullHour = moment(allTimes[jumpIndexAllTimes]).startOf('hour').add(1, 'h');
-  console.log(nextfullHour._d);
   const numCells = nextfullHour.diff(moment(allTimes[jumpIndexAllTimes]), 'minutes') / 15;
   const cell = <div style={{ minWidth: `${numCells * 13}px` }} />;
   return cell;
@@ -36,12 +35,11 @@ const sizeLastCellBeforeJump = (allTimes, jumpIndexAllTimes) => `${((((60 - allT
 const colTitlesAjust = (jumpCellIndex, colTitles, props) => {
   const { allTimes, jumpIndexAllTimes } = props;
   const size = sizeLastCellBeforeJump(allTimes, jumpIndexAllTimes);
-  console.log(size, allTimes[jumpIndexAllTimes]._d);
   const style = { width: size, minWidth: size };
   const colTit = _.cloneDeep(colTitles);
   colTit[jumpCellIndex - 1] = (
     <div
-      key={colTit[jumpCellIndex - 1].key}
+      key={`${colTit[jumpCellIndex - 1].key} jumped`}
       styleName="lastCellAfterJumpHour"
       style={style}
     />
@@ -54,11 +52,6 @@ const calcHourTime = (allTimes) => {
   allTimes.forEach((time) => {
     if (time.minute() === 0) hourTime.push(time);
   });
-  // check if last time is more the 45 min if was add to.
-  console.log('last ', allTimes[allTimes.length - 1].minutes());
-  if (allTimes[allTimes.length - 1].minutes() >= 45) {
-    hourTime.push(allTimes[allTimes.length - 1].startOf('hour'));
-  }
   return hourTime;
 };
 
@@ -76,6 +69,7 @@ const GridHours = (props) => {
 
   // array only with full hours thats will be used to display at grid
   const hourTime = calcHourTime(allTimes);
+  hourTime.forEach(time => console.log(time._d));
   const style = { margin: `0 0 0 ${75 + (inicialOffSet(allTimes) * 13)}px` };
   let gridJump = false;
   let jumpCellIndex = null;
@@ -85,12 +79,13 @@ const GridHours = (props) => {
       jumpCellIndex = index;
       return JumpCell(hour, jumpIndexAllTimes, allTimes);
     }
+    console.log()
     return cell(hour);
   });
   if (gridJump) {
     colTitles = colTitlesAjust(jumpCellIndex, colTitles, props);
   }
-  return (<div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
+  return (<div key={'GridHours'} id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
 };
 
 GridHours.propTypes = {

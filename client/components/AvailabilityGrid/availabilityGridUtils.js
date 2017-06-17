@@ -73,14 +73,15 @@ export const createTimesRange = (dates) => {
   // so he has the hole hours ranges
   const startDate = moment(dates[0].fromDate);
   const endDate = moment(dates[0].toDate);
-  const hour = endDate.get('hour');
-  const minute = endDate.get('minute');
-  const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
-  let dateRange = moment.range(startDate, endDateToRange);
+  const endDateToRange = moment(startDate).startOf('date').hour(endDate.get('hour')).minute(endDate.get('minute'));
+  if (endDateToRange.minutes() === 59) endDateToRange.minutes(45);
+  let dateRange;
   // if the end range hour is before the start hour then ajust the range for end at next day;
   // so the range can be calculated correctly.
   if (endDateToRange.hour() < startDate.hour()) {
     dateRange = moment.range(startDate, moment(endDateToRange).add(1, 'days'));
+  } else {
+    dateRange = moment.range(startDate, endDateToRange);
   }
   const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
   // correct the date value for each hour at the array since the
@@ -88,6 +89,7 @@ export const createTimesRange = (dates) => {
   // but we whant all dates at the same day.
   const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
   timesRangeFinal.sort((a, b) => a.clone().unix() - b.clone().unix());
+  // console.log('timesRangeFinal depois', timesRangeFinal.forEach(time => console.log(time._d)));
   return timesRangeFinal;
 };
 
@@ -210,12 +212,26 @@ export const editParticipantToCellGrid = (
   return nGrid;
 };
 
+const dedupAvail = (availability) => {
+  console.log('chamei');
+  const result = [];
+  availability.forEach((avail, index) => {
+    console.log('for each', moment(avail[0]), moment(availability[index - 1][0]));
+    if (!moment(avail[0]).isSame(moment(availability[index - 1][0]))
+      && !moment(avail[1]).isSame(moment(availability[index - 1][1]))) {
+      console.log('achei');
+      result.push(avail);
+    }
+  });
+  return result;
+};
+
 export const availabilityReducer = (availability) => {
   // sort the array just to be sure
   const availabilityToEdit = _.cloneDeep(availability);
   availabilityToEdit.sort((a, b) => {
-    const x = moment(a[0]).clone().unix();
-    const y = moment(b[0]).clone().unix();
+    const x = moment(a[0]).unix();
+    const y = moment(b[0]).unix();
     return x - y;
   });
   const availReduced = [];
@@ -239,7 +255,10 @@ export const availabilityReducer = (availability) => {
   // a pair to compare
   const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
   availReduced.push([previousFrom._d, to._d]);
-  return _.uniqWith(availReduced, _.isEqual);
+  console.log('availabilityToEdit', availReduced);
+  const result = dedupAvail(availReduced);
+  console.log('result', result);
+  return result;
 };
 
 export const jumpTimeIndex = (allTimes) => {
