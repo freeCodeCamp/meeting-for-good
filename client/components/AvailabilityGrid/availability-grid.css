@@ -78,8 +78,8 @@
     flex-direction: row;
   }
 
-  .jumperCellGridWrapper {
-    min-width: 17px;
+  .jumperCellGrid {
+    min-width: 13px;
     background-color: #e5e5e5;
     border-left: 2px solid #787878;
     border-right: 1px solid #787878;

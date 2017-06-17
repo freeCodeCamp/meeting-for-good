@@ -1,13 +1,9 @@
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
 import styles from './availability-grid.css';
 
 import CellGrid from '../CellGrid/CellGrid';
-
-const moment = extendMoment(Moment);
 
 const Cell = (quarter, columnIndex, props) => {
   const { backgroundColors, showHeatmap, curUser, rowIndex,
@@ -31,17 +27,16 @@ const Cell = (quarter, columnIndex, props) => {
   );
 };
 
-const JumpCell = (quarter, columnIndex, props) => (
-  <div styleName="jumperCellGridWrapper" key={`jumper ${quarter.time}`}>
-    {Cell(quarter, columnIndex, props)}
-  </div>
-);
+const JumpCell = quarter => (<div styleName="jumperCellGrid" key={`jumperDiv ${quarter.time}`} />);
 
 const GridRow = (props) => {
-  const { quarters } = props;
-  const row = quarters.map((quarter, columnIndex) => {
-    const gridJump = (columnIndex > 0) ? (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time))) : false;
-    return (gridJump) ? JumpCell(quarter, columnIndex, props) : Cell(quarter, columnIndex, props);
+  const { quarters, jumpTimeIdx } = props;
+  const row = [];
+  quarters.forEach((quarter, columnIndex) => {
+    if (jumpTimeIdx === columnIndex) {
+      row.push(JumpCell(quarter, columnIndex, props));
+    }
+    row.push(Cell(quarter, columnIndex, props));
   });
   return <div styleName="rowWrapper"> {row} </div>;
 };
@@ -56,6 +51,7 @@ Cell.defaultProps = {
 
 GridRow.propTypes = {
   quarters: PropTypes.arrayOf(PropTypes.object).isRequired,
+  jumpTimeIdx: PropTypes.number.isRequired,
 };
 
 Cell.propTypes = {

@@ -221,6 +221,7 @@ class AvailabilityGrid extends Component {
                   handleCellMouseDown={this.handleCellMouseDown}
                   handleCellMouseUp={this.handleCellMouseUp}
                   heightlightedUser={heightlightedUser}
+                  jumpTimeIdx={jumpTimeIdx}
                 />
               </div>
             </div>
