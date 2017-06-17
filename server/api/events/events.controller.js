@@ -92,7 +92,12 @@ export const getStats = (req, res) => {
     });
     nbrUsers = Object.keys(usersMap).length;
 
-    const stats = { users: nbrUsers, events: nbrEvents, activeEvents: nbrActiveEvents, participants: nbrParticipants };
+    const stats = {
+      users: nbrUsers,
+      events: nbrEvents,
+      activeEvents: nbrActiveEvents,
+      participants: nbrParticipants,
+    };
     return res.status(200).json(stats);
   });
 };
