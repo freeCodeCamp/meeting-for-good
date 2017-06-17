@@ -136,6 +136,9 @@ class NavBar extends Component {
     if (isAuthenticated) {
       return (
         <ToolbarGroup lastChild styleName="rightToolbarGroup" >
+          <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
+            Donate
+          </FlatButton>
           <NotificationBar
             curUser={curUser}
             events={events}
@@ -189,9 +192,6 @@ class NavBar extends Component {
         <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
           Meeting for Good
           </FlatButton>
-        <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
-          Donate
-        </FlatButton>
       </ToolbarGroup >
     );
   }
