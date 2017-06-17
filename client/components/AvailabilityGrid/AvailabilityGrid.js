@@ -45,7 +45,6 @@ class AvailabilityGrid extends Component {
 
   componentWillMount() {
     const { event, dates, showHeatmap } = this.props;
-
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
@@ -57,13 +56,10 @@ class AvailabilityGrid extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { event, dates, showHeatmap } = nextProps;
-
+    const { allTimes } = this.state;
     const allDates = createDatesRange(dates);
-    const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
-    // const jumpTimeIdx = jumpTimeIndex(allTimes);
-
     this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
   }
 
