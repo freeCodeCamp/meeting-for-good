@@ -18,6 +18,7 @@ const cell = time => (
 
 const cellForOffsetAfterjump = (jumpIndexAllTimes, allTimes) => {
   const nextfullHour = moment(allTimes[jumpIndexAllTimes]).startOf('hour').add(1, 'h');
+  console.log(nextfullHour._d);
   const numCells = nextfullHour.diff(moment(allTimes[jumpIndexAllTimes]), 'minutes') / 15;
   const cell = <div style={{ minWidth: `${numCells * 13}px` }} />;
   return cell;
@@ -30,11 +31,12 @@ const JumpCell = (time, jumpIndexAllTimes, allTimes) => (
     {cell(time)}
   </div>);
 
-const sizeLastCell = (allTimes, jumpIndexAllTimes) => `${(allTimes[jumpIndexAllTimes].minute() / 15) * 12}px`;
+const sizeLastCellBeforeJump = (allTimes, jumpIndexAllTimes) => `${((((60 - allTimes[jumpIndexAllTimes].minute()) / 15) + 1) * 12.5)}px`;
 
 const colTitlesAjust = (jumpCellIndex, colTitles, props) => {
   const { allTimes, jumpIndexAllTimes } = props;
-  const size = sizeLastCell(allTimes, jumpIndexAllTimes);
+  const size = sizeLastCellBeforeJump(allTimes, jumpIndexAllTimes);
+  console.log(size, allTimes[jumpIndexAllTimes]._d);
   const style = { width: size, minWidth: size };
   const colTit = _.cloneDeep(colTitles);
   colTit[jumpCellIndex - 1] = (
