@@ -21,7 +21,6 @@ import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
 
-
 const moment = extendMoment(Moment);
 
 class AvailabilityGrid extends Component {
@@ -202,30 +201,25 @@ class AvailabilityGrid extends Component {
     return (
       <div>
         <GridHours allTimes={allTimes} jumpIndexAllTimes={jumpTimeIdx} />
-        {
-          grid.map((row, rowIndex) => (
-            <div key={row.date} styleName="column">
-              <div styleName="rowGrid">
-                <div styleName="date-cell">
-                  {row.date.format('Do MMM')} <br /> {row.date.format('ddd')}
-                </div>
-                <GridRow
-                  backgroundColors={backgroundColors}
-                  showHeatmap={showHeatmap}
-                  curUser={curUser}
-                  quarters={row.quarters}
-                  rowIndex={rowIndex}
-                  handleCellMouseOver={this.handleCellMouseOver}
-                  handleCellMouseLeave={this.handleCellMouseLeave}
-                  handleCellMouseDown={this.handleCellMouseDown}
-                  handleCellMouseUp={this.handleCellMouseUp}
-                  heightlightedUser={heightlightedUser}
-                  jumpTimeIdx={jumpTimeIdx}
-                />
-              </div>
+        { grid.map((row, rowIndex) => (
+          <div key={row.date} styleName="column">
+            <div styleName="rowGrid">
+              <div styleName="date-cell"> {row.date.format('Do MMM')} <br /> {row.date.format('ddd')} </div>
+              <GridRow
+                backgroundColors={backgroundColors}
+                showHeatmap={showHeatmap}
+                curUser={curUser}
+                quarters={row.quarters}
+                rowIndex={rowIndex}
+                handleCellMouseOver={this.handleCellMouseOver}
+                handleCellMouseLeave={this.handleCellMouseLeave}
+                handleCellMouseDown={this.handleCellMouseDown}
+                handleCellMouseUp={this.handleCellMouseUp}
+                heightlightedUser={heightlightedUser}
+                jumpTimeIdx={jumpTimeIdx}
+              />
             </div>
-          ))
-        }
+          </div>))}
       </div>
     );
   }

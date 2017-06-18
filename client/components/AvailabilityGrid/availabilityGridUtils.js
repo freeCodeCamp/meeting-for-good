@@ -219,7 +219,6 @@ const dedupAvail = (availability) => {
     console.log('for each', moment(avail[0]), moment(availability[index - 1][0]));
     if (!moment(avail[0]).isSame(moment(availability[index - 1][0]))
       && !moment(avail[1]).isSame(moment(availability[index - 1][1]))) {
-      console.log('achei');
       result.push(avail);
     }
   });
