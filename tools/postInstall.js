@@ -7,7 +7,6 @@ args += '-d rev=`git log -n 1 --pretty=format:%H` ';
 args += '-d branch=`git rev-parse --abbrev-ref HEAD` ';
 args += '-d status=completed';
 
-console.log(args);
 exec(`curl ${args}`, (error, stdout, stderr) => {
   console.log(`stdout: ${stdout}`);
   console.log(`stderr: ${stderr}`);

@@ -27,7 +27,6 @@ const respondWithResult = (res, statusCode) => {
 
 const handleError = (res, statusCode) => {
   statusCode = statusCode || 500;
-  // console.log('handleError userController', res);
   return (err) => {
     res.status(statusCode).send(err);
   };
