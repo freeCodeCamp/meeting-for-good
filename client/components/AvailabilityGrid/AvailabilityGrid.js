@@ -11,9 +11,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 
-import CellGrid from '../CellGrid/CellGrid';
+import GridHours from './availabilityGridHoursTitle';
+import GridRow from './availabilityGridRows';
 import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
-  createTimesRange, createDatesRange, availabilityReducer,
+  createTimesRange, createDatesRange, availabilityReducer, jumpTimeIndex,
 } from '../AvailabilityGrid/availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import enteravailGif from '../../assets/enteravail.gif';
@@ -37,29 +38,31 @@ class AvailabilityGrid extends Component {
       editOperation: null,
       cellInitialRow: null,
       cellInitialColumn: null,
-      event: {} };
+      jumpTimeIdx: null,
+      event: {},
+      allTimes: [],
+    };
   }
 
   componentWillMount() {
     const { event, dates, showHeatmap } = this.props;
-
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
+    const jumpTimeIdx = jumpTimeIndex(allTimes);
 
-    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
+    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event, jumpTimeIdx });
   }
 
   componentWillReceiveProps(nextProps) {
     const { event, dates, showHeatmap } = nextProps;
-
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
-
-    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event });
+    const jumpTimeIdx = jumpTimeIndex(allTimes);
+    this.setState({ grid, backgroundColors, showHeatmap, allDates, event, allTimes, jumpTimeIdx });
   }
 
   @autobind
@@ -123,8 +126,7 @@ class AvailabilityGrid extends Component {
       cellInitialColumn: columnIndex,
       cellInitialRow: rowIndex,
       grid: editParticipantToCellGrid(
-        quarter, editOperation, rowIndex,
-        columnIndex, rowIndex, columnIndex, curUser, grid),
+        quarter, editOperation, rowIndex, columnIndex, rowIndex, columnIndex, curUser, grid),
     });
   }
 
@@ -193,85 +195,31 @@ class AvailabilityGrid extends Component {
     );
   }
 
-  renderGridHours() {
-    const { allTimes } = this.state;
-    // array only with full hours thats will be used to display at grid
-    const hourTime = [];
-    allTimes.forEach((time, index) => {
-      if (time.minute() === 0) {
-        hourTime.push({ time, index });
-      }
-    });
-    let offSet = 0;
-    // calculate the numbers of cells to offset the hours grid
-    // since we only want display the full hours
-    if (allTimes[0].minutes() !== 0) {
-      offSet = 4 - (allTimes[0].minutes() / 15);
-    }
-    const style = { margin: `0 0 0 ${75 + (offSet * 13)}px` };
-    let gridNotJump = true;
-    const colTitles = hourTime.map((hour, index) => {
-      if (index !== 0) {
-        gridNotJump = (moment(hour.time).subtract(1, 'hour').isSame(hourTime[index - 1].time)) === true;
-      }
-      return (
-        <p
-          key={hour.time}
-          styleName={gridNotJump ? 'grid-hour' : 'grid-hourJump'}
-          style={!gridNotJump ? { paddingLeft: `${((13 * (hour.index % 4)) + 3)}px` } : null}
-        >
-          {hour.time.format('h a')}
-        </p>
-      );
-    });
-    const timesTitle = (
-      <div id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>
-    );
-    return timesTitle;
-  }
-
-  renderGridRow(quarters, rowIndex) {
-    const { backgroundColors, showHeatmap } = this.state;
-    const { curUser } = this.props;
-    return quarters.map((quarter, columnIndex) => {
-      const gridJump = (columnIndex > 0) ? (!moment(quarter.time).subtract(15, 'minute').isSame(moment(quarters[columnIndex - 1].time))) : false;
-      return (
-        <CellGrid
-          quarter={quarter}
-          heatMapMode={showHeatmap}
-          key={quarter.time}
-          gridJump={gridJump}
-          backgroundColors={backgroundColors}
-          onMouseOver={ev => this.handleCellMouseOver(ev, quarter, rowIndex, columnIndex)}
-          onMouseLeave={ev => this.handleCellMouseLeave(ev)}
-          onMouseDown={ev => this.handleCellMouseDown(ev, quarter, rowIndex, columnIndex)}
-          onMouseUp={ev => this.handleCellMouseUp(ev)}
-          curUser={curUser}
-          rowIndex={rowIndex}
-          columnIndex={columnIndex}
-          heightlightedUser={this.props.heightlightedUser}
-        />
-      );
-    });
-  }
-
   renderGrid() {
-    const { grid } = this.state;
+    const { grid, allTimes, backgroundColors, showHeatmap, jumpTimeIdx } = this.state;
+    const { curUser, heightlightedUser } = this.props;
     return (
       <div>
-        {this.renderGridHours()}
-        {
-          grid.map((row, rowIndex) => (
-            <div key={row.date} styleName="column">
-              <div styleName="rowGrid">
-                <div styleName="date-cell">
-                  {row.date.format('Do MMM')} <br /> {row.date.format('ddd')}
-                </div>
-                {this.renderGridRow(row.quarters, rowIndex)}
-              </div>
+        <GridHours allTimes={allTimes} jumpIndexAllTimes={jumpTimeIdx} />
+        {grid.map((row, rowIndex) => (
+          <div key={row.date} styleName="column">
+            <div styleName="rowGrid">
+              <div styleName="date-cell"> {row.date.format('Do MMM')} <br /> {row.date.format('ddd')} </div>
+              <GridRow
+                backgroundColors={backgroundColors}
+                showHeatmap={showHeatmap}
+                curUser={curUser}
+                quarters={row.quarters}
+                rowIndex={rowIndex}
+                handleCellMouseOver={this.handleCellMouseOver}
+                handleCellMouseLeave={this.handleCellMouseLeave}
+                handleCellMouseDown={this.handleCellMouseDown}
+                handleCellMouseUp={this.handleCellMouseUp}
+                heightlightedUser={heightlightedUser}
+                jumpTimeIdx={jumpTimeIdx}
+              />
             </div>
-          ))
-        }
+          </div>))}
       </div>
     );
   }
@@ -301,14 +249,8 @@ class AvailabilityGrid extends Component {
         </div>
         {this.renderGrid()}
         <div styleName="info">
-          <p>
-            <em>Each time slot represents 15 minutes.</em>
-          </p>
-          <p>
-            <em>
-              Displaying all times in your local timezone: {jz.determine().name()}
-            </em>
-          </p>
+          <p> <em>Each time slot represents 15 minutes.</em> </p>
+          <p> <em>  Displaying all times in your local timezone: {jz.determine().name()}</em></p>
         </div>
         <br />
         {this.renderActionButtons()}
@@ -332,13 +274,10 @@ AvailabilityGrid.defaultProps = {
 };
 
 AvailabilityGrid.propTypes = {
-
   // Function to run when availability for current user is ready to be updated
   submitAvail: PropTypes.func,
-
   // Function to run to switch from heat map to availability editing
   editAvail: PropTypes.func,
-
   // Function to run when user wishes to cancel availability editing
   closeEditorGrid: PropTypes.func,
 

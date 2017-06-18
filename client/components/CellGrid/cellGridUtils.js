@@ -3,13 +3,11 @@ import _ from 'lodash';
 
 export const styleNameCompose = (state, props) => {
   // select the class for the border base style
-  const { heightlightedUser, gridJump } = state;
+  const { heightlightedUser } = state;
   const { quarter } = props;
   let style = 'cell';
   const minutes = moment(quarter.time).minutes();
-  if (gridJump) {
-    style += ' cellGridJump';
-  } else if (minutes === 0) {
+  if (minutes === 0) {
     style += ' cellBorderHour';
   } else if (minutes === 30) {
     style += ' cellBorderHalfHour';

@@ -16,20 +16,19 @@ class CellGrid extends Component {
   }
 
   componentWillMount() {
-    const { heatMapMode, rowIndex, columnIndex, heightlightedUser, quarter, gridJump } = this.props;
+    const { heatMapMode, rowIndex, columnIndex, heightlightedUser, quarter } = this.props;
     this.setState({
       heatMapMode,
       rowIndex,
       columnIndex,
       heightlightedUser,
       quarter,
-      gridJump,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { heatMapMode, heightlightedUser, quarter, gridJump } = nextProps;
-    this.setState({ heatMapMode, heightlightedUser, quarter, gridJump });
+    const { heatMapMode, heightlightedUser, quarter } = nextProps;
+    this.setState({ heatMapMode, heightlightedUser, quarter });
   }
 
   render() {
@@ -71,7 +70,6 @@ CellGrid.propTypes = {
   rowIndex: PropTypes.number,
   columnIndex: PropTypes.number,
   heightlightedUser: PropTypes.string,
-  gridJump: PropTypes.bool.isRequired,
 
   // Current user
   quarter: PropTypes.shape({
