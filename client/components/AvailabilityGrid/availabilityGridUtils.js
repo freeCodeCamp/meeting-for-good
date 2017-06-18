@@ -89,7 +89,6 @@ export const createTimesRange = (dates) => {
   // but we whant all dates at the same day.
   const timesRangeFinal = timesRange.map(time => moment(startDate).startOf('date').hour(time.get('hour')).minute(time.get('minute')));
   timesRangeFinal.sort((a, b) => a.clone().unix() - b.clone().unix());
-  // console.log('timesRangeFinal depois', timesRangeFinal.forEach(time => console.log(time._d)));
   return timesRangeFinal;
 };
 
@@ -212,19 +211,6 @@ export const editParticipantToCellGrid = (
   return nGrid;
 };
 
-const dedupAvail = (availability) => {
-  console.log('chamei');
-  const result = [];
-  availability.forEach((avail, index) => {
-    console.log('for each', moment(avail[0]), moment(availability[index - 1][0]));
-    if (!moment(avail[0]).isSame(moment(availability[index - 1][0]))
-      && !moment(avail[1]).isSame(moment(availability[index - 1][1]))) {
-      result.push(avail);
-    }
-  });
-  return result;
-};
-
 export const availabilityReducer = (availability) => {
   // sort the array just to be sure
   const availabilityToEdit = _.cloneDeep(availability);
@@ -254,10 +240,7 @@ export const availabilityReducer = (availability) => {
   // a pair to compare
   const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
   availReduced.push([previousFrom._d, to._d]);
-  console.log('availabilityToEdit', availReduced);
-  const result = dedupAvail(availReduced);
-  console.log('result', result);
-  return result;
+  return availReduced;
 };
 
 export const jumpTimeIndex = (allTimes) => {

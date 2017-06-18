@@ -24,16 +24,11 @@ const cellForOffsetAfterjump = (jumpIndexAllTimes, allTimes) => {
   const nextfullHour = moment(allTimes[jumpIndexAllTimes]).startOf('hour').add(1, 'h');
   const numCells = nextfullHour.diff(moment(allTimes[jumpIndexAllTimes]), 'minutes') / 15;
   const cell = <div style={{ minWidth: `${numCells * 13}px` }} />;
-  // console.log(moment(allTimes[jumpIndexAllTimes])._d,
-  // nextfullHour._d, nextfullHour.diff(moment(allTimes[jumpIndexAllTimes]), 'minutes'), numCells);
   return cell;
 };
 
 // antes
 const sizeLastCellBeforeJump = (allTimes, jumpIndexAllTimes) => `${((((allTimes[jumpIndexAllTimes - 1].minute()) / 15) + 1) * 12.5)}px`;
-  // console.log('sizeLastCellBeforeJump', allTimes.length, jumpIndexAllTimes);
-  // console.log('sizeLastCellBeforeJump', allTimes[jumpIndexAllTimes - 1]._d);
-  // return `${((((allTimes[jumpIndexAllTimes - 1].minute()) / 15) + 1) * 12.5)}px`;
 
 const cell = hour => (
   <p key={hour._d} styleName="grid-hour" >
@@ -52,10 +47,8 @@ const JumpCell = (time, jumpIndexAllTimes, allTimes) => (
 const colTitlesAjust = (jumpCellHourIndex, colTitles, props) => {
   const { allTimes, jumpIndexAllTimes } = props;
   const sizeLastCellBefore = sizeLastCellBeforeJump(allTimes, jumpIndexAllTimes);
-  // console.log('sizeLastCellBefore', sizeLastCellBefore);
   const style = { width: sizeLastCellBefore, minWidth: sizeLastCellBefore };
   const colTit = _.cloneDeep(colTitles);
-  // console.log('colTitlesAjust colTit', colTit, jumpCellHourIndex);
   colTit[jumpCellHourIndex - 1] = (
     <div
       key={`${colTit[jumpCellHourIndex - 1].key} jumped`}
@@ -71,7 +64,6 @@ const calcHourTime = (allTimes) => {
   allTimes.forEach((time) => {
     if (time.minute() === 0) hourTime.push(time);
   });
-  // console.log('hourTime', hourTime.forEach(time => console.log(time._d)));
   return hourTime;
 };
 
@@ -89,10 +81,8 @@ const GridHours = (props) => {
     }
     if (gridJump) {
       jumpCellHourIndex = index;
-      // console.log(gridJump, hour._d);
       return JumpCell(hour, jumpIndexAllTimes, allTimes);
     }
-    // console.log(gridJump, hour._d);
     return cell(hour);
   });
   if (jumpCellHourIndex) {

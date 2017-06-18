@@ -201,7 +201,7 @@ class AvailabilityGrid extends Component {
     return (
       <div>
         <GridHours allTimes={allTimes} jumpIndexAllTimes={jumpTimeIdx} />
-        { grid.map((row, rowIndex) => (
+        {grid.map((row, rowIndex) => (
           <div key={row.date} styleName="column">
             <div styleName="rowGrid">
               <div styleName="date-cell"> {row.date.format('Do MMM')} <br /> {row.date.format('ddd')} </div>
@@ -274,13 +274,10 @@ AvailabilityGrid.defaultProps = {
 };
 
 AvailabilityGrid.propTypes = {
-
   // Function to run when availability for current user is ready to be updated
   submitAvail: PropTypes.func,
-
   // Function to run to switch from heat map to availability editing
   editAvail: PropTypes.func,
-
   // Function to run when user wishes to cancel availability editing
   closeEditorGrid: PropTypes.func,
 
