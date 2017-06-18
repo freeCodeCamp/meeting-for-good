@@ -106,5 +106,4 @@ GridHours.propTypes = {
   allTimes: PropTypes.arrayOf(momentPropTypes.momentObj).isRequired,
 };
 
-
 export default cssModules(GridHours, styles);
