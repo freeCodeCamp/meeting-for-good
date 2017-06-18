@@ -156,6 +156,9 @@ class NavBar extends Component {
     }
     return (
       <ToolbarGroup lastChild styleName="rightToolbarGroup">
+        <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
+          Donate
+        </FlatButton>
         <FlatButton styleName="loginButton" onTouchTap={this.handleAuthClick} labelStyle={{ fontWeight: 200, fontSize: '20px' }} >
           Sign In
         </FlatButton>
