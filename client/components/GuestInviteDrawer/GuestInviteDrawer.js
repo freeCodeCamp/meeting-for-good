@@ -20,8 +20,9 @@ import _ from 'lodash';
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import nameInitials from '../../util/string.utils';
-import { fullUrl, emailText } from './guestInviteDrawerUtils';
+import { fullUrl } from './guestInviteDrawerUtils';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
+import UrlActions from './GuestInviteUrlActions';
 
 class GuestInviteDrawer extends Component {
   @autobind
@@ -33,8 +34,6 @@ class GuestInviteDrawer extends Component {
     super(props);
     this.state = {
       open: false,
-      curUser: {},
-      event: {},
       guests: [],
       guestsToDisplay: [],
       activeCheckBoxes: [],
@@ -49,13 +48,13 @@ class GuestInviteDrawer extends Component {
 
   async componentWillMount() {
     await this.loadPastGuests();
-    const { event, open, curUser } = this.props;
-    this.setState({ event, open, curUser, activeCheckBoxes: [] });
+    const { open } = this.props;
+    this.setState({ open, activeCheckBoxes: [] });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { event, open, curUser } = nextProps;
-    this.setState({ event, open, curUser, activeCheckBoxes: [], setFocusFullUrl: true });
+    const { open } = nextProps;
+    this.setState({ open, activeCheckBoxes: [], setFocusFullUrl: true });
   }
 
   async loadPastGuests() {
@@ -89,7 +88,8 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   async handleInvite() {
-    const { activeCheckBoxes, curUser, event } = this.state;
+    const { activeCheckBoxes } = this.state;
+    const { curUser, event } = this.props;
     let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
     if (activeCheckBoxes.length > 0) {
       await Promise.all(
@@ -112,7 +112,7 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleCopyButtonClick(ev) {
-    const { event } = this.state;
+    const { event } = this.props;
     const clipboard = new Clipboard(ev.target, {
       target: () => document.getElementById('fullUrl'),
     });
@@ -142,7 +142,7 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleSendEmail(ev) {
-    if (typeof this.state.event === 'undefined') {
+    if (typeof this.props.event === 'undefined') {
       ev.preventDefault();
       this.setState({ snackbarOpen: true, snackbarMsg: 'error generating email body! Please try reload the page' });
     }
@@ -171,13 +171,11 @@ class GuestInviteDrawer extends Component {
   }
 
   renderUrlActions() {
-    const { event } = this.state;
+    const { event } = this.props;
     const focusUrlTextField = (input) => {
-      if (input) {
-        if (this.state.setFocusFullUrl) {
-          this.setState({ setFocusFullUrl: false });
-          setTimeout(() => { input.focus(); input.select(); }, 100);
-        }
+      if (input && this.state.setFocusFullUrl) {
+        this.setState({ setFocusFullUrl: false });
+        setTimeout(() => { input.focus(); input.select(); }, 100);
       }
     };
     return (
@@ -192,22 +190,11 @@ class GuestInviteDrawer extends Component {
           ref={focusUrlTextField}
           aria-label="Full Url"
         />
-        <div styleName="Row">
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            className="cpBtn"
-            primary
-            onTouchTap={this.handleCopyButtonClick}
-            label="Copy Link"
-          />
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            label="Send Email Invite"
-            primary
-            onClick={ev => this.handleSendEmail(ev)}
-            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
-          />
-        </div>
+        <UrlActions
+          event={event}
+          handleSendEmail={ev => this.handleSendEmail(ev)}
+          handleCopyButtonClick={ev => this.handleCopyButtonClick(ev)}
+        />
       </div>
     );
   }
@@ -230,7 +217,8 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, event, searchText, linearProgressVisible } = this.state;
+    const { open, searchText, linearProgressVisible } = this.state;
+    const { event } = this.props;
     const inLineStyles = {
       container: { paddingLeft: '9px', paddingRight: '10px' },
       textField: { floatingLabel: { fontSize: '15px', paddingLeft: 8 } },
