@@ -10,7 +10,7 @@ import { browserHistory } from 'react-router';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
-import Infinite from 'react-infinite';
+
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -46,7 +46,6 @@ class GuestInviteDrawer extends Component {
   async componentWillMount() {
     try {
       const guests = await this.loadPastGuests();
-      console.log('ghests', guests);
       const { open } = this.props;
       this.setState({ open, activeCheckBoxes: [], guests, guestsToDisplay: guests });
     } catch (err) {
@@ -147,28 +146,6 @@ class GuestInviteDrawer extends Component {
     }
   }
 
-  /* renderRows() {
-    const { activeCheckBoxes, guestsToDisplay } = this.state;
-    const inLineStyles = { listItem: { borderBottom: '1px solid #D4D4D4' } };
-    const rows = [];
-    guestsToDisplay.forEach((guest) => {
-      const row = (
-        <ListItem
-          style={inLineStyles.listItem}
-          key={`${guest._id}.listItem`}
-          primaryText={guest.userId.name}
-          leftCheckbox={<Checkbox
-            onCheck={() => this.handleCheck(guest.userId._id)}
-            checked={activeCheckBoxes.includes(guest.userId._id)}
-          />}
-          rightAvatar={<Avatar src={guest.userId.avatar} alt={nameInitials(guest.userId.name)} />}
-        />
-      );
-      rows.push(row);
-    });
-    return rows;
-  }*/
-
   renderUrlActions() {
     const { event } = this.props;
     const focusUrlTextField = (input) => {
@@ -250,13 +227,11 @@ class GuestInviteDrawer extends Component {
             inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
           />
         </div>
-        <Infinite elementHeight={58} containerHeight={174}>
-          <GuestInviveDrawerRows
-            guestsToDisplay={guestsToDisplay}
-            activeCheckBoxes={activeCheckBoxes}
-            handleCheck={this.handleCheck}
-          />
-        </Infinite>
+        <GuestInviveDrawerRows
+          guestsToDisplay={guestsToDisplay}
+          activeCheckBoxes={activeCheckBoxes}
+          handleCheck={this.handleCheck}
+        />
         <RaisedButton label="Invite" styleName="inviteButton" onTouchTap={this.handleInvite} fullWidth primary />
         {this.renderSnackBar()}
       </Drawer>
