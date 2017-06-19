@@ -30,47 +30,16 @@ class LoginModal extends Component {
   render() {
     const inLineStyles = {
       modal: {
-        contentStyle: {
-          maxWidth: '250px',
-        },
-        title: {
-          backgroundColor: '#006400',
-          marginBottom: '10px',
-          fontSize: '25px',
-          paddingTop: '7px',
-          paddingBottom: '10px',
-          color: '#ffffff',
-        },
-        bodyStyle: {
-          width: '250px',
-          paddingBottom: 10,
-          paddingTop: 12,
-        },
-        actions: {
-          paddingTop: 0,
-        },
+        contentStyle: { maxWidth: '250px' },
+        title: { backgroundColor: '#006400', marginBottom: '10px', fontSize: '25px', paddingTop: '7px', paddingBottom: '10px', color: '#ffffff' },
+        bodyStyle: { width: '250px', paddingBottom: 10, paddingTop: 12 },
+        actions: { paddingTop: 0 },
       },
-      button: {
-        marginBottom: 10,
-        width: '200px',
-        label: {
-          color: '#ffffff',
-          fontSize: '17px',
-          fontFamily: 'roboto',
-        },
-      },
-      iconStyles: {
-        marginRight: 24,
-      },
+      button: { marginBottom: 10, width: '200px', label: { color: '#ffffff', fontSize: '17px', fontFamily: 'roboto' } },
+      iconStyles: { marginRight: 24 },
     };
 
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary
-        onTouchTap={this.handleClose}
-      />,
-    ];
+    const actions = [<FlatButton label="Cancel" primary onTouchTap={this.handleClose} />];
 
     return (
       <Dialog
