@@ -17,21 +17,13 @@ const handleLoadEvent = async (id, events) => {
 };
 
 
-const handleEmailOwner = async (event, curUser) => {
+const handleEmailOwner = async (event, curUser, eventEdited = false) => {
   const ownerData = await loadOwnerData(event.owner);
   if (ownerData !== null) {
-    const response = await sendEmailOwner(event, curUser, ownerData);
-    if (response) {
-      return true;
-    }
-    return false;
-  }
-};
+    const response = (eventEdited) ?
+      await sendEmailOwner(event, curUser, ownerData)
+      : await sendEmailOwnerEdit(event, curUser, ownerData);
 
-const handleEmailOwnerEdit = async (event, curUser) => {
-  const ownerData = await loadOwnerData(event.owner);
-  if (ownerData !== null) {
-    const response = await sendEmailOwnerEdit(event, curUser, ownerData);
     if (response) {
       return true;
     }
@@ -40,4 +32,4 @@ const handleEmailOwnerEdit = async (event, curUser) => {
 };
 
 
-export { handleEmailOwner, handleEmailOwnerEdit, handleLoadEvent };
+export { handleEmailOwner, handleLoadEvent };

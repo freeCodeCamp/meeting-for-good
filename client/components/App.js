@@ -15,7 +15,7 @@ import {
 } from '../util/events';
 import { sendEmailInvite } from '../util/emails';
 import '../styles/main.css';
-import { handleLoadEvent, handleEmailOwner, handleEmailOwnerEdit } from './AppHandlers';
+import { handleLoadEvent, handleEmailOwner } from './AppHandlers';
 
 class App extends Component {
   constructor(props) {
@@ -42,21 +42,16 @@ class App extends Component {
       const curUser = await getCurrentUser();
       const events = await loadEvents(showPastEvents);
       this.setState({
-        isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents,
-      });
+        isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
 
-  /**
-   * possible level values: info, success, error, warning
-   * autoDismiss time in seconds
-   */
   _addNotification(title, message, level, autoDismiss = 4) {
     this._notificationSystem.addNotification({
       title,
       message,
-      level,
-      autoDismiss,
+      level, // possible level values: info, success, error, warning
+      autoDismiss, // autoDismiss time in seconds
       position: 'tr',
     });
   }
@@ -106,9 +101,7 @@ class App extends Component {
 
   @autobind
   handleLogin(curUser) {
-    if (Object.keys(curUser).length > 0) {
-      this.setState({ curUser, isAuthenticated: true });
-    }
+    if (Object.keys(curUser).length > 0) this.setState({ curUser, isAuthenticated: true });
   }
 
   @autobind
@@ -150,10 +143,6 @@ class App extends Component {
     browserHistory.push('/');
   }
 
-  /**
-  *
-  * @param {*} guestToDelete the Id of the document content the guest
-  */
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const { events } = this.state;
@@ -168,18 +157,6 @@ class App extends Component {
     return nEvent;
   }
 
-  /**
-   *
-   * @param {*} guestId the id of the guest to be invited
-   * @param {*} event object contening the event
-   * @param {*} curUser current user
-   *
-   * using the invite issued at the inviteDrawer
-   * fist chech if the guestId is alredy at the event
-   * if was not update the event at the db with a new guest
-   * status 1 as invited
-   * then send a inivte email
-   */
   @autobind
   async handleInviteEmail(guestId, event, curUser) {
     const { events } = this.state;
@@ -246,10 +223,6 @@ class App extends Component {
     return result;
   }
 
-  /**
-   *
-   * @param {*} participantsIds array of particpants to dismiss
-   */
   @autobind
   async handleGuestNotificationsDismiss(participantsIds) {
     const { events } = this.state;
@@ -296,7 +269,7 @@ class App extends Component {
         cbDeleteEvent: this.handleDeleteEvent,
         cbEditEvent: this.handleEditEvent,
         cbEmailOwner: event => handleEmailOwner(event, curUser),
-        cbEmailOwnerEdit: event => handleEmailOwnerEdit(event, curUser),
+        cbEmailOwnerEdit: event => handleEmailOwner(event, curUser, true),
         cbDeleteGuest: this.handleDeleteGuest,
         cbInviteEmail: this.handleInviteEmail,
 
