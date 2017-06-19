@@ -9,12 +9,13 @@ import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
 import {
-  loadEvents, loadEvent, EditStatusParticipantEvent, AddEventParticipant,
-  addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest, loadEventFull,
+  loadEvents, EditStatusParticipantEvent, AddEventParticipant,
+  addEvent, deleteEvent, editEvent, deleteGuest, loadEventFull,
   handleDismiss,
 } from '../util/events';
-import { sendEmailOwner, sendEmailInvite, sendEmailOwnerEdit } from '../util/emails';
+import { sendEmailInvite } from '../util/emails';
 import '../styles/main.css';
+import { handleLoadEvent, handleEmailOwner, handleEmailOwnerEdit } from './AppHandlers';
 
 class App extends Component {
   constructor(props) {
@@ -67,21 +68,6 @@ class App extends Component {
   }
 
   @autobind
-  async handleLoadEvent(id) {
-    const { events } = this.state;
-    const event = events.filter(event => event._id.toString() === id.toString());
-    if (event.length === 0) {
-      const event = await loadEvent(id);
-      if (event === null) {
-        this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 8);
-        return false;
-      }
-      return event;
-    }
-    return event[0];
-  }
-
-  @autobind
   async handleNewEvent(event) {
     const { events } = this.state;
     const nEvent = await addEvent(event);
@@ -116,32 +102,6 @@ class App extends Component {
     }
     this._addNotification('Error!!', 'Failed to update availability. Please try again later.', 'error');
     return false;
-  }
-
-  @autobind
-  async handleEmailOwner(event) {
-    const { curUser } = this.state;
-    const ownerData = await loadOwnerData(event.owner);
-    if (ownerData !== null) {
-      const response = await sendEmailOwner(event, curUser, ownerData);
-      if (response) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-  @autobind
-  async handleEmailOwnerEdit(event) {
-    const { curUser } = this.state;
-    const ownerData = await loadOwnerData(event.owner);
-    if (ownerData !== null) {
-      const response = await sendEmailOwnerEdit(event, curUser, ownerData);
-      if (response) {
-        return true;
-      }
-      return false;
-    }
   }
 
   @autobind
@@ -332,11 +292,11 @@ class App extends Component {
         curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
-        cbLoadEvent: this.handleLoadEvent,
+        cbLoadEvent: id => handleLoadEvent(id, events),
         cbDeleteEvent: this.handleDeleteEvent,
         cbEditEvent: this.handleEditEvent,
-        cbEmailOwner: this.handleEmailOwner,
-        cbEmailOwnerEdit: this.handleEmailOwnerEdit,
+        cbEmailOwner: event => handleEmailOwner(event, curUser),
+        cbEmailOwnerEdit: event => handleEmailOwnerEdit(event, curUser),
         cbDeleteGuest: this.handleDeleteGuest,
         cbInviteEmail: this.handleInviteEmail,
 
@@ -399,9 +359,7 @@ class App extends Component {
           events={events}
           showPastEvents={showPastEvents}
         />
-        <main className="main">
-          {childrenWithProps}
-        </main>
+        <main className="main"> {childrenWithProps} </main>
       </div>
     );
   }
