@@ -108,30 +108,30 @@ class ParticipantsList extends Component {
     return rows;
   }
 
-  renderDeleteModal() {
-    const { openDeleteModal } = this.state;
-    const actions = [
+  renderDeleteModalActions() {
+    return [
       <FlatButton label="Cancel" primary onTouchTap={this.handleCloseDeleteModal} />,
       <FlatButton label="yes" secondary onTouchTap={this.handleDeleteGuest} />,
     ];
+  }
+
+  renderDeleteModal() {
+    const { openDeleteModal } = this.state;
     const inLineStyles = {
       title: { backgroundColor: '#FF4025', color: '#ffffff', fontSize: '25px', height: '30px', paddingTop: 6 },
       content: { width: '22%', maxWidth: '22%', minWidth: '300px' },
       bodyStyle: { paddingTop: 10, fontSize: '25px' },
     };
-
     return (
       <Dialog
         title="Delete Guest"
         titleStyle={inLineStyles.title}
         contentStyle={inLineStyles.content}
         bodyStyle={inLineStyles.bodyStyle}
-        actions={actions}
+        actions={this.renderDeleteModalActions()}
         modal
         open={openDeleteModal}
-      >
-        Are you sure you want to delete this guest?
-      </Dialog>
+      > Are you sure you want to delete this guest? </Dialog>
     );
   }
 
