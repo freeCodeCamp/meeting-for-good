@@ -14,6 +14,29 @@ import styles from './participants-list.css';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
 class ParticipantsList extends Component {
+  static chipFormater(participant) {
+    let borderColor;
+    let text;
+
+    switch (participant.status) {
+      case 1:
+        borderColor = '3px solid #ff8080';
+        text = 'Invited';
+        break;
+      case 2:
+        borderColor = '3px solid #A0C2FF';
+        text = 'Joined';
+        break;
+      case 3:
+        borderColor = '0.5px solid #E0E0E0';
+        text = 'Availability Submitted';
+        break;
+      default:
+        break;
+    }
+    return { borderColor, text };
+  }
+
   constructor(props) {
     super(props);
     const { event, curUser } = this.props;
@@ -71,25 +94,7 @@ class ParticipantsList extends Component {
 
   renderChip(participant) {
     const { curUser, event } = this.state;
-    let borderColor;
-    let text;
-
-    switch (participant.status) {
-      case 1:
-        borderColor = '3px solid #ff8080';
-        text = 'Invited';
-        break;
-      case 2:
-        borderColor = '3px solid #A0C2FF';
-        text = 'Joined';
-        break;
-      case 3:
-        borderColor = '0.5px solid #E0E0E0';
-        text = 'Availability Submitted';
-        break;
-      default:
-        break;
-    }
+    const { chipFormater } = this.constructor;
     const onRequestDeleteEnable =
       (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
         () => this.handleOpenDeleteModal(participant._id) : null;
@@ -106,12 +111,12 @@ class ParticipantsList extends Component {
         <Avatar
           src={participant.userId.avatar}
           styleName="avatar"
-          style={{ border: borderColor }}
+          style={{ border: chipFormater(participant).borderColor }}
           alt={nameInitials(participant.userId.name)}
         />
         <div styleName="chipTextWrapper">
           <span styleName="chipTextName">{participant.userId.name}</span>
-          <span>{text}</span>
+          <span>{chipFormater(participant).text}</span>
         </div>
       </Chip>
     );
@@ -155,8 +160,7 @@ class ParticipantsList extends Component {
 
   render() {
     const inLineStyles = {
-      buttonAddGuest: {
-        backgroundColor: '#e0e0e0',
+      buttonAddGuest: { backgroundColor: '#e0e0e0',
         borderRadius: '50%',
         width: 40,
         height: 40,
