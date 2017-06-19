@@ -81,6 +81,7 @@ export const getStats = (req, res) => {
   let nbrActiveEvents = 0;
   let nbrParticipants = 0;
   const usersMap = {};
+
   Events.find({}, (err, events) => {
     nbrEvents = events.length;
     events.forEach((event) => {
