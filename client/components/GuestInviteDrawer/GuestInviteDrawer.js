@@ -173,11 +173,9 @@ class GuestInviteDrawer extends Component {
   renderUrlActions() {
     const { event } = this.props;
     const focusUrlTextField = (input) => {
-      if (input) {
-        if (this.state.setFocusFullUrl) {
-          this.setState({ setFocusFullUrl: false });
-          setTimeout(() => { input.focus(); input.select(); }, 100);
-        }
+      if (input && this.state.setFocusFullUrl) {
+        this.setState({ setFocusFullUrl: false });
+        setTimeout(() => { input.focus(); input.select(); }, 100);
       }
     };
     return (
