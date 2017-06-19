@@ -15,33 +15,33 @@
 .header {
 	text-transform: uppercase;
 }
-.header img {
-	margin-bottom: 4%;
-}
+	.header img {
+		margin-bottom: 4%;
+	}
 
-.header h2 {
-	color: #006400;
-	font-weight: 500;
-	text-transform: none;
-	font-size: 80px;
-	padding: 2% 0 0 0;
-}
+	.header h2 {
+		color: #006400;
+		font-weight: 500;
+		text-transform: none;
+		font-size: 80px;
+		padding: 2% 0 0 0;
+	}
 
 .loginButton {
 	margin: 30px !important;
 }
 
-.loginButton button {
-	background-image: linear-gradient(#ffcc4d, #ffac33) !important;
-	background-color: #ffac33 !important;
-	text-transform: none !important;
-	min-width: 500px !important;
-	height: 50px !important;
-}
+	.loginButton button {
+		background-image: linear-gradient(#ffcc4d, #ffac33) !important;
+		background-color: #ffac33 !important;
+		text-transform: none !important;
+		min-width: 500px !important;
+		height: 50px !important;
+	}
 
-.loginButton button div div span {
-	font-size: 30px !important;
-}
+	.loginButton button div div span {
+		font-size: 28px !important;
+	}
 
 
 .content {
@@ -53,22 +53,21 @@
 	display: block;
 }
 
-.gif {
-	width: 508px !important;
-  height: 240px;
-}
+	.content .gifAvail {	
+		width: 508px;
+	}
 
-.timezones {
-	width: 1000px !important;
-}
+	.content .timezones {
+		width: 1000px;
+	}
 
-.hr {
-  width: 100px !important;
-  background-color: black;
-  height: 2px;
-  margin-top: 40px;
-  margin: 0 auto;
-}
+	.content .hr {
+		width: 100px;
+		background-color: black;
+		height: 2px;
+		margin-top: 40px;
+		margin: 0 auto;
+	}
 
 footer {
 	height: 75px;
@@ -77,18 +76,18 @@ footer {
 	align-items: center;
 }
 
-footer p {
-	margin: 0;
-	color: black;
-	font-size: 20px;
-}
+	footer p {
+		margin: 0;
+		color: black;
+		font-size: 20px;
+	}
 
-footer a {
-	color: #006400;
-}
-footer a:hover {
-	text-decoration: underline;
-}
+	footer a {
+		color: #006400;
+	}
+	footer a:hover {
+		text-decoration: underline;
+	}
 
 .divider {
 	border-style: solid;
@@ -107,11 +106,11 @@ footer a:hover {
   .main img {
     width: 600px;
   }
-	.header h2 {
+	.main .header h2 {
 		font-size: 60px !important;
 	}
 
-	.header h6 {
+	.main .header h6 {
 		font-size: 30px !important;
 	}
 
@@ -129,22 +128,23 @@ footer a:hover {
   .main img {
     width: 300px;
   }
-	.header h2 {
-		font-size: 46px !important;
+		.header h2 {
+			font-size: 46px;
+		}
+
+		.header h6 {
+			font-size: 10px;
+		}
+
+		.gif {
+			width: 300px;
+			height: 110px;
+		}
+
+	.content .timezones {
+		width: 370px;
 	}
 
-	.header h6 {
-		font-size: 10px !important;
-	}
-
-	.gif {
-		width: 300px !important;
-		height: 110px;
-	}
-
-	.timezones {
-		width: 370px !important;
-	}
 	footer p {
 		font-size: 15px;
 	}

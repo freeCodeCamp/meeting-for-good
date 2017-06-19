@@ -5,37 +5,12 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Badge from 'material-ui/Badge';
-import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
-
+import { quantOwnerNotNotified, handleEventLinkClick } from './NotificationBarUtils';
 import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
-
-  @autobind
-  static handleEventLinkClick(id) {
-    browserHistory.push(`/event/${id}`);
-  }
-
-  static quantOwnerNotNotified(events, curUser) {
-    let quantOwnerNotNotified = 0;
-    if (events.length > 0) {
-      events.forEach((event) => {
-        event.participants.forEach((participant) => {
-          if (
-            participant.userId._id.toString() !== curUser._id
-            && participant.ownerNotified === false
-            && participant.status > 1
-            && event.owner.toString() === curUser._id
-          ) {
-            quantOwnerNotNotified += 1;
-          }
-        });
-      });
-    }
-    return quantOwnerNotNotified;
-  }
 
   constructor(props) {
     super(props);
@@ -50,7 +25,6 @@ class NotificationBar extends Component {
 
   componentWillMount() {
     const { events, curUser } = this.props;
-    const { quantOwnerNotNotified } = this.constructor;
     this.setState({
       events, curUser, quantOwnerNotNotified: quantOwnerNotNotified(events, curUser),
     });
@@ -59,7 +33,6 @@ class NotificationBar extends Component {
   componentWillReceiveProps(nextProps) {
     const { events } = nextProps;
     const { curUser } = this.props;
-    const { quantOwnerNotNotified } = this.constructor;
     this.setState({ events, quantOwnerNotNotified: quantOwnerNotNotified(events, curUser) });
   }
 
@@ -70,9 +43,7 @@ class NotificationBar extends Component {
     const guestDismissList = [];
     events.forEach((event) => {
       event.participants.forEach((participant) => {
-        if (participant.ownerNotified === false
-          && participant.status > 1
-          ) {
+        if (participant.ownerNotified === false && participant.status > 1) {
           guestDismissList.push(participant._id);
         }
       });
@@ -102,7 +73,6 @@ class NotificationBar extends Component {
     if (!events) {
       return;
     }
-    const { handleEventLinkClick } = this.constructor;
     const rows = [];
     const filtEvent = events.filter(event => event.owner.toString() === curUser._id);
     filtEvent.forEach((event) => {
@@ -121,7 +91,7 @@ class NotificationBar extends Component {
                 onTouchTap={() => handleEventLinkClick(event._id)}
                 styleName="eventLink"
               >{event.name}</a>.
-          </MenuItem>
+            </MenuItem>
           );
           rows.push(row);
         }
@@ -134,20 +104,8 @@ class NotificationBar extends Component {
     const { quantOwnerNotNotified, openMenu } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const inLineStyles = {
-      badge: {
-        top: 3,
-        visibility: visible,
-        fontSize: '12px',
-        width: 16,
-        height: 16,
-      },
-      iconButton: {
-        top: '-42px',
-        icon: {
-          color: 'white',
-          width: '19px',
-        },
-      },
+      badge: { top: 3, visibility: visible, fontSize: '12px', width: 16, height: 16 },
+      iconButton: { top: '-42px', icon: { color: 'white', width: '19px' } },
     };
     return (
       <IconMenu
@@ -159,16 +117,8 @@ class NotificationBar extends Component {
         useLayerForClickAway
         iconButtonElement={
           <div styleName="iconButtonWrapper">
-            <Badge
-              badgeContent={quantOwnerNotNotified}
-              secondary
-              badgeStyle={inLineStyles.badge}
-            />
-            <IconButton
-              tooltip="Notifications"
-              style={inLineStyles.iconButton}
-              iconStyle={inLineStyles.iconButton.icon}
-            >
+            <Badge badgeContent={quantOwnerNotNotified} secondary badgeStyle={inLineStyles.badge} />
+            <IconButton tooltip="Notifications" style={inLineStyles.iconButton} iconStyle={inLineStyles.iconButton.icon}>
               <NotificationsIcon />
             </IconButton>
           </div>

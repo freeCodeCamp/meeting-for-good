@@ -73,14 +73,15 @@ export const createTimesRange = (dates) => {
   // so he has the hole hours ranges
   const startDate = moment(dates[0].fromDate);
   const endDate = moment(dates[0].toDate);
-  const hour = endDate.get('hour');
-  const minute = endDate.get('minute');
-  const endDateToRange = moment(startDate).startOf('date').hour(hour).minute(minute);
-  let dateRange = moment.range(startDate, endDateToRange);
+  const endDateToRange = moment(startDate).startOf('date').hour(endDate.get('hour')).minute(endDate.get('minute'));
+  if (endDateToRange.minutes() === 59) endDateToRange.minutes(45);
+  let dateRange;
   // if the end range hour is before the start hour then ajust the range for end at next day;
   // so the range can be calculated correctly.
   if (endDateToRange.hour() < startDate.hour()) {
     dateRange = moment.range(startDate, moment(endDateToRange).add(1, 'days'));
+  } else {
+    dateRange = moment.range(startDate, endDateToRange);
   }
   const timesRange = Array.from(dateRange.by('minutes', { exclusive: true, step: 15 }));
   // correct the date value for each hour at the array since the
@@ -214,8 +215,8 @@ export const availabilityReducer = (availability) => {
   // sort the array just to be sure
   const availabilityToEdit = _.cloneDeep(availability);
   availabilityToEdit.sort((a, b) => {
-    const x = moment(a[0]).clone().unix();
-    const y = moment(b[0]).clone().unix();
+    const x = moment(a[0]).unix();
+    const y = moment(b[0]).unix();
     return x - y;
   });
   const availReduced = [];
@@ -239,5 +240,13 @@ export const availabilityReducer = (availability) => {
   // a pair to compare
   const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
   availReduced.push([previousFrom._d, to._d]);
-  return _.uniqWith(availReduced, _.isEqual);
+  return availReduced;
+};
+
+export const jumpTimeIndex = (allTimes) => {
+  let index = 1;
+  while (moment(allTimes[index]).subtract(15, 'm').isSame(allTimes[index - 1]) && index < allTimes.length) {
+    index += 1;
+  }
+  return (index > 1) ? index : null;
 };

@@ -92,7 +92,7 @@ class NavBar extends Component {
       <IconMenu
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        styleName="iconMenu"
+        styleName="AvatarMenu"
         iconStyle={inLineStyles.iconMenu.iconStyle}
         menuItemStyle={{ height: '38px', width: '168px' }}
         iconButtonElement={
@@ -136,6 +136,9 @@ class NavBar extends Component {
     if (isAuthenticated) {
       return (
         <ToolbarGroup lastChild styleName="rightToolbarGroup" >
+          <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
+            Donate
+          </FlatButton>
           <NotificationBar
             curUser={curUser}
             events={events}
@@ -152,7 +155,10 @@ class NavBar extends Component {
       );
     }
     return (
-      <ToolbarGroup lastChild >
+      <ToolbarGroup lastChild styleName="rightToolbarGroup">
+        <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
+          Donate
+        </FlatButton>
         <FlatButton styleName="loginButton" onTouchTap={this.handleAuthClick} labelStyle={{ fontWeight: 200, fontSize: '20px' }} >
           Sign In
         </FlatButton>
@@ -165,39 +171,38 @@ class NavBar extends Component {
     const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
     const inlineStyles = {
       modal: { content: { width: '630px', maxWidth: '630px' }, bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
-    const titleStyle = { color: 'green', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' };
-    const versionStyle = { textAlign: 'center', marginBottom: '20px' };
-    const descStyle = { textAlign: 'center', marginBottom: '40px' };
-    const commentsStyle = { textAlign: 'center' };
-
     return (
       <Dialog
         contentStyle={inlineStyles.modal.content}
         bodyStyle={inlineStyles.modal.bodyStyle}
         actions={actions}
         modal
+        styleName="AboutDialog"
         open={openModal}
       >
-        <h1 style={titleStyle}>Meeting for Good</h1>
-        <h6 style={versionStyle}>Version {process.env.versionNumber}</h6>
-        <h4 style={descStyle}>THE BEST MEETING COORDINATION APP</h4>
-        <h6 style={commentsStyle}>Created by campers from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
-        <h6 style={commentsStyle}><a href="https://github.com/freeCodeCamp/meeting-for-good/"> License and GitHub Repository</a></h6>
+        <h1 styleName="titleStyle">Meeting for Good</h1>
+        <h6 styleName="versionStyle">Version {process.env.versionNumber}</h6>
+        <h4 styleName="descStyle">THE BEST MEETING COORDINATION APP</h4>
+        <h6>Created by campers from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
+        <h6><a href="https://github.com/freeCodeCamp/meeting-for-good/"> License and GitHub Repository</a></h6>
       </Dialog>
+    );
+  }
+
+  renderLeftGroup() {
+    return (
+      <ToolbarGroup firstChild styleName="leftToolbarGroup">
+        <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
+          Meeting for Good
+          </FlatButton>
+      </ToolbarGroup >
     );
   }
 
   render() {
     return (
       <Toolbar styleName="toolBar" >
-        <ToolbarGroup firstChild styleName="leftToolbarGroup">
-          <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
-            Meeting for Good
-          </FlatButton>
-          <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
-            Donate
-        </FlatButton>
-        </ToolbarGroup >
+        {this.renderLeftGroup()}
         {this.renderRightGroup()}
         {this.renderDialog()}
       </Toolbar>

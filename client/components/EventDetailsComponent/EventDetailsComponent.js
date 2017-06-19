@@ -12,6 +12,7 @@ import ParticipantsList from '../../components/ParticipantsList/ParticipantsList
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 import SelectedDatesEditor from '../../components/SelectedDatesEditor/SelectedDatesEditor';
 import { datesToDatesObject, isCurParticip, eventAllParticipIds } from './EventDetailsComponentUtil';
+import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
 class EventDetailsComponent extends React.Component {
   constructor(props) {
@@ -216,6 +217,11 @@ class EventDetailsComponent extends React.Component {
   }
 }
 
+EventDetailsComponent.defaultProps = {
+  event: () => { console.log('event prop validation not set!'); },
+  curUser: () => { console.log('curUser prop validation not set!'); },
+};
+
 EventDetailsComponent.propTypes = {
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteEvent: PropTypes.func.isRequired,
@@ -223,40 +229,10 @@ EventDetailsComponent.propTypes = {
   cbHandleEmailOwner: PropTypes.func.isRequired,
   cbHandleEmailOwnerEdit: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
-
   // Current user
-  curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
-  }).isRequired,
-
+  curUser: isCurUser,
   // Event containing list of event participants
-  event: PropTypes.shape({
-    _id: PropTypes.string,
-    name: PropTypes.string,
-    owner: PropTypes.string,
-    active: PropTypes.bool,
-    selectedTimeRange: PropTypes.array,
-    dates: PropTypes.arrayOf(PropTypes.shape({
-      fromDate: PropTypes.string,
-      toDate: PropTypes.string,
-      _id: PropTypes.string,
-    })),
-    participants: PropTypes.arrayOf(PropTypes.shape({
-      userId: PropTypes.shape({
-        id: PropTypes.string,
-        avatar: PropTypes.string,
-        name: PropTypes.string,
-        emails: PropTypes.arrayOf(PropTypes.string),
-      }),
-      _id: PropTypes.string,
-      status: PropTypes.oneOf([0, 1, 2, 3]),
-      emailUpdate: PropTypes.bool,
-      ownerNotified: PropTypes.bool,
-      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-    })),
-  }).isRequired,
+  event: isEvent,
 };
 
 export default cssModules(EventDetailsComponent, styles);

@@ -15,7 +15,6 @@ class EventDetails extends Component {
       event: null,
       showLoginModal: false,
       openDrawer: false,
-      eventToInvite: {},
       curUser: {},
       isAuthenticated: false,
     };
@@ -86,7 +85,7 @@ class EventDetails extends Component {
   }
 
   render() {
-    const { event, openDrawer, eventToInvite, curUser } = this.state;
+    const { event, openDrawer, curUser } = this.state;
     if (event) {
       return (
         <div styleName="event">
@@ -102,7 +101,7 @@ class EventDetails extends Component {
           />
           <GuestInviteDrawer
             open={openDrawer}
-            event={eventToInvite}
+            event={event}
             curUser={curUser}
             cb={this.handleCbGuestInviteDrawer}
             cbInviteEmail={this.HandleInviteEmail}

@@ -30,7 +30,7 @@ class Dashboard extends Component {
       events: [],
       count: 0,
       openDrawer: false,
-      eventToInvite: {},
+      eventToInvite: null,
       curUser: {},
     };
   }
@@ -39,6 +39,8 @@ class Dashboard extends Component {
     const { isAuthenticated, curUser, events } = this.props;
     if (isAuthenticated === false) {
       this.props.cbOpenLoginModal('/dashboard');
+    } else if (events.length > 0) {
+      this.setState({ curUser, events, eventToInvite: events[0] });
     } else {
       this.setState({ curUser, events });
     }
@@ -48,6 +50,10 @@ class Dashboard extends Component {
     const { showPastEvents, isAuthenticated, curUser, events } = nextProps;
     if (isAuthenticated) {
       this.setState({ showPastEvents, events, curUser });
+    }
+
+    if (isAuthenticated && events.length > 0) {
+      this.setState({ eventToInvite: events[0] });
     }
   }
 
@@ -112,13 +118,15 @@ class Dashboard extends Component {
             <DateRangeIcon styleName="no-selectIcon" />
           </div>
         }
-        <GuestInviteDrawer
-          open={openDrawer}
-          event={eventToInvite}
-          curUser={curUser}
-          cb={this.handleCbGuestInviteDrawer}
-          cbInviteEmail={this.HandleInviteEmail}
-        />
+        {(eventToInvite) ?
+          <GuestInviteDrawer
+            open={openDrawer}
+            event={eventToInvite}
+            curUser={curUser}
+            cb={this.handleCbGuestInviteDrawer}
+            cbInviteEmail={this.HandleInviteEmail}
+          /> : null
+        }
       </Paper>
     );
   }
