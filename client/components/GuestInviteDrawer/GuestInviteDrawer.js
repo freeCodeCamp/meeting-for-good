@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import Drawer from 'material-ui/Drawer';
 import autobind from 'autobind-decorator';
-import { ListItem } from 'material-ui/List';
-import Checkbox from 'material-ui/Checkbox';
-import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
@@ -19,10 +16,10 @@ import _ from 'lodash';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import nameInitials from '../../util/string.utils';
 import { fullUrl } from './guestInviteDrawerUtils';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
 import UrlActions from './GuestInviteUrlActions';
+import GuestInviveDrawerRows from './GuestInviteDrawerRows';
 
 class GuestInviteDrawer extends Component {
   @autobind
@@ -47,9 +44,14 @@ class GuestInviteDrawer extends Component {
   }
 
   async componentWillMount() {
-    await this.loadPastGuests();
-    const { open } = this.props;
-    this.setState({ open, activeCheckBoxes: [] });
+    try {
+      const guests = await this.loadPastGuests();
+      console.log('ghests', guests);
+      const { open } = this.props;
+      this.setState({ open, activeCheckBoxes: [], guests, guestsToDisplay: guests });
+    } catch (err) {
+      console.log('loadPastGuests GuestInviteDrawer', err);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,19 +60,16 @@ class GuestInviteDrawer extends Component {
   }
 
   async loadPastGuests() {
-    this.setState({ linearProgressVisible: 'visible' });
     const response = await fetch('/api/user/relatedUsers', { credentials: 'same-origin' });
     let guests;
     try {
       checkStatus(response);
       guests = await parseJSON(response);
-      this.setState({ guests, guestsToDisplay: guests });
+      return guests;
     } catch (err) {
       console.log('loadPassGuests', err);
       this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, Failed to load guests. Please try again later.' });
-      return;
-    } finally {
-      this.setState({ linearProgressVisible: 'hidden' });
+      return [];
     }
   }
 
@@ -148,7 +147,7 @@ class GuestInviteDrawer extends Component {
     }
   }
 
-  renderRows() {
+  /* renderRows() {
     const { activeCheckBoxes, guestsToDisplay } = this.state;
     const inLineStyles = { listItem: { borderBottom: '1px solid #D4D4D4' } };
     const rows = [];
@@ -168,7 +167,7 @@ class GuestInviteDrawer extends Component {
       rows.push(row);
     });
     return rows;
-  }
+  }*/
 
   renderUrlActions() {
     const { event } = this.props;
@@ -217,7 +216,8 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, searchText, linearProgressVisible } = this.state;
+    const {
+      open, searchText, linearProgressVisible, guestsToDisplay, activeCheckBoxes } = this.state;
     const { event } = this.props;
     const inLineStyles = {
       container: { paddingLeft: '9px', paddingRight: '10px' },
@@ -251,7 +251,11 @@ class GuestInviteDrawer extends Component {
           />
         </div>
         <Infinite elementHeight={58} containerHeight={174}>
-          {this.renderRows()}
+          <GuestInviveDrawerRows
+            guestsToDisplay={guestsToDisplay}
+            activeCheckBoxes={activeCheckBoxes}
+            handleCheck={this.handleCheck}
+          />
         </Infinite>
         <RaisedButton label="Invite" styleName="inviteButton" onTouchTap={this.handleInvite} fullWidth primary />
         {this.renderSnackBar()}
