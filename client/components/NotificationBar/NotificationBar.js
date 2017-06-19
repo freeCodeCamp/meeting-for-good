@@ -70,9 +70,7 @@ class NotificationBar extends Component {
     const guestDismissList = [];
     events.forEach((event) => {
       event.participants.forEach((participant) => {
-        if (participant.ownerNotified === false
-          && participant.status > 1
-          ) {
+        if (participant.ownerNotified === false && participant.status > 1) {
           guestDismissList.push(participant._id);
         }
       });
@@ -121,7 +119,7 @@ class NotificationBar extends Component {
                 onTouchTap={() => handleEventLinkClick(event._id)}
                 styleName="eventLink"
               >{event.name}</a>.
-          </MenuItem>
+            </MenuItem>
           );
           rows.push(row);
         }
@@ -134,20 +132,8 @@ class NotificationBar extends Component {
     const { quantOwnerNotNotified, openMenu } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const inLineStyles = {
-      badge: {
-        top: 3,
-        visibility: visible,
-        fontSize: '12px',
-        width: 16,
-        height: 16,
-      },
-      iconButton: {
-        top: '-42px',
-        icon: {
-          color: 'white',
-          width: '19px',
-        },
-      },
+      badge: { top: 3, visibility: visible, fontSize: '12px', width: 16, height: 16 },
+      iconButton: { top: '-42px', icon: { color: 'white', width: '19px' } },
     };
     return (
       <IconMenu
@@ -159,16 +145,8 @@ class NotificationBar extends Component {
         useLayerForClickAway
         iconButtonElement={
           <div styleName="iconButtonWrapper">
-            <Badge
-              badgeContent={quantOwnerNotNotified}
-              secondary
-              badgeStyle={inLineStyles.badge}
-            />
-            <IconButton
-              tooltip="Notifications"
-              style={inLineStyles.iconButton}
-              iconStyle={inLineStyles.iconButton.icon}
-            >
+            <Badge badgeContent={quantOwnerNotNotified} secondary badgeStyle={inLineStyles.badge} />
+            <IconButton tooltip="Notifications" style={inLineStyles.iconButton} iconStyle={inLineStyles.iconButton.icon}>
               <NotificationsIcon />
             </IconButton>
           </div>
