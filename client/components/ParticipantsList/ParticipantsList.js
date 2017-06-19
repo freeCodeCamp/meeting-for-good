@@ -39,10 +39,9 @@ class ParticipantsList extends Component {
 
   constructor(props) {
     super(props);
-    const { event, curUser } = this.props;
+    const { event } = this.props;
     this.state = {
       event: (event !== undefined) ? event : null,
-      curUser,
       openDeleteModal: false,
       openDrawer: false,
       guestToDelete: '',
@@ -51,13 +50,13 @@ class ParticipantsList extends Component {
   }
 
   componentWillMount() {
-    const { curUser, event } = this.props;
-    this.setState({ curUser, event });
+    const { event } = this.props;
+    this.setState({ event });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { curUser, event } = nextProps;
-    this.setState({ curUser, event });
+    const { event } = nextProps;
+    this.setState({ event });
   }
 
   @autobind
@@ -93,7 +92,8 @@ class ParticipantsList extends Component {
   }
 
   renderChip(participant) {
-    const { curUser, event } = this.state;
+    const { event } = this.state;
+    const { curUser } = this.props;
     const { chipFormater } = this.constructor;
     const onRequestDeleteEnable =
       (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
