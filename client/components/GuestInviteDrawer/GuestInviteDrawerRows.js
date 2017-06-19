@@ -9,18 +9,18 @@ import nameInitials from '../../util/string.utils';
 
 const GuestInviveDrawerRows = (props) => {
   const { guestsToDisplay, activeCheckBoxes, handleCheck } = props;
-  const inLineStyles = { listItem: { borderBottom: '1px solid #D4D4D4' } };
   const rows = [];
   guestsToDisplay.forEach((guest) => {
     const row = (
       <ListItem
-        style={inLineStyles.listItem}
+        style={{ borderBottom: '1px solid #D4D4D4' }}
         key={`${guest._id}.listItem`}
         primaryText={guest.userId.name}
-        leftCheckbox={<Checkbox
-          onCheck={() => handleCheck(guest.userId._id)}
-          checked={activeCheckBoxes.includes(guest.userId._id)}
-        />}
+        leftCheckbox={
+          <Checkbox
+            onCheck={() => handleCheck(guest.userId._id)}
+            checked={activeCheckBoxes.includes(guest.userId._id)}
+          />}
         rightAvatar={<Avatar src={guest.userId.avatar} alt={nameInitials(guest.userId.name)} />}
       />
     );
@@ -34,7 +34,7 @@ const GuestInviveDrawerRows = (props) => {
 };
 
 GuestInviveDrawerRows.propTypes = {
-  guestsToDisplay: PropTypes.arrayOf(PropTypes.string).isRequired,
+  guestsToDisplay: PropTypes.arrayOf(PropTypes.object).isRequired,
   activeCheckBoxes: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleCheck: PropTypes.func.isRequired,
 };
