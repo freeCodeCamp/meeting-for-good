@@ -10,6 +10,7 @@ import jsonpatch from 'fast-json-patch';
 import { extendMoment } from 'moment-range';
 import _ from 'lodash';
 import { filterAvailabilitysOutsideDatesRange, createDatesRange, dateRangeReducer } from './selectedDatesEditorUtils';
+import { isEvent } from '../../util/commonPropTypes';
 
 import styles from './selected-dates-editor.css';
 
@@ -179,36 +180,13 @@ class SelectedDatesEditor extends Component {
 
 SelectedDatesEditor.defaultProps = {
   submitDates: () => { console.log('submitDates func not passed in!'); },
+  event: () => { console.log('event prop validation not set!'); },
 };
 
 SelectedDatesEditor.propTypes = {
   submitDates: PropTypes.func,
   // Event containing list of event participants
-  event: PropTypes.shape({
-    _id: PropTypes.string,
-    name: PropTypes.string,
-    owner: PropTypes.string,
-    active: PropTypes.bool,
-    selectedTimeRange: PropTypes.array,
-    dates: PropTypes.arrayOf(PropTypes.shape({
-      fromDate: PropTypes.string,
-      toDate: PropTypes.string,
-      _id: PropTypes.string,
-    })),
-    participants: PropTypes.arrayOf(PropTypes.shape({
-      userId: PropTypes.shape({
-        id: PropTypes.string,
-        avatar: PropTypes.string,
-        name: PropTypes.string,
-        emails: PropTypes.arrayOf(PropTypes.string),
-      }),
-      _id: PropTypes.string,
-      status: PropTypes.oneOf([0, 1, 2, 3]),
-      emailUpdate: PropTypes.bool,
-      ownerNotified: PropTypes.bool,
-      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-    })),
-  }).isRequired,
+  event: isEvent,
 };
 
 export default cssModules(SelectedDatesEditor, styles);

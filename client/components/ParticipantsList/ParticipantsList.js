@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 
 import nameInitials from '../../util/string.utils';
 import styles from './participants-list.css';
+import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
 class ParticipantsList extends Component {
   constructor(props) {
@@ -192,15 +193,13 @@ class ParticipantsList extends Component {
 ParticipantsList.defaultProps = {
   cbOnChipMouseOver: () => { },
   cbOnChipMouseLeave: () => { },
+  event: () => { console.log('event prop validation not set!'); },
+  curUser: () => { console.log('curUser prop validation not set!'); },
 };
 
 ParticipantsList.propTypes = {
   // Current user
-  curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
-  }).isRequired,
+  curUser: isCurUser,
 
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
@@ -208,31 +207,7 @@ ParticipantsList.propTypes = {
   cbOnChipMouseLeave: PropTypes.func,
 
   // Event containing list of event participants
-  event: PropTypes.shape({
-    _id: PropTypes.string,
-    name: PropTypes.string,
-    owner: PropTypes.string,
-    active: PropTypes.bool,
-    selectedTimeRange: PropTypes.array,
-    dates: PropTypes.arrayOf(PropTypes.shape({
-      fromDate: PropTypes.string,
-      toDate: PropTypes.string,
-      _id: PropTypes.string,
-    })),
-    participants: PropTypes.arrayOf(PropTypes.shape({
-      userId: PropTypes.shape({
-        id: PropTypes.string,
-        avatar: PropTypes.string,
-        name: PropTypes.string,
-        emails: PropTypes.arrayOf(PropTypes.string),
-      }),
-      _id: PropTypes.string,
-      status: PropTypes.oneOf([0, 1, 2, 3]),
-      emailUpdate: PropTypes.bool,
-      ownerNotified: PropTypes.bool,
-      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-    })),
-  }).isRequired,
+  event: isEvent,
 };
 
 export default cssModules(ParticipantsList, styles);
