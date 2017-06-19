@@ -5,37 +5,12 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Badge from 'material-ui/Badge';
-import { browserHistory } from 'react-router';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
-
+import { quantOwnerNotNotified, handleEventLinkClick } from './NotificationBarUtils';
 import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
-
-  @autobind
-  static handleEventLinkClick(id) {
-    browserHistory.push(`/event/${id}`);
-  }
-
-  static quantOwnerNotNotified(events, curUser) {
-    let quantOwnerNotNotified = 0;
-    if (events.length > 0) {
-      events.forEach((event) => {
-        event.participants.forEach((participant) => {
-          if (
-            participant.userId._id.toString() !== curUser._id
-            && participant.ownerNotified === false
-            && participant.status > 1
-            && event.owner.toString() === curUser._id
-          ) {
-            quantOwnerNotNotified += 1;
-          }
-        });
-      });
-    }
-    return quantOwnerNotNotified;
-  }
 
   constructor(props) {
     super(props);
@@ -50,7 +25,6 @@ class NotificationBar extends Component {
 
   componentWillMount() {
     const { events, curUser } = this.props;
-    const { quantOwnerNotNotified } = this.constructor;
     this.setState({
       events, curUser, quantOwnerNotNotified: quantOwnerNotNotified(events, curUser),
     });
@@ -59,7 +33,6 @@ class NotificationBar extends Component {
   componentWillReceiveProps(nextProps) {
     const { events } = nextProps;
     const { curUser } = this.props;
-    const { quantOwnerNotNotified } = this.constructor;
     this.setState({ events, quantOwnerNotNotified: quantOwnerNotNotified(events, curUser) });
   }
 
@@ -100,7 +73,6 @@ class NotificationBar extends Component {
     if (!events) {
       return;
     }
-    const { handleEventLinkClick } = this.constructor;
     const rows = [];
     const filtEvent = events.filter(event => event.owner.toString() === curUser._id);
     filtEvent.forEach((event) => {
