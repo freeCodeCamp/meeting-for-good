@@ -230,8 +230,7 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, event, searchText,
-      linearProgressVisible } = this.state;
+    const { open, event, searchText, linearProgressVisible } = this.state;
     const inLineStyles = {
       container: { paddingLeft: '9px', paddingRight: '10px' },
       textField: { floatingLabel: { fontSize: '15px', paddingLeft: 8 } },
@@ -282,7 +281,6 @@ GuestInviteDrawer.defaultProps = {
 GuestInviteDrawer.propTypes = {
   // Current user
   curUser: isCurUser,
-
   open: PropTypes.bool,
   cb: PropTypes.func.isRequired,
   cbInviteEmail: PropTypes.func.isRequired,
