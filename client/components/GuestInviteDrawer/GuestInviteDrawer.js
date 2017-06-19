@@ -112,7 +112,6 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleCopyButtonClick(ev) {
-    console.log('saco', ev);
     const { event } = this.props;
     const clipboard = new Clipboard(ev.target, {
       target: () => document.getElementById('fullUrl'),
