@@ -14,15 +14,27 @@ import { isCurUser } from '../../util/commonPropTypes';
 import nameInitials from '../../util/string.utils';
 import styles from './nav-bar.css';
 
+const inLineStyles = {
+  iconMenu: {
+    iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
+    toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } },
+  },
+};
+
+const IconBtn = (props) => {
+  const { curUser, userAvatar } = props;
+  return (
+    <IconButton style={{ padding: 0 }} aria-label="user button">
+      <div>
+        <Avatar size={34} src={userAvatar} alt={nameInitials(curUser.name)} />
+        <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
+      </div>
+    </IconButton>
+  );
+};
 
 const AvatarMenu = (props) => {
-  const { curUser, userAvatar, showPastEvents, handleFilterToggle, toggleAboutDialog } = props;
-  const inLineStyles = {
-    iconMenu: {
-      iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
-      toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } },
-    },
-  };
+  const { showPastEvents, handleFilterToggle, toggleAboutDialog } = props;
 
   return (
     <IconMenu
@@ -31,13 +43,7 @@ const AvatarMenu = (props) => {
       styleName="AvatarMenu"
       iconStyle={inLineStyles.iconMenu.iconStyle}
       menuItemStyle={{ height: '38px', width: '168px' }}
-      iconButtonElement={
-        <IconButton style={{ padding: 0 }} aria-label="user button">
-          <div>
-            <Avatar size={34} src={userAvatar} alt={nameInitials(curUser.name)} />
-            <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
-          </div>
-        </IconButton>}
+      iconButtonElement={IconBtn(props)}
     >
       <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
         <Toggle
@@ -66,13 +72,17 @@ const AvatarMenu = (props) => {
   );
 };
 
-AvatarMenu.defaultProps = {
+IconBtn.defaultProps = {
   curUser: () => { console.log('curUser prop validation not set!'); },
 };
 
-AvatarMenu.propTypes = {
+
+IconBtn.propTypes = {
   curUser: isCurUser,
   userAvatar: PropTypes.string.isRequired,
+};
+
+AvatarMenu.propTypes = {
   showPastEvents: PropTypes.bool.isRequired,
   handleFilterToggle: PropTypes.func.isRequired,
   toggleAboutDialog: PropTypes.func.isRequired,
