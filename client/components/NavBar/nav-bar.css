@@ -83,24 +83,6 @@
   background-color: #ffffff !important;
 }
 
-.AboutDialog {
-  text-align: center;
-}
-
-.AboutDialog .titleStyle {
-  color: #006400;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.AboutDialog .versionStyle {
-  margin-bottom: '20px';
-}
-
-.AboutDialog .descStyle {
-  margin-bottom: 40px;
-}
-
 @media (min-width:550px) and (max-width:850px) {
   .logoButton {
     font-size: 20px !important;
