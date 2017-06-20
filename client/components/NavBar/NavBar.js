@@ -17,6 +17,7 @@ import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 import nameInitials from '../../util/string.utils';
 import AboutDialog from '../AboutDialog/AboutDialog';
+import AvatarMenu from '../NavBar/NavBarAvatarMenu';
 import styles from './nav-bar.css';
 
 class NavBar extends Component {
@@ -67,7 +68,7 @@ class NavBar extends Component {
   }
 
   @autobind
-  togleAboutDialog() {
+  toggleAboutDialog() {
     this.setState({ openModal: !this.state.openModal });
   }
 
@@ -115,7 +116,7 @@ class NavBar extends Component {
         </MenuItem >
         <Divider styleName="Divider" />
         <MenuItem
-          onClick={this.togleAboutDialog}
+          onClick={this.toggleAboutDialog}
           styleName="AboutButton"
           primaryText="About"
           style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
@@ -131,7 +132,9 @@ class NavBar extends Component {
   }
 
   renderRightGroup() {
-    const { toggleVisible, isAuthenticated, curUser, events, openModal } = this.state;
+    const {
+      toggleVisible,
+      isAuthenticated, events, openModal, userAvatar, curUser, showPastEvents } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -150,8 +153,14 @@ class NavBar extends Component {
             </FlatButton>
             : null
           }
-          {this.renderAvatarMenu()}
-          <AboutDialog cbOpenModal={() => this.togleAboutDialog()} openModal={openModal} />
+          <AvatarMenu
+            curUser={curUser}
+            userAvatar={userAvatar}
+            showPastEvents={showPastEvents}
+            handleFilterToggle={this.handleFilterToggle}
+            toggleAboutDialog={this.toggleAboutDialog}
+          />
+          <AboutDialog cbOpenModal={this.toggleAboutDialog} openModal={openModal} />
         </ToolbarGroup>
       );
     }
