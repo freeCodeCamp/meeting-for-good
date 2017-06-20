@@ -6,14 +6,15 @@ import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 import styles from './about-dialog.css';
 
+const inlineStyles = {
+  modal: { content: { width: '630px', maxWidth: '630px' }, bodyStyle: { paddingTop: 10, fontSize: '25px' } },
+};
+
 const AboutDialog = (props) => {
   const { cbOpenModal, openModal } = props;
   const actions = [
     <FlatButton label="close" primary onTouchTap={() => cbOpenModal()} />,
   ];
-  const inlineStyles = {
-    modal: { content: { width: '630px', maxWidth: '630px' }, bodyStyle: { paddingTop: 10, fontSize: '25px' } },
-  };
   return (
     <Dialog
       contentStyle={inlineStyles.modal.content}
