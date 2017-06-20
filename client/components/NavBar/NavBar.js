@@ -12,11 +12,11 @@ import IconMenu from 'material-ui/IconMenu';
 import Divider from 'material-ui/Divider';
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import PropTypes from 'prop-types';
-import Dialog from 'material-ui/Dialog';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 import nameInitials from '../../util/string.utils';
+import AboutDialog from '../AboutDialog/AboutDialog';
 import styles from './nav-bar.css';
 
 class NavBar extends Component {
@@ -67,8 +67,8 @@ class NavBar extends Component {
   }
 
   @autobind
-  handleAboutDialog() {
-    this.setState({ openModal: true });
+  togleAboutDialog() {
+    this.setState({ openModal: !this.state.openModal });
   }
 
   @autobind
@@ -115,7 +115,7 @@ class NavBar extends Component {
         </MenuItem >
         <Divider styleName="Divider" />
         <MenuItem
-          onClick={this.handleAboutDialog}
+          onClick={this.togleAboutDialog}
           styleName="AboutButton"
           primaryText="About"
           style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
@@ -131,7 +131,7 @@ class NavBar extends Component {
   }
 
   renderRightGroup() {
-    const { toggleVisible, isAuthenticated, curUser, events } = this.state;
+    const { toggleVisible, isAuthenticated, curUser, events, openModal } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -151,6 +151,7 @@ class NavBar extends Component {
             : null
           }
           {this.renderAvatarMenu()}
+          <AboutDialog cbOpenModal={() => this.togleAboutDialog()} openModal={openModal} />
         </ToolbarGroup>
       );
     }
@@ -163,29 +164,6 @@ class NavBar extends Component {
           Sign In
         </FlatButton>
       </ToolbarGroup>
-    );
-  }
-
-  renderDialog() {
-    const { openModal } = this.state;
-    const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
-    const inlineStyles = {
-      modal: { content: { width: '630px', maxWidth: '630px' }, bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
-    return (
-      <Dialog
-        contentStyle={inlineStyles.modal.content}
-        bodyStyle={inlineStyles.modal.bodyStyle}
-        actions={actions}
-        modal
-        styleName="AboutDialog"
-        open={openModal}
-      >
-        <h1 styleName="titleStyle">Meeting for Good</h1>
-        <h6 styleName="versionStyle">Version {process.env.versionNumber}</h6>
-        <h4 styleName="descStyle">THE BEST MEETING COORDINATION APP</h4>
-        <h6>Created by campers from <a href="https://www.freecodecamp.com">FreeCodeCamp</a></h6>
-        <h6><a href="https://github.com/freeCodeCamp/meeting-for-good/"> License and GitHub Repository</a></h6>
-      </Dialog>
     );
   }
 
@@ -204,7 +182,6 @@ class NavBar extends Component {
       <Toolbar styleName="toolBar" >
         {this.renderLeftGroup()}
         {this.renderRightGroup()}
-        {this.renderDialog()}
       </Toolbar>
     );
   }
