@@ -131,7 +131,7 @@ class NavBar extends Component {
   }
 
   renderRightGroup() {
-    const { toggleVisible, isAuthenticated, curUser, events } = this.state;
+    const { toggleVisible, isAuthenticated, curUser, events, openModal } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -151,6 +151,7 @@ class NavBar extends Component {
             : null
           }
           {this.renderAvatarMenu()}
+          <AboutDialog cbOpenModal={() => this.togleAboutDialog()} openModal={openModal} />
         </ToolbarGroup>
       );
     }
@@ -177,15 +178,10 @@ class NavBar extends Component {
   }
 
   render() {
-    const { openModal } = this.state;
     return (
       <Toolbar styleName="toolBar" >
         {this.renderLeftGroup()}
         {this.renderRightGroup()}
-        <AboutDialog
-          cbOpenModal={() => this.togleAboutDialog()}
-          openModal={openModal}
-        />
       </Toolbar>
     );
   }
