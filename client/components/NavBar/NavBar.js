@@ -2,21 +2,14 @@ import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import FlatButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar';
-import Avatar from 'material-ui/Avatar';
 import { browserHistory } from 'react-router';
-import Toggle from 'material-ui/Toggle';
 import cssModules from 'react-css-modules';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import Divider from 'material-ui/Divider';
-import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import PropTypes from 'prop-types';
 
 import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
-import nameInitials from '../../util/string.utils';
 import AboutDialog from '../AboutDialog/AboutDialog';
+import AvatarMenu from '../NavBar/NavBarAvatarMenu';
 import styles from './nav-bar.css';
 
 class NavBar extends Component {
@@ -67,7 +60,7 @@ class NavBar extends Component {
   }
 
   @autobind
-  togleAboutDialog() {
+  toggleAboutDialog() {
     this.setState({ openModal: !this.state.openModal });
   }
 
@@ -82,56 +75,10 @@ class NavBar extends Component {
     this.props.cbHandleDismissGuest(participantId);
   }
 
-  renderAvatarMenu() {
-    const { curUser, userAvatar, showPastEvents } = this.state;
-    const inLineStyles = {
-      iconMenu: { iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
-        toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } } } };
-
-    return (
-      <IconMenu
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        styleName="AvatarMenu"
-        iconStyle={inLineStyles.iconMenu.iconStyle}
-        menuItemStyle={{ height: '38px', width: '168px' }}
-        iconButtonElement={
-          <IconButton style={{ padding: 0 }} aria-label="user button">
-            <div>
-              <Avatar size={34} src={userAvatar} alt={nameInitials(curUser.name)} />
-              <ArrowDown style={{ color: '#ffffff', fontSize: '30px' }} />
-            </div>
-          </IconButton>}
-      >
-        <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
-          <Toggle
-            label={'Past Events'}
-            toggled={showPastEvents}
-            styleName="Toggle"
-            labelStyle={inLineStyles.iconMenu.toggle.label}
-            thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
-            onToggle={this.handleFilterToggle}
-          />
-        </MenuItem >
-        <Divider styleName="Divider" />
-        <MenuItem
-          onClick={this.togleAboutDialog}
-          styleName="AboutButton"
-          primaryText="About"
-          style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
-        />
-        <MenuItem
-          href={'/api/auth/logout'}
-          styleName="LogoutButton"
-          primaryText="Logout"
-          style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
-        />
-      </IconMenu>
-    );
-  }
-
   renderRightGroup() {
-    const { toggleVisible, isAuthenticated, curUser, events, openModal } = this.state;
+    const {
+      toggleVisible,
+      isAuthenticated, events, openModal, userAvatar, curUser, showPastEvents } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -150,8 +97,14 @@ class NavBar extends Component {
             </FlatButton>
             : null
           }
-          {this.renderAvatarMenu()}
-          <AboutDialog cbOpenModal={() => this.togleAboutDialog()} openModal={openModal} />
+          <AvatarMenu
+            curUser={curUser}
+            userAvatar={userAvatar}
+            showPastEvents={showPastEvents}
+            handleFilterToggle={this.handleFilterToggle}
+            toggleAboutDialog={this.toggleAboutDialog}
+          />
+          <AboutDialog cbOpenModal={this.toggleAboutDialog} openModal={openModal} />
         </ToolbarGroup>
       );
     }
