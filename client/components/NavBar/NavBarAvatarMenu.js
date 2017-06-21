@@ -33,18 +33,10 @@ const IconBtn = (props) => {
   );
 };
 
-const AvatarMenu = (props) => {
+const MenuItems = (props) => {
   const { showPastEvents, handleFilterToggle, toggleAboutDialog } = props;
-
   return (
-    <IconMenu
-      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-      styleName="AvatarMenu"
-      iconStyle={inLineStyles.iconMenu.iconStyle}
-      menuItemStyle={{ height: '38px', width: '168px' }}
-      iconButtonElement={IconBtn(props)}
-    >
+    <div>
       <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
         <Toggle
           label={'Past Events'}
@@ -68,9 +60,21 @@ const AvatarMenu = (props) => {
         primaryText="Logout"
         style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
       />
-    </IconMenu>
+    </div>
   );
 };
+
+const AvatarMenu = props => (
+  <IconMenu
+    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+    targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+    styleName="AvatarMenu"
+    iconStyle={inLineStyles.iconMenu.iconStyle}
+    iconButtonElement={IconBtn(props)}
+  >
+    {MenuItems(props)}
+  </IconMenu>
+);
 
 IconBtn.defaultProps = {
   curUser: () => { console.log('curUser prop validation not set!'); },
@@ -82,7 +86,7 @@ IconBtn.propTypes = {
   userAvatar: PropTypes.string.isRequired,
 };
 
-AvatarMenu.propTypes = {
+MenuItems.propTypes = {
   showPastEvents: PropTypes.bool.isRequired,
   handleFilterToggle: PropTypes.func.isRequired,
   toggleAboutDialog: PropTypes.func.isRequired,
