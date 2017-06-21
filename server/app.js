@@ -1,3 +1,4 @@
+import opbeat from 'opbeat/start';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
 import passport from 'passport';
@@ -9,13 +10,6 @@ import connectMongo from 'connect-mongo';
 import 'dotenv/config';
 import morgan from 'morgan';
 import routes from './app/routes/routes';
-
-const opbeat = require('opbeat').start({
-  appId: process.env.OP_BEAT_APP_ID,
-  organizationId: process.env.OP_BEAT_ORGANIZATION_ID,
-  secretToken: process.env.OP_BEAT_SECRET_TOKEN,
-  active: true,
-});
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
