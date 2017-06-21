@@ -1,3 +1,7 @@
+// to work needs to be the fisrt one and as require.
+/* eslint-disable */
+const opbeat = require('opbeat/start'); 
+
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
 import passport from 'passport';
@@ -10,13 +14,7 @@ import 'dotenv/config';
 import morgan from 'morgan';
 import routes from './app/routes/routes';
 
-const opbeat = require('opbeat').start({
-  appId: process.env.OP_BEAT_APP_ID,
-  organizationId: process.env.OP_BEAT_ORGANIZATION_ID,
-  secretToken: process.env.OP_BEAT_SECRET_TOKEN,
-  active: true,
-});
-
+ /* eslint-enable */
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
