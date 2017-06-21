@@ -1,7 +1,6 @@
 // to work needs to be the fisrt one and as require.
-/* eslint-disable */
-const opbeat = require('opbeat/start'); 
 
+import opbeat from 'opbeat/start';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
 import passport from 'passport';
@@ -13,7 +12,7 @@ import connectMongo from 'connect-mongo';
 import 'dotenv/config';
 import morgan from 'morgan';
 import routes from './app/routes/routes';
-/* eslint-enable */
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 
