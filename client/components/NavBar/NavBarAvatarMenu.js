@@ -36,7 +36,7 @@ const IconBtn = (props) => {
 const MenuItems = (props) => {
   const { showPastEvents, handleFilterToggle, toggleAboutDialog } = props;
   return (
-    <div>
+    <span>
       <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
         <Toggle
           label={'Past Events'}
@@ -60,7 +60,7 @@ const MenuItems = (props) => {
         primaryText="Logout"
         style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
       />
-    </div>
+    </span>
   );
 };
 
@@ -71,6 +71,7 @@ const AvatarMenu = props => (
     styleName="AvatarMenu"
     iconStyle={inLineStyles.iconMenu.iconStyle}
     iconButtonElement={IconBtn(props)}
+    menuItemStyle={{ height: '38px', width: '168px' }}
   >
     {MenuItems(props)}
   </IconMenu>
