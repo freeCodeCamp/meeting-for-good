@@ -12,14 +12,14 @@ import PropTypes from 'prop-types';
 import nameInitials from '../../util/string.utils';
 import styles from './participants-list.css';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
+import chipFormater from './ParticipantsListUtils';
 
 class ParticipantsList extends Component {
   constructor(props) {
     super(props);
-    const { event, curUser } = this.props;
+    const { event } = this.props;
     this.state = {
       event: (event !== undefined) ? event : null,
-      curUser,
       openDeleteModal: false,
       openDrawer: false,
       guestToDelete: '',
@@ -28,13 +28,13 @@ class ParticipantsList extends Component {
   }
 
   componentWillMount() {
-    const { curUser, event } = this.props;
-    this.setState({ curUser, event });
+    const { event } = this.props;
+    this.setState({ event });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { curUser, event } = nextProps;
-    this.setState({ curUser, event });
+    const { event } = nextProps;
+    this.setState({ event });
   }
 
   @autobind
@@ -70,26 +70,8 @@ class ParticipantsList extends Component {
   }
 
   renderChip(participant) {
-    const { curUser, event } = this.state;
-    let borderColor;
-    let text;
-
-    switch (participant.status) {
-      case 1:
-        borderColor = '3px solid #ff8080';
-        text = 'Invited';
-        break;
-      case 2:
-        borderColor = '3px solid #A0C2FF';
-        text = 'Joined';
-        break;
-      case 3:
-        borderColor = '0.5px solid #E0E0E0';
-        text = 'Availability Submitted';
-        break;
-      default:
-        break;
-    }
+    const { event } = this.state;
+    const { curUser } = this.props;
     const onRequestDeleteEnable =
       (curUser._id !== participant.userId._id && event.owner === curUser._id) ?
         () => this.handleOpenDeleteModal(participant._id) : null;
@@ -106,12 +88,12 @@ class ParticipantsList extends Component {
         <Avatar
           src={participant.userId.avatar}
           styleName="avatar"
-          style={{ border: borderColor }}
+          style={{ border: chipFormater(participant).borderColor }}
           alt={nameInitials(participant.userId.name)}
         />
         <div styleName="chipTextWrapper">
           <span styleName="chipTextName">{participant.userId.name}</span>
-          <span>{text}</span>
+          <span>{chipFormater(participant).text}</span>
         </div>
       </Chip>
     );
@@ -126,37 +108,36 @@ class ParticipantsList extends Component {
     return rows;
   }
 
-  renderDeleteModal() {
-    const { openDeleteModal } = this.state;
-    const actions = [
+  renderDeleteModalActions() {
+    return [
       <FlatButton label="Cancel" primary onTouchTap={this.handleCloseDeleteModal} />,
       <FlatButton label="yes" secondary onTouchTap={this.handleDeleteGuest} />,
     ];
+  }
+
+  renderDeleteModal() {
+    const { openDeleteModal } = this.state;
     const inLineStyles = {
       title: { backgroundColor: '#FF4025', color: '#ffffff', fontSize: '25px', height: '30px', paddingTop: 6 },
       content: { width: '22%', maxWidth: '22%', minWidth: '300px' },
       bodyStyle: { paddingTop: 10, fontSize: '25px' },
     };
-
     return (
       <Dialog
         title="Delete Guest"
         titleStyle={inLineStyles.title}
         contentStyle={inLineStyles.content}
         bodyStyle={inLineStyles.bodyStyle}
-        actions={actions}
+        actions={this.renderDeleteModalActions()}
         modal
         open={openDeleteModal}
-      >
-        Are you sure you want to delete this guest?
-      </Dialog>
+      > Are you sure you want to delete this guest? </Dialog>
     );
   }
 
   render() {
     const inLineStyles = {
-      buttonAddGuest: {
-        backgroundColor: '#e0e0e0',
+      buttonAddGuest: { backgroundColor: '#e0e0e0',
         borderRadius: '50%',
         width: 40,
         height: 40,
@@ -169,9 +150,7 @@ class ParticipantsList extends Component {
     return (
       <div>
         <div styleName="headerContainer">
-          <p styleName="particHeader">
-            Participants
-          </p>
+          <p styleName="particHeader"> Participants </p>
           <IconButton
             style={inLineStyles.buttonAddGuest}
             iconStyle={inLineStyles.buttonAddGuest.iconStyle}
@@ -200,12 +179,10 @@ ParticipantsList.defaultProps = {
 ParticipantsList.propTypes = {
   // Current user
   curUser: isCurUser,
-
   showInviteGuests: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
   cbOnChipMouseOver: PropTypes.func,
   cbOnChipMouseLeave: PropTypes.func,
-
   // Event containing list of event participants
   event: isEvent,
 };
