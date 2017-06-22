@@ -1,3 +1,5 @@
+// to work needs to be the fisrt one and as require.
+
 import opbeat from 'opbeat/start';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
@@ -13,6 +15,7 @@ import routes from './app/routes/routes';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
+
 const app = express();
 app.use(compression({ threshold: 0 }));
 mongoose.Promise = bluebird;
@@ -22,12 +25,13 @@ if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
   // only load webpack stuff at dev.
+  /* eslint-disable */
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const webpack = require('webpack');
   const webpackConfig = require('../webpack.config.dev');
   const compiler = webpack(webpackConfig);
-
+  /* eslint-enable */
   app.use(webpackDevMiddleware(compiler, {
     compress: true,
     historyApiFallback: true,

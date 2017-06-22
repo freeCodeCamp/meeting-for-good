@@ -9,12 +9,26 @@ import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
 import {
-  loadEvents, loadEvent, EditStatusParticipantEvent, AddEventParticipant,
-  addEvent, deleteEvent, editEvent, loadOwnerData, deleteGuest, loadEventFull,
+  loadEvents, EditStatusParticipantEvent, AddEventParticipant,
+  addEvent, deleteEvent, editEvent, deleteGuest, loadEventFull,
   handleDismiss,
 } from '../util/events';
-import { sendEmailOwner, sendEmailInvite, sendEmailOwnerEdit } from '../util/emails';
+import { sendEmailInvite } from '../util/emails';
 import '../styles/main.css';
+import { handleLoadEvent, handleEmailOwner } from './AppHandlers';
+
+const styleNotif = {
+  NotificationItem: { // Override the notification item
+    DefaultStyle: { margin: '10px 5px 2px 1px', fontSize: '15px' },
+    success: { backgroundColor: 'white', color: '#006400', borderTop: '4px solid #006400' },
+    error: { backgroundColor: 'white', color: 'red', borderTop: '2px solid red' },
+    info: { backgroundColor: 'white', color: 'blue', borderTop: '2px solid blue' },
+    Containers: { tr: { top: '40px', bottom: 'auto', left: 'auto', right: '0px' } },
+    Title: {
+      DefaultStyle: { fontSize: '18px', fontWeight: 'bold' },
+    },
+  },
+};
 
 class App extends Component {
   constructor(props) {
@@ -41,21 +55,16 @@ class App extends Component {
       const curUser = await getCurrentUser();
       const events = await loadEvents(showPastEvents);
       this.setState({
-        isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents,
-      });
+        isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
     }
   }
 
-  /**
-   * possible level values: info, success, error, warning
-   * autoDismiss time in seconds
-   */
   _addNotification(title, message, level, autoDismiss = 4) {
     this._notificationSystem.addNotification({
       title,
       message,
-      level,
-      autoDismiss,
+      level, // possible level values: info, success, error, warning
+      autoDismiss, // autoDismiss time in seconds
       position: 'tr',
     });
   }
@@ -64,21 +73,6 @@ class App extends Component {
   async toggleFilterPastEventsTo(value) {
     const events = await loadEvents(value);
     this.setState({ showPastEvents: value, events });
-  }
-
-  @autobind
-  async handleLoadEvent(id) {
-    const { events } = this.state;
-    const event = events.filter(event => event._id.toString() === id.toString());
-    if (event.length === 0) {
-      const event = await loadEvent(id);
-      if (event === null) {
-        this._addNotification('Error!!', 'I can\'t load event, please try again latter', 'error', 8);
-        return false;
-      }
-      return event;
-    }
-    return event[0];
   }
 
   @autobind
@@ -119,36 +113,8 @@ class App extends Component {
   }
 
   @autobind
-  async handleEmailOwner(event) {
-    const { curUser } = this.state;
-    const ownerData = await loadOwnerData(event.owner);
-    if (ownerData !== null) {
-      const response = await sendEmailOwner(event, curUser, ownerData);
-      if (response) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-  @autobind
-  async handleEmailOwnerEdit(event) {
-    const { curUser } = this.state;
-    const ownerData = await loadOwnerData(event.owner);
-    if (ownerData !== null) {
-      const response = await sendEmailOwnerEdit(event, curUser, ownerData);
-      if (response) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-  @autobind
   handleLogin(curUser) {
-    if (Object.keys(curUser).length > 0) {
-      this.setState({ curUser, isAuthenticated: true });
-    }
+    if (Object.keys(curUser).length > 0) this.setState({ curUser, isAuthenticated: true });
   }
 
   @autobind
@@ -190,106 +156,102 @@ class App extends Component {
     browserHistory.push('/');
   }
 
-  /**
-  *
-  * @param {*} guestToDelete the Id of the document content the guest
-  */
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const { events } = this.state;
-    const nEvent = await deleteGuest(guestToDelete);
-    if (nEvent) {
-      const nEvents = _.cloneDeep(events);
+    const nEvents = _.cloneDeep(events);
+    try {
+      const nEvent = await deleteGuest(guestToDelete);
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
+      this.setState({ events: nEvents });
       return nEvent;
+    } catch (err) {
+      this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
+      return null;
     }
-    this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
-    return nEvent;
   }
 
-  /**
-   *
-   * @param {*} guestId the id of the guest to be invited
-   * @param {*} event object contening the event
-   * @param {*} curUser current user
-   *
-   * using the invite issued at the inviteDrawer
-   * fist chech if the guestId is alredy at the event
-   * if was not update the event at the db with a new guest
-   * status 1 as invited
-   * then send a inivte email
-   */
+  async handleInviteExistingGuest(guestId, event, participants, indexOfGuest) {
+    const { events, curUser } = this.state;
+    const status = participants[indexOfGuest].status;
+    let statusResult = null;
+    switch (status) {
+      case 0: // guest "deleted"
+        try {
+          const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
+          await this.sendInviteEmail(guestId, event, curUser);
+          this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
+          const nEvents = events.filter(event => event._id !== nEvent._id);
+          this.setState({ events: [nEvent, ...nEvents] });
+          statusResult = nEvent;
+        } catch (err) {
+          this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
+        }
+        break;
+      case 1: // guest alredy invited
+        try {
+          await this.sendInviteEmail(guestId, event, curUser);
+          this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
+          statusResult = event;
+        } catch (err) {
+          this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
+        }
+        break;
+      case 2: // guest alredy join
+        this._addNotification('Info', 'Guest alredy join this event.', 'info');
+        statusResult = event;
+        break;
+      case 3: // guest alredy set a time table
+        this._addNotification('Info', 'Guest alredy set a time table for this event.', 'info');
+        statusResult = event;
+        break;
+      default:
+        this._addNotification('Error', 'Guest whith a not possible statust.', 'error');
+        statusResult = null;
+    }
+    return statusResult;
+  }
+
+  async sendInviteEmail(guestId, event, curUser) {
+    try {
+      await sendEmailInvite(guestId, event, curUser);
+      this._addNotification('Success', 'Invite send successfully.', 'success');
+      return true;
+    } catch (err) {
+      this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
+      return err;
+    }
+  }
+
   @autobind
-  async handleInviteEmail(guestId, event, curUser) {
-    const { events } = this.state;
+  async handleInviteEmail(guestId, eventEdited) {
+    const { events, curUser } = this.state;
     // find if the guest alredy exists as participant
     // ask at DB because guests sets as 0 its not load as default
-    event = await loadEventFull(event._id);
-    const participants = event.participants;
+    const eventFull = await loadEventFull(eventEdited._id);
+    const participants = eventFull.participants;
     const indexOfGuest = _.findIndex(
       participants, participant => participant.userId._id === guestId.toString());
     if (indexOfGuest > -1) {
-      const status = participants[indexOfGuest].status;
-      if (status === 0) {
-        const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
-        if (nEvent) {
-          const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
-          if (responseEmail) {
-            this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
-            const nEvents = events.filter(event => event._id !== nEvent._id);
-            this.setState({ events: [nEvent, ...nEvents] });
-            return true;
-          }
-          this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
-          return false;
-        }
-        this._addNotification('Error!!', 'Error updating the guest status, please try again later', 'error');
-        return false;
-      } else if (status === 1) {
-        const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
-        if (responseEmail) {
-          this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
-          return true;
-        }
-        return false;
-      } else if (status === 2) {
-        this._addNotification('Info', 'Guest alredy join this event.', 'info');
-        return true;
-      } else if (status === 3) {
-        this._addNotification('Info', 'Guest alredy set a time table for this event.', 'info');
-        return true;
-      }
+      return this.handleInviteExistingGuest(guestId, eventFull, participants, indexOfGuest);
     }
-    // if wasn't a participant then add
-    const nEvent = await AddEventParticipant(guestId, event);
+    // if wasn't a participant,  then add
+    const nEvent = await AddEventParticipant(guestId, eventFull);
     if (nEvent) {
       const nEvents = _.cloneDeep(events);
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this.setState({ events: nEvents });
-      const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
-      if (responseEmail) {
+      try {
+        await this.sendInviteEmail(guestId, nEvent, curUser);
         return nEvent;
+      } catch (err) {
+        this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
+        return null;
       }
-      this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
-      return false;
     }
   }
 
-  async sendInviteEmail(guestId, event, curUser) {
-    const result = await sendEmailInvite(guestId, event, curUser);
-    if (result) {
-      this._addNotification('Success', 'Invite send successfully.', 'success');
-      return result;
-    }
-    this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
-    return result;
-  }
-
-  /**
-   *
-   * @param {*} participantsIds array of particpants to dismiss
-   */
   @autobind
   async handleGuestNotificationsDismiss(participantsIds) {
     const { events } = this.state;
@@ -307,14 +269,13 @@ class App extends Component {
     } finally {
       this.setState({ events: nEvents });
     }
-    return events;
+    return nEvents;
   }
 
   injectPropsChildren(child) {
     const { showPastEvents, curUser, isAuthenticated, events } = this.state;
     if (child.type.displayName === 'Dashboard') {
-      return cloneElement(child, {
-        showPastEvents,
+      return cloneElement(child, { showPastEvents,
         curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
@@ -328,23 +289,21 @@ class App extends Component {
       return cloneElement(child, { handleAuthentication: this.handleAuthentication });
     }
     if (child.type.displayName === 'EventDetails') {
-      return cloneElement(child, {
-        curUser,
+      return cloneElement(child, { curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
-        cbLoadEvent: this.handleLoadEvent,
+        cbLoadEvent: id => handleLoadEvent(id, events),
         cbDeleteEvent: this.handleDeleteEvent,
         cbEditEvent: this.handleEditEvent,
-        cbEmailOwner: this.handleEmailOwner,
-        cbEmailOwnerEdit: this.handleEmailOwnerEdit,
+        cbEmailOwner: event => handleEmailOwner(event, curUser),
+        cbEmailOwnerEdit: event => handleEmailOwner(event, curUser, true),
         cbDeleteGuest: this.handleDeleteGuest,
         cbInviteEmail: this.handleInviteEmail,
 
       });
     }
     if (child.type.displayName === 'NewEvent') {
-      return cloneElement(child, {
-        curUser,
+      return cloneElement(child, { curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
         cbNewEvent: this.handleNewEvent,
@@ -355,32 +314,17 @@ class App extends Component {
   }
 
   renderNotifications() {
-    const style = {
-      NotificationItem: { // Override the notification item
-        DefaultStyle: { margin: '10px 5px 2px 1px', fontSize: '15px' },
-        success: { backgroundColor: 'white', color: '#006400', borderTop: '4px solid #006400' },
-        error: { backgroundColor: 'white', color: 'red', borderTop: '2px solid red' },
-        info: { backgroundColor: 'white', color: 'blue', borderTop: '2px solid blue' },
-        Containers: { tr: { top: '40px', bottom: 'auto', left: 'auto', right: '0px' } },
-        Title: {
-          DefaultStyle: { fontSize: '18px', fontWeight: 'bold' },
-        },
-      },
-    };
     return (
-      <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
+      <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={styleNotif} />
     );
   }
 
   render() {
-    const { location } = this.props;
+    const { location, children } = this.props;
     const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail, events,
     } = this.state;
-
-    const childrenWithProps = React.Children.map(this.props.children,
-      child => this.injectPropsChildren(child),
-    );
-
+    const childrenWithProps = React.Children
+      .map(children, child => this.injectPropsChildren(child));
     return (
       <div>
         {this.renderNotifications()}
@@ -399,9 +343,7 @@ class App extends Component {
           events={events}
           showPastEvents={showPastEvents}
         />
-        <main className="main">
-          {childrenWithProps}
-        </main>
+        <main className="main"> {childrenWithProps} </main>
       </div>
     );
   }

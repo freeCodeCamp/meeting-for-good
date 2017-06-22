@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import Drawer from 'material-ui/Drawer';
 import autobind from 'autobind-decorator';
-import { ListItem } from 'material-ui/List';
-import Checkbox from 'material-ui/Checkbox';
-import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
@@ -13,14 +10,16 @@ import { browserHistory } from 'react-router';
 import Snackbar from 'material-ui/Snackbar';
 import LinearProgress from 'material-ui/LinearProgress';
 import SearchIcon from 'material-ui/svg-icons/action/search';
-import Infinite from 'react-infinite';
+
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
-import nameInitials from '../../util/string.utils';
-import { fullUrl, emailText } from './guestInviteDrawerUtils';
+import { fullUrl } from './guestInviteDrawerUtils';
+import { isEvent } from '../../util/commonPropTypes';
+import UrlActions from './GuestInviteUrlActions';
+import GuestInviveDrawerRows from './GuestInviteDrawerRows';
 
 class GuestInviteDrawer extends Component {
   @autobind
@@ -32,8 +31,6 @@ class GuestInviteDrawer extends Component {
     super(props);
     this.state = {
       open: false,
-      curUser: {},
-      event: {},
       guests: [],
       guestsToDisplay: [],
       activeCheckBoxes: [],
@@ -47,30 +44,31 @@ class GuestInviteDrawer extends Component {
   }
 
   async componentWillMount() {
-    await this.loadPastGuests();
-    const { event, open, curUser } = this.props;
-    this.setState({ event, open, curUser, activeCheckBoxes: [] });
+    try {
+      const guests = await this.loadPastGuests();
+      const { open } = this.props;
+      this.setState({ open, activeCheckBoxes: [], guests, guestsToDisplay: guests });
+    } catch (err) {
+      console.log('loadPastGuests GuestInviteDrawer', err);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { event, open, curUser } = nextProps;
-    this.setState({ event, open, curUser, activeCheckBoxes: [], setFocusFullUrl: true });
+    const { open } = nextProps;
+    this.setState({ open, activeCheckBoxes: [], setFocusFullUrl: true });
   }
 
   async loadPastGuests() {
-    this.setState({ linearProgressVisible: 'visible' });
     const response = await fetch('/api/user/relatedUsers', { credentials: 'same-origin' });
     let guests;
     try {
       checkStatus(response);
       guests = await parseJSON(response);
-      this.setState({ guests, guestsToDisplay: guests });
+      return guests;
     } catch (err) {
       console.log('loadPassGuests', err);
       this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, Failed to load guests. Please try again later.' });
-      return;
-    } finally {
-      this.setState({ linearProgressVisible: 'hidden' });
+      return [];
     }
   }
 
@@ -88,13 +86,14 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   async handleInvite() {
-    const { activeCheckBoxes, curUser, event } = this.state;
+    const { activeCheckBoxes } = this.state;
+    const { event, cbInviteEmail } = this.props;
     let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
     if (activeCheckBoxes.length > 0) {
       await Promise.all(
         activeCheckBoxes.map(async (guest) => {
           try {
-            await this.props.cbInviteEmail(guest, event, curUser);
+            await cbInviteEmail(guest, event);
             nActiveCheckBoxes = nActiveCheckBoxes.filter(x => x !== guest);
           } catch (err) {
             console.log('err at handleInvitem GuestInviteDrawer', err);
@@ -111,7 +110,7 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleCopyButtonClick(ev) {
-    const { event } = this.state;
+    const { event } = this.props;
     const clipboard = new Clipboard(ev.target, {
       target: () => document.getElementById('fullUrl'),
     });
@@ -141,42 +140,18 @@ class GuestInviteDrawer extends Component {
 
   @autobind
   handleSendEmail(ev) {
-    if (typeof this.state.event === 'undefined') {
+    if (typeof this.props.event === 'undefined') {
       ev.preventDefault();
       this.setState({ snackbarOpen: true, snackbarMsg: 'error generating email body! Please try reload the page' });
     }
   }
 
-  renderRows() {
-    const { activeCheckBoxes, guestsToDisplay } = this.state;
-    const inLineStyles = { listItem: { borderBottom: '1px solid #D4D4D4' } };
-    const rows = [];
-    guestsToDisplay.forEach((guest) => {
-      const row = (
-        <ListItem
-          style={inLineStyles.listItem}
-          key={`${guest._id}.listItem`}
-          primaryText={guest.userId.name}
-          leftCheckbox={<Checkbox
-            onCheck={() => this.handleCheck(guest.userId._id)}
-            checked={activeCheckBoxes.includes(guest.userId._id)}
-          />}
-          rightAvatar={<Avatar src={guest.userId.avatar} alt={nameInitials(guest.userId.name)} />}
-        />
-      );
-      rows.push(row);
-    });
-    return rows;
-  }
-
   renderUrlActions() {
-    const { event } = this.state;
+    const { event } = this.props;
     const focusUrlTextField = (input) => {
-      if (input) {
-        if (this.state.setFocusFullUrl) {
-          this.setState({ setFocusFullUrl: false });
-          setTimeout(() => { input.focus(); input.select(); }, 100);
-        }
+      if (input && this.state.setFocusFullUrl) {
+        this.setState({ setFocusFullUrl: false });
+        setTimeout(() => { input.focus(); input.select(); }, 100);
       }
     };
     return (
@@ -191,22 +166,11 @@ class GuestInviteDrawer extends Component {
           ref={focusUrlTextField}
           aria-label="Full Url"
         />
-        <div styleName="Row">
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            className="cpBtn"
-            primary
-            onTouchTap={this.handleCopyButtonClick}
-            label="Copy Link"
-          />
-          <RaisedButton
-            styleName="copyAndEmailButton"
-            label="Send Email Invite"
-            primary
-            onClick={ev => this.handleSendEmail(ev)}
-            href={`mailto:?subject=Share your availability for ${event.name}&body=${emailText(event)}`}
-          />
-        </div>
+        <UrlActions
+          event={event}
+          handleSendEmail={ev => this.handleSendEmail(ev)}
+          handleCopyButtonClick={ev => this.handleCopyButtonClick(ev)}
+        />
       </div>
     );
   }
@@ -229,8 +193,9 @@ class GuestInviteDrawer extends Component {
   }
 
   render() {
-    const { open, event, searchText,
-      linearProgressVisible } = this.state;
+    const {
+      open, searchText, linearProgressVisible, guestsToDisplay, activeCheckBoxes } = this.state;
+    const { event } = this.props;
     const inLineStyles = {
       container: { paddingLeft: '9px', paddingRight: '10px' },
       textField: { floatingLabel: { fontSize: '15px', paddingLeft: 8 } },
@@ -262,9 +227,11 @@ class GuestInviteDrawer extends Component {
             inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
           />
         </div>
-        <Infinite elementHeight={58} containerHeight={174}>
-          {this.renderRows()}
-        </Infinite>
+        <GuestInviveDrawerRows
+          guestsToDisplay={guestsToDisplay}
+          activeCheckBoxes={activeCheckBoxes}
+          handleCheck={this.handleCheck}
+        />
         <RaisedButton label="Invite" styleName="inviteButton" onTouchTap={this.handleInvite} fullWidth primary />
         {this.renderSnackBar()}
       </Drawer>
@@ -274,46 +241,17 @@ class GuestInviteDrawer extends Component {
 
 GuestInviteDrawer.defaultProps = {
   open: false,
+  event: () => { console.log('event prop validation not set!'); },
 };
 
 GuestInviteDrawer.propTypes = {
   // Current user
-  curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
-  }).isRequired,
-
   open: PropTypes.bool,
   cb: PropTypes.func.isRequired,
   cbInviteEmail: PropTypes.func.isRequired,
 
   // Event containing list of event participants
-  event: PropTypes.shape({
-    _id: PropTypes.string,
-    name: PropTypes.string,
-    owner: PropTypes.string,
-    active: PropTypes.bool,
-    selectedTimeRange: PropTypes.array,
-    dates: PropTypes.arrayOf(PropTypes.shape({
-      fromDate: PropTypes.string,
-      toDate: PropTypes.string,
-      _id: PropTypes.string,
-    })),
-    participants: PropTypes.arrayOf(PropTypes.shape({
-      userId: PropTypes.shape({
-        id: PropTypes.string,
-        avatar: PropTypes.string,
-        name: PropTypes.string,
-        emails: PropTypes.arrayOf(PropTypes.string),
-      }),
-      _id: PropTypes.string,
-      status: PropTypes.oneOf([0, 1, 2, 3]),
-      emailUpdate: PropTypes.bool,
-      ownerNotified: PropTypes.bool,
-      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-    })),
-  }).isRequired,
+  event: isEvent,
 };
 
 export default cssModules(GuestInviteDrawer, styles);

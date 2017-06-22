@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/freeCodeCamp/meeting-for-good.svg?branch=master)](https://travis-ci.org/freeCodeCamp/meeting-for-good)
-[![codebeat badge](https://codebeat.co/badges/6f1e024c-3e83-4137-b8ae-b34dd088c309)](https://codebeat.co/projects/github-com-jrogatis-meeting-for-good-development-70f431f9-1e70-4bab-8318-0d348bab0998)
+[![codebeat badge](https://codebeat.co/assets/svg/badges/A-398b39-669406e9e1b136187b91af587d4092b0160370f271f66a651f444b990c2730e9.svg)](https://codebeat.co/projects/github-com-jrogatis-meeting-for-good-development-70f431f9-1e70-4bab-8318-0d348bab0998)
 # Meeting for Good
 A meeting coordination app for your team.
 
@@ -35,8 +35,7 @@ GOOGLE_ANALYTICS_DEBUG=false
 OPBEAT_APP_ID=[YOUR_OPBEAT_APP_ID]
 OPBEAT_ORGANIZATION_ID=[YOUR_OPBEAT_ORGANIZATION_ID]
 OPBEAT_SECRET_TOKEN=[YOUR_OPBEAT_SECRET_TOKEN]
-OPBEAT_ACTIVE=true
-OPBEAT_INSTRUMENT=true
+
 ```
 - Open a new terminal session and run `mongod`
 - Run `npm run serve` from the app's root directory. This will start the app at port 8080 (unless overridden)

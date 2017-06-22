@@ -20,6 +20,7 @@ import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import enteravailGif from '../../assets/enteravail.gif';
 import { loadEventFull } from '../../util/events';
 import styles from './availability-grid.css';
+import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
 const moment = extendMoment(Moment);
 
@@ -270,6 +271,8 @@ AvailabilityGrid.defaultProps = {
   editAvail: () => { console.log('ediAvail func not passed in!'); },
   closeEditorGrid: () => { console.log('closeGrid func not passed in!'); },
   submitAvail: () => { console.log('submitAvail func not passed in!'); },
+  event: () => { console.log('event prop validation not set!'); },
+  curUser: () => { console.log('curUser prop validation not set!'); },
   heightlightedUser: '',
 };
 
@@ -290,37 +293,9 @@ AvailabilityGrid.propTypes = {
   // True if grid is showing heat map
   showHeatmap: PropTypes.bool,
   // Event containing list of event participants
-  event: PropTypes.shape({
-    _id: PropTypes.string,
-    name: PropTypes.string,
-    owner: PropTypes.string,
-    active: PropTypes.bool,
-    selectedTimeRange: PropTypes.array,
-    dates: PropTypes.arrayOf(PropTypes.shape({
-      fromDate: PropTypes.string,
-      toDate: PropTypes.string,
-      _id: PropTypes.string,
-    })),
-    participants: PropTypes.arrayOf(PropTypes.shape({
-      userId: PropTypes.shape({
-        id: PropTypes.string,
-        avatar: PropTypes.string,
-        name: PropTypes.string,
-        emails: PropTypes.arrayOf(PropTypes.string),
-      }),
-      _id: PropTypes.string,
-      status: PropTypes.oneOf([0, 1, 2, 3]),
-      emailUpdate: PropTypes.bool,
-      ownerNotified: PropTypes.bool,
-      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-    })),
-  }).isRequired,
+  event: isEvent,
   // Current user
-  curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
-  }).isRequired,
+  curUser: isCurUser,
   heightlightedUser: PropTypes.string,
 };
 
