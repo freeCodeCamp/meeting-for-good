@@ -162,39 +162,38 @@ class App extends Component {
     const status = participants[indexOfGuest].status;
     let statusResult = null;
     switch (status) {
-      case 0:
+      case 0: // guest "deleted"
         try {
           const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
           await this.sendInviteEmail(guestId, event, curUser);
           this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
           const nEvents = events.filter(event => event._id !== nEvent._id);
           this.setState({ events: [nEvent, ...nEvents] });
-          statusResult = true;
+          statusResult = nEvent;
         } catch (err) {
           this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
-          statusResult = null;
         }
         break;
-      case 1:
+      case 1: // guest alredy invited
         try {
           await this.sendInviteEmail(guestId, event, curUser);
           this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
-          statusResult = true;
+          statusResult = event;
         } catch (err) {
           this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
-          statusResult = null;
         }
         break;
-      case 2:
+      case 2: // guest alredy join
         this._addNotification('Info', 'Guest alredy join this event.', 'info');
-        statusResult = true;
+        statusResult = event;
         break;
-      case 3:
+      case 3: // guest alredy set a time table
         this._addNotification('Info', 'Guest alredy set a time table for this event.', 'info');
-        statusResult = true;
+        statusResult = event;
         break;
       default:
         this._addNotification('Error', 'Guest whith a not possible statust.', 'error');
+        statusResult = null;
     }
     return statusResult;
   }
@@ -218,12 +217,13 @@ class App extends Component {
       const nEvents = _.cloneDeep(events);
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this.setState({ events: nEvents });
-      const responseEmail = await this.sendInviteEmail(guestId, nEvent, curUser);
-      if (responseEmail) {
+      try {
+        await this.sendInviteEmail(guestId, nEvent, curUser);
         return nEvent;
+      } catch (err) {
+        this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
+        return null;
       }
-      this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
-      return null;
     }
   }
 
