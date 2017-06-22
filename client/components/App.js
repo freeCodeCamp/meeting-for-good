@@ -151,6 +151,7 @@ class App extends Component {
       const nEvent = await deleteGuest(guestToDelete);
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
+      this.setState({ events: nEvents });
       return nEvent;
     } catch (err) {
       this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
@@ -199,6 +200,17 @@ class App extends Component {
     return statusResult;
   }
 
+  async sendInviteEmail(guestId, event, curUser) {
+    try {
+      await sendEmailInvite(guestId, event, curUser);
+      this._addNotification('Success', 'Invite send successfully.', 'success');
+      return true;
+    } catch (err) {
+      this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
+      return err;
+    }
+  }
+
   @autobind
   async handleInviteEmail(guestId, eventEdited) {
     console.log('app handleInviteEmail', guestId);
@@ -228,17 +240,6 @@ class App extends Component {
     }
   }
 
-  async sendInviteEmail(guestId, event, curUser) {
-    try {
-      await sendEmailInvite(guestId, event, curUser);
-      this._addNotification('Success', 'Invite send successfully.', 'success');
-      return true;
-    } catch (err) {
-      this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
-      return err;
-    }
-  }
-
   @autobind
   async handleGuestNotificationsDismiss(participantsIds) {
     const { events } = this.state;
@@ -256,7 +257,7 @@ class App extends Component {
     } finally {
       this.setState({ events: nEvents });
     }
-    return events;
+    return nEvents;
   }
 
   injectPropsChildren(child) {
