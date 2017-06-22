@@ -17,7 +17,7 @@ import _ from 'lodash';
 import styles from './guest-invite.css';
 import { checkStatus, parseJSON } from '../../util/fetch.util';
 import { fullUrl } from './guestInviteDrawerUtils';
-import { isEvent, isCurUser } from '../../util/commonPropTypes';
+import { isEvent } from '../../util/commonPropTypes';
 import UrlActions from './GuestInviteUrlActions';
 import GuestInviveDrawerRows from './GuestInviteDrawerRows';
 
@@ -87,13 +87,13 @@ class GuestInviteDrawer extends Component {
   @autobind
   async handleInvite() {
     const { activeCheckBoxes } = this.state;
-    const { curUser, event } = this.props;
+    const { event, cbInviteEmail } = this.props;
     let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
     if (activeCheckBoxes.length > 0) {
       await Promise.all(
         activeCheckBoxes.map(async (guest) => {
           try {
-            await this.props.cbInviteEmail(guest, event, curUser);
+            await cbInviteEmail(guest, event);
             nActiveCheckBoxes = nActiveCheckBoxes.filter(x => x !== guest);
           } catch (err) {
             console.log('err at handleInvitem GuestInviteDrawer', err);
@@ -242,12 +242,10 @@ class GuestInviteDrawer extends Component {
 GuestInviteDrawer.defaultProps = {
   open: false,
   event: () => { console.log('event prop validation not set!'); },
-  curUser: () => { console.log('curUser prop validation not set!'); },
 };
 
 GuestInviteDrawer.propTypes = {
   // Current user
-  curUser: isCurUser,
   open: PropTypes.bool,
   cb: PropTypes.func.isRequired,
   cbInviteEmail: PropTypes.func.isRequired,

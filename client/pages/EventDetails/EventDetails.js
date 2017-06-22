@@ -79,9 +79,12 @@ class EventDetails extends Component {
   }
 
   @autobind
-  async HandleInviteEmail(guestId, event, curUser) {
-    const response = await this.props.cbInviteEmail(guestId, event, curUser);
-    return response;
+  async HandleInviteEmail(guestId, event) {
+    const nEvent = await this.props.cbInviteEmail(guestId, event);
+    if (nEvent) {
+      this.setState({ event: nEvent });
+    }
+    return nEvent;
   }
 
   render() {
@@ -102,7 +105,6 @@ class EventDetails extends Component {
           <GuestInviteDrawer
             open={openDrawer}
             event={event}
-            curUser={curUser}
             cb={this.handleCbGuestInviteDrawer}
             cbInviteEmail={this.HandleInviteEmail}
           />
