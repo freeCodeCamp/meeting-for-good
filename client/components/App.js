@@ -228,13 +228,14 @@ class App extends Component {
   }
 
   async sendInviteEmail(guestId, event, curUser) {
-    const result = await sendEmailInvite(guestId, event, curUser);
-    if (result) {
+    try {
+      await sendEmailInvite(guestId, event, curUser);
       this._addNotification('Success', 'Invite send successfully.', 'success');
-      return result;
+      return true;
+    } catch (err) {
+      this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
+      return err;
     }
-    this._addNotification('Error!', 'Failed to invite guest. Please try again later.', 'error');
-    return result;
   }
 
   @autobind
