@@ -121,7 +121,6 @@ class Dashboard extends Component {
           <GuestInviteDrawer
             open={openDrawer}
             event={eventToInvite}
-            curUser={curUser}
             cb={this.handleCbGuestInviteDrawer}
             cbInviteEmail={this.HandleInviteEmail}
           /> : null
