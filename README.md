@@ -35,6 +35,9 @@ GOOGLE_ANALYTICS_DEBUG=false
 OPBEAT_APP_ID=[YOUR_OPBEAT_APP_ID]
 OPBEAT_ORGANIZATION_ID=[YOUR_OPBEAT_ORGANIZATION_ID]
 OPBEAT_SECRET_TOKEN=[YOUR_OPBEAT_SECRET_TOKEN]
+OPBEAT_ACTIVE=true
+OPBEAT_INSTRUMENT=true
+
 ```
 - Open a new terminal session and run `mongod`
 - Run `npm run serve` from the app's root directory. This will start the app at port 8080 (unless overridden)
