@@ -146,15 +146,16 @@ class App extends Component {
   @autobind
   async handleDeleteGuest(guestToDelete) {
     const { events } = this.state;
-    const nEvent = await deleteGuest(guestToDelete);
-    if (nEvent) {
-      const nEvents = _.cloneDeep(events);
+    const nEvents = _.cloneDeep(events);
+    try {
+      const nEvent = await deleteGuest(guestToDelete);
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
       return nEvent;
+    } catch (err) {
+      this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
+      return null;
     }
-    this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
-    return nEvent;
   }
 
   async handleInviteExistingGuest(guestId, event, participants, indexOfGuest) {
@@ -261,8 +262,7 @@ class App extends Component {
   injectPropsChildren(child) {
     const { showPastEvents, curUser, isAuthenticated, events } = this.state;
     if (child.type.displayName === 'Dashboard') {
-      return cloneElement(child, {
-        showPastEvents,
+      return cloneElement(child, { showPastEvents,
         curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
@@ -276,8 +276,7 @@ class App extends Component {
       return cloneElement(child, { handleAuthentication: this.handleAuthentication });
     }
     if (child.type.displayName === 'EventDetails') {
-      return cloneElement(child, {
-        curUser,
+      return cloneElement(child, { curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
         cbLoadEvent: id => handleLoadEvent(id, events),
@@ -291,8 +290,7 @@ class App extends Component {
       });
     }
     if (child.type.displayName === 'NewEvent') {
-      return cloneElement(child, {
-        curUser,
+      return cloneElement(child, { curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
         cbNewEvent: this.handleNewEvent,
