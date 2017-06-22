@@ -162,32 +162,28 @@ class App extends Component {
     const status = participants[indexOfGuest].status;
     let statusResult = null;
     switch (status) {
-      case 0: {
-        const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
-        if (nEvent) {
-          const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
-          if (responseEmail) {
-            this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
-            const nEvents = events.filter(event => event._id !== nEvent._id);
-            this.setState({ events: [nEvent, ...nEvents] });
-            statusResult = true;
-          } else {
-            this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
-            statusResult = null;
-          }
-        }
-      }
-        break;
-      case 1: {
-        const responseEmail = await this.sendInviteEmail(guestId, event, curUser);
-        if (responseEmail) {
+      case 0:
+        try {
+          const nEvent = await EditStatusParticipantEvent(guestId, event, 1);
+          await this.sendInviteEmail(guestId, event, curUser);
           this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
+          const nEvents = events.filter(event => event._id !== nEvent._id);
+          this.setState({ events: [nEvent, ...nEvents] });
           statusResult = true;
-        } else {
+        } catch (err) {
           this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
           statusResult = null;
         }
-      }
+        break;
+      case 1:
+        try {
+          await this.sendInviteEmail(guestId, event, curUser);
+          this._addNotification('Info', 'Guest alredy invited for this event.Invite sended again', 'info');
+          statusResult = true;
+        } catch (err) {
+          this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
+          statusResult = null;
+        }
         break;
       case 2:
         this._addNotification('Info', 'Guest alredy join this event.', 'info');
