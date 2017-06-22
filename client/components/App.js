@@ -319,13 +319,12 @@ class App extends Component {
   }
 
   render() {
-    const { location } = this.props;
+    const { location, children } = this.props;
     const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail, events,
     } = this.state;
 
-    const childrenWithProps = React.Children.map(this.props.children,
-      child => this.injectPropsChildren(child),
-    );
+    const childrenWithProps = React.Children
+      .map(children, child => this.injectPropsChildren(child));
 
     return (
       <div>
