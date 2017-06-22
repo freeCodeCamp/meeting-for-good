@@ -17,6 +17,19 @@ import { sendEmailInvite } from '../util/emails';
 import '../styles/main.css';
 import { handleLoadEvent, handleEmailOwner } from './AppHandlers';
 
+const styleNotif = {
+  NotificationItem: { // Override the notification item
+    DefaultStyle: { margin: '10px 5px 2px 1px', fontSize: '15px' },
+    success: { backgroundColor: 'white', color: '#006400', borderTop: '4px solid #006400' },
+    error: { backgroundColor: 'white', color: 'red', borderTop: '2px solid red' },
+    info: { backgroundColor: 'white', color: 'blue', borderTop: '2px solid blue' },
+    Containers: { tr: { top: '40px', bottom: 'auto', left: 'auto', right: '0px' } },
+    Title: {
+      DefaultStyle: { fontSize: '18px', fontWeight: 'bold' },
+    },
+  },
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -213,7 +226,6 @@ class App extends Component {
 
   @autobind
   async handleInviteEmail(guestId, eventEdited) {
-    console.log('app handleInviteEmail', guestId);
     const { events, curUser } = this.state;
     // find if the guest alredy exists as participant
     // ask at DB because guests sets as 0 its not load as default
@@ -302,20 +314,8 @@ class App extends Component {
   }
 
   renderNotifications() {
-    const style = {
-      NotificationItem: { // Override the notification item
-        DefaultStyle: { margin: '10px 5px 2px 1px', fontSize: '15px' },
-        success: { backgroundColor: 'white', color: '#006400', borderTop: '4px solid #006400' },
-        error: { backgroundColor: 'white', color: 'red', borderTop: '2px solid red' },
-        info: { backgroundColor: 'white', color: 'blue', borderTop: '2px solid blue' },
-        Containers: { tr: { top: '40px', bottom: 'auto', left: 'auto', right: '0px' } },
-        Title: {
-          DefaultStyle: { fontSize: '18px', fontWeight: 'bold' },
-        },
-      },
-    };
     return (
-      <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={style} />
+      <NotificationSystem ref={(ref) => { this._notificationSystem = ref; }} style={styleNotif} />
     );
   }
 
@@ -323,10 +323,8 @@ class App extends Component {
     const { location, children } = this.props;
     const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail, events,
     } = this.state;
-
     const childrenWithProps = React.Children
       .map(children, child => this.injectPropsChildren(child));
-
     return (
       <div>
         {this.renderNotifications()}
