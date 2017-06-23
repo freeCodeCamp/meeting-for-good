@@ -28,7 +28,6 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       events: [],
-      count: 0,
       openDrawer: false,
       eventToInvite: null,
       curUser: {},
@@ -79,8 +78,8 @@ class Dashboard extends Component {
   }
 
   @autobind
-  async HandleInviteEmail(guestId, event, curUser) {
-    const response = await this.props.cbInviteEmail(guestId, event, curUser);
+  async HandleInviteEmail(guestId, event) {
+    const response = await this.props.cbInviteEmail(guestId, event);
     return response;
   }
 
@@ -122,7 +121,6 @@ class Dashboard extends Component {
           <GuestInviteDrawer
             open={openDrawer}
             event={eventToInvite}
-            curUser={curUser}
             cb={this.handleCbGuestInviteDrawer}
             cbInviteEmail={this.HandleInviteEmail}
           /> : null

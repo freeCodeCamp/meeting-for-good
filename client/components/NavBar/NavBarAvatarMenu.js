@@ -37,7 +37,7 @@ const MenuItems = (props) => {
   const { showPastEvents, handleFilterToggle, toggleAboutDialog } = props;
   return (
     <span>
-      <MenuItem style={{ maxHeight: '30px', minHeight: '20px' }} >
+      <MenuItem style={{ maxHeight: '30px', minHeight: '30px', width: '168px' }} >
         <Toggle
           label={'Past Events'}
           toggled={showPastEvents}
@@ -52,13 +52,13 @@ const MenuItems = (props) => {
         onClick={toggleAboutDialog}
         styleName="AboutButton"
         primaryText="About"
-        style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
+        style={{ maxHeight: '30px', minHeight: '30px', lineHeight: '34px', width: '168px', fontSize: '18px' }}
       />
       <MenuItem
         href={'/api/auth/logout'}
         styleName="LogoutButton"
         primaryText="Logout"
-        style={{ maxHeight: '30px', minHeight: '20px', lineHeight: '25px' }}
+        style={{ maxHeight: '30px', minHeight: '30px', lineHeight: '30px', width: '168px', fontSize: '18px' }}
       />
     </span>
   );

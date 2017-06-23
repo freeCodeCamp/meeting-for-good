@@ -1,3 +1,6 @@
+// to work needs to be the fisrt one and as require.
+
+import opbeat from 'opbeat/start';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
 import passport from 'passport';
@@ -10,14 +13,8 @@ import 'dotenv/config';
 import morgan from 'morgan';
 import routes from './app/routes/routes';
 
-const opbeat = require('opbeat').start({
-  appId: process.env.OP_BEAT_APP_ID,
-  organizationId: process.env.OP_BEAT_ORGANIZATION_ID,
-  secretToken: process.env.OP_BEAT_SECRET_TOKEN,
-  active: true,
-});
-
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 
 const app = express();
 app.use(compression({ threshold: 0 }));
@@ -28,12 +25,13 @@ if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
   // - Use MemoryStore for the session
   // only load webpack stuff at dev.
+  /* eslint-disable */
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const webpack = require('webpack');
   const webpackConfig = require('../webpack.config.dev');
   const compiler = webpack(webpackConfig);
-
+  /* eslint-enable */
   app.use(webpackDevMiddleware(compiler, {
     compress: true,
     historyApiFallback: true,
