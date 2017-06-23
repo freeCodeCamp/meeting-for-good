@@ -19,7 +19,13 @@ class Home extends React.Component {
     super(props);
 
     this.state = {
-      stats: { users: 0, events: 0, activeEvents: 0, participants: 0 },
+      stats: {
+        users: 0,
+        events: 0,
+        activeEvents: 0,
+        avgParticipants: 0,
+        maxParticipants: 0,
+        eventsToday: 0 },
       openLoginModal: false,
       loginFail: false,
     };
@@ -31,10 +37,14 @@ class Home extends React.Component {
       sessionStorage.removeItem('redirectTo');
     }
 
-    if (await isAuthenticated()) browserHistory.push('/dashboard');
+    try {
+      if (await isAuthenticated()) browserHistory.push('/dashboard');
 
-    const stats = await loadStats();
-    this.setState({ stats });
+      const stats = await loadStats();
+      this.setState({ stats });
+    } catch (err) {
+      console.log('In index.js: componentWillMount: ', err);
+    }
   }
 
   @autobind
@@ -55,7 +65,7 @@ class Home extends React.Component {
   }
 
   render() {
-    const { openLoginModal, loginFail } = this.state;
+    const { openLoginModal, loginFail, stats } = this.state;
     const inlineStyle = { loginButton: { textTransform: 'none' } };
     return (
       <div styleName="main">
@@ -69,8 +79,10 @@ class Home extends React.Component {
           />
           <hr />
           <h6>The best meeting coordination app</h6>
-          <h6 styleName="statistics">Event owners: {this.state.stats.users}, Total events: {this.state.stats.events},
-            Active events: {this.state.stats.activeEvents}, Participants: {this.state.stats.participants}</h6>
+          <h6 styleName="statistics">Event owners: {stats.users}, Total events: {stats.events},
+            Active events: {stats.activeEvents}, Events today: {stats.eventsToday},
+            Avg. participants: {stats.avgParticipants},
+            Max. participants: {stats.maxParticipants}</h6>
           <img src={dashboardBanner} alt="dashboard" />
           <img src={dashboardBanner2} alt="dashboard2" />
           <hr />
