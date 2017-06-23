@@ -6,8 +6,7 @@ const manipulateUser = (User, profile, done, token) => {
   User.findOne({ googleId: profile.id }, (err, user) => {
     if (err) return done(err);
     if (user) {
-      const data = { id: user._id, googleToken: token };
-      return done(null, data);
+      return done(null, user);
     }
     const newUser = new User();
     newUser.googleId = profile.id;
@@ -16,8 +15,7 @@ const manipulateUser = (User, profile, done, token) => {
     profile.emails.forEach((email) => { newUser.emails.push(email.value); });
     newUser.save((err) => {
       if (err) throw err;
-      const data = { id: newUser._id, googleToken: token };
-      return done(null, data);
+      return done(null, newUser);
     });
   });
 };
