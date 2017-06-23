@@ -1,23 +1,20 @@
 'use strict';
 
-const express = require('express');
-const controller = require('./user.controller');
+import express from 'express';
+import { isAuth } from '../utils/api.utils';
+import { index, indexByName, relatedUsers, me, show, upsert, create, destroy, isUserAuthenticated, patch } from './user.controller';
 
 const router = express.Router();
 
-const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) return next();
-  return res.status(403).send('Authentiation required.');
-};
-
-router.get('/', isAuthenticated, controller.index);
-router.get('/isAuthenticated', controller.isAuthenticated);
-router.get('/byName/:name', isAuthenticated, controller.indexByName);
-router.get('/relatedUsers', isAuthenticated, controller.relatedUsers);
-router.get('/me', isAuthenticated, controller.me);
-router.get('/:id', isAuthenticated, controller.show);
-router.put('/:id', isAuthenticated, controller.upsert);
-router.post('/', isAuthenticated, controller.create);
-router.delete('/:id', isAuthenticated, controller.destroy);
+router.get('/', isAuth, index);
+router.get('/isAuthenticated', isUserAuthenticated);
+router.get('/byName/:name', isAuth, indexByName);
+router.get('/relatedUsers', isAuth, relatedUsers);
+router.get('/me', isAuth, me);
+router.get('/:id', isAuth, show);
+router.patch('/:id', isAuth, patch);
+router.put('/:id', isAuth, upsert);
+router.post('/', isAuth, create);
+router.delete('/:id', isAuth, destroy);
 
 module.exports = router;
