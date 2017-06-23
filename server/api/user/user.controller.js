@@ -11,61 +11,18 @@
  *GET     /api/user/relatedUsers/     -> relatedUsers
  */
 
-import jsonpatch from 'fast-json-patch';
 import Users from './user.model';
 import Events from '../events/events.model';
+import { respondWithResult, patchUpdates, handleError, handleEntityNotFound, upsertModel, destroyModel } from '../utils/api.utils';
 
-const respondWithResult = (res, statusCode) => {
-  statusCode = statusCode || 200;
-  return (entity) => {
-    if (entity) {
-      return res.status(statusCode).json(entity);
-    }
-    return null;
-  };
-};
-
-const handleError = (res, statusCode) => {
-  statusCode = statusCode || 500;
-  return (err) => {
-    res.status(statusCode).send(err);
-  };
-};
-
-const patchUpdates = patches => (entity) => {
-  try {
-    jsonpatch.applyPatch(entity, patches, /* validate */ true);
-  } catch (err) {
-    console.log('err at patches', err);
-    return Promise.reject(err);
-  }
-  return entity.save();
-};
-
-const removeEntity = res => (entity) => {
-  if (entity) {
-    return entity.remove()
-      .then(() => {
-        res.status(204).end();
-      });
-  }
-};
-
-const handleEntityNotFound = res => (entity) => {
-  if (!entity) {
-    res.status(404).end();
-    return null;
-  }
-  return entity;
-};
 
 // Gets a list of all  users
-export const index = (req, res) => Users.find().exec()
+const index = (req, res) => Users.find().exec()
   .then(respondWithResult(res))
   .catch(handleError(res));
 
 // Gets a list of all  users filter by name
-export const indexByName = (req, res) => {
+const indexByName = (req, res) => {
   const name = req.params.name;
   return Users.find({ name: new RegExp(name, 'i') }).exec()
     .then(respondWithResult(res))
@@ -73,38 +30,22 @@ export const indexByName = (req, res) => {
 };
 
 // Gets a single user from the DB
-export const show = (req, res) => Users.findById(req.params.id).exec()
+const show = (req, res) => Users.findById(req.params.id).exec()
   .then(handleEntityNotFound(res))
   .then(respondWithResult(res))
   .catch(handleError(res));
 
 // Upserts the given user in the DB at the specified ID
-export const upsert = (req, res) => {
-  if (req.body._id) {
-    delete req.body._id;
-  }
-  return Users.findOneAndUpdate({ _id: req.params.id },
-    req.body,
-    { upsert: true, setDefaultsOnInsert: true, runValidators: true }).exec()
-    .then(respondWithResult(res))
-    .catch((err) => {
-      console.log('err no put', err);
-      handleError(res);
-    });
-};
+const upsert = (req, res) => upsertModel(req, res, Users);
 
 // Deletes a User from the DB
-export const destroy = (req, res) => Users.findById(req.params.id).exec()
-  .then(handleEntityNotFound(res))
-  .then(removeEntity(res))
-  .catch(handleError(res));
+const destroy = (req, res) => destroyModel(req, res, Users);
 
 // Updates an existing User in the DB
-export const patch = (req, res) => {
+const patch = (req, res) => {
   if (req.body._id) {
     delete req.body._id;
   }
-
   return Users.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(patchUpdates(req.body))
@@ -113,14 +54,14 @@ export const patch = (req, res) => {
 };
 
 // Creates a new User in the DB
-export const create = (req, res) => Users.create(req.body)
+const create = (req, res) => Users.create(req.body)
   .then(respondWithResult(res, 201))
   .catch(handleError(res));
 
 /**
  * Get my info
  */
-export const me = (req, res, next) => {
+const me = (req, res, next) => {
   const userId = req.user._id;
   return Users.findOne({ _id: userId }).exec()
     .then((user) => {
@@ -133,7 +74,7 @@ export const me = (req, res, next) => {
 };
 
 // find all users that i alredy meet.
-export const relatedUsers = (req, res) => {
+const relatedUsers = (req, res) => {
   // find all events that this user partipated
   const curUserId = req.user._id.toString();
   return Events.find()
@@ -165,7 +106,12 @@ export const relatedUsers = (req, res) => {
     });
 };
 
-export const isAuthenticated = (req, res) => {
+const isUserAuthenticated = (req, res) => {
   if (req.user) return res.status(200).json({ isAuthenticated: true });
   return res.status(200).json({ isAuthenticated: false });
+};
+
+
+export {
+  isUserAuthenticated, relatedUsers, me, create, patch, destroy, upsert, show, indexByName, index,
 };
