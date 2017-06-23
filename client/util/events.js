@@ -7,7 +7,7 @@ import { checkStatus, parseJSON } from './fetch.util';
 export async function loadStats() {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
-  const response = await fetch('/api/events/getStats');
+  const response = await fetch('/api/stats/getStats');
   console.log("response = " + JSON.stringify(response));
   let stats;
   try {
