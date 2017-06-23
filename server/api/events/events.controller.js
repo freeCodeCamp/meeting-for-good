@@ -16,55 +16,9 @@
 
 'use strict';
 
-import jsonpatch from 'fast-json-patch';
 import Events from './events.model';
 
-const respondWithResult = (res, statusCode) => {
-  statusCode = statusCode || 200;
-  return (entity) => {
-    if (entity) {
-      return res.status(statusCode).json(entity);
-    }
-    return null;
-  };
-};
-
-const patchUpdates = patches => (entity) => {
-  try {
-    jsonpatch.applyPatch(entity, patches, /* validate */ true);
-  } catch (err) {
-    console.log('err at patches', err);
-    return Promise.reject(err);
-  }
-  return entity.save();
-};
-
-const removeEntity = res =>
-  (entity) => {
-    if (entity) {
-      return entity.remove()
-        .then(() => {
-          res.status(204).end();
-        });
-    }
-  };
-
-const handleEntityNotFound = res =>
-  (entity) => {
-    if (!entity) {
-      res.status(404).end();
-      return null;
-    }
-    return entity;
-  };
-
-const handleError = (res, statusCode) => {
-  statusCode = statusCode || 500;
-  return (err) => {
-    console.log('handleError at event.controler', err);
-    res.status(statusCode).send(err);
-  };
-};
+import { respondWithResult, patchUpdates, handleEntityNotFound, handleError, upsertModel, destroyModel } from '../utils/api.utils';
 
 const filterOutStatusZeroParticipants = () => (event) => {
   if (!event) {
@@ -75,7 +29,7 @@ const filterOutStatusZeroParticipants = () => (event) => {
 };
 
 // Make a false delete setting the active to false
-export const setFalse =  (req, res) => {
+const setFalse = (req, res) => {
   Events.findById(req.params.id, (err, event) => {
     if (err) return res.status(500).send(err);
     if (!event || !event.active) return res.status(404).send('Not found.');
@@ -91,13 +45,13 @@ export const setFalse =  (req, res) => {
 };
 
 // Gets a list of all active events
-export const index = (req, res) =>
+const index = (req, res) =>
   Events.find({ active: true }).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 
 // Gets that event
-export const indexById = (req, res) => {
+const indexById = (req, res) => {
   const uid = req.params.uid;
   return Events.find({ uid, active: true })
     .exec()
@@ -107,7 +61,7 @@ export const indexById = (req, res) => {
 };
 
 // Gets all events that a especified user is participant
-export const indexByUser = (req, res) => {
+const indexByUser = (req, res) => {
   const actualDate = (req.params.actualDate) ? req.params.actualDate : new Date(1970, 1, 1);
   return Events.find({
     'participants.userId': req.user._id.toString(),
@@ -128,7 +82,7 @@ export const indexByUser = (req, res) => {
 };
 
 // Gets a single Event from the DB
-export const show = (req, res) =>
+const show = (req, res) =>
   Events.findById(req.params.id)
     .populate('participants.userId', 'avatar emails name')
     .exec()
@@ -138,7 +92,7 @@ export const show = (req, res) =>
     .catch(handleError(res));
 
 // Updates an existing Event in the DB
-export const patch = (req, res) => {
+const patch = (req, res) => {
   if (req.body._id) {
     delete req.body._id;
   }
@@ -148,37 +102,21 @@ export const patch = (req, res) => {
     .then(handleEntityNotFound(res))
     .then(patchUpdates(req.body))
     .then(res => Events.findById(res._id)
-        .populate('participants.userId', 'avatar emails name')
-        .exec())
+      .populate('participants.userId', 'avatar emails name')
+      .exec())
     .then(filterOutStatusZeroParticipants())
     .then(respondWithResult(res))
     .catch(handleError(res));
 };
 
 // Deletes a Event from the DB
-export const destroy = (req, res) =>
-  Events.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(removeEntity(res))
-    .catch(handleError(res));
+const destroy = (req, res) => destroyModel(req, res, Events);
 
 // Upserts the given Event in the DB at the specified ID
-export const upsert = (req, res) => {
-  if (req.body._id) {
-    delete req.body._id;
-  }
-  return Events.findOneAndUpdate({ _id: req.params.id },
-    req.body,
-    { upsert: true, setDefaultsOnInsert: true, runValidators: true }).exec()
-    .then(respondWithResult(res))
-    .catch((err) => {
-      console.log('err no put', err);
-      handleError(res);
-    });
-};
+const upsert = (req, res) => upsertModel(req, res, Events);
 
 // Creates a new Event in the DB
-export const create = (req, res) => {
+const create = (req, res) => {
   const { _id } = req.user;
   const userId = _id.toString();
   req.body.participants = [{ userId }];
@@ -198,7 +136,7 @@ export const create = (req, res) => {
 };
 
 // set the owner notification for that participants._id as true
-export const GuestNotificationDismiss = (req, res) =>
+const GuestNotificationDismiss = (req, res) =>
   Events.findOne({
     'participants._id': req.params.id,
   })
@@ -216,7 +154,7 @@ export const GuestNotificationDismiss = (req, res) =>
     .catch(handleError(res));
 
 // set the guest as inactive
-export const setGuestInactive = (req, res) =>
+const setGuestInactive = (req, res) =>
   Events.findOne({ 'participants._id': req.params.id })
     .exec()
     .then((event) => {
@@ -232,9 +170,15 @@ export const setGuestInactive = (req, res) =>
     .then(respondWithResult(res))
     .catch(handleError(res));
 
-export const showFull = (req, res) =>
+const showFull = (req, res) =>
   Events.findById({ _id: req.params.id })
     .populate('participants.userId', 'avatar emails name')
     .exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
+
+
+export {
+  index, indexById, indexByUser, show, create, upsert, patch, setFalse,
+  destroy, GuestNotificationDismiss, setGuestInactive, showFull,
+};
