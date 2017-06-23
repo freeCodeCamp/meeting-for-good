@@ -10,8 +10,6 @@ const isAuthenticated = (req, res, next) => {
   return res.status(403).send('Authentication required.');
 };
 
-router.get('/getStats', controller.getStats); // Must be first to prevent authentication
-
 router.get('/', isAuthenticated, controller.index);
 router.get('/getByUser/:actualDate?', isAuthenticated, controller.indexByUser);
 router.get('/getbyuid/:uid', isAuthenticated, controller.indexById);
