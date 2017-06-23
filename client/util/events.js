@@ -14,7 +14,7 @@ export async function loadStats() {
     stats = await parseJSON(response);
     return stats;
   } catch (err) {
-    console.error('loadStats, at events.js', err);
+    console.error('loadStats, at stats.js', err);
     return err;
   } finally {
     nprogress.done();
