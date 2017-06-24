@@ -156,11 +156,7 @@ class NewEvent extends React.Component {
         <h6 styleName="heading-dates">What dates might work for you?</h6>
         <div styleName="reset-button">
           {from && to &&
-            <FlatButton
-              href="#reset"
-              label="reset"
-              onClick={this.handleResetClick}
-            />
+            <FlatButton href="#reset" label="reset" onClick={this.handleResetClick} />
           }
         </div>
         <DayPicker

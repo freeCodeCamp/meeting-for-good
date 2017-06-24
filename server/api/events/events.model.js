@@ -28,7 +28,6 @@ const EventSchema = new Schema({
   dates: [datesSchema],
   active: { type: Boolean, required: true },
   participants: [participantsSchema],
-  selectedTimeRange: Array,
   owner: { type: String, required: true },
 });
 
