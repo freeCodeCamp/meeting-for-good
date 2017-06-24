@@ -1,57 +1,31 @@
-import React, { Component } from 'react';
+import React from 'react';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
 
 import { styleNameCompose, formatCellBackgroundColor } from './cellGridUtils';
 import styles from './cell-grid.css';
 
-class CellGrid extends Component {
+const CellGrid = (props) => {
+  const { quarter, onMouseOver, onMouseLeave, onMouseDown, onMouseUp } = props;
+  const styleNames = styleNameCompose(props);
+  const inlineStyle = {
+    backgroundColor: formatCellBackgroundColor(props),
+    cursor: (quarter.disable) ? 'not-allowed' : 'pointer',
+  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      participants: [],
-      heatMapMode: false,
-    };
-  }
-
-  componentWillMount() {
-    const { heatMapMode, rowIndex, columnIndex, heightlightedUser, quarter } = this.props;
-    this.setState({
-      heatMapMode,
-      rowIndex,
-      columnIndex,
-      heightlightedUser,
-      quarter,
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { heatMapMode, heightlightedUser, quarter } = nextProps;
-    this.setState({ heatMapMode, heightlightedUser, quarter });
-  }
-
-  render() {
-    const { quarter } = this.props;
-    const styleNames = styleNameCompose(this.state, this.props);
-    const inlineStyle = {
-      backgroundColor: formatCellBackgroundColor(this.state, this.props),
-    };
-
-    return (
-      <div
-        role="presentation"
-        style={inlineStyle}
-        styleName={styleNames}
-        key={quarter.date}
-        onMouseOver={this.props.onMouseOver}
-        onMouseLeave={this.props.onMouseLeave}
-        onMouseDown={this.props.onMouseDown}
-        onMouseUp={this.props.onMouseUp}
-      />
-    );
-  }
-}
+  return (
+    <div
+      role="presentation"
+      style={inlineStyle}
+      styleName={styleNames}
+      key={quarter.date}
+      onMouseOver={onMouseOver}
+      onMouseLeave={onMouseLeave}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+    />
+  );
+};
 
 CellGrid.defaultProps = {
   backgroundColors: ['transparent'],
@@ -62,16 +36,14 @@ CellGrid.defaultProps = {
 };
 
 CellGrid.propTypes = {
-  heatMapMode: PropTypes.bool.isRequired,
+  // heatMapMode: PropTypes.bool.isRequired,
   onMouseOver: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
-  rowIndex: PropTypes.number,
-  columnIndex: PropTypes.number,
-  heightlightedUser: PropTypes.string,
-
-  // Current user
+  // rowIndex: PropTypes.number,
+  // columnIndex: PropTypes.number,
+  // heightlightedUser: PropTypes.string,
   quarter: PropTypes.shape({
     time: PropTypes.instanceOf(Date).isRequired,
     participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
