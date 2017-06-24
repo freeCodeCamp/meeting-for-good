@@ -23,7 +23,7 @@ const inicialOffSet = (allTimes) => {
 const cellForOffsetAfterjump = (jumpIndexAllTimes, allTimes) => {
   const nextfullHour = moment(allTimes[jumpIndexAllTimes]).startOf('hour').add(1, 'h');
   const numCells = nextfullHour.diff(moment(allTimes[jumpIndexAllTimes]), 'minutes') / 15;
-  const cell = <div style={{ minWidth: `${numCells * 13}px` }} />;
+  const cell = (numCells < 4) ? <div style={{ minWidth: `${numCells * 13}px` }} /> : null;
   return cell;
 };
 
