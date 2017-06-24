@@ -8,19 +8,19 @@ import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 
 import GridHours from './availabilityGridHoursTitle';
 import GridRow from './availabilityGridRows';
 import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
   createTimesRange, createDatesRange, availabilityReducer, jumpTimeIndex,
-} from '../AvailabilityGrid/availabilityGridUtils';
+} from './availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
-import enteravailGif from '../../assets/enteravail.gif';
+import DialogInstructions from './AvailabilityGridDialogInstructions';
 import { loadEventFull } from '../../util/events';
-import styles from './availability-grid.css';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
+
+import styles from './availability-grid.css';
 
 const moment = extendMoment(Moment);
 
@@ -175,25 +175,9 @@ class AvailabilityGrid extends Component {
     this.props.closeEditorGrid();
   }
 
-  renderDialog() {
-    const { openModal } = this.state;
-    const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
-    const inlineStyles = { modal: {
-      content: { width: '630px', maxWidth: '630px' },
-      bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
-
-    return (
-      <Dialog
-        contentStyle={inlineStyles.modal.content}
-        bodyStyle={inlineStyles.modal.bodyStyle}
-        actions={actions}
-        modal
-        open={openModal}
-      >
-        <h4>This is how you can enter and remove your availablity:</h4>
-        <img src={enteravailGif} alt="entering availablity gif" />
-      </Dialog>
-    );
+  @autobind
+  hadleOpenModal() {
+    this.setState({ openModal: !this.state.openModal });
   }
 
   renderGrid() {
@@ -240,7 +224,7 @@ class AvailabilityGrid extends Component {
   }
 
   render() {
-    const { snackBarGuests, snackBarNoGuests, openSnackBar } = this.state;
+    const { snackBarGuests, snackBarNoGuests, openSnackBar, openModal } = this.state;
     return (
       <div styleName="column">
         <div styleName="row">
@@ -260,7 +244,10 @@ class AvailabilityGrid extends Component {
           noGuests={snackBarNoGuests}
           openSnackBar={openSnackBar}
         />
-        {this.renderDialog()}
+        <DialogInstructions
+          cbOpenModal={this.hadleOpenModal}
+          openModal={openModal}
+        />
       </div>
     );
   }

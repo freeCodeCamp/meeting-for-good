@@ -36,14 +36,11 @@ CellGrid.defaultProps = {
 };
 
 CellGrid.propTypes = {
-  // heatMapMode: PropTypes.bool.isRequired,
   onMouseOver: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
-  // rowIndex: PropTypes.number,
-  // columnIndex: PropTypes.number,
-  // heightlightedUser: PropTypes.string,
+
   quarter: PropTypes.shape({
     time: PropTypes.instanceOf(Date).isRequired,
     participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
