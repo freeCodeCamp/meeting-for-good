@@ -2,13 +2,7 @@
 
 import Events from '../events/events.model';
 
-const handleError = (res, statusCode) => {
-  statusCode = statusCode || 500;
-  return (err) => {
-    console.log('handleError at event.controler', err);
-    res.status(statusCode).send(err);
-  };
-};
+import { handleError } from '../utils/api.utils';
 
 const computeDayOfYear = (now) => {
   const start = new Date(now.getFullYear(), 0, 0);
@@ -33,8 +27,8 @@ const countTodaysEvents = (res, stats) => {
     .exec()
     .then((days) => {
       stats.eventsToday = days.length;
-
       res.status(200).json(stats);
+      return null;
     })
     .catch(handleError(res));
 };
@@ -53,36 +47,50 @@ const countParticipants = (res, stats) => {
       stats.participants = results[0].total;
       stats.maxParticipants = results[0].max;
       stats.avgParticipants = Math.floor(results[0].avg + 0.5);
+      countTodaysEvents(res, stats);
+      return null;
     })
-    .then(() => countTodaysEvents(res, stats))
     .catch(handleError(res));
 };
 
 const countDistinctUsers = (res, stats) => {
   Events.distinct('owner')
-    .then((results) => { stats.users = results.length; })
-    .then(() => countParticipants(res, stats))
+    .exec()
+    .then((results) => {
+      stats.users = results.length;
+      countParticipants(res, stats);
+      return null;
+    })
     .catch(handleError(res));
 };
 
 const countActive = (res, stats) => {
   Events.count()
     .where('active').eq(true)
-    .then((count) => { stats.activeEvents = count; })
-    .then(() => countDistinctUsers(res, stats))
+    .exec()
+    .then((count) => {
+      stats.activeEvents = count;
+      countDistinctUsers(res, stats);
+      return null;
+    })
     .catch(handleError(res));
 };
 
 const countAll = (res, stats) => {
   Events.count()
     .exec()
-    .then((count) => { stats.events = count; })
-    .then(() => countActive(res, stats))
+    .then((count) => {
+      stats.events = count;
+      countActive(res, stats);
+      return null;
+    })
     .catch(handleError(res));
 };
 
 // Calculate application statistics
-export const getStats = (req, res) => {
+const getStats = (req, res) => {
   const stats = {};
   countAll(res, stats);
 };
+
+export { getStats };
