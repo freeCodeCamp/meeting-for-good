@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import GridHours from './availabilityGridHoursTitle';
 import GridRow from './availabilityGridRows';
 import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
-  createTimesRange, createDatesRange,
+  createTimesRange, createDatesRange, isCurParticipantUpsert,
   availabilityReducer, jumpTimeIndex, AvaliabilityCurUserFromGrid,
 } from './availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
@@ -68,7 +68,7 @@ class AvailabilityGrid extends Component {
     const { curUser } = this.props;
     const { grid } = this.state;
     // construct the avaqilabily for the cur user from grid
-    const availability = AvaliabilityCurUserFromGrid(grid, curUser);
+    const availabilityFromGrid = AvaliabilityCurUserFromGrid(grid, curUser);
     // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
     try {
@@ -76,20 +76,9 @@ class AvailabilityGrid extends Component {
       const observerEvent = jsonpatch.observe(event);
       // find for curUser at the array depends if is a participant
       // yet or not
-      let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
-      // first check if cur exists as a participant
-      // if is not add the curUser as participant
-      if (!curParticipant) {
-        const { _id: userId } = curUser;
-        const participant = { userId };
-        event.participants.push(participant);
-        curParticipant = _.find(event.participants, ['userId', curUser._id]);
-      }
-      // change the status of the cur participant,
-      // 2 if dont have a availability
-      // 3 if have
-      curParticipant.status = (availability.length === 0) ? 2 : 3;
-      const availabilityEdited = (availability.length > 0) ? availabilityReducer(availability) : [];
+      const curParticipant = isCurParticipantUpsert(curUser, event, availabilityFromGrid.length);
+      const availabilityEdited = (availabilityFromGrid.length > 0) ?
+        availabilityReducer(availabilityFromGrid) : [];
       // because the patch jsonpatch dosent work as espected when you have a arrays of arrays
       // we need to generate a patch to delete all availability and then add ther availability again
       // then merge both patchs arrays.
