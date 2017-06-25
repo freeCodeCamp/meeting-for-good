@@ -26,10 +26,11 @@ export const loadEvents = async (showPastEvents) => {
   }
 };
 
-export const loadEvent = async (id) => {
+export const loadEvent = async (id, full = false) => {
   nprogress.configure({ showSpinner: false });
+  const urlToFecth = (full) ? `/api/events/getFull/${id}` : `/api/events/${id}`;
   nprogress.start();
-  const response = await fetch(`/api/events/${id}`, {
+  const response = await fetch(urlToFecth, {
     credentials: 'same-origin',
   });
   try {
@@ -38,6 +39,24 @@ export const loadEvent = async (id) => {
     return event;
   } catch (err) {
     console.error('err at loadEvent EventDetail', err);
+    return null;
+  } finally {
+    nprogress.done();
+  }
+};
+
+export const loadEventFull = async (id) => {
+  nprogress.configure({ showSpinner: false });
+  nprogress.start();
+  const response = await fetch(`/api/events/getFull/${id}`, {
+    credentials: 'same-origin',
+  });
+  try {
+    checkStatus(response);
+    const event = await parseJSON(response);
+    return event;
+  } catch (err) {
+    console.error('err at loadEventFull', err);
     return null;
   } finally {
     nprogress.done();
@@ -155,7 +174,8 @@ export const loadOwnerData = async (_id) => {
     console.log('loadOwnerData', err);
     return null;
   }
-}
+};
+
 /**
  * @param {*} guestId user id to edit as participant
  * @param {*} event to add the user as participant
@@ -179,24 +199,6 @@ export const AddEventParticipant = async (guestId, event) => {
   const patch = jsonpatch.generate(observe);
   const response = await editEvent(patch, event._id);
   return response;
-};
-
-export const loadEventFull = async (id) => {
-  nprogress.configure({ showSpinner: false });
-  nprogress.start();
-  const response = await fetch(`/api/events/getFull/${id}`, {
-    credentials: 'same-origin',
-  });
-  try {
-    checkStatus(response);
-    const event = await parseJSON(response);
-    return event;
-  } catch (err) {
-    console.error('err at loadEventFull', err);
-    return null;
-  } finally {
-    nprogress.done();
-  }
 };
 
 export const handleDismiss = async (participantId) => {
