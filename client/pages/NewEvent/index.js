@@ -11,6 +11,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 import InputRange from 'react-input-range';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import EventDelete from 'material-ui/svg-icons/action/delete';
 import PropTypes from 'prop-types';
 
 import '../../styles/no-css-modules/react-input-range.css';
@@ -113,11 +115,7 @@ class NewEvent extends React.Component {
     // create a date range as date
     let dates = ranges.map(({ from, to }) => {
       if (!to) to = from;
-
-      if (from > to) {
-        [from, to] = [to, from];
-      }
-
+      if (from > to) [from, to] = [to, from];
       return {
         fromDate: moment(from).hour(fromHours).minute(fromMinutes).startOf('minute')._d,
         toDate: moment(to).hour(toHours).minute(toMinutes).startOf('minute')._d,
@@ -176,6 +174,14 @@ class NewEvent extends React.Component {
     return (
       <div styleName="wrapper">
         <Card styleName="card">
+          <FloatingActionButton
+            backgroundColor="#ECEFF1"
+            onTouchTap={() => browserHistory.push('/dashboard')}
+            styleName="delete-buttom"
+            aria-label="delete-event-buttom"
+          >
+            <EventDelete />
+          </FloatingActionButton>
           <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
           <CardText styleName="cardText">
             <form>
