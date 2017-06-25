@@ -1,6 +1,7 @@
 'use strict';
 
 import Events from '../events/events.model';
+import Stats from './stats.model';
 
 import { handleError } from '../utils/api.utils';
 
@@ -11,7 +12,32 @@ const computeDayOfYear = (now) => {
   return Math.floor(diff / oneDay);
 };
 
-const countTodaysEvents = (res, stats) => {
+const showError = msg => err => console.log(msg, ': ', err);
+
+const writeStatsIntoDatabase = (stats) => {
+  Stats.count()
+    .exec()
+    .then((count) => {
+      if (count === 0) {
+        Stats.create(stats);
+      } else {
+        Stats.findOne()
+          .then((doc) => {
+            doc.events = stats.events;
+            doc.activeEvents = stats.activeEvents;
+            doc.users = stats.users;
+            doc.maxParticipants = stats.maxParticipants;
+            doc.avgParticipants = stats.avgParticipants;
+            doc.eventsToday = stats.eventsToday;
+            doc.save();
+          });
+      }
+      return null;
+    })
+    .catch(showError('writeStatsIntoDatabase'));
+};
+
+const countTodaysEvents = (stats) => {
   const dayOfYear = computeDayOfYear(new Date());
 
   Events.aggregate()
@@ -27,13 +53,14 @@ const countTodaysEvents = (res, stats) => {
     .exec()
     .then((days) => {
       stats.eventsToday = days.length;
-      res.status(200).json(stats);
+
+      writeStatsIntoDatabase(stats);
       return null;
     })
-    .catch(handleError(res));
+    .catch(showError('countTodaysEvents'));
 };
 
-const countParticipants = (res, stats) => {
+const countParticipants = (stats) => {
   Events.aggregate()
     .project({ _id: 0, count: { $size: '$participants' } })
     .group({
@@ -47,50 +74,54 @@ const countParticipants = (res, stats) => {
       stats.participants = results[0].total;
       stats.maxParticipants = results[0].max;
       stats.avgParticipants = Math.floor(results[0].avg + 0.5);
-      countTodaysEvents(res, stats);
+      countTodaysEvents(stats);
       return null;
     })
-    .catch(handleError(res));
+    .catch(showError('countParticipants'));
 };
 
-const countDistinctUsers = (res, stats) => {
+const countDistinctUsers = (stats) => {
   Events.distinct('owner')
     .exec()
     .then((results) => {
       stats.users = results.length;
-      countParticipants(res, stats);
+      countParticipants(stats);
       return null;
     })
-    .catch(handleError(res));
+    .catch(showError('countDistinctUsers'));
 };
 
-const countActive = (res, stats) => {
+const countActive = (stats) => {
   Events.count()
     .where('active').eq(true)
     .exec()
     .then((count) => {
       stats.activeEvents = count;
-      countDistinctUsers(res, stats);
+      countDistinctUsers(stats);
       return null;
     })
-    .catch(handleError(res));
+    .catch(showError('countActive'));
 };
 
-const countAll = (res, stats) => {
+const countAll = (stats) => {
   Events.count()
     .exec()
     .then((count) => {
       stats.events = count;
-      countActive(res, stats);
+      countActive(stats);
       return null;
     })
-    .catch(handleError(res));
+    .catch(showError('countAll'));
+};
+
+export const computeStats = () => {
+  const stats = {};
+  countAll(stats);
 };
 
 // Calculate application statistics
-const getStats = (req, res) => {
-  const stats = {};
-  countAll(res, stats);
+export const getStats = (req, res) => {
+  Stats.findOne()
+    .then(stats => res.status(200).json(stats))
+    .catch(handleError(res));
 };
-
-export { getStats };
