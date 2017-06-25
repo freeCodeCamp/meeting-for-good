@@ -2,7 +2,6 @@
 import { loadEvent, loadOwnerData } from '../util/events';
 import { sendEmailOwner, sendEmailOwnerEdit } from '../util/emails';
 
-
 const handleLoadEvent = async (id) => {
   try {
     const event = await loadEvent(id);
@@ -12,7 +11,6 @@ const handleLoadEvent = async (id) => {
     return null;
   }
 };
-
 
 const handleEmailOwner = async (event, curUser, eventEdited = false) => {
   const ownerData = await loadOwnerData(event.owner);
@@ -27,6 +25,5 @@ const handleEmailOwner = async (event, curUser, eventEdited = false) => {
     return false;
   }
 };
-
 
 export { handleEmailOwner, handleLoadEvent };
