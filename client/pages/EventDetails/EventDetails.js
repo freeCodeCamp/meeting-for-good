@@ -33,8 +33,12 @@ class EventDetails extends Component {
   async componentWillReceiveProps(nextProps) {
     const { isAuthenticated, curUser } = nextProps;
     if (isAuthenticated === true) {
-      const event = await this.props.cbLoadEvent(this.props.params.uid);
-      this.setState({ event, curUser });
+      try {
+        const event = await this.props.cbLoadEvent(this.props.params.uid);
+        this.setState({ event, curUser });
+      } catch (err) {
+        console.log('eventDetails componentWillReceiveProps', err);
+      }
     }
   }
 

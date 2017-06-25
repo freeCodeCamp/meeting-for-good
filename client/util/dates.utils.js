@@ -49,4 +49,30 @@ const dateRangeReducer = (dates) => {
   return dates;
 };
 
-export default dateRangeReducer;
+/**
+ *
+ * @param {array} datesArray array of dates to be sorted
+ * @returns {array} sorted array
+ */
+const sortDateArray = datesArray => datesArray.sort((a, b) => {
+  const x = moment(a).unix();
+  const y = moment(b).unix();
+  return x - y;
+});
+
+/**
+ *
+ * @param {object} event
+ * @returns {object} {MaxDate, MinDate}
+ */
+const eventsMaxMinDatesForEvent = (event) => {
+  let minDate = moment('2999-01-01').startOf('year');
+  let maxDate = moment('1970-01-01').endOf('year');
+  event.dates.forEach((date) => {
+    minDate = (moment(date.fromDate).isBefore(minDate)) ? moment(date.fromDate) : minDate;
+    maxDate = (moment(date.toDate).isAfter(maxDate)) ? moment(date.toDate) : maxDate;
+  });
+  return { minDate, maxDate };
+};
+
+export { dateRangeReducer, sortDateArray, eventsMaxMinDatesForEvent };

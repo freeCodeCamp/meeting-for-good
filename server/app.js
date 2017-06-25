@@ -1,5 +1,5 @@
 // to work needs to be the fisrt one and as require.
-
+import 'dotenv/config';
 import opbeat from 'opbeat/start';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
@@ -9,7 +9,6 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
-import 'dotenv/config';
 import morgan from 'morgan';
 import routes from './app/routes/routes';
 

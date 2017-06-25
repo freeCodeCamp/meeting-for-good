@@ -66,8 +66,9 @@ class EventDetailsComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const dates = datesToDatesObject(nextProps.event);
-    this.setState({ event: nextProps.event, dates });
+    const { event } = nextProps;
+    const dates = datesToDatesObject(event);
+    this.setState({ event, dates });
   }
 
   async sendEmailOwner(event) {
@@ -97,9 +98,9 @@ class EventDetailsComponent extends React.Component {
 
   @autobind
   async submitEditDates(patches) {
-    const { event } = this.props;
+    const { event, cbEditEvent } = this.props;
     try {
-      const responseEvent = await this.props.cbEditEvent(patches, event._id);
+      const responseEvent = await cbEditEvent(patches, event._id);
       this.setState({ event: responseEvent });
     } catch (err) {
       console.log('err at submitEditDates, EventDtailComponent', err);
