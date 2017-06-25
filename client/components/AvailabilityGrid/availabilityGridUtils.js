@@ -240,7 +240,6 @@ export const availabilityReducer = (availability) => {
   // a pair to compare
   const to = moment(availabilityToEdit[availabilityToEdit.length - 1][1]);
   availReduced.push([previousFrom._d, to._d]);
-  console.log(availReduced);
   return availReduced;
 };
 
