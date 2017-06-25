@@ -68,7 +68,7 @@ class AvailabilityGrid extends Component {
     const { curUser } = this.props;
     const { grid } = this.state;
     // construct the avaqilabily for the cur user from grid
-    const availabilityFromGrid = AvaliabilityCurUserFromGrid(grid, curUser);
+    const availabilityinQuarters = AvaliabilityCurUserFromGrid(grid, curUser);
     // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
     try {
@@ -76,15 +76,13 @@ class AvailabilityGrid extends Component {
       const observerEvent = jsonpatch.observe(event);
       // find for curUser at the array depends if is a participant
       // yet or not
-      const curParticipant = isCurParticipantUpsert(curUser, event, availabilityFromGrid.length);
-      const availabilityEdited = (availabilityFromGrid.length > 0) ?
-        availabilityReducer(availabilityFromGrid) : [];
+      const curParticipant = isCurParticipantUpsert(curUser, event, availabilityinQuarters.length);
       // because the patch jsonpatch dosent work as espected when you have a arrays of arrays
       // we need to generate a patch to delete all availability and then add ther availability again
       // then merge both patchs arrays.
       curParticipant.availability = [];
       const patchforDelete = jsonpatch.generate(observerEvent);
-      curParticipant.availability = availabilityEdited;
+      curParticipant.availability = availabilityReducer(availabilityinQuarters);
       const patchesforAdd = jsonpatch.generate(observerEvent);
       const patches = _.concat(patchforDelete, patchesforAdd);
       await this.props.submitAvail(patches);

@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import nprogress from 'nprogress';
-import _ from 'lodash';
 import { checkStatus } from './fetch.util';
 import { loadOwnerData } from './events';
 
@@ -62,20 +61,4 @@ export const sendEmailInvite = async (guestId, event, curUser) => {
   ms.subject = `Invite for ${event.name}!!`;
   const result = await sendEmail(ms, '/api/email/sendInvite');
   return result;
-};
-
-export const isCurParticipantUpsert = (curUser, event, availabilityCount) => {
-  let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
-  // first check if cur exists as a participant
-  // if is not add the curUser as participant
-  if (!curParticipant) {
-    const { _id: participant } = curUser;
-    event.participants.push(participant);
-    curParticipant = _.find(event.participants, ['userId', curUser._id]);
-  }
-  // change the status of the cur participant,
-  // 2 if dont have a availability
-  // 3 if have
-  curParticipant.status = (availabilityCount === 0) ? 2 : 3;
-  return curParticipant;
 };
