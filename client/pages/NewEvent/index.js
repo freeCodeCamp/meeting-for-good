@@ -214,8 +214,9 @@ class NewEvent extends React.Component {
           />
         </div>
       </form>
-    )
-  }  
+    );
+  }
+
   render() {
     return (
       <div styleName="wrapper">
