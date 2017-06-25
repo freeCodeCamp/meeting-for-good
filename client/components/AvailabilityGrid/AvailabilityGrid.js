@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import autobind from 'autobind-decorator';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 
 import GridHours from './availabilityGridHoursTitle';
 import GridRow from './availabilityGridRows';
 import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
-  createTimesRange, createDatesRange, availabilityReducer, jumpTimeIndex,
-} from '../AvailabilityGrid/availabilityGridUtils';
+  createTimesRange, createDatesRange, isCurParticipantUpsert,
+  availabilityReducer, jumpTimeIndex, AvaliabilityCurUserFromGrid,
+} from './availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
-import enteravailGif from '../../assets/enteravail.gif';
-import { loadEventFull } from '../../util/events';
-import styles from './availability-grid.css';
+import DialogInstructions from './AvailabilityGridDialogInstructions';
+import { loadEvent } from '../../util/events';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
-const moment = extendMoment(Moment);
+import styles from './availability-grid.css';
 
 class AvailabilityGrid extends Component {
 
@@ -69,42 +66,24 @@ class AvailabilityGrid extends Component {
   @autobind
   async submitAvailability() {
     const { curUser } = this.props;
-    const { grid } = this.state;
-    const availability = [];
-    grid.forEach((row) => {
-      row.quarters.forEach((quarter) => {
-        if (_.findIndex(quarter.participants, curUser._id) > -1) {
-          const from = moment(quarter.time)._d;
-          const to = moment(quarter.time).add(15, 'm')._d;
-          availability.push([from, to]);
-        }
-      });
-    });
+    const { grid, event } = this.state;
+    // construct the avaqilabily for the cur user from grid
+    const availabilityCurUserinQuarters = AvaliabilityCurUserFromGrid(grid, curUser);
     // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
     try {
-      const eventToEdit = await loadEventFull(this.state.event._id);
-      const event = JSON.parse(JSON.stringify(eventToEdit));
-      const observerEvent = jsonpatch.observe(event);
+      const eventFull = await loadEvent(event._id, true);
+      const observerEvent = jsonpatch.observe(eventFull);
       // find for curUser at the array depends if is a participant
       // yet or not
-      let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
-      // first check if cur exists as a participant
-      // if is not add the curUser as participant
-      if (!curParticipant) {
-        const { _id: userId } = curUser;
-        const participant = { userId };
-        event.participants.push(participant);
-        curParticipant = _.find(event.participants, ['userId', curUser._id]);
-      }
-      curParticipant.status = (availability.length === 0) ? 2 : 3;
-      const availabilityEdited = (availability.length > 0) ? availabilityReducer(availability) : [];
+      const curParticipant =
+        isCurParticipantUpsert(curUser, eventFull, availabilityCurUserinQuarters.length);
       // because the patch jsonpatch dosent work as espected when you have a arrays of arrays
       // we need to generate a patch to delete all availability and then add ther availability again
       // then merge both patchs arrays.
       curParticipant.availability = [];
       const patchforDelete = jsonpatch.generate(observerEvent);
-      curParticipant.availability = availabilityEdited;
+      curParticipant.availability = availabilityReducer(availabilityCurUserinQuarters);
       const patchesforAdd = jsonpatch.generate(observerEvent);
       const patches = _.concat(patchforDelete, patchesforAdd);
       await this.props.submitAvail(patches);
@@ -175,32 +154,16 @@ class AvailabilityGrid extends Component {
     this.props.closeEditorGrid();
   }
 
-  renderDialog() {
-    const { openModal } = this.state;
-    const actions = [<FlatButton label="close" primary onTouchTap={() => this.setState({ openModal: false })} />];
-    const inlineStyles = { modal: {
-      content: { width: '630px', maxWidth: '630px' },
-      bodyStyle: { paddingTop: 10, fontSize: '25px' } } };
-
-    return (
-      <Dialog
-        contentStyle={inlineStyles.modal.content}
-        bodyStyle={inlineStyles.modal.bodyStyle}
-        actions={actions}
-        modal
-        open={openModal}
-      >
-        <h4>This is how you can enter and remove your availablity:</h4>
-        <img src={enteravailGif} alt="entering availablity gif" />
-      </Dialog>
-    );
+  @autobind
+  hadleOpenModal() {
+    this.setState({ openModal: !this.state.openModal });
   }
 
   renderGrid() {
     const { grid, allTimes, backgroundColors, showHeatmap, jumpTimeIdx } = this.state;
     const { curUser, heightlightedUser } = this.props;
     return (
-      <div>
+      <div onMouseLeave={this.handleCellMouseUp}>
         <GridHours allTimes={allTimes} jumpIndexAllTimes={jumpTimeIdx} />
         {grid.map((row, rowIndex) => (
           <div key={row.date} styleName="column">
@@ -240,7 +203,7 @@ class AvailabilityGrid extends Component {
   }
 
   render() {
-    const { snackBarGuests, snackBarNoGuests, openSnackBar } = this.state;
+    const { snackBarGuests, snackBarNoGuests, openSnackBar, openModal } = this.state;
     return (
       <div styleName="column">
         <div styleName="row">
@@ -260,7 +223,10 @@ class AvailabilityGrid extends Component {
           noGuests={snackBarNoGuests}
           openSnackBar={openSnackBar}
         />
-        {this.renderDialog()}
+        <DialogInstructions
+          cbOpenModal={this.hadleOpenModal}
+          openModal={openModal}
+        />
       </div>
     );
   }

@@ -4,7 +4,7 @@ import jsonpatch from 'fast-json-patch';
 
 import { checkStatus, parseJSON } from './fetch.util';
 
-export async function loadEvents(showPastEvents) {
+export const loadEvents = async (showPastEvents) => {
   let urlToFetch = '/api/events/getByUser';
   nprogress.configure({ showSpinner: false });
   nprogress.start();
@@ -24,12 +24,13 @@ export async function loadEvents(showPastEvents) {
   } finally {
     nprogress.done();
   }
-}
+};
 
-export async function loadEvent(id) {
+export const loadEvent = async (id, full = false) => {
   nprogress.configure({ showSpinner: false });
+  const urlToFecth = (full) ? `/api/events/getFull/${id}` : `/api/events/${id}`;
   nprogress.start();
-  const response = await fetch(`/api/events/${id}`, {
+  const response = await fetch(urlToFecth, {
     credentials: 'same-origin',
   });
   try {
@@ -42,9 +43,9 @@ export async function loadEvent(id) {
   } finally {
     nprogress.done();
   }
-}
+};
 
-export async function addEvent(event) {
+export const addEvent = async (event) => {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   const response = await fetch('/api/events', {
@@ -68,13 +69,13 @@ export async function addEvent(event) {
   } finally {
     nprogress.done();
   }
-}
+};
 
-export async function deleteEvent(id) {
+export const deleteEvent = async (id) => {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
-  const response =  await fetch(
-  `/api/events/${id}`,
+  const response = await fetch(
+    `/api/events/${id}`,
     {
       headers: {
         Accept: 'application/json',
@@ -93,9 +94,9 @@ export async function deleteEvent(id) {
   } finally {
     nprogress.done();
   }
-}
+};
 
-export async function deleteGuest(guestToDelete) {
+export const deleteGuest = async (guestToDelete) => {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   const response = await fetch(
@@ -119,9 +120,9 @@ export async function deleteGuest(guestToDelete) {
   } finally {
     nprogress.done();
   }
-}
+};
 
-export async function editEvent(patches, eventId) {
+export const editEvent = async (patches, eventId) => {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   const response = await fetch(`/api/events/${eventId}`, {
@@ -144,9 +145,9 @@ export async function editEvent(patches, eventId) {
   } finally {
     nprogress.done();
   }
-}
+};
 
-export async function loadOwnerData(_id) {
+export const loadOwnerData = async (_id) => {
   const response = await fetch(`/api/user/${_id}`, { credentials: 'same-origin' });
   try {
     checkStatus(response);
@@ -155,13 +156,14 @@ export async function loadOwnerData(_id) {
     console.log('loadOwnerData', err);
     return null;
   }
-}
+};
+
 /**
  * @param {*} guestId user id to edit as participant
  * @param {*} event to add the user as participant
  * @param {*} status to set at participant
  */
-export async function EditStatusParticipantEvent(guestId, event, status) {
+export const EditStatusParticipantEvent = async (guestId, event, status) => {
   const observe = jsonpatch.observe(event);
   event.participants.map((participant) => {
     if (participant.userId._id.toString() === guestId) {
@@ -171,35 +173,17 @@ export async function EditStatusParticipantEvent(guestId, event, status) {
   });
   const patch = jsonpatch.generate(observe);
   return editEvent(patch, event._id);
-}
+};
 
-export async function AddEventParticipant(guestId, event) {
+export const AddEventParticipant = async (guestId, event) => {
   const observe = jsonpatch.observe(event);
   event.participants.push({ userId: guestId, status: 1 });
   const patch = jsonpatch.generate(observe);
   const response = await editEvent(patch, event._id);
   return response;
-}
+};
 
-export async function loadEventFull(id) {
-  nprogress.configure({ showSpinner: false });
-  nprogress.start();
-  const response = await fetch(`/api/events/getFull/${id}`, {
-    credentials: 'same-origin',
-  });
-  try {
-    checkStatus(response);
-    const event = await parseJSON(response);
-    return event;
-  } catch (err) {
-    console.error('err at loadEventFull', err);
-    return null;
-  } finally {
-    nprogress.done();
-  }
-}
-
-export async function handleDismiss(participantId) {
+export const handleDismiss = async (participantId) => {
   const response = await fetch(`/api/events/GuestNotificationDismiss/${participantId}`, {
     headers: {
       Accept: 'application/json',
@@ -216,4 +200,4 @@ export async function handleDismiss(participantId) {
     console.error('handleDismiss', err);
     return null;
   }
-}
+};

@@ -14,7 +14,7 @@ const msg = (curUser, event) => ({
   url: `${fullUrl}/event/${event._id}`,
 });
 
-async function sendEmail(ms, endpoint) {
+const sendEmail = async (ms, endpoint) => {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   const response = await fetch(endpoint, {
@@ -36,28 +36,29 @@ async function sendEmail(ms, endpoint) {
   } finally {
     nprogress.done();
   }
-}
-export async function sendEmailOwner(event, curUser, ownerData) {
+};
+
+export const sendEmailOwner = async (event, curUser, ownerData) => {
   const ms = msg(curUser, event);
   ms.to = ownerData.emails[0];
   ms.subject = 'Invite Accepted!!';
   const result = await sendEmail(ms, '/api/email/ownerNotification');
   return result;
-}
+};
 
-export async function sendEmailOwnerEdit(event, curUser, ownerData) {
+export const sendEmailOwnerEdit = async (event, curUser, ownerData) => {
   const ms = msg(curUser, event);
   ms.to = ownerData.emails[0];
   ms.subject = 'A Guest Change their Availabilitys';
   const result = await sendEmail(ms, '/api/email/ownerNotificationForEventEdit');
   return result;
-}
+};
 
-export async function sendEmailInvite(guestId, event, curUser) {
+export const sendEmailInvite = async (guestId, event, curUser) => {
   const guestData = await loadOwnerData(guestId);
   const ms = msg(curUser, event);
   ms.to = guestData.emails[0];
   ms.subject = `Invite for ${event.name}!!`;
   const result = await sendEmail(ms, '/api/email/sendInvite');
   return result;
-}
+};

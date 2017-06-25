@@ -62,9 +62,7 @@ class EventCard extends Component {
 
     return (
       <Card styleName="card">
-        {
-          isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null
-        }
+        {isOwner ? <DeleteModal event={event} cbEventDelete={this.handleDelete} /> : null }
         <CardTitle styleName="cardTitle">
           {event.name}
         </CardTitle>

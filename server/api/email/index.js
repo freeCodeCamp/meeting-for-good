@@ -2,16 +2,12 @@
 
 import express from 'express';
 import { ownerNotification, sendInvite, ownerNotificationForEdit } from './email.controller';
+import { isAuth } from '../utils/api.utils';
 
 const router = express.Router();
 
-const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) return next();
-  return res.status(403).send('Authentiation required.');
-};
-
-router.post('/ownerNotification', isAuthenticated, ownerNotification);
-router.post('/sendInvite', isAuthenticated, sendInvite);
-router.post('/ownerNotificationForEventEdit', isAuthenticated, ownerNotificationForEdit);
+router.post('/ownerNotification', isAuth, ownerNotification);
+router.post('/sendInvite', isAuth, sendInvite);
+router.post('/ownerNotificationForEventEdit', isAuth, ownerNotificationForEdit);
 
 module.exports = router;

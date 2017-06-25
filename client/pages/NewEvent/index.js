@@ -11,22 +11,19 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Subheader from 'material-ui/Subheader';
 import InputRange from 'react-input-range';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import EventDelete from 'material-ui/svg-icons/action/delete';
 import PropTypes from 'prop-types';
 
 import '../../styles/no-css-modules/react-input-range.css';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
-import dateRangeReducer from '../../util/dates.utils';
+import { dateRangeReducer } from '../../util/dates.utils';
 import styles from './new-event.css';
 
 class NewEvent extends React.Component {
   static removeRange = (ranges, range) => {
     const newRange = ranges.filter(r => !_.isEqual(r, range));
-    if (newRange.length === 0) {
-      return [{
-        from: null,
-        to: null,
-      }];
-    }
+    if (newRange.length === 0) return [{ from: null, to: null }];
     return newRange;
   };
 
@@ -84,9 +81,7 @@ class NewEvent extends React.Component {
       }
     }
     if (!found) {
-      if (ranges.length > 0 && !ranges[0].from) {
-        ranges = [];
-      }
+      if (ranges.length > 0 && !ranges[0].from) ranges = [];
       ranges.push({ from: day, to: day });
     }
     this.setState({ ranges }, () => this.toggleSubmitDisabled());
@@ -113,11 +108,7 @@ class NewEvent extends React.Component {
     // create a date range as date
     let dates = ranges.map(({ from, to }) => {
       if (!to) to = from;
-
-      if (from > to) {
-        [from, to] = [to, from];
-      }
-
+      if (from > to) [from, to] = [to, from];
       return {
         fromDate: moment(from).hour(fromHours).minute(fromMinutes).startOf('minute')._d,
         toDate: moment(to).hour(toHours).minute(toMinutes).startOf('minute')._d,
@@ -127,7 +118,6 @@ class NewEvent extends React.Component {
     dates = dateRangeReducer(dates);
     // the field active now has a default of true.
     const sentData = JSON.stringify({ name, dates });
-
     const newEvent = await this.props.cbNewEvent(sentData);
     browserHistory.push(`/event/${newEvent._id}`);
   }
@@ -139,9 +129,7 @@ class NewEvent extends React.Component {
 
   @autobind
   handleSnackBarRequestClose() {
-    this.setState({
-      snackBarOpen: false,
-    });
+    this.setState({ snackBarOpen: false });
   }
 
   renderDayPicker() {
@@ -156,11 +144,7 @@ class NewEvent extends React.Component {
         <h6 styleName="heading-dates">What dates might work for you?</h6>
         <div styleName="reset-button">
           {from && to &&
-            <FlatButton
-              href="#reset"
-              label="reset"
-              onClick={this.handleResetClick}
-            />
+            <FlatButton href="#reset" label="reset" onClick={this.handleResetClick} />
           }
         </div>
         <DayPicker
@@ -175,58 +159,84 @@ class NewEvent extends React.Component {
     );
   }
 
+  renderInput() {
+    const { eventName } = this.state;
+    return (
+      <TextField
+        fullWidth
+        floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
+        floatingLabelFocusStyle={{ color: '#26A69A' }}
+        styleName="textField"
+        id="event_name"
+        value={eventName}
+        onChange={this.handleEventNameChange}
+        floatingLabelText="Event Name"
+        hintText="Enter an event name..."
+        className="validate"
+        autoFocus
+        inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
+      />
+    );
+  }
+
+  renderButton() {
+    const { disableSubmit } = this.state;
+    return (
+      <div styleName="centerContainer">
+        <RaisedButton
+          labelColor="white"
+          label="Create Event"
+          className="submit"
+          disabled={disableSubmit}
+          primary
+          onClick={this.createEvent}
+        />
+      </div>
+    );
+  }
+
+  renderForm() {
+    const { selectedTimeRange } = this.state;
+    return (
+      <form>
+        {this.renderInput()}
+        {this.renderDayPicker()}
+        <Subheader styleName="subHeader">What times might work?</Subheader>
+        <div styleName="rangeSelectorWrapper">
+          <InputRange
+            disabled={false}
+            name="range"
+            maxValue={24}
+            minValue={0}
+            formatLabel={value => formatTime(value)}
+            step={0.25}
+            value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
+            onChange={value => this.setState({ selectedTimeRange: [value.min, value.max] })}
+          />
+        </div>
+        <br />
+        <Subheader styleName="subHeader">
+          No earlier than {formatTime(selectedTimeRange[0])} and no later
+                 than {formatTime(selectedTimeRange[1])}
+        </Subheader>
+        {this.renderButton()}
+      </form>
+    );
+  }
+
   render() {
-    const { eventName, selectedTimeRange, disableSubmit } = this.state;
     return (
       <div styleName="wrapper">
         <Card styleName="card">
+          <FloatingActionButton
+            backgroundColor="#ECEFF1"
+            onTouchTap={() => browserHistory.push('/dashboard')}
+            styleName="delete-buttom"
+            aria-label="delete-event-buttom"
+          > <EventDelete /> </FloatingActionButton>
           <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
           <CardText styleName="cardText">
-            <form>
-              <TextField
-                fullWidth
-                floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
-                floatingLabelFocusStyle={{ color: '#26A69A' }}
-                styleName="textField"
-                id="event_name"
-                value={eventName}
-                onChange={this.handleEventNameChange}
-                floatingLabelText="Event Name"
-                hintText="Enter an event name..."
-                className="validate"
-                autoFocus
-                inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
-              />
-              {this.renderDayPicker()}
-              <Subheader styleName="subHeader">What times might work?</Subheader>
-              <div styleName="rangeSelectorWrapper">
-                <InputRange
-                  disabled={false}
-                  name="range"
-                  maxValue={24}
-                  minValue={0}
-                  formatLabel={value => formatTime(value)}
-                  step={0.25}
-                  value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
-                  onChange={value => this.setState({ selectedTimeRange: [value.min, value.max] })}
-                />
-              </div>
-              <br />
-              <Subheader styleName="subHeader">
-                No earlier than {formatTime(selectedTimeRange[0])} and no later
-                 than {formatTime(selectedTimeRange[1])}
-              </Subheader>
-              <div styleName="centerContainer">
-                <RaisedButton
-                  labelColor="white"
-                  label="Create Event"
-                  className="submit"
-                  disabled={disableSubmit}
-                  primary
-                  onClick={this.createEvent}
-                />
-              </div>
-            </form>
+            {this.renderForm()}
           </CardText>
         </Card>
       </div>

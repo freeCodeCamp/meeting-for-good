@@ -10,8 +10,8 @@ import NavBar from '../components/NavBar/NavBar';
 import { getCurrentUser, isAuthenticated } from '../util/auth';
 import {
   loadEvents, EditStatusParticipantEvent, AddEventParticipant,
-  addEvent, deleteEvent, editEvent, deleteGuest, loadEventFull,
-  handleDismiss,
+  addEvent, deleteEvent, editEvent, deleteGuest,
+  handleDismiss, loadEvent,
 } from '../util/events';
 import { sendEmailInvite } from '../util/emails';
 import '../styles/main.css';
@@ -229,7 +229,7 @@ class App extends Component {
     const { events, curUser } = this.state;
     // find if the guest alredy exists as participant
     // ask at DB because guests sets as 0 its not load as default
-    const eventFull = await loadEventFull(eventEdited._id);
+    const eventFull = await loadEvent(eventEdited._id, true);
     const participants = eventFull.participants;
     const indexOfGuest = _.findIndex(
       participants, participant => participant.userId._id === guestId.toString());
@@ -292,7 +292,7 @@ class App extends Component {
       return cloneElement(child, { curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
-        cbLoadEvent: id => handleLoadEvent(id, events),
+        cbLoadEvent: id => handleLoadEvent(id),
         cbDeleteEvent: this.handleDeleteEvent,
         cbEditEvent: this.handleEditEvent,
         cbEmailOwner: event => handleEmailOwner(event, curUser),
