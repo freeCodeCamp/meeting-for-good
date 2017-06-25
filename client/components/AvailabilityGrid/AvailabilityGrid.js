@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import autobind from 'autobind-decorator';
 import jsonpatch from 'fast-json-patch';
 import jz from 'jstimezonedetect';
@@ -13,7 +11,8 @@ import PropTypes from 'prop-types';
 import GridHours from './availabilityGridHoursTitle';
 import GridRow from './availabilityGridRows';
 import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColors,
-  createTimesRange, createDatesRange, availabilityReducer, jumpTimeIndex,
+  createTimesRange, createDatesRange, isCurParticipantUpsert,
+  availabilityReducer, jumpTimeIndex, AvaliabilityCurUserFromGrid,
 } from './availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import DialogInstructions from './AvailabilityGridDialogInstructions';
@@ -21,8 +20,6 @@ import { loadEvent } from '../../util/events';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
 import styles from './availability-grid.css';
-
-const moment = extendMoment(Moment);
 
 class AvailabilityGrid extends Component {
 
@@ -69,42 +66,24 @@ class AvailabilityGrid extends Component {
   @autobind
   async submitAvailability() {
     const { curUser } = this.props;
-    const { grid } = this.state;
-    const availability = [];
-    grid.forEach((row) => {
-      row.quarters.forEach((quarter) => {
-        if (_.findIndex(quarter.participants, curUser._id) > -1) {
-          const from = moment(quarter.time)._d;
-          const to = moment(quarter.time).add(15, 'm')._d;
-          availability.push([from, to]);
-        }
-      });
-    });
+    const { grid, event } = this.state;
+    // construct the avaqilabily for the cur user from grid
+    const availabilityCurUserinQuarters = AvaliabilityCurUserFromGrid(grid, curUser);
     // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
     try {
-      const eventToEdit = await loadEvent(this.state.event._id, true);
-      const event = JSON.parse(JSON.stringify(eventToEdit));
-      const observerEvent = jsonpatch.observe(event);
+      const eventFull = await loadEvent(event._id, true);
+      const observerEvent = jsonpatch.observe(eventFull);
       // find for curUser at the array depends if is a participant
       // yet or not
-      let curParticipant = _.find(event.participants, ['userId._id', curUser._id]);
-      // first check if cur exists as a participant
-      // if is not add the curUser as participant
-      if (!curParticipant) {
-        const { _id: userId } = curUser;
-        const participant = { userId };
-        event.participants.push(participant);
-        curParticipant = _.find(event.participants, ['userId', curUser._id]);
-      }
-      curParticipant.status = (availability.length === 0) ? 2 : 3;
-      const availabilityEdited = (availability.length > 0) ? availabilityReducer(availability) : [];
+      const curParticipant =
+        isCurParticipantUpsert(curUser, eventFull, availabilityCurUserinQuarters.length);
       // because the patch jsonpatch dosent work as espected when you have a arrays of arrays
       // we need to generate a patch to delete all availability and then add ther availability again
       // then merge both patchs arrays.
       curParticipant.availability = [];
       const patchforDelete = jsonpatch.generate(observerEvent);
-      curParticipant.availability = availabilityEdited;
+      curParticipant.availability = availabilityReducer(availabilityCurUserinQuarters);
       const patchesforAdd = jsonpatch.generate(observerEvent);
       const patches = _.concat(patchforDelete, patchesforAdd);
       await this.props.submitAvail(patches);

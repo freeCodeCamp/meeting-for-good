@@ -1,19 +1,20 @@
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import _ from 'lodash';
+import { sortDateArray } from '../../util/dates.utils';
 
 const moment = extendMoment(Moment);
 
 export const filterAvailabilitysOutsideDatesRange = (event) => {
   const nEvent = _.cloneDeep(event);
   // only push availability on range
-  event.dates.forEach((date) => {
-    const rangeDates = moment.range(moment(date.fromDate), moment(date.toDate));
-    event.participants.forEach((participant, index) => {
-      nEvent.participants[index].availability = [];
+  event.participants.forEach((participant, index) => {
+    nEvent.participants[index].availability = [];
+    event.dates.forEach((date) => {
+      const rangeDatesEvent = moment.range(moment(date.fromDate), moment(date.toDate));
       participant.availability.forEach((avail) => {
         const rangeAvail = moment.range(moment(avail[0]), moment(avail[1]));
-        if (rangeAvail.overlaps(rangeDates, { adjacent: false })) {
+        if (rangeAvail.overlaps(rangeDatesEvent, { adjacent: false })) {
           nEvent.participants[index].availability.push(avail);
         }
       });
@@ -21,12 +22,6 @@ export const filterAvailabilitysOutsideDatesRange = (event) => {
   });
   return nEvent;
 };
-
-const sortDateArray = datesArray => datesArray.sort((a, b) => {
-  const x = moment(a).unix();
-  const y = moment(b).unix();
-  return x - y;
-});
 
 export const createDatesRange = (dates) => {
   let datesRanges = dates.map((date) => {
