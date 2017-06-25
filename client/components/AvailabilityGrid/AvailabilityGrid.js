@@ -17,7 +17,7 @@ import { createGridComplete, editParticipantToCellGrid, genHeatMapBackgroundColo
 } from './availabilityGridUtils';
 import SnackBarGrid from '../SnackBarGrid/SnackBarGrid';
 import DialogInstructions from './AvailabilityGridDialogInstructions';
-import { loadEventFull } from '../../util/events';
+import { loadEvent } from '../../util/events';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
 import styles from './availability-grid.css';
@@ -83,7 +83,7 @@ class AvailabilityGrid extends Component {
     // need to call the full event to edit... since he dosn't have the
     // info that maybe have a guest "deleted"
     try {
-      const eventToEdit = await loadEventFull(this.state.event._id);
+      const eventToEdit = await loadEvent(this.state.event._id, true);
       const event = JSON.parse(JSON.stringify(eventToEdit));
       const observerEvent = jsonpatch.observe(event);
       // find for curUser at the array depends if is a participant
