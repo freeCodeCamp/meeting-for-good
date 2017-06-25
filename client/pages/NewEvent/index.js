@@ -23,12 +23,7 @@ import styles from './new-event.css';
 class NewEvent extends React.Component {
   static removeRange = (ranges, range) => {
     const newRange = ranges.filter(r => !_.isEqual(r, range));
-    if (newRange.length === 0) {
-      return [{
-        from: null,
-        to: null,
-      }];
-    }
+    if (newRange.length === 0) return [{ from: null, to: null }];
     return newRange;
   };
 
