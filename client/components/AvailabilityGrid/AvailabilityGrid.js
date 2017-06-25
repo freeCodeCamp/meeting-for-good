@@ -184,7 +184,7 @@ class AvailabilityGrid extends Component {
     const { grid, allTimes, backgroundColors, showHeatmap, jumpTimeIdx } = this.state;
     const { curUser, heightlightedUser } = this.props;
     return (
-      <div>
+      <div onMouseLeave={this.handleCellMouseUp}>
         <GridHours allTimes={allTimes} jumpIndexAllTimes={jumpTimeIdx} />
         {grid.map((row, rowIndex) => (
           <div key={row.date} styleName="column">
