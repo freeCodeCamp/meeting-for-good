@@ -125,7 +125,6 @@ class NewEvent extends React.Component {
     dates = dateRangeReducer(dates);
     // the field active now has a default of true.
     const sentData = JSON.stringify({ name, dates });
-
     const newEvent = await this.props.cbNewEvent(sentData);
     browserHistory.push(`/event/${newEvent._id}`);
   }
@@ -137,9 +136,7 @@ class NewEvent extends React.Component {
 
   @autobind
   handleSnackBarRequestClose() {
-    this.setState({
-      snackBarOpen: false,
-    });
+    this.setState({ snackBarOpen: false });
   }
 
   renderDayPicker() {
@@ -169,8 +166,57 @@ class NewEvent extends React.Component {
     );
   }
 
-  render() {
+  renderForm() {
     const { eventName, selectedTimeRange, disableSubmit } = this.state;
+    return (
+      <form>
+        <TextField
+          fullWidth
+          floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
+          floatingLabelFocusStyle={{ color: '#26A69A' }}
+          styleName="textField"
+          id="event_name"
+          value={eventName}
+          onChange={this.handleEventNameChange}
+          floatingLabelText="Event Name"
+          hintText="Enter an event name..."
+          className="validate"
+          autoFocus
+          inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
+        />
+        {this.renderDayPicker()}
+        <Subheader styleName="subHeader">What times might work?</Subheader>
+        <div styleName="rangeSelectorWrapper">
+          <InputRange
+            disabled={false}
+            name="range"
+            maxValue={24}
+            minValue={0}
+            formatLabel={value => formatTime(value)}
+            step={0.25}
+            value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
+            onChange={value => this.setState({ selectedTimeRange: [value.min, value.max] })}
+          />
+        </div>
+        <br />
+        <Subheader styleName="subHeader">
+          No earlier than {formatTime(selectedTimeRange[0])} and no later
+                 than {formatTime(selectedTimeRange[1])}
+        </Subheader>
+        <div styleName="centerContainer">
+          <RaisedButton
+            labelColor="white"
+            label="Create Event"
+            className="submit"
+            disabled={disableSubmit}
+            primary
+            onClick={this.createEvent}
+          />
+        </div>
+      </form>
+    )
+  }  
+  render() {
     return (
       <div styleName="wrapper">
         <Card styleName="card">
@@ -184,51 +230,7 @@ class NewEvent extends React.Component {
           </FloatingActionButton>
           <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
           <CardText styleName="cardText">
-            <form>
-              <TextField
-                fullWidth
-                floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
-                floatingLabelFocusStyle={{ color: '#26A69A' }}
-                styleName="textField"
-                id="event_name"
-                value={eventName}
-                onChange={this.handleEventNameChange}
-                floatingLabelText="Event Name"
-                hintText="Enter an event name..."
-                className="validate"
-                autoFocus
-                inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
-              />
-              {this.renderDayPicker()}
-              <Subheader styleName="subHeader">What times might work?</Subheader>
-              <div styleName="rangeSelectorWrapper">
-                <InputRange
-                  disabled={false}
-                  name="range"
-                  maxValue={24}
-                  minValue={0}
-                  formatLabel={value => formatTime(value)}
-                  step={0.25}
-                  value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
-                  onChange={value => this.setState({ selectedTimeRange: [value.min, value.max] })}
-                />
-              </div>
-              <br />
-              <Subheader styleName="subHeader">
-                No earlier than {formatTime(selectedTimeRange[0])} and no later
-                 than {formatTime(selectedTimeRange[1])}
-              </Subheader>
-              <div styleName="centerContainer">
-                <RaisedButton
-                  labelColor="white"
-                  label="Create Event"
-                  className="submit"
-                  disabled={disableSubmit}
-                  primary
-                  onClick={this.createEvent}
-                />
-              </div>
-            </form>
+            {this.renderForm()}
           </CardText>
         </Card>
       </div>
