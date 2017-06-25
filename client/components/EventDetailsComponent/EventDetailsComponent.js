@@ -68,7 +68,6 @@ class EventDetailsComponent extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { event } = nextProps;
     const dates = datesToDatesObject(event);
-    console.log('dates at componentWillReceiveProps', dates);
     this.setState({ event, dates });
   }
 
