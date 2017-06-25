@@ -166,24 +166,31 @@ class NewEvent extends React.Component {
     );
   }
 
+  renderInput() {
+    const { eventName } = this.state;
+    return (
+      <TextField
+        fullWidth
+        floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
+        floatingLabelFocusStyle={{ color: '#26A69A' }}
+        styleName="textField"
+        id="event_name"
+        value={eventName}
+        onChange={this.handleEventNameChange}
+        floatingLabelText="Event Name"
+        hintText="Enter an event name..."
+        className="validate"
+        autoFocus
+        inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
+      />
+    );
+  }
+
   renderForm() {
-    const { eventName, selectedTimeRange, disableSubmit } = this.state;
+    const { selectedTimeRange, disableSubmit } = this.state;
     return (
       <form>
-        <TextField
-          fullWidth
-          floatingLabelStyle={{ color: '#000000', fontSize: '24px' }}
-          floatingLabelFocusStyle={{ color: '#26A69A' }}
-          styleName="textField"
-          id="event_name"
-          value={eventName}
-          onChange={this.handleEventNameChange}
-          floatingLabelText="Event Name"
-          hintText="Enter an event name..."
-          className="validate"
-          autoFocus
-          inputStyle={{ WebkitBoxShadow: '0 0 0 1000px white inset' }}
-        />
+        {this.renderInput()}
         {this.renderDayPicker()}
         <Subheader styleName="subHeader">What times might work?</Subheader>
         <div styleName="rangeSelectorWrapper">
