@@ -186,8 +186,24 @@ class NewEvent extends React.Component {
     );
   }
 
+  renderButton() {
+    const { disableSubmit } = this.state;
+    return (
+      <div styleName="centerContainer">
+        <RaisedButton
+          labelColor="white"
+          label="Create Event"
+          className="submit"
+          disabled={disableSubmit}
+          primary
+          onClick={this.createEvent}
+        />
+      </div>
+    );
+  }
+
   renderForm() {
-    const { selectedTimeRange, disableSubmit } = this.state;
+    const { selectedTimeRange } = this.state;
     return (
       <form>
         {this.renderInput()}
@@ -210,16 +226,7 @@ class NewEvent extends React.Component {
           No earlier than {formatTime(selectedTimeRange[0])} and no later
                  than {formatTime(selectedTimeRange[1])}
         </Subheader>
-        <div styleName="centerContainer">
-          <RaisedButton
-            labelColor="white"
-            label="Create Event"
-            className="submit"
-            disabled={disableSubmit}
-            primary
-            onClick={this.createEvent}
-          />
-        </div>
+        {this.renderButton()}
       </form>
     );
   }
