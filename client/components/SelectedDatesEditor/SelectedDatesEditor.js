@@ -56,7 +56,7 @@ class SelectedDatesEditor extends Component {
 
   @autobind
   async handleEditEventDates() {
-    const { event } = this.props;
+    const { event, submitDates } = this.props;
     const { selectedDates } = this.state;
     const nEvent = _.cloneDeep(event);
     const observerEvent = jsonpatch.observe(nEvent);
@@ -65,9 +65,7 @@ class SelectedDatesEditor extends Component {
     nEvent.dates = dateRangeReducer(selectedDates, event);
     const patchesforAddDates = jsonpatch.generate(observerEvent);
     const eventAvailFilter = filterAvailabilitysOutsideDatesRange(nEvent);
-    nEvent.participants.forEach((participant) => {
-      participant.availability = [];
-    });
+    nEvent.participants.forEach((participant) => participant.availability = []);
     const patchesforDeleteAvail = jsonpatch.generate(observerEvent);
     nEvent.participants.forEach((participant, index) => {
       participant.availability = eventAvailFilter.participants[index].availability;
@@ -76,7 +74,7 @@ class SelectedDatesEditor extends Component {
     const patches =
       _.concat(patchforDelete, patchesforAddDates, patchesforDeleteAvail, patchesforAddAvail);
     try {
-      await this.props.submitDates(patches);
+      await submitDates(patches);
     } catch (err) {
       console.log('err at submit avail', err);
     } finally {

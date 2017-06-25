@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 
 import '../../styles/no-css-modules/react-input-range.css';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
-import dateRangeReducer from '../../util/dates.utils';
+import { dateRangeReducer } from '../../util/dates.utils';
 import styles from './new-event.css';
 
 class NewEvent extends React.Component {
@@ -81,9 +81,7 @@ class NewEvent extends React.Component {
       }
     }
     if (!found) {
-      if (ranges.length > 0 && !ranges[0].from) {
-        ranges = [];
-      }
+      if (ranges.length > 0 && !ranges[0].from) ranges = [];
       ranges.push({ from: day, to: day });
     }
     this.setState({ ranges }, () => this.toggleSubmitDisabled());

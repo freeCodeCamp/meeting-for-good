@@ -292,7 +292,7 @@ class App extends Component {
       return cloneElement(child, { curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
-        cbLoadEvent: id => handleLoadEvent(id, events),
+        cbLoadEvent: id => handleLoadEvent(id),
         cbDeleteEvent: this.handleDeleteEvent,
         cbEditEvent: this.handleEditEvent,
         cbEmailOwner: event => handleEmailOwner(event, curUser),
