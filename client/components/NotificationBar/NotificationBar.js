@@ -86,7 +86,7 @@ class NotificationBar extends Component {
               style={{ backgroundColor: bkgColor }}
               styleName="menuItem"
             >
-              {participant.userId.name} <span>accepted your invitation for &#32;</span>
+              {participant.userId.name} <span>accepted your invitation to &#32;</span>
               <a
                 onTouchTap={() => handleEventLinkClick(event._id)}
                 styleName="eventLink"
