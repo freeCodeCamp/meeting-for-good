@@ -235,9 +235,7 @@ class NewEvent extends React.Component {
             onTouchTap={() => browserHistory.push('/dashboard')}
             styleName="delete-buttom"
             aria-label="delete-event-buttom"
-          >
-            <EventDelete />
-          </FloatingActionButton>
+          > <EventDelete /> </FloatingActionButton>
           <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
           <CardText styleName="cardText">
             {this.renderForm()}
