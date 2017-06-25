@@ -1,7 +1,7 @@
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import _ from 'lodash';
-import { sortDateArray, eventsMaxMinDatesForEvent } from '../../util/dates.utils';
+import { sortDateArray } from '../../util/dates.utils';
 
 const moment = extendMoment(Moment);
 

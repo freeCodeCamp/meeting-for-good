@@ -63,7 +63,6 @@ class AvailabilityGrid extends Component {
     this.setState({ grid, backgroundColors, showHeatmap, allDates, event, allTimes, jumpTimeIdx });
   }
 
-
   @autobind
   async submitAvailability() {
     const { curUser } = this.props;
