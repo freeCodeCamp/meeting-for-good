@@ -1,6 +1,5 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/getStats                              ->  getStats
  * GET     /api/events                                ->  index
  * GET     /api/events/getbyuid/:uid'                 ->  indexById
  * GET    /api/events/getbyUser                       ->  indexByUser
