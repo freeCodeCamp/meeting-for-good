@@ -45,24 +45,6 @@ export const loadEvent = async (id, full = false) => {
   }
 };
 
-export const loadEventFull = async (id) => {
-  nprogress.configure({ showSpinner: false });
-  nprogress.start();
-  const response = await fetch(`/api/events/getFull/${id}`, {
-    credentials: 'same-origin',
-  });
-  try {
-    checkStatus(response);
-    const event = await parseJSON(response);
-    return event;
-  } catch (err) {
-    console.error('err at loadEventFull', err);
-    return null;
-  } finally {
-    nprogress.done();
-  }
-};
-
 export const addEvent = async (event) => {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
