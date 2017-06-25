@@ -5,6 +5,10 @@ import chroma from 'chroma-js';
 
 const moment = extendMoment(Moment);
 
+/**
+ * max and min dates for that event
+ * @param {object} event
+ */
 const datesMinMax = (event) => {
   let dates = _.cloneDeep(event.dates);
   dates = _.flatMap(dates, v => [v.fromDate, v.toDate]);
@@ -220,6 +224,7 @@ export const availabilityReducer = (availability) => {
     return x - y;
   });
   const availReduced = [];
+  // set initial times to compare
   let previousFrom = moment(availabilityToEdit[0][0]);
   let previousTo = moment(availabilityToEdit[0][0]);
 
@@ -249,4 +254,23 @@ export const jumpTimeIndex = (allTimes) => {
     index += 1;
   }
   return (index > 1) ? index : null;
+};
+
+/**
+ *
+ * @param {object} grid as object grid from AvailibilityGrid
+ * @param {object} curUser
+ */
+export const AvaliabilityCurUserFromGrid = (grid, curUser) => {
+  const availability = [];
+  grid.forEach((row) => {
+    row.quarters.forEach((quarter) => {
+      if (_.findIndex(quarter.participants, curUser._id) > -1) {
+        const from = moment(quarter.time)._d;
+        const to = moment(quarter.time).add(15, 'm')._d;
+        availability.push([from, to]);
+      }
+    });
+  });
+  return availability;
 };
