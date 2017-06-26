@@ -10,7 +10,9 @@ import compression from 'compression';
 import express from 'express';
 import connectMongo from 'connect-mongo';
 import morgan from 'morgan';
+
 import routes from './app/routes/routes';
+import { computeStats } from './api/stats/stats.controller';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -84,3 +86,7 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`Node.js listening on port ${port}...'`);
 });
+
+// Start the Stats module.  Run once, and then again every so often.
+computeStats();
+setInterval(() => computeStats(), 1000 * 60 * 60);
