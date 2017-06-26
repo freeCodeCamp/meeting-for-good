@@ -50,15 +50,11 @@ class App extends Component {
     try {
       const isAuth = await isAuthenticated();
       if (isAuth) {
-        let showPastEvents;
-        if (sessionStorage.getItem('showPastEvents')) {
-          showPastEvents = sessionStorage.getItem('showPastEvents') === 'true';
-        }
+        const showPastEvents = (sessionStorage.getItem('showPastEvents')) ? sessionStorage.getItem('showPastEvents') === 'true' : false;
         const curUser = await getCurrentUser();
         const events = await loadEvents(showPastEvents);
         this.setState({
-          isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents,
-        });
+          isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
       }
     } catch (err) {
       console.error('App.js componentWillMount err', err);
