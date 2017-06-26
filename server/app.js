@@ -89,4 +89,5 @@ app.listen(port, () => {
 
 // Start the Stats module.  Run once, and then again every so often.
 computeStats();
-setInterval(() => computeStats(), 1000 * 60 * 60);
+const interval = parseInt(process.env.STATS_UPDATE_INTERVAL || '3600', 10) * 1000;
+setInterval(() => computeStats(), interval);
