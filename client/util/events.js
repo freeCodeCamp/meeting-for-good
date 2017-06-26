@@ -12,11 +12,10 @@ export const loadEvents = async (showPastEvents) => {
     const date = new Date();
     urlToFetch = `/api/events/getByUser/${date.toISOString()}`;
   }
-  const response = await fetch(urlToFetch, { credentials: 'same-origin' });
-  let events;
   try {
+    const response = await fetch(urlToFetch, { credentials: 'same-origin' });
     checkStatus(response);
-    events = await parseJSON(response);
+    const events = await parseJSON(response);
     return events;
   } catch (err) {
     console.error('loadEvents, at events.js', err);
@@ -30,9 +29,7 @@ export const loadEvent = async (id, full = false) => {
   nprogress.configure({ showSpinner: false });
   const urlToFecth = (full) ? `/api/events/getFull/${id}` : `/api/events/${id}`;
   nprogress.start();
-  const response = await fetch(urlToFecth, {
-    credentials: 'same-origin',
-  });
+  const response = await fetch(urlToFecth, { credentials: 'same-origin' });
   try {
     checkStatus(response);
     const event = await parseJSON(response);
@@ -57,11 +54,9 @@ export const addEvent = async (event) => {
     body: event,
     credentials: 'same-origin',
   });
-
-  let newEvent;
   try {
     checkStatus(response);
-    newEvent = await parseJSON(response);
+    const newEvent = await parseJSON(response);
     return newEvent;
   } catch (err) {
     console.log('err at POST NewEvent', err);
