@@ -28,9 +28,7 @@ const strategy = (User, config) => new GoogleStrategy({
   clientID: config.googleAuth.clientID,
   clientSecret: config.googleAuth.clientSecret,
   callbackURL: config.googleAuth.callbackURL,
-}, (token, refreshToken, profile, done) => {
-  process.nextTick(() => manipulateUser(User, profile, done, token));
-});
+}, async (token, refreshToken, profile, done) => manipulateUser(User, profile, done, token));
 
 export const setup = (User, config) => {
   passport.use(strategy(User, config));
