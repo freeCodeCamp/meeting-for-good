@@ -2,22 +2,26 @@ import passport from 'passport';
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const manipulateUser = (User, profile, done, token) => {
-  User.findOne({ googleId: profile.id }, (err, user) => {
-    if (err) return done(err);
+const manipulateUser = async (User, profile, done, token) => {
+  try {
+    const user = await User.findOne({ googleId: profile.id });
     if (user) {
+      user.accessToken = token;
+      await user.save();
       return done(null, user);
     }
     const newUser = new User();
     newUser.googleId = profile.id;
     newUser.name = profile.displayName;
     newUser.avatar = profile.photos[0].value;
+    newUser.accessToken = token;
     profile.emails.forEach((email) => { newUser.emails.push(email.value); });
-    newUser.save((err) => {
-      if (err) throw err;
-      return done(null, newUser);
-    });
-  });
+    await newUser.save();
+    return done(null, newUser);
+  } catch (err) {
+    console.log('err at manipulateUser passport', err);
+    return done(err);
+  }
 };
 
 const strategy = (User, config) => new GoogleStrategy({
