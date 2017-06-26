@@ -20,7 +20,8 @@ export const loadStats = async () => {
   } finally {
     nprogress.done();
   }
-}
+};
+
 export const loadEvents = async (showPastEvents) => {
   let urlToFetch = '/api/events/getByUser';
   nprogress.configure({ showSpinner: false });
