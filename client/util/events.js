@@ -5,7 +5,7 @@ import jsonpatch from 'fast-json-patch';
 import { checkStatus, parseJSON } from './fetch.util';
 
 
-export const loadStats = async () {
+export const loadStats = async () => {
   nprogress.configure({ showSpinner: false });
   nprogress.start();
   let stats;
