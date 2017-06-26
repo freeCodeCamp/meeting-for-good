@@ -78,11 +78,12 @@ class Home extends React.Component {
             onTouchTap={this.handleOpenLoginModal}
           />
           <hr />
-          <h6>The best meeting coordination app</h6>
-          <h6 styleName="statistics">Event owners: {stats.users}, Total events: {stats.events},
-            Active events: {stats.activeEvents}, Events today: {stats.eventsToday},
-            Avg. participants: {stats.avgParticipants},
-            Max. participants: {stats.maxParticipants}</h6>
+          <div>
+            <h6>The best meeting coordination app</h6>
+            <h6 styleName="statistics">Event creators: {stats.users}, Total events created until today: {stats.events},
+              Events occurring today: {stats.eventsToday}, Avg. participants for all events: {stats.avgParticipants},
+              Max. participants for any event: {stats.maxParticipants}</h6>
+          </div>
           <img src={dashboardBanner} alt="dashboard" />
           <img src={dashboardBanner2} alt="dashboard2" />
           <hr />

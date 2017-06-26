@@ -15,22 +15,17 @@ const computeDayOfYear = (now) => {
 const showError = msg => err => console.log(msg, ': ', err);
 
 const writeStatsIntoDatabase = (stats) => {
-  Stats.count()
-    .exec()
-    .then((count) => {
-      if (count === 0) {
+  Stats.findOne()
+    .then((doc) => {
+      if (!doc) {
         Stats.create(stats);
       } else {
-        Stats.findOne()
-          .then((doc) => {
-            doc.events = stats.events;
-            doc.activeEvents = stats.activeEvents;
-            doc.users = stats.users;
-            doc.maxParticipants = stats.maxParticipants;
-            doc.avgParticipants = stats.avgParticipants;
-            doc.eventsToday = stats.eventsToday;
-            doc.save();
-          });
+        doc.events = stats.events;
+        doc.users = stats.users;
+        doc.maxParticipants = stats.maxParticipants;
+        doc.avgParticipants = stats.avgParticipants;
+        doc.eventsToday = stats.eventsToday;
+        doc.save();
       }
       return null;
     })
@@ -91,24 +86,12 @@ const countDistinctUsers = (stats) => {
     .catch(showError('countDistinctUsers'));
 };
 
-const countActive = (stats) => {
-  Events.count()
-    .where('active').eq(true)
-    .exec()
-    .then((count) => {
-      stats.activeEvents = count;
-      countDistinctUsers(stats);
-      return null;
-    })
-    .catch(showError('countActive'));
-};
-
 const countAll = (stats) => {
   Events.count()
     .exec()
     .then((count) => {
       stats.events = count;
-      countActive(stats);
+      countDistinctUsers(stats);
       return null;
     })
     .catch(showError('countAll'));
