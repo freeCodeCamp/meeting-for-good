@@ -27,6 +27,25 @@
 		padding: 2% 0 0 0;
 	}
 
+.masthead {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.statistics {
+	width: 200px;
+	padding: 10px;
+	text-align: left;
+	font-size: 12px;
+	text-transform: none;
+}
+
+.dummy-space {
+	width: 200px;
+}
+
 .loginButton {
 	margin: 30px !important;
 }
@@ -96,12 +115,6 @@ footer {
 	border-color: lightgrey;
 }
 
-.statistics {
-	font-size: 12px;
-	text-transform: none;
-
-}
-
 @media (min-width:550px) and (max-width:850px) {
   .main img {
     width: 600px;
@@ -111,7 +124,7 @@ footer {
 	}
 
 	.main .header h6 {
-		font-size: 30px !important;
+		font-size: 10px !important;
 	}
 
 	.gif {
@@ -125,6 +138,13 @@ footer {
 }
 
 @media (max-width:550px) {
+  .masthead {
+	  flex-direction: column;
+  }
+
+  .statistics {
+	  order: 1;
+  }
   .main img {
     width: 300px;
   }

@@ -70,7 +70,19 @@ class Home extends React.Component {
     return (
       <div styleName="main">
         <header styleName="header">
-          <h2>Meeting for Good</h2>
+          <div styleName="masthead">
+            <div styleName="statistics">
+              <h6 styleName="statistics">
+                Event creators: {stats.users}<br />
+                Total events created until today: {stats.events}<br />
+                Events occurring today: {stats.eventsToday}<br />
+                Avg. participants for all events: {stats.avgParticipants}<br />
+                Max. participants for any event: {stats.maxParticipants}<br />
+              </h6>
+            </div>
+            <h2>Meeting for Good</h2>
+            <div styleName="dummy-space"></div>
+          </div>
           <RaisedButton
             label="Login (it's free!)"
             styleName="loginButton"
@@ -80,9 +92,6 @@ class Home extends React.Component {
           <hr />
           <div>
             <h6>The best meeting coordination app</h6>
-            <h6 styleName="statistics">Event creators: {stats.users}, Total events created until today: {stats.events},
-              Events occurring today: {stats.eventsToday}, Avg. participants for all events: {stats.avgParticipants},
-              Max. participants for any event: {stats.maxParticipants}</h6>
           </div>
           <img src={dashboardBanner} alt="dashboard" />
           <img src={dashboardBanner2} alt="dashboard2" />
