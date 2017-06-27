@@ -1,8 +1,8 @@
 const exec = require('child_process').exec;
 require('dotenv').config();
 
-let args = `https://intake.opbeat.com/api/v1/organizations/${process.env.OP_BEAT_ORGANIZATION_ID}/apps/${process.env.OP_BEAT_APP_ID}/releases/ `;
-args += `-H "Authorization: Bearer ${process.env.OP_BEAT_SECRET_TOKEN}" `;
+let args = `https://intake.opbeat.com/api/v1/organizations/${process.env.OPBEAT_ORGANIZATION_ID}/apps/${process.env.OPBEAT_APP_ID}/releases/ `;
+args += `-H "Authorization: Bearer ${process.env.OPBEAT_SECRET_TOKEN}" `;
 args += '-d rev=`git log -n 1 --pretty=format:%H` ';
 args += '-d branch=`git rev-parse --abbrev-ref HEAD` ';
 args += '-d status=completed';

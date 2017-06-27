@@ -8,6 +8,7 @@ const UserSchema = new Schema({
   emails: Array,
   name: { type: String, required: true },
   avatar: { type: String, required: false },
+  accessToken: { type: String, required: false },
 });
 
 export default mongoose.model('User', UserSchema);
