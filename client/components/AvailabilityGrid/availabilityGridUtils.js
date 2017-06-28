@@ -11,8 +11,8 @@ const moment = extendMoment(Moment);
  */
 const datesMinMax = (event) => {
   let dates = _.cloneDeep(event.dates);
-  dates = _.flatMap(dates, v => [v.fromDate, v.toDate]);
-  dates.sort((a, b) => moment(a).isAfter(moment(b)));
+  dates = _.flatMap(dates, date => [date.fromDate, date.toDate]);
+  dates.sort((a, b) => moment(a).unix() - moment(b).unix());
   return { max: moment(dates[dates.length - 1]), min: moment(dates[0]) };
 };
 
@@ -165,10 +165,10 @@ export const createGridComplete = (allDates, allTimes, event) => {
 
 /**
  *
- * @param {*} quarter
- * @param {*} operation
- * @param {*} cellRowIndex
- * @param {*} cellColumnIndex
+ * @param {object} quarter
+ * @param {string} operation - add -remove
+ * @param {number} cellRowIndex
+ * @param {number} cellColumnIndex
  * @param {number} cellInitialRow
  * @param {number} cellInitialColumn
  * @param {object} curUser
