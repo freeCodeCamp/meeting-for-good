@@ -86,11 +86,12 @@ class Home extends React.Component {
                 onTouchTap={this.handleOpenLoginModal}
               />
             </div>
+            <div styleName="dummy-element" />
         </header>
         <div styleName="content">
           <hr />
           <div>
-            <h6>The best meeting coordination app</h6>
+            <h3>The best meeting coordination app</h3>
           </div>
           <img src={dashboardBanner} alt="dashboard" />
           <img src={dashboardBanner2} alt="dashboard2" />

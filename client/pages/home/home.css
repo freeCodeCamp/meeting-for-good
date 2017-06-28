@@ -13,38 +13,46 @@
 }
 
 .header {
-	text-transform: uppercase;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: space-around;
 }
-	.header img {
-		margin-bottom: 4%;
-	}
 
 	.header h2 {
 		color: #006400;
 		font-weight: 500;
-		text-transform: none;
 		font-size: 80px;
 		padding: 2% 0 0 0;
 	}
 
-.masthead {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-}
+  .header .statistics {
+    order: 0;
+    border: 1px solid black;
+    border-radius: 3px;
+    width: 230px;
+    margin: 10px;
+    padding: 0px 10px;
+    text-align: left;
+    font-size: 12px;
+    flex-grow: 0;
+  }
 
-.statistics {
-	width: 200px;
-	padding: 10px;
-	text-align: left;
-	font-size: 12px;
-	text-transform: none;
-}
+	.header .title-and-button {
+    order: 1;
+		display: flex;
+		flex-direction: column;
+    flex-grow: 1;
+	}
 
-.dummy-space {
-	width: 200px;
-}
+  .header .dummy-element {
+    display: block;
+    order: 2;
+    width: 230px;
+    margin: 10px;
+  }
 
 .loginButton {
 	margin: 30px !important;
@@ -115,16 +123,12 @@ footer {
 	border-color: lightgrey;
 }
 
-@media (min-width:550px) and (max-width:850px) {
+@media (min-width:550px) and (max-width:1175px) {
   .main img {
     width: 600px;
   }
 	.main .header h2 {
 		font-size: 60px !important;
-	}
-
-	.main .header h6 {
-		font-size: 10px !important;
 	}
 
 	.gif {
@@ -135,13 +139,25 @@ footer {
 	.timezones {
 		width: 600px !important;
 	}
+
+  .header {
+    flex-direction: column;
+  }
+
+  .header .statistics {
+    order: 1;
+  }
+
+  .header .title-and-button {
+    order: 0;
+  }
+
+  .header .dummy-element {
+    display: none;
+  }
 }
 
 @media (max-width:550px) {
-  .masthead {
-	  flex-direction: column;
-  }
-
   .statistics {
 	  order: 1;
   }
@@ -150,10 +166,6 @@ footer {
   }
 		.header h2 {
 			font-size: 46px;
-		}
-
-		.header h6 {
-			font-size: 10px;
 		}
 
 		.gif {
@@ -169,4 +181,19 @@ footer {
 		font-size: 15px;
 	}
 
+  .header {
+    flex-direction: column;
+  }
+
+  .header .statistics {
+    order: 1;
+  }
+
+  .header .title-and-button {
+    order: 0;
+  }
+
+  .header .dummy-element {
+    display: none;
+  }
 }
