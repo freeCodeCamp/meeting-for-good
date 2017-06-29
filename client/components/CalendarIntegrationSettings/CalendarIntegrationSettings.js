@@ -56,13 +56,19 @@ class CalendarIntegrationSettings extends Component {
         selectedCal: curUser.selectedCalendarsIds,
       });
     } catch (err) {
-      console.log('err at componentWillMount GoogleCalendarSetings', err);
+      console.log('err at componentWillMount CalendarIntegrationSettings', err);
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     const { openModalCalSet } = nextProps;
-    this.setState({ openModalCalSet });
+    const { curUser } = this.props;
+    try {
+      const listCal = await this.constructor.calendarsLoad();
+      this.setState({ openModalCalSet, listCal, selectedCal: curUser.selectedCalendarsIds });
+    } catch (err) {
+      console.log('err at componentWillReceiveProps CalendarIntegrationSettings', err);
+    }
   }
 
   @autobind
