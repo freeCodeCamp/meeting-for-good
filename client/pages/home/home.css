@@ -31,7 +31,6 @@
   .header .statistics {
     order: 0;
     border-right: 3px double #DADADA;
-/*    border-radius: 3px; */
     width: 230px;
     margin: 20px;
     padding: 0px 10px;
@@ -165,6 +164,7 @@ footer {
 		width: 500px !important;
 		height: 200px;
 	}
+  
 
 	.timezones {
 		width: 600px !important;
@@ -190,9 +190,6 @@ footer {
 }
 
 @media (max-width:550px) {
-  .statistics {
-	  order: 1;
-  }
   .main img {
     width: 300px;
   }
@@ -204,6 +201,10 @@ footer {
 			width: 300px;
 			height: 110px;
 		}
+
+    .gifAvail {
+      width: 300px;
+    }
 
 	.content .timezones {
 		width: 370px;
@@ -236,4 +237,11 @@ footer {
 	.loginButton button {
 		min-width: 300px !important;
 	}
+
+  .header .statistics {
+    order: 1;
+    border-top: 3px double #DADADA;
+    border-right: none;
+  }
+
 }
