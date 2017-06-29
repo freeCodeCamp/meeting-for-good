@@ -1,4 +1,3 @@
-
 import React from 'react';
 import cssModules from 'react-css-modules';
 import Avatar from 'material-ui/Avatar';
@@ -18,6 +17,7 @@ const inLineStyles = {
   iconMenu: {
     iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
     toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } },
+    menuItem: { maxHeight: '30px', minHeight: '30px', lineHeight: '30px', width: '168px' },
   },
 };
 
@@ -33,36 +33,64 @@ const IconBtn = (props) => {
   );
 };
 
-const MenuItems = (props) => {
-  const { showPastEvents, handleFilterToggle, toggleAboutDialog } = props;
+const CalSetMenuItem = (props) => {
+  const { cbToggleCalSetDialog } = props;
   return (
-    <span>
-      <MenuItem style={{ maxHeight: '30px', minHeight: '30px', width: '168px' }} >
-        <Toggle
-          label={'Past Events'}
-          toggled={showPastEvents}
-          styleName="Toggle"
-          labelStyle={inLineStyles.iconMenu.toggle.label}
-          thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
-          onToggle={handleFilterToggle}
-        />
-      </MenuItem >
-      <Divider styleName="Divider" />
-      <MenuItem
-        onClick={toggleAboutDialog}
-        styleName="AboutButton"
-        primaryText="About"
-        style={{ maxHeight: '30px', minHeight: '30px', lineHeight: '34px', width: '168px', fontSize: '18px' }}
-      />
-      <MenuItem
-        href={'/api/auth/logout'}
-        styleName="LogoutButton"
-        primaryText="Logout"
-        style={{ maxHeight: '30px', minHeight: '30px', lineHeight: '30px', width: '168px', fontSize: '18px' }}
-      />
-    </span>
+    <MenuItem
+      onTouchTap={cbToggleCalSetDialog}
+      styleName="AboutButton"
+      primaryText="Calendar Integration"
+      style={inLineStyles.iconMenu.menuItem}
+    />
   );
 };
+
+const PastEventsMenuItem = (props) => {
+  const { showPastEvents, handleFilterToggle } = props;
+  return (
+    <MenuItem style={{ maxHeight: '30px', minHeight: '30px', width: '168px' }} >
+      <Toggle
+        label={'Past Events'}
+        toggled={showPastEvents}
+        styleName="Toggle"
+        labelStyle={inLineStyles.iconMenu.toggle.label}
+        thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
+        onToggle={handleFilterToggle}
+      />
+    </MenuItem >
+  );
+};
+
+const AboutMenuItem = (props) => {
+  const { toggleAboutDialog } = props;
+  return (
+    <MenuItem
+      onTouchTap={toggleAboutDialog}
+      styleName="AboutButton"
+      primaryText="About"
+      style={inLineStyles.iconMenu.menuItem}
+    />
+  );
+};
+
+const LogoutMenuItem = () => (
+  <MenuItem
+    href={'/api/auth/logout'}
+    styleName="LogoutButton"
+    primaryText="Logout"
+    style={{ maxHeight: '30px', minHeight: '30px', lineHeight: '30px', width: '168px' }}
+  />
+);
+
+const MenuItems = props => (
+  <span>
+    {PastEventsMenuItem(props)}
+    <Divider styleName="Divider" />
+    {CalSetMenuItem(props)}
+    {AboutMenuItem(props)}
+    {LogoutMenuItem()}
+  </span>
+);
 
 const AvatarMenu = props => (
   <IconMenu
@@ -81,15 +109,25 @@ IconBtn.defaultProps = {
   curUser: () => { console.log('curUser prop validation not set!'); },
 };
 
+CalSetMenuItem.propTypes = {
+  cbToggleCalSetDialog: PropTypes.func.isRequired,
+};
+
+AboutMenuItem.propTypes = {
+  toggleAboutDialog: PropTypes.func.isRequired,
+};
 
 IconBtn.propTypes = {
   curUser: isCurUser,
   userAvatar: PropTypes.string.isRequired,
 };
 
-MenuItems.propTypes = {
+PastEventsMenuItem.propTypes = {
   showPastEvents: PropTypes.bool.isRequired,
   handleFilterToggle: PropTypes.func.isRequired,
+};
+
+AboutMenuItem.propTypes = {
   toggleAboutDialog: PropTypes.func.isRequired,
 };
 

@@ -16,6 +16,7 @@ import {
 import { sendEmailInvite } from '../util/emails';
 import '../styles/main.css';
 import { handleLoadEvent, handleEmailOwner } from './AppHandlers';
+import editCurUser from '../util/curUser';
 
 const styleNotif = {
   NotificationItem: { // Override the notification item
@@ -274,6 +275,20 @@ class App extends Component {
     return nEvents;
   }
 
+  @autobind
+  async handleEditCurUser(patches) {
+    const { curUser } = this.state;
+    try {
+      const nCurUser = await editCurUser(patches, curUser._id);
+      console.log(nCurUser);
+      this.setState({ curUser: nCurUser });
+      return nCurUser;
+    } catch (err) {
+      console.error('error at app handleEditCurUser', err);
+      return err;
+    }
+  }
+
   injectPropsChildren(child) {
     const { showPastEvents, curUser, isAuthenticated, events } = this.state;
     if (child.type.displayName === 'Dashboard') {
@@ -344,6 +359,7 @@ class App extends Component {
           cbHandleDismissGuest={this.handleGuestNotificationsDismiss}
           events={events}
           showPastEvents={showPastEvents}
+          cbEditCurUser={this.handleEditCurUser}
         />
         <main className="main"> {childrenWithProps} </main>
       </div>
