@@ -19,6 +19,9 @@ const styleNameCompose = (props) => {
       style += ' cellNotHeiglighted';
     }
   }
+  if (quarter.eventCalendar !== null) {
+    style += ' CellHasCalendarEvent';
+  }
   return style;
 };
 

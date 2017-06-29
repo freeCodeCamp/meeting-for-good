@@ -31,3 +31,7 @@
 .cellDisable {
    cursor: none;
 }
+
+.CellHasCalendarEvent {
+    border: 1px solid red;
+}
