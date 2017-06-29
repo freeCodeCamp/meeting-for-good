@@ -6,6 +6,21 @@ import ReactTooltip from 'react-tooltip';
 import { styleNameCompose, formatCellBackgroundColor } from './cellGridUtils';
 import styles from './cell-grid.css';
 
+const ToolTip = (quarter) => {
+  if (quarter.eventCalendar !== null) {
+    return (<ReactTooltip
+      id={quarter.time.toString()}
+      place="top"
+      effect="float"
+    >
+      <p> You have a schedule conflicted with: </p>
+      <p> {(quarter.eventCalendar.name) ? quarter.eventCalendar.name : 'No Name'} </p>
+      <p> organized by : {quarter.eventCalendar.organizer} </p>
+    </ReactTooltip>);
+  }
+  return null;
+};
+
 const CellGrid = (props) => {
   const { quarter, onMouseOver, onMouseLeave, onMouseDown, onMouseUp } = props;
   const styleNames = styleNameCompose(props);
@@ -27,17 +42,7 @@ const CellGrid = (props) => {
       data-tip
       data-for={quarter.time.toString()}
     >
-      {(quarter.eventCalendar !== null) ?
-        <ReactTooltip
-          id={quarter.time.toString()}
-          place="top"
-          effect="float"
-        >
-          <p> You have a schedule conflicted with: </p>
-          <p> {(quarter.eventCalendar.name) ? quarter.eventCalendar.name : 'No Name'} </p>
-          <p> organized by : {quarter.eventCalendar.organizer} </p>
-        </ReactTooltip> : null
-      }
+      {ToolTip(quarter)}
     </div>
   );
 };
