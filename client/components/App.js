@@ -280,7 +280,6 @@ class App extends Component {
     const { curUser } = this.state;
     try {
       const nCurUser = await editCurUser(patches, curUser._id);
-      console.log(nCurUser);
       this.setState({ curUser: nCurUser });
       return nCurUser;
     } catch (err) {
