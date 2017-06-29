@@ -10,23 +10,23 @@ const toolTipRows = (eventsCalendar) => {
   const rows = [];
   eventsCalendar.forEach((event) => {
     rows.push(
-      <div>
+      <div key={event.id} styleName="toolTipHeaderWrapper">
         <p> {(event.name) ? event.name : 'No Name'} </p>
-        <p> organized by : {event.organizer} </p>
+        <p styleName="toolTipSubHeader"> organized by : <strong>{event.organizer} </strong></p>
       </div>,
     );
   });
   return rows;
 };
 
-const ToolTip = (quarter) => {
-  if (quarter.eventCalendar.length > 0) {
+const ToolTip = (quarter, heatMapMode) => {
+  if (quarter.eventCalendar.length > 0 && heatMapMode) {
     return (<ReactTooltip
       id={quarter.time.toString()}
       place="top"
       effect="float"
     >
-      <p> You have a schedule conflicted with: </p>
+      <h4 styleName="toolTipHeader"> You have a schedule conflicted with: </h4>
       {toolTipRows(quarter.eventCalendar)}
     </ReactTooltip>);
   }
@@ -34,7 +34,7 @@ const ToolTip = (quarter) => {
 };
 
 const CellGrid = (props) => {
-  const { quarter, onMouseOver, onMouseLeave, onMouseDown, onMouseUp } = props;
+  const { quarter, onMouseOver, onMouseLeave, onMouseDown, onMouseUp, heatMapMode } = props;
   const styleNames = styleNameCompose(props);
   const inlineStyle = {
     backgroundColor: formatCellBackgroundColor(props),
@@ -54,7 +54,7 @@ const CellGrid = (props) => {
       data-tip
       data-for={quarter.time.toString()}
     >
-      {ToolTip(quarter)}
+      {ToolTip(quarter, heatMapMode)}
     </div>
   );
 };
@@ -72,6 +72,7 @@ CellGrid.propTypes = {
   onMouseLeave: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
+  heatMapMode: PropTypes.bool.isRequired,
 
   quarter: PropTypes.shape({
     time: PropTypes.instanceOf(Date).isRequired,

@@ -35,3 +35,16 @@
 .CellHasCalendarEvent {
     border: 1px solid darkblue;
 }
+
+.toolTipHeader {
+  font-size: 18px;
+}
+
+.toolTipHeaderWrapper {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.toolTipSubHeader {
+  margin-left: 10px;
+}
