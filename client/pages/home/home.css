@@ -30,10 +30,10 @@
 
   .header .statistics {
     order: 0;
-    border: 1px solid black;
-    border-radius: 3px;
+    border-right: 3px double #DADADA;
+/*    border-radius: 3px; */
     width: 230px;
-    margin: 10px;
+    margin: 20px;
     padding: 0px 10px;
     text-align: left;
     font-size: 12px;
@@ -123,12 +123,42 @@ footer {
 	border-color: lightgrey;
 }
 
-@media (min-width:550px) and (max-width:1175px) {
+@media (min-width:1010px) and (max-width:1175px) {
+	.main .header h2 {
+		font-size: 60px !important;
+	}
+
+	.loginButton button {
+		min-width: 200px !important;
+	}
+}
+
+@media (min-width:930px) and (max-width:1010px) {
+	.main .header h2 {
+		font-size: 50px !important;
+	}
+
+	.loginButton button {
+		min-width: 200px !important;
+	}
+}
+
+@media (min-width:850px) and (max-width:930px) {
+	.main .header h2 {
+		font-size: 40px !important;
+	}
+
+	.loginButton button {
+		min-width: 200px !important;
+	}
+}
+
+@media (min-width:550px) and (max-width:850px) {
   .main img {
     width: 600px;
   }
 	.main .header h2 {
-		font-size: 60px !important;
+		font-size: 50px !important;
 	}
 
 	.gif {
@@ -146,7 +176,9 @@ footer {
 
   .header .statistics {
     order: 1;
-  }
+    border-top: 3px double #DADADA;
+    border-right: none;
+}
 
   .header .title-and-button {
     order: 0;
@@ -165,7 +197,7 @@ footer {
     width: 300px;
   }
 		.header h2 {
-			font-size: 46px;
+			font-size: 36px;
 		}
 
 		.gif {
@@ -196,4 +228,12 @@ footer {
   .header .dummy-element {
     display: none;
   }
+
+.loginButton {
+	margin: 30px !important;
+}
+
+	.loginButton button {
+		min-width: 300px !important;
+	}
 }

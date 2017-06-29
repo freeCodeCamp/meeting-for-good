@@ -71,11 +71,11 @@ class Home extends React.Component {
       <div styleName="main">
         <header styleName="header">
             <div styleName="statistics">
-              <h6>Event creators: {stats.users}</h6>
-              <h6>Total events created until today: {stats.events}</h6>
-              <h6>Events occurring today: {stats.eventsToday}</h6>
-              <h6>Avg. participants for all events: {stats.avgParticipants}</h6>
-              <h6>Max. participants for any event: {stats.maxParticipants}</h6>
+              <h6>Event creators: <strong>{stats.users}</strong></h6>
+              <h6>Total events created until today: <strong>{stats.events}</strong></h6>
+              <h6>Events occurring today: <strong>{stats.eventsToday}</strong></h6>
+              <h6>Avg. guests for all events: <strong>{stats.avgParticipants}</strong></h6>
+              <h6>Max. guests for any event: <strong>{stats.maxParticipants}</strong></h6>
             </div>
             <div styleName="title-and-button">
               <h2>Meeting for Good</h2>
