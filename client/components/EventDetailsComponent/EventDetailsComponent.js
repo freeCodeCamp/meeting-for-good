@@ -180,7 +180,7 @@ class EventDetailsComponent extends React.Component {
 
   render() {
     const { event, showHeatmap, dates, heightlightedUser } = this.state;
-    const { curUser } = this.props;
+    const { curUser, calendarEvents } = this.props;
     return (
       <div styleName="wrapper">
         <div>
@@ -199,6 +199,7 @@ class EventDetailsComponent extends React.Component {
                 showHeatmap={showHeatmap}
                 closeEditorGrid={this.closeGrid}
                 heightlightedUser={heightlightedUser}
+                calendarEvents={calendarEvents}
               />
               <br />
               <ParticipantsList
@@ -221,6 +222,7 @@ class EventDetailsComponent extends React.Component {
 EventDetailsComponent.defaultProps = {
   event: () => { console.log('event prop validation not set!'); },
   curUser: () => { console.log('curUser prop validation not set!'); },
+  calendarEvents: [],
 };
 
 EventDetailsComponent.propTypes = {
@@ -230,6 +232,7 @@ EventDetailsComponent.propTypes = {
   cbHandleEmailOwner: PropTypes.func.isRequired,
   cbHandleEmailOwnerEdit: PropTypes.func.isRequired,
   cbDeleteGuest: PropTypes.func.isRequired,
+  calendarEvents: PropTypes.arrayOf(PropTypes.object),
   // Current user
   curUser: isCurUser,
   // Event containing list of event participants

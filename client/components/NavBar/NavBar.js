@@ -10,6 +10,8 @@ import NotificationBar from '../NotificationBar/NotificationBar';
 import avatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 import AboutDialog from '../AboutDialog/AboutDialog';
 import AvatarMenu from '../NavBar/NavBarAvatarMenu';
+import CalendarIntegrationSettings from '../CalendarIntegrationSettings/CalendarIntegrationSettings';
+
 import styles from './nav-bar.css';
 
 class NavBar extends Component {
@@ -31,6 +33,7 @@ class NavBar extends Component {
       showPastEvents,
       events,
       openModal: false,
+      openModalCalSet: false,
     };
   }
 
@@ -75,10 +78,16 @@ class NavBar extends Component {
     this.props.cbHandleDismissGuest(participantId);
   }
 
+  @autobind
+  toggleCalSetDialog() {
+    this.setState({ openModalCalSet: !this.state.openModalCalSet });
+  }
+
   renderRightGroup() {
     const {
       toggleVisible,
-      isAuthenticated, events, openModal, userAvatar, curUser, showPastEvents } = this.state;
+      isAuthenticated,
+      events, openModal, userAvatar, curUser, showPastEvents, openModalCalSet } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -103,6 +112,13 @@ class NavBar extends Component {
             showPastEvents={showPastEvents}
             handleFilterToggle={this.handleFilterToggle}
             toggleAboutDialog={this.toggleAboutDialog}
+            cbToggleCalSetDialog={this.toggleCalSetDialog}
+          />
+          <CalendarIntegrationSettings
+            cbToggleCalSetDialog={this.toggleCalSetDialog}
+            openModalCalSet={openModalCalSet}
+            curUser={curUser}
+            cbEditCurUser={this.props.cbEditCurUser}
           />
           <AboutDialog cbOpenModal={this.toggleAboutDialog} openModal={openModal} />
         </ToolbarGroup>
@@ -162,6 +178,7 @@ NavBar.propTypes = {
   cbOpenLoginModal: PropTypes.func.isRequired,
   showPastEvents: PropTypes.bool,
   cbHandleDismissGuest: PropTypes.func.isRequired,
+  cbEditCurUser: PropTypes.func.isRequired,
 
   // List of events containing list of event participants
   events: PropTypes.arrayOf(
