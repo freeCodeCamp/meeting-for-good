@@ -150,7 +150,8 @@ class AvailabilityGrid extends Component {
   @autobind
   handleCancelBtnClick() {
     const { allDates, allTimes, event } = this.state;
-    const grid = createGridComplete(allDates, allTimes, event);
+    const { calendarEvents } = this.props;
+    const grid = createGridComplete(allDates, allTimes, event, calendarEvents);
     this.setState({ grid });
     this.props.closeEditorGrid();
   }

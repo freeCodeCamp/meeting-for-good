@@ -114,6 +114,7 @@
     "react-notification-system": "^0.2.14",
     "react-router": "^3.0.2",
     "react-tap-event-plugin": "^2.0.1",
+    "react-tooltip": "^3.3.0",
     "react-transform-hmr": "^1.0.4",
     "rimraf": "^2.6.1",
     "shelljs": "^0.7.7",

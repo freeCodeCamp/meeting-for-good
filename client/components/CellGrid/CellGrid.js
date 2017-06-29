@@ -1,6 +1,7 @@
 import React from 'react';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';
+import ReactTooltip from 'react-tooltip';
 
 import { styleNameCompose, formatCellBackgroundColor } from './cellGridUtils';
 import styles from './cell-grid.css';
@@ -23,7 +24,21 @@ const CellGrid = (props) => {
       onMouseLeave={onMouseLeave}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
-    />
+      data-tip
+      data-for={quarter.time.toString()}
+    >
+      {(quarter.eventCalendar !== null) ?
+        <ReactTooltip
+          id={quarter.time.toString()}
+          place="top"
+          effect="float"
+        >
+          <p> You have a schedule conflicted with: </p>
+          <p> {(quarter.eventCalendar.name) ? quarter.eventCalendar.name : 'No Name'} </p>
+          <p> organized by : {quarter.eventCalendar.organizer} </p>
+        </ReactTooltip> : null
+      }
+    </div>
   );
 };
 
