@@ -123,12 +123,8 @@ const createGuestNotGuestList = (participants, flattenedAvailability, dateHourFo
 };
 
 const haveACalendarEvent = (time, CalendarEventsReduced) => {
-  let index = 0;
-  while (CalendarEventsReduced.length > index
-    && !CalendarEventsReduced[index].range.contains(time)) {
-    index += 1;
-  }
-  return (CalendarEventsReduced.length === index) ? null : CalendarEventsReduced[index];
+  const result = CalendarEventsReduced.filter(item => item.range.contains(time));
+  return result;
 };
 
 

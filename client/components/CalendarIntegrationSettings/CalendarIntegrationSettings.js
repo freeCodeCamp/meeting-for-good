@@ -52,7 +52,7 @@ class CalendarIntegrationSettings extends Component {
       const listCal = await this.constructor.calendarsLoad();
       this.setState({
         openModalCalSet,
-        listCal: listCal.items,
+        listCal,
         selectedCal: curUser.selectedCalendarsIds,
       });
     } catch (err) {

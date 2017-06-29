@@ -19,7 +19,7 @@ const styleNameCompose = (props) => {
       style += ' cellNotHeiglighted';
     }
   }
-  if (quarter.eventCalendar !== null) {
+  if (quarter.eventCalendar.length > 0) {
     style += ' CellHasCalendarEvent';
   }
   return style;

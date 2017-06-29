@@ -9,7 +9,8 @@ const listCalendars = async () => {
   try {
     const response = await fetch('/api/ggcalendar/list', { credentials: 'same-origin' });
     checkStatus(response);
-    const calendars = await parseJSON(response);
+    let calendars = await parseJSON(response);
+    calendars = calendars.items.filter(item => item.accessRole === 'owner');
     return calendars;
   } catch (err) {
     console.error('listCalendars at calendars.js', err);
@@ -40,7 +41,6 @@ const loadCalendarEvents = async (urlToFetch) => {
 const listEventsForCalendar = async (maxMinDates, id) => {
   const urlToFetch =
     encodeURI(`/api/ggcalendar/listEvents/${id}/${maxMinDates.minDate.utc().format()}/${maxMinDates.maxDate.utc().format()}`);
-  console.log(urlToFetch);
   try {
     const result = await loadCalendarEvents(urlToFetch);
     return result;

@@ -6,16 +6,28 @@ import ReactTooltip from 'react-tooltip';
 import { styleNameCompose, formatCellBackgroundColor } from './cellGridUtils';
 import styles from './cell-grid.css';
 
+const toolTipRows = (eventsCalendar) => {
+  const rows = [];
+  eventsCalendar.forEach((event) => {
+    rows.push(
+      <div>
+        <p> {(event.name) ? event.name : 'No Name'} </p>
+        <p> organized by : {event.organizer} </p>
+      </div>,
+    );
+  });
+  return rows;
+};
+
 const ToolTip = (quarter) => {
-  if (quarter.eventCalendar !== null) {
+  if (quarter.eventCalendar.length > 0) {
     return (<ReactTooltip
       id={quarter.time.toString()}
       place="top"
       effect="float"
     >
       <p> You have a schedule conflicted with: </p>
-      <p> {(quarter.eventCalendar.name) ? quarter.eventCalendar.name : 'No Name'} </p>
-      <p> organized by : {quarter.eventCalendar.organizer} </p>
+      {toolTipRows(quarter.eventCalendar)}
     </ReactTooltip>);
   }
   return null;
