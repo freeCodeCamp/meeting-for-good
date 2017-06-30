@@ -29,7 +29,10 @@ const listCalendars = async (req, res) => {
   let curUser;
   try {
     curUser = await getCredencials(req);
-    if (!curUser.accessToken) return res.redirect('/auth');
+    if (!curUser.accessToken) {
+      console.error('no accessToken, listCalendars');
+      return res.redirect('/auth');
+    }
   } catch (err) {
     console.error('ERROR at listCalendars get curUser', err);
     return res.status(500).send(err);
