@@ -164,7 +164,11 @@ footer {
 		width: 500px !important;
 		height: 200px;
 	}
-  
+
+  .gifAvail {
+    width: 600px !important;
+    height: auto;
+  }
 
 	.timezones {
 		width: 600px !important;
@@ -203,7 +207,8 @@ footer {
 		}
 
     .gifAvail {
-      width: 300px;
+      width: 300px !important;
+      height: auto;
     }
 
 	.content .timezones {
