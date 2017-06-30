@@ -54,8 +54,7 @@ class AvailabilityGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { event, dates, showHeatmap } = nextProps;
-    const { calendarEvents } = this.props;
+    const { event, dates, showHeatmap, calendarEvents } = nextProps;
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event, calendarEvents);

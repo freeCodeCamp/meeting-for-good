@@ -37,7 +37,7 @@ const listCalendars = async (req, res) => {
   return getCalList(res, curUser);
 };
 
-const cbGetCalEventsList = async (err, accessToken, refreshToken, req, res) => {
+const cbGetCalEventsList = (err, accessToken, refreshToken, req, res) => {
   const calendarId = req.params.calendarId;
   const minDate = decodeURI(req.params.minDate);
   const maxDate = decodeURI(req.params.maxDate);
@@ -51,9 +51,9 @@ const cbGetCalEventsList = async (err, accessToken, refreshToken, req, res) => {
     });
 };
 
-const GetCalEventsList = async (req, res, curUser) =>
+const GetCalEventsList = (req, res, curUser) =>
   refresh.requestNewAccessToken('google', curUser.accessToken,
-    async (err, accessToken, refreshToken) =>
+    (err, accessToken, refreshToken) =>
       cbGetCalEventsList(err, accessToken, refreshToken, req, res));
 
 const listEvents = async (req, res) => {

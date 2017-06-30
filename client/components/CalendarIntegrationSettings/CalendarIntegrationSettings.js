@@ -100,7 +100,7 @@ class CalendarIntegrationSettings extends Component {
       await cbEditCurUser(patchesForAdd);
       cbToggleCalSetDialog();
     } catch (err) {
-      console.log('handleSaveSetings', err);
+      console.log('handleSaveSetings CalendarIntegration', err);
     }
   }
 
@@ -116,7 +116,7 @@ class CalendarIntegrationSettings extends Component {
         </TableRow>,
       );
     });
-    const result = (<TableBody> {rows} </TableBody>);
+    const result = (<TableBody deselectOnClickaway={false}> {rows} </TableBody>);
     return result;
   }
 
@@ -124,7 +124,7 @@ class CalendarIntegrationSettings extends Component {
     const inlineStyles = { TableHeaderColumn: { fontSize: '18px' } };
     return (
       <Table fixedHeader selectable multiSelectable onCellClick={this.handleCellClick}>
-        <TableHeader displaySelectAll={false} adjustForCheckbox enableSelectAll >
+        <TableHeader displaySelectAll={false} adjustForCheckbox >
           <TableRow>
             <TableHeaderColumn style={inlineStyles.TableHeaderColumn}>Calendars</TableHeaderColumn>
           </TableRow>
