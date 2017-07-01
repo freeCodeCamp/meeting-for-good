@@ -2,7 +2,6 @@
 import 'dotenv/config';
 import opbeat from 'opbeat/start';
 import mongoose from 'mongoose';
-import bluebird from 'bluebird';
 import passport from 'passport';
 import session from 'express-session';
 import bodyParser from 'body-parser';
@@ -17,7 +16,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
 app.use(compression({ threshold: 0 }));
-mongoose.Promise = bluebird;
+mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGO_URI);
 
 if (process.env.NODE_ENV === 'development') {

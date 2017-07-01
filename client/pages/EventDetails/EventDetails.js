@@ -23,21 +23,25 @@ class EventDetails extends Component {
   }
 
   async componentWillMount() {
-    const { isAuthenticated, curUser } = this.props;
+    const { isAuthenticated, curUser, cbLoadEvent } = this.props;
     if (isAuthenticated === true) {
-      const event = await this.props.cbLoadEvent(this.props.params.uid);
-      const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
-      this.setState({ event, curUser, calendarEvents });
+      try {
+        const event = await cbLoadEvent(this.props.params.uid);
+        const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
+        this.setState({ event, curUser, calendarEvents });
+      } catch (err) {
+        console.log('eventDetails componentWillMount', err);
+      }
     } else {
       this.props.cbOpenLoginModal(`/event/${this.props.params.uid}`);
     }
   }
 
   async componentWillReceiveProps(nextProps) {
-    const { isAuthenticated, curUser } = nextProps;
+    const { isAuthenticated, curUser, cbLoadEvent } = nextProps;
     if (isAuthenticated === true) {
       try {
-        const event = await this.props.cbLoadEvent(this.props.params.uid);
+        const event = await cbLoadEvent(this.props.params.uid);
         const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
         this.setState({ event, curUser, calendarEvents });
       } catch (err) {
