@@ -86,6 +86,7 @@
     "jstimezonedetect": "^1.0.6",
     "lodash": "^4.17.2",
     "material-ui": "^0.18.4",
+    "mocha": "^3.4.2",
     "moment": "^2.18.1",
     "moment-range": "^3.0.3",
     "mongoose": "^4.11.0",
