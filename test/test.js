@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import request from 'request';
 
 describe('Test Server Response', () => {
