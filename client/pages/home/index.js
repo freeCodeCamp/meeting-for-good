@@ -11,20 +11,40 @@ import mainBannerImage from '../../assets/main-banner.png';
 import enterAvailImage from '../../assets/enteravail.gif';
 import timeZonesImage from '../../assets/timezones.png';
 import dashboardBanner2 from '../../assets/dashboard-banner-2.png';
+import { loadStats } from '../../util/events';
 import LoginModal from '../../components/Login/Login';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { openLoginModal: false, loginFail: false };
+
+    this.state = {
+      stats: {
+        users: 0,
+        events: 0,
+        activeEvents: 0,
+        avgParticipants: 0,
+        maxParticipants: 0,
+        eventsToday: 0 },
+      openLoginModal: false,
+      loginFail: false,
+    };
   }
+
   async componentWillMount() {
     if (sessionStorage.getItem('redirectTo')) {
       browserHistory.push(sessionStorage.getItem('redirectTo'));
       sessionStorage.removeItem('redirectTo');
     }
 
-    if (await isAuthenticated()) browserHistory.push('/dashboard');
+    try {
+      if (await isAuthenticated()) browserHistory.push('/dashboard');
+
+      const stats = await loadStats();
+      this.setState({ stats });
+    } catch (err) {
+      console.log('In index.js: componentWillMount: ', err);
+    }
   }
 
   @autobind
@@ -45,24 +65,40 @@ class Home extends React.Component {
   }
 
   render() {
-    const { openLoginModal, loginFail } = this.state;
+    const { openLoginModal, loginFail, stats } = this.state;
     const inlineStyle = { loginButton: { textTransform: 'none' } };
     return (
       <div styleName="main">
         <header styleName="header">
-          <h2>Meeting for Good</h2>
-          <RaisedButton
-            label="Login (it's free!)"
-            styleName="loginButton"
-            labelStyle={inlineStyle.loginButton}
-            onTouchTap={this.handleOpenLoginModal}
-          />
+            <div styleName="statistics">
+              <h6>Event creators: <strong>{stats.users}</strong></h6>
+              <h6>Total events created until today: <strong>{stats.events}</strong></h6>
+              <h6>Events occurring today: <strong>{stats.eventsToday}</strong></h6>
+              <h6>Avg. guests for all events: <strong>{stats.avgParticipants}</strong></h6>
+              <h6>Max. guests for any event: <strong>{stats.maxParticipants}</strong></h6>
+            </div>
+            <div styleName="title-and-button">
+              <h2>Meeting for Good</h2>
+              <RaisedButton
+                label="Login (it's free!)"
+                styleName="loginButton"
+                labelStyle={inlineStyle.loginButton}
+                onTouchTap={this.handleOpenLoginModal}
+              />
+            </div>
+            <div styleName="dummy-element" />
+        </header>
+        <div styleName="content">
+          <hr />
+          <div>
+            <h3>The best meeting coordination app</h3>
+          </div>
+          <img src={dashboardBanner} alt="dashboard" />
+          <img src={dashboardBanner2} alt="dashboard2" />
           <hr />
           <h3>The best meeting coordination app</h3>
           <img src={dashboardBanner} alt="dashboard" />
           <img src={dashboardBanner2} alt="dashboard2" />
-        </header>
-        <div styleName="content">
           <h3>Easy event creation</h3>
           <h6>Creating an event is easy as saying 1, 2, 3.</h6>
           <img src={mainBannerImage} alt="new event" />

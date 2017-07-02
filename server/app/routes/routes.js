@@ -3,6 +3,7 @@ import events from '../../api/events';
 import users from '../../api/user';
 import auth from '../../auth';
 import email from '../../api/email';
+import stats from '../../api/stats';
 
 const path = process.cwd();
 
@@ -25,6 +26,8 @@ export default (app) => {
   app.use('/api/user', users);
   /* email API */
   app.use('/api/email', email);
+  /* stats API */
+  app.use('/api/stats', stats);
 
   app.route('*')
     .get((req, res) => res.sendFile(`${path}/build/index.html`));
