@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import request from 'request';
+import mocha from 'mocha';
 
 describe('Test Server Response', () => {
   describe('Server Response', () => {
