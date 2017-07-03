@@ -1,16 +1,11 @@
 'use strict';
 
+import moment from 'moment';
+
 import Events from '../events/events.model';
 import Stats from './stats.model';
 
 import { handleError } from '../utils/api.utils';
-
-const computeDayOfYear = (now) => {
-  const start = new Date(now.getFullYear(), 0, 0);
-  const diff = now - start;
-  const oneDay = 1000 * 60 * 60 * 24;
-  return Math.floor(diff / oneDay);
-};
 
 const showError = msg => err => console.log(msg, ': ', err);
 
@@ -33,7 +28,7 @@ const writeStatsIntoDatabase = (stats) => {
 };
 
 const countTodaysEvents = (stats) => {
-  const dayOfYear = computeDayOfYear(new Date());
+  const dayOfYear = moment().dayOfYear();
 
   Events.aggregate()
     .project({ _id: 0, dates: 1 })
