@@ -70,23 +70,23 @@ class Home extends React.Component {
     return (
       <div styleName="main">
         <header styleName="header">
-            <div styleName="statistics">
-              <h6>Event creators: <strong>{stats.users}</strong></h6>
-              <h6>Total events created until today: <strong>{stats.events}</strong></h6>
-              <h6>Events occurring today: <strong>{stats.eventsToday}</strong></h6>
-              <h6>Avg. guests for all events: <strong>{stats.avgParticipants}</strong></h6>
-              <h6>Max. guests for any event: <strong>{stats.maxParticipants}</strong></h6>
-            </div>
-            <div styleName="title-and-button">
-              <h2>Meeting for Good</h2>
-              <RaisedButton
-                label="Login (it's free!)"
-                styleName="loginButton"
-                labelStyle={inlineStyle.loginButton}
-                onTouchTap={this.handleOpenLoginModal}
-              />
-            </div>
-            <div styleName="dummy-element" />
+          <div styleName="statistics">
+            <h6>Event creators: <strong>{stats.users}</strong></h6>
+            <h6>Total events created until today: <strong>{stats.events}</strong></h6>
+            <h6>Events occurring today: <strong>{stats.eventsToday}</strong></h6>
+            <h6>Avg. guests for all events: <strong>{stats.avgParticipants}</strong></h6>
+            <h6>Max. guests for any event: <strong>{stats.maxParticipants}</strong></h6>
+          </div>
+          <div styleName="title-and-button">
+            <h2>Meeting for Good</h2>
+            <RaisedButton
+              label="Login (it's free!)"
+              styleName="loginButton"
+              labelStyle={inlineStyle.loginButton}
+              onTouchTap={this.handleOpenLoginModal}
+            />
+          </div>
+          <div styleName="dummy-element" />
         </header>
         <div styleName="content">
           <hr />
