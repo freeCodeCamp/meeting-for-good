@@ -13,38 +13,22 @@ const styleNameCompose = (props) => {
   }
   // if have a user to hightLight and is present at this cell
   if (heightlightedUser) {
-    if (_.find(quarter.participants, heightlightedUser)) {
-      style += ' cellHighlighted';
-    } else {
-      style += ' cellNotHeiglighted';
-    }
+    style += (_.find(quarter.participants, heightlightedUser)) ? ' cellHighlighted' : ' cellNotHeiglighted';
   }
-  if (quarter.eventCalendar.length > 0) {
-    style += ' CellHasCalendarEvent';
-  }
+  if (quarter.eventCalendar.length > 0) style += ' CellHasCalendarEvent';
   return style;
 };
 
 const formatCellBackgroundColor = (props) => {
   const { backgroundColors, curUser, quarter, heatMapMode } = props;
   // background for disabled cells
-  if (quarter.disable) {
-    return '#DADADA';
-  }
-
+  if (quarter.disable) return '#DADADA';
   if (heatMapMode) {
-    if (quarter.participants.length > 0) {
-      return backgroundColors[quarter.participants.length - 1];
-    }
+    if (quarter.participants.length > 0) return backgroundColors[quarter.participants.length - 1];
     return 'transparent';
   }
-
-  if (_.find(quarter.participants, curUser._id)) {
-    return '#000000';
-  }
-  if (quarter.participants.length > 0) {
-    return '#AECDE0';
-  }
+  if (_.find(quarter.participants, curUser._id)) return '#000000';
+  if (quarter.participants.length > 0) return '#AECDE0';
   return 'transparent';
 };
 

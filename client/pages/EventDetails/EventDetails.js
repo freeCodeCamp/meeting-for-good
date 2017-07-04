@@ -14,7 +14,7 @@ class EventDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      event: {},
+      event: null,
       showLoginModal: false,
       openDrawer: false,
       curUser: {},
