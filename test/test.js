@@ -1,5 +1,9 @@
-import { expect } from 'chai';
 import chaiHttp from 'chai-http';
+import { chai, assert } from 'chai';
+import server from '../server';
+
+chai.use(chaiHttp);
+
 
 describe('Test User API', () => {
   describe('Server Response', () => {
