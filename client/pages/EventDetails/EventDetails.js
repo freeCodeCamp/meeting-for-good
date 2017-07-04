@@ -14,7 +14,7 @@ class EventDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      event: null,
+      event: {},
       showLoginModal: false,
       openDrawer: false,
       curUser: {},
@@ -28,6 +28,7 @@ class EventDetails extends Component {
       try {
         const event = await cbLoadEvent(this.props.params.uid);
         const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
+        console.log('event load no EventDetails componentWillMount', event, calendarEvents);
         this.setState({ event, curUser, calendarEvents });
       } catch (err) {
         console.log('eventDetails componentWillMount', err);
@@ -43,6 +44,7 @@ class EventDetails extends Component {
       try {
         const event = await cbLoadEvent(this.props.params.uid);
         const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
+        console.log('event load no EventDetails componentWillReceiveProps', event, calendarEvents);
         this.setState({ event, curUser, calendarEvents });
       } catch (err) {
         console.log('eventDetails componentWillReceiveProps', err);

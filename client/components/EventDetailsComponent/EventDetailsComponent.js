@@ -34,7 +34,7 @@ class EventDetailsComponent extends React.Component {
     };
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     const { curUser, event } = this.props;
     if (curUser) {
       let showHeatmap = false;

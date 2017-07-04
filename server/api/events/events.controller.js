@@ -91,9 +91,9 @@ const show = async (req, res) => {
       return null;
     }
     event.participants = event.participants.filter(participant => participant.status !== 0);
-    console.log('show', event);
     return res.status(200).json(event);
   } catch (err) {
+    console.log('ERROR at show Events', err);
     res.status(500).send(err);
   }
 };
