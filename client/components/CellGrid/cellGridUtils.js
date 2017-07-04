@@ -12,9 +12,7 @@ const styleNameCompose = (props) => {
     style += ' cellBorderHalfHour';
   }
   // if have a user to hightLight and is present at this cell
-  if (heightlightedUser) {
-    style += (_.find(quarter.participants, heightlightedUser)) ? ' cellHighlighted' : ' cellNotHeiglighted';
-  }
+  if (heightlightedUser) style += (_.find(quarter.participants, heightlightedUser)) ? ' cellHighlighted' : ' cellNotHeiglighted';
   if (quarter.eventCalendar.length > 0) style += ' CellHasCalendarEvent';
   return style;
 };

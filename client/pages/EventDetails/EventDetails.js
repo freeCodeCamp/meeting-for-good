@@ -28,7 +28,6 @@ class EventDetails extends Component {
       try {
         const event = await cbLoadEvent(this.props.params.uid);
         const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
-        console.log('event load no EventDetails componentWillMount', event, calendarEvents);
         this.setState({ event, curUser, calendarEvents });
       } catch (err) {
         console.log('eventDetails componentWillMount', err);

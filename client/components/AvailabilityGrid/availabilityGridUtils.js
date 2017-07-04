@@ -139,6 +139,7 @@ const createQuartersForGrid = (
         participants: [],
         notParticipants: [],
         disable: true,
+        eventCalendar: [],
       };
     }
     const eventCalendar = haveACalendarEvent(dateHourForCell, CalendarEventsReduced);
@@ -153,7 +154,6 @@ const createQuartersForGrid = (
   });
 
 const CalendarEventsReductor = (calendarEvents) => {
-  console.log('CalendarEventsReductor', calendarEvents);
   const result = calendarEvents.map((event) => {
     const nEvent = {};
     nEvent.range = moment.range(moment(event.start.dateTime), moment(event.end.dateTime));
@@ -163,7 +163,6 @@ const CalendarEventsReductor = (calendarEvents) => {
     nEvent.id = event.id;
     return nEvent;
   });
-  console.log('CalendarEventsReductor', result);
   return result;
 };
 
