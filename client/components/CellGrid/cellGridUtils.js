@@ -19,27 +19,45 @@ const styleNameCompose = (props) => {
 
 const backgroundColorForHeatMap = (props) => {
   const { backgroundColors, quarter } = props;
-  if (quarter.eventCalendar.length > 0 && quarter.participants.length > 0) {
-    console.log('entrei');
-    const bkgColor = backgroundColors[quarter.participants.length - 1];
+  if (quarter.participants.length === 0) {
+    if (quarter.eventCalendar.length > 0) {
+      return 'repeating-linear-gradient(45deg, transparent, #DADADA, transparent 5px, transparent 5px)';
+    }
+    return 'transparent';
+  }
+  const bkgColor = backgroundColors[quarter.participants.length - 1];
+  if (quarter.eventCalendar.length > 0) {
     return `repeating-linear-gradient(45deg, ${bkgColor}, #DADADA, ${bkgColor} 5px, ${bkgColor} 5px)`;
+  }
+  return bkgColor;
+};
+
+const backgroundColorForEdit = (props) => {
+  const { curUser, quarter } = props;
+  if (_.find(quarter.participants, curUser._id)) {
+    if (quarter.eventCalendar.length > 0) {
+      return 'repeating-linear-gradient(45deg, #000000, #DADADA, #000000 5px, #000000 5px)';
+    }
+    return '#000000';
+  }
+  if (quarter.participants.length > 0) {
+    if (quarter.eventCalendar.length > 0) {
+      return 'repeating-linear-gradient(45deg, #AECDE0, #DADADA, #AECDE0 5px, #AECDE0 5px)';
+    }
+    return '#AECDE0';
   }
   if (quarter.eventCalendar.length > 0) {
-    const bkgColor = backgroundColors[quarter.participants.length - 1];
-    return `repeating-linear-gradient(45deg, ${bkgColor}, #DADADA, ${bkgColor} 5px, ${bkgColor} 5px)`;
+    return 'repeating-linear-gradient(45deg, transparent, #DADADA, transparent 5px, transparent 5px)';
   }
-  if (quarter.participants.length > 0) return backgroundColors[quarter.participants.length - 1];
   return 'transparent';
 };
 
 const formatCellBackgroundColor = (props) => {
-  const { curUser, quarter, heatMapMode } = props;
+  const { quarter, heatMapMode } = props;
   // background for disabled cells
   if (quarter.disable) return '#DADADA';
   if (heatMapMode) return backgroundColorForHeatMap(props);
-  if (_.find(quarter.participants, curUser._id)) return '#000000';
-  if (quarter.participants.length > 0) return '#AECDE0';
-  return 'transparent';
+  return backgroundColorForEdit(props);
 };
 
 export { styleNameCompose, formatCellBackgroundColor };
