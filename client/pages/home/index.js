@@ -137,6 +137,8 @@ class Home extends React.Component {
             labelStyle={inlineStyle.loginButton}
             onTouchTap={this.handleOpenLoginModal}
           />
+          <h3>Now with Google Calendar Integration</h3>
+          <h4> Select your calendars at Calendar Integration</h4>
         </div>
         <div styleName="dummy-element" />
       </header>
