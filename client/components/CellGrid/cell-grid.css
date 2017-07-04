@@ -28,10 +28,6 @@
   border-left: 1px solid #c3bebe;
 }
 
-.cellDisable {
-   cursor: not-allowed;
-}
-
 .CellHasCalendarEvent {
     border: 1px solid darkblue;
 }

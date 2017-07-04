@@ -21,14 +21,11 @@ const toolTipRows = (eventsCalendar) => {
 
 const ToolTip = (quarter, heatMapMode) => {
   if (quarter.eventCalendar.length > 0 && heatMapMode) {
-    return (<ReactTooltip
-      id={quarter.time.toString()}
-      place="top"
-      effect="float"
-    >
-      <h4 styleName="toolTipHeader"> You have a schedule conflicted with: </h4>
-      {toolTipRows(quarter.eventCalendar)}
-    </ReactTooltip>);
+    return (
+      <ReactTooltip id={quarter.time.toString()} place="top" effect="float">
+        <h4 styleName="toolTipHeader"> You have a schedule conflicted with: </h4>
+        {toolTipRows(quarter.eventCalendar)}
+      </ReactTooltip>);
   }
   return null;
 };

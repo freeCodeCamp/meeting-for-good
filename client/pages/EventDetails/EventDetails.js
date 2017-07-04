@@ -30,7 +30,7 @@ class EventDetails extends Component {
         const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
         this.setState({ event, curUser, calendarEvents });
       } catch (err) {
-        console.log('eventDetails componentWillMount', err);
+        console.error('eventDetails componentWillMount', err);
       }
     } else {
       this.props.cbOpenLoginModal(`/event/${this.props.params.uid}`);
@@ -43,10 +43,9 @@ class EventDetails extends Component {
       try {
         const event = await cbLoadEvent(this.props.params.uid);
         const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
-        console.log('event load no EventDetails componentWillReceiveProps', event, calendarEvents);
         this.setState({ event, curUser, calendarEvents });
       } catch (err) {
-        console.log('eventDetails componentWillReceiveProps', err);
+        console.error('eventDetails componentWillReceiveProps', err);
       }
     }
   }
@@ -94,9 +93,7 @@ class EventDetails extends Component {
   @autobind
   async HandleInviteEmail(guestId, event) {
     const nEvent = await this.props.cbInviteEmail(guestId, event);
-    if (nEvent) {
-      this.setState({ event: nEvent });
-    }
+    if (nEvent) this.setState({ event: nEvent });
     return nEvent;
   }
 
