@@ -4,6 +4,24 @@ import jsonpatch from 'fast-json-patch';
 
 import { checkStatus, parseJSON } from './fetch.util';
 
+
+export const loadStats = async () => {
+  nprogress.configure({ showSpinner: false });
+  nprogress.start();
+  let stats;
+  try {
+    const response = await fetch('/api/stats/getStats');
+    checkStatus(response);
+    stats = await parseJSON(response);
+    return stats;
+  } catch (err) {
+    console.error('loadStats, at stats.js', err);
+    return err;
+  } finally {
+    nprogress.done();
+  }
+};
+
 export const loadEvents = async (showPastEvents) => {
   let urlToFetch = '/api/events/getByUser';
   nprogress.configure({ showSpinner: false });
