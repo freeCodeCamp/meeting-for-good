@@ -3,7 +3,7 @@ import events from '../../api/events';
 import users from '../../api/user';
 import auth from '../../auth';
 import email from '../../api/email';
-import ggcalendar from '../../api/gg-calendar';
+import ggcalendar from '../../api/ggcalendar';
 import stats from '../../api/stats';
 
 const path = process.cwd();

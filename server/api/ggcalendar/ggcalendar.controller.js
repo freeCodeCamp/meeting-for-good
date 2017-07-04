@@ -13,7 +13,7 @@ const getCredencials = async req => User.findById(req.user);
 
 const getCalList = (res, curUser) =>
   gcal(curUser.accessToken).calendarList.list((err, calendarList) => {
-    if (err.code === 401) {
+    if (err && err.code === 401) {
       refresh.requestNewAccessToken('google', curUser.accessToken,
         (err, accessToken) => {
           if (err) {
@@ -29,7 +29,7 @@ const getCalList = (res, curUser) =>
           });
         });
     }
-    if (err !== 401) {
+    if (err && err.code !== 401) {
       console.error('ERROR at requestNewAccessToken getCalList gg-calendar.control', err);
       return res.status(500).send(err);
     }
@@ -57,7 +57,7 @@ const getCalEventsList = (req, res, curUser) => {
   const maxDate = decodeURI(req.params.maxDate);
   gcal(curUser.accessToken)
     .events.list(calendarId, { timeMax: maxDate, timeMin: minDate }, (err, data) => {
-      if (err.code === 401) {
+      if (err && err.code === 401) {
         refresh.requestNewAccessToken('google', curUser.accessToken,
           (err, accessToken) => {
             if (err) {
@@ -75,7 +75,7 @@ const getCalEventsList = (req, res, curUser) => {
               });
           });
       }
-      if (err !== 401) {
+      if (err && err !== 401) {
         console.error('ERROR GetCalEventsList at gg-calendar.controler gCal', err);
         return res.status(500).send(err);
       }
