@@ -29,7 +29,7 @@
 }
 
 .cellDisable {
-   cursor: none;
+   cursor: not-allowed;
 }
 
 .CellHasCalendarEvent {
