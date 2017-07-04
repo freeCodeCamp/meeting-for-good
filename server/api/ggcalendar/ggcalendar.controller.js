@@ -66,7 +66,6 @@ const getCalEventsList = (req, res, curUser) => {
             }
             gcal(accessToken)
               .events.list(calendarId, { timeMax: maxDate, timeMin: minDate }, (err, data) => {
-                console.log('aqui');
                 if (err) {
                   console.error('ERROR GetCalEventsList at gg-calendar.controler after requestNewAccess', err);
                   return res.status(500).send(err);
