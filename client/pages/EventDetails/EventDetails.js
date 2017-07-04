@@ -13,8 +13,7 @@ import { eventsMaxMinDatesForEvent } from '../../util/dates.utils';
 class EventDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      event: null,
+    this.state = { event: null,
       showLoginModal: false,
       openDrawer: false,
       curUser: {},
@@ -24,28 +23,34 @@ class EventDetails extends Component {
 
   async componentWillMount() {
     const { isAuthenticated, curUser, cbLoadEvent } = this.props;
-    if (isAuthenticated === true) {
+    if (isAuthenticated === false) {
+      this.props.cbOpenLoginModal(`/event/${this.props.params.uid}`);
+    } else {
       try {
-        const event = await cbLoadEvent(this.props.params.uid);
-        const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
-        this.setState({ event, curUser, calendarEvents });
+        await this.loadEventsAndCalendar(isAuthenticated, curUser, cbLoadEvent);
       } catch (err) {
         console.error('eventDetails componentWillMount', err);
       }
-    } else {
-      this.props.cbOpenLoginModal(`/event/${this.props.params.uid}`);
     }
   }
 
   async componentWillReceiveProps(nextProps) {
     const { isAuthenticated, curUser, cbLoadEvent } = nextProps;
+    try {
+      await this.loadEventsAndCalendar(isAuthenticated, curUser, cbLoadEvent);
+    } catch (err) {
+      console.error('eventDetails componentWillReceiveProps', err);
+    }
+  }
+
+  async loadEventsAndCalendar(isAuthenticated, curUser, cbLoadEvent) {
     if (isAuthenticated === true) {
       try {
         const event = await cbLoadEvent(this.props.params.uid);
         const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
         this.setState({ event, curUser, calendarEvents });
       } catch (err) {
-        console.error('eventDetails componentWillReceiveProps', err);
+        console.error('eventDetails loadEventsAndCalendar', err);
       }
     }
   }
