@@ -252,6 +252,7 @@ class App extends Component {
       this.setState({ events: nEvents });
       try {
         await this.sendInviteEmail(guestId, nEvent, curUser);
+        ReactGA.event({ category: 'Event', action: 'guest Invited' });
         return nEvent;
       } catch (err) {
         this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
