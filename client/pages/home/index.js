@@ -24,10 +24,6 @@ class Home extends React.Component {
         </div>
         <img src={dashboardBanner} alt="dashboard" />
         <img src={dashboardBanner2} alt="dashboard2" />
-        <hr />
-        <h3>The best meeting coordination app</h3>
-        <img src={dashboardBanner} alt="dashboard" />
-        <img src={dashboardBanner2} alt="dashboard2" />
         <h3>Easy event creation</h3>
         <h6>Creating an event is easy as saying 1, 2, 3.</h6>
         <img src={mainBannerImage} alt="new event" />
