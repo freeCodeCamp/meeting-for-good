@@ -16,6 +16,7 @@
 'use strict';
 
 import Events from './events.model';
+
 import { respondWithResult, patchUpdates, handleEntityNotFound, handleError, upsertModel, destroyModel } from '../utils/api.utils';
 
 const filterOutStatusZeroParticipants = () => (event) => {
