@@ -34,10 +34,9 @@ const CellGrid = (props) => {
   const { quarter, onMouseOver, onMouseLeave, onMouseDown, onMouseUp, heatMapMode } = props;
   const styleNames = styleNameCompose(props);
   const inlineStyle = {
-    backgroundColor: formatCellBackgroundColor(props),
+    background: formatCellBackgroundColor(props),
     cursor: (quarter.disable) ? 'not-allowed' : 'pointer',
   };
-
   return (
     <div
       role="presentation"

@@ -13,18 +13,30 @@ const styleNameCompose = (props) => {
   }
   // if have a user to hightLight and is present at this cell
   if (heightlightedUser) style += (_.find(quarter.participants, heightlightedUser)) ? ' cellHighlighted' : ' cellNotHeiglighted';
-  if (quarter.eventCalendar.length > 0) style += ' CellHasCalendarEvent';
+ // if (quarter.eventCalendar.length > 0) style += ' CellHasCalendarEvent';
   return style;
 };
 
+const backgroundColorForHeatMap = (props) => {
+  const { backgroundColors, quarter } = props;
+  if (quarter.eventCalendar.length > 0 && quarter.participants.length > 0) {
+    console.log('entrei');
+    const bkgColor = backgroundColors[quarter.participants.length - 1];
+    return `repeating-linear-gradient(45deg, ${bkgColor}, #DADADA, ${bkgColor} 5px, ${bkgColor} 5px)`;
+  }
+  if (quarter.eventCalendar.length > 0) {
+    const bkgColor = backgroundColors[quarter.participants.length - 1];
+    return `repeating-linear-gradient(45deg, ${bkgColor}, #DADADA, ${bkgColor} 5px, ${bkgColor} 5px)`;
+  }
+  if (quarter.participants.length > 0) return backgroundColors[quarter.participants.length - 1];
+  return 'transparent';
+};
+
 const formatCellBackgroundColor = (props) => {
-  const { backgroundColors, curUser, quarter, heatMapMode } = props;
+  const { curUser, quarter, heatMapMode } = props;
   // background for disabled cells
   if (quarter.disable) return '#DADADA';
-  if (heatMapMode) {
-    if (quarter.participants.length > 0) return backgroundColors[quarter.participants.length - 1];
-    return 'transparent';
-  }
+  if (heatMapMode) return backgroundColorForHeatMap(props);
   if (_.find(quarter.participants, curUser._id)) return '#000000';
   if (quarter.participants.length > 0) return '#AECDE0';
   return 'transparent';
