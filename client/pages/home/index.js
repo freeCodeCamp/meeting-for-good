@@ -84,8 +84,9 @@ class Home extends React.Component {
     }
 
     try {
-      if (await isAuthenticated()) browserHistory.push('/dashboard');
-
+      if (await isAuthenticated()) {
+        browserHistory.push('/dashboard');
+      }
       const stats = await loadStats();
       this.setState({ stats });
     } catch (err) {
