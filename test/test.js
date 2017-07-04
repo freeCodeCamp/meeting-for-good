@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import request from 'request';
+import chaiHttp from 'chai-http';
 
-describe('Test Server Response', () => {
+describe('Test User API', () => {
   describe('Server Response', () => {
     it('status', () => {
-      request('http://localhost:8080/', (error, response) => {
+      request('/', (error, response) => {
         expect(response.statusCode).to.equal(200);
       });
     });
