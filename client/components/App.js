@@ -172,7 +172,7 @@ class App extends Component {
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
       this.setState({ events: nEvents });
-      ReactGA.event({ category: 'Event', action: 'guest Deleted' });
+      ReactGA.event({ category: 'Event', action: 'Guest Deleted' });
       return nEvent;
     } catch (err) {
       this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
@@ -252,7 +252,7 @@ class App extends Component {
       this.setState({ events: nEvents });
       try {
         await this.sendInviteEmail(guestId, nEvent, curUser);
-        ReactGA.event({ category: 'Event', action: 'guest Invited' });
+        ReactGA.event({ category: 'Event', action: 'Guest Invited' });
         return nEvent;
       } catch (err) {
         this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
