@@ -117,6 +117,7 @@
     "react-router": "^3.0.2",
     "react-tap-event-plugin": "^2.0.1",
     "react-transform-hmr": "^1.0.4",
+    "request": "^2.81.0",
     "rimraf": "^2.6.1",
     "shelljs": "^0.7.7",
     "style-loader": "^0.18.1",
