@@ -16,17 +16,19 @@ const getCalList = (res, curUser) =>
     if (err && err.code === 401) {
       refresh.requestNewAccessToken('google', curUser.accessToken,
         (err, accessToken) => {
+          User.save({ accessToken }, () => {
+            gcal(accessToken).calendarList.list((err, calendarList) => {
+              if (err) {
+                console.error('ERROR at requestNewAccessToken getCalList gg-calendar getCal after newRequest', err);
+                return res.status(500).send(err);
+              }
+              return res.status(200).send(calendarList);
+            });
+          });
           if (err) {
             console.error('ERROR at requestNewAccessToken getCalList gg-calendar fist error 401', err);
             return res.status(500).send(err);
           }
-          gcal(accessToken).calendarList.list((err, calendarList) => {
-            if (err) {
-              console.error('ERROR at requestNewAccessToken getCalList gg-calendar getCal after newRequest', err);
-              return res.status(500).send(err);
-            }
-            return res.status(200).send(calendarList);
-          });
         });
     }
     if (err && err.code !== 401) {
@@ -64,14 +66,16 @@ const getCalEventsList = (req, res, curUser) => {
               console.error('ERROR GetCalEventsList at gg-calendar.controler after 401 requestNewAccess', err);
               return res.status(500).send(err);
             }
-            gcal(accessToken)
-              .events.list(calendarId, { timeMax: maxDate, timeMin: minDate }, (err, data) => {
-                if (err) {
-                  console.error('ERROR GetCalEventsList at gg-calendar.controler after requestNewAccess', err);
-                  return res.status(500).send(err);
-                }
-                return res.status(200).send(data);
-              });
+            User.save({ accessToken }, () => {
+              gcal(accessToken)
+                .events.list(calendarId, { timeMax: maxDate, timeMin: minDate }, (err, data) => {
+                  if (err) {
+                    console.error('ERROR GetCalEventsList at gg-calendar.controler after requestNewAccess', err);
+                    return res.status(500).send(err);
+                  }
+                  return res.status(200).send(data);
+                });
+            });
           });
       }
       if (err && err.code !== 401) {
