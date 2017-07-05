@@ -112,7 +112,7 @@ class Home extends React.Component {
     return (
       <div styleName="statistics">
         <h6>Event creators: <strong>{stats.users}</strong></h6>
-        <h6>Total events created until today: <strong>{stats.events}</strong></h6>
+        <h6>Total events created: <strong>{stats.events}</strong></h6>
         <h6>Events occurring today: <strong>{stats.eventsToday}</strong></h6>
         <h6>Avg. guests for all events: <strong>{stats.avgParticipants}</strong></h6>
         <h6>Max. guests for any event: <strong>{stats.maxParticipants}</strong></h6>
