@@ -93,5 +93,4 @@ const listEvents = async (req, res) => {
   return getCalEventsList(req, res, curUser);
 };
 
-
 export { listCalendars, listEvents };

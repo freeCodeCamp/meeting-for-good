@@ -69,7 +69,6 @@ CellGrid.propTypes = {
   onMouseDown: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
   heatMapMode: PropTypes.bool.isRequired,
-
   quarter: PropTypes.shape({
     time: PropTypes.instanceOf(Date).isRequired,
     participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,

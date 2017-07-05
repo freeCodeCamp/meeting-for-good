@@ -15,7 +15,6 @@ const headerEdit = patches => ({
   body: JSON.stringify(patches),
 });
 
-
 const editCurUser = async (patches, curUserId) => {
   nprogress.start();
   try {

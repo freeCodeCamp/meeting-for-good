@@ -127,7 +127,6 @@ const haveACalendarEvent = (time, CalendarEventsReduced) => {
   return result;
 };
 
-
 const createQuartersForGrid = (
   allTimes, date, flattenedAvailability, dtsMinMax, participants, CalendarEventsReduced) =>
   allTimes.map((quarter) => {
