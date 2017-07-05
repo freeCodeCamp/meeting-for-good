@@ -23,7 +23,7 @@ const ToolTip = (quarter, heatMapMode) => {
   if (quarter.eventCalendar.length > 0 && heatMapMode) {
     return (
       <ReactTooltip id={quarter.time.toString()} place="top" effect="float">
-        <h4 styleName="toolTipHeader"> You have schedule conflicts <br /> with your Google Calendar: </h4>
+        <h4 styleName="toolTipHeader"> You have conflicts <br /> with your Google Calendar: </h4>
         {toolTipRows(quarter.eventCalendar)}
       </ReactTooltip>);
   }
