@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router';
 import NotificationSystem from 'react-notification-system';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import ReactGA from 'react-ga';
 
 import LoginModal from '../components/Login/Login';
 import NavBar from '../components/NavBar/NavBar';
@@ -75,6 +76,7 @@ class App extends Component {
   @autobind
   async toggleFilterPastEventsTo(value) {
     const events = await loadEvents(value);
+    ReactGA.event({ category: 'Event', action: 'Toggle Past Event' });
     this.setState({ showPastEvents: value, events });
   }
 
@@ -90,6 +92,7 @@ class App extends Component {
   async handleDeleteEvent(id) {
     const { events } = this.state;
     const response = await deleteEvent(id);
+    ReactGA.event({ category: 'Event', action: 'Event Deleted' });
     if (response) {
       const nEvents = events.filter(event => event._id !== id);
       this.setState({ events: nEvents });
@@ -104,6 +107,7 @@ class App extends Component {
   async handleEditEvent(patches, eventId) {
     const { events } = this.state;
     const nEvent = await editEvent(patches, eventId);
+    ReactGA.event({ category: 'Event', action: 'Event Edit' });
     if (nEvent) {
       const nEvents = _.cloneDeep(events);
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
@@ -127,6 +131,7 @@ class App extends Component {
       const events = await loadEvents(false);
       const redirectTo = sessionStorage.getItem('redirectTo');
       this.setState({ isAuthenticated: true, openLoginModal: false, curUser });
+
       if (redirectTo) {
         if (redirectTo === '/dashboard' && events.length === 0) {
           browserHistory.push('/event/new');
@@ -168,6 +173,7 @@ class App extends Component {
       nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
       this._addNotification('Success', 'Guest deleted successfully.', 'success');
       this.setState({ events: nEvents });
+      ReactGA.event({ category: 'Event', action: 'Guest Deleted' });
       return nEvent;
     } catch (err) {
       this._addNotification('Error!!', 'Failed delete guest. Please try again later.', 'error');
@@ -247,6 +253,7 @@ class App extends Component {
       this.setState({ events: nEvents });
       try {
         await this.sendInviteEmail(guestId, nEvent, curUser);
+        ReactGA.event({ category: 'Event', action: 'Guest Invited' });
         return nEvent;
       } catch (err) {
         this._addNotification('Error!!', 'Error sending invite, please try again later', 'error');
