@@ -74,7 +74,7 @@ const getCalEventsList = (req, res, curUser) => {
               });
           });
       }
-      if (err && err !== 401) {
+      if (err && err.code !== 401) {
         console.error('ERROR GetCalEventsList at gg-calendar.controler gCal', err);
         return res.status(500).send(err);
       }
