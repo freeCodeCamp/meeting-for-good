@@ -92,7 +92,7 @@ class NavBar extends Component {
     if (isAuthenticated) {
       return (
         <ToolbarGroup lastChild styleName="rightToolbarGroup" >
-          <FlatButton href="https://www.freecodecamp.com/donate/" styleName="donateButton" aria-label="Donate">
+          <FlatButton href="https://www.freecodecamp.org/donate/" styleName="donateButton" aria-label="Donate">
             Donate
           </FlatButton>
           <NotificationBar

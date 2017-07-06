@@ -105,12 +105,11 @@ class NotificationBar extends Component {
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const inLineStyles = {
       badge: { top: 3, visibility: visible, fontSize: '12px', width: 16, height: 16 },
-      iconButton: { top: '-42px', icon: { color: 'white', width: '19px' } },
+      iconButton: { icon: { color: 'white', width: '19px' } },
     };
     return (
       <IconMenu
         maxHeight={300}
-        styleName="iconMenu"
         onRequestChange={this.handleOnRequestChange}
         onTouchTap={this.handleOpenMenu}
         open={openMenu}

@@ -71,8 +71,8 @@ CellGrid.propTypes = {
   heatMapMode: PropTypes.bool.isRequired,
   quarter: PropTypes.shape({
     time: PropTypes.instanceOf(Date).isRequired,
-    participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
-    notParticipants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.String })).isRequired,
+    participants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })).isRequired,
+    notParticipants: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })).isRequired,
     disable: PropTypes.bool,
   }).isRequired,
 };

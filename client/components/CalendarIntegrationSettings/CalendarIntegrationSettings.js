@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -49,7 +50,7 @@ class CalendarIntegrationSettings extends Component {
   async componentWillMount() {
     const { openModalCalSet, curUser } = this.props;
     try {
-      const listCal = await this.constructor.calendarsLoad();
+      const listCal = await CalendarIntegrationSettings.calendarsLoad();
       this.setState({
         openModalCalSet,
         listCal,
@@ -135,7 +136,7 @@ class CalendarIntegrationSettings extends Component {
   }
 
   render() {
-    const { dialogActions } = this.constructor;
+    const { dialogActions } = CalendarIntegrationSettings;
     return (
       <Dialog
         titleStyle={inlineStyles.modal.title}
