@@ -1,6 +1,6 @@
 {
   "name": "meeting-for-good",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Schedule events with ease!",
   "homepage": "https://github.com/FreeCodeCamp/meeting-for-good/#readme",
   "main": "index.js",
@@ -26,7 +26,11 @@
     {
       "name": "Aniruddh Agarwal",
       "email": "aaniruddh99@gmail.com"
-    }
+    },
+      {
+        "name": "Bob Sutton",
+        "email": "anischyros@gmail.com"
+      }
   ],
   "license": "MIT",
   "bugs": {
