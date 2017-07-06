@@ -18,7 +18,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const app = express();
 app.use(compression({ threshold: 0 }));
 mongoose.Promise = bluebird;
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect((process.env.NODE_ENV) ? process.env.MONGO_URI_TEST : process.env.MONGO_URI);
 
 if (process.env.NODE_ENV === 'development') {
   // Development Env specific stuff
