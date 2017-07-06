@@ -10,7 +10,7 @@ const UserSchema = new Schema({
   avatar: { type: String, required: false },
   accessToken: { type: String, required: false },
   refreshToken: { type: String, required: false },
-  enablePrimaryCalendar: {type: Boolean, required: true, default: true },
+  enablePrimaryCalendar: { type: Boolean, required: true, default: true },
   selectedCalendarsIds: { type: [String], required: false, unique: true },
 });
 

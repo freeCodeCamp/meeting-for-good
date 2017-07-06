@@ -34,8 +34,16 @@ class CalendarIntegrationSettings extends Component {
       return listCal;
     } catch (err) {
       console.log('err at CalendarsLoad', err);
-      return null;
+      return [];
     }
+  }
+
+  static setInitialSelectCalendars(listCal, curUser) {
+    const selectedCalendarsIds = _.cloneDeep(curUser.selectedCalendarsIds);
+    const primaryCal = listCal.filter(cal => cal.primary === true)[0].summary;
+    if (!selectedCalendarsIds.includes(primaryCal)
+      && curUser.enablePrimaryCalendar) selectedCalendarsIds.push(primaryCal);
+    return selectedCalendarsIds;
   }
 
   constructor(props) {
@@ -54,7 +62,7 @@ class CalendarIntegrationSettings extends Component {
       this.setState({
         openModalCalSet,
         listCal,
-        selectedCal: curUser.selectedCalendarsIds,
+        selectedCal: CalendarIntegrationSettings.setInitialSelectCalendars(listCal, curUser),
       });
     } catch (err) {
       console.log('err at componentWillMount CalendarIntegrationSettings', err);
@@ -65,8 +73,12 @@ class CalendarIntegrationSettings extends Component {
     const { openModalCalSet } = nextProps;
     const { curUser } = this.props;
     try {
-      const listCal = await this.constructor.calendarsLoad();
-      this.setState({ openModalCalSet, listCal, selectedCal: curUser.selectedCalendarsIds });
+      const listCal = await CalendarIntegrationSettings.calendarsLoad();
+      this.setState({
+        openModalCalSet,
+        listCal,
+        selectedCal: CalendarIntegrationSettings.setInitialSelectCalendars(listCal, curUser),
+      });
     } catch (err) {
       console.log('err at componentWillReceiveProps CalendarIntegrationSettings', err);
     }
@@ -91,10 +103,14 @@ class CalendarIntegrationSettings extends Component {
 
   @autobind
   async handleSaveSetings() {
-    const { selectedCal } = this.state;
+    const { selectedCal, listCal } = this.state;
     const { curUser, cbEditCurUser, cbToggleCalSetDialog } = this.props;
     const nCurUser = _.cloneDeep(curUser);
+    const primaryCal = listCal.filter(cal => cal.primary === true)[0].summary;
     const observeCurUser = jsonpatch.observe(nCurUser);
+    if (nCurUser.selectedCalendarsIds.includes(primaryCal) && !selectedCal.includes(primaryCal)) {
+      nCurUser.enablePrimaryCalendar = false;
+    }
     nCurUser.selectedCalendarsIds = selectedCal;
     const patchesForAdd = jsonpatch.generate(observeCurUser);
     try {
