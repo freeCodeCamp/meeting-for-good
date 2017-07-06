@@ -30,7 +30,8 @@ const writeStatsIntoDatabase = (stats) => {
 
 const computeAvgEventsForWeek = (stats) => {
   const obj = {};
-  obj.map = function () {
+  /* eslint-disable */
+  obj.map = function (foo) {
     if (this._id.getTimestamp() >= sevenDaysAgo) {
       emit(0, 1);
     } else {
@@ -44,11 +45,11 @@ const computeAvgEventsForWeek = (stats) => {
     }
     return count;
   };
+/* eslint-enable */
   obj.scope = {
     sevenDaysAgo: new Date().getTime() - (1000 * 60 * 60 * 24 * 7),
   };
   obj.out = { inline: 1 };
-
   Events.mapReduce(obj)
     .then((results) => {
       stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
