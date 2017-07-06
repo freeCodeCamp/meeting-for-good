@@ -20,11 +20,43 @@ const writeStatsIntoDatabase = (stats) => {
         doc.maxParticipants = stats.maxParticipants;
         doc.avgParticipants = stats.avgParticipants;
         doc.eventsToday = stats.eventsToday;
+        doc.weekAvg = stats.weekAvg;
         doc.save();
       }
       return null;
     })
     .catch(showError('writeStatsIntoDatabase'));
+};
+
+const computeAvgEventsForWeek = (stats) => {
+  const obj = {};
+  obj.map = function () {
+    if (this._id.getTimestamp() >= sevenDaysAgo) {
+      emit(0, 1);
+    } else {
+      emit(0, 0);
+    }
+  };
+  obj.reduce = function (id, values) {
+    let count = 0;
+    for (let i = 0; i < values.length; i += 1) {
+      count += values[i];
+    }
+    return count;
+  };
+  obj.scope = {
+    sevenDaysAgo: new Date().getTime() - (1000 * 60 * 60 * 24 * 7),
+  };
+  obj.out = { inline: 1 };
+
+  Events.mapReduce(obj)
+    .then((results) => {
+      stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
+
+      writeStatsIntoDatabase(stats);
+      return null;
+    })
+    .catch(err => console.log(err));
 };
 
 const countTodaysEvents = (stats) => {
@@ -43,8 +75,7 @@ const countTodaysEvents = (stats) => {
     .exec()
     .then((days) => {
       stats.eventsToday = days.length;
-
-      writeStatsIntoDatabase(stats);
+      computeAvgEventsForWeek(stats);
       return null;
     })
     .catch(showError('countTodaysEvents'));
@@ -63,7 +94,7 @@ const countParticipants = (stats) => {
     .then((results) => {
       stats.participants = results[0].total;
       stats.maxParticipants = results[0].max;
-      stats.avgParticipants = Math.floor(results[0].avg + 0.5);
+      stats.avgParticipants = Math.floor((results[0].avg * 10) + 0.5) / 10;
       countTodaysEvents(stats);
       return null;
     })
