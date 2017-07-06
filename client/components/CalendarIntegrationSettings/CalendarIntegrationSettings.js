@@ -28,7 +28,7 @@ class CalendarIntegrationSettings extends Component {
     ];
   }
 
-  static async calendarsLoad() {
+  static calendarsLoad = async () => {
     try {
       const listCal = await listCalendars();
       return listCal;
@@ -38,13 +38,27 @@ class CalendarIntegrationSettings extends Component {
     }
   }
 
-  static setInitialSelectCalendars(listCal, curUser) {
-    const selectedCalendarsIds = _.cloneDeep(curUser.selectedCalendarsIds);
-    const primaryCal = listCal.filter(cal => cal.primary === true)[0].summary;
-    if (!selectedCalendarsIds.includes(primaryCal)
-      && curUser.enablePrimaryCalendar) selectedCalendarsIds.push(primaryCal);
-    return selectedCalendarsIds;
-  }
+  static checkPrimaryCalendar = async (props) => {
+    const { curUser, cbEditCurUser } = props;
+    try {
+      const listCal = await CalendarIntegrationSettings.calendarsLoad();
+      const selectedCalendarsIds = _.cloneDeep(curUser.selectedCalendarsIds);
+      const primaryCal = listCal.filter(cal => cal.primary === true)[0].summary;
+      if (!selectedCalendarsIds.includes(primaryCal)
+        && curUser.enablePrimaryCalendar) {
+        selectedCalendarsIds.push(primaryCal);
+        const nCurUser = _.cloneDeep(curUser);
+        const observeCurUser = jsonpatch.observe(nCurUser);
+        nCurUser.selectedCalendarsIds = selectedCalendarsIds;
+        nCurUser.enablePrimaryCalendar = false;
+        const patchesForAdd = jsonpatch.generate(observeCurUser);
+        await cbEditCurUser(patchesForAdd);
+      }
+      return selectedCalendarsIds;
+    } catch (err) {
+      console.log('err at componentWillReceiveProps CalendarIntegrationSettings', err);
+    }
+  };
 
   constructor(props) {
     super(props);
@@ -56,33 +70,27 @@ class CalendarIntegrationSettings extends Component {
   }
 
   async componentWillMount() {
-    const { openModalCalSet, curUser } = this.props;
-    try {
-      const listCal = await CalendarIntegrationSettings.calendarsLoad();
-      this.setState({
-        openModalCalSet,
-        listCal,
-        selectedCal: CalendarIntegrationSettings.setInitialSelectCalendars(listCal, curUser),
-      });
-    } catch (err) {
-      console.log('err at componentWillMount CalendarIntegrationSettings', err);
-    }
+    const { openModalCalSet } = this.props;
+    const listCal = await CalendarIntegrationSettings.calendarsLoad();
+    const selectedCalendarsIds = await CalendarIntegrationSettings.checkPrimaryCalendar(this.props);
+    this.setState({
+      openModalCalSet,
+      listCal,
+      selectedCal: selectedCalendarsIds,
+    });
   }
 
   async componentWillReceiveProps(nextProps) {
     const { openModalCalSet } = nextProps;
-    const { curUser } = this.props;
-    try {
-      const listCal = await CalendarIntegrationSettings.calendarsLoad();
-      this.setState({
-        openModalCalSet,
-        listCal,
-        selectedCal: CalendarIntegrationSettings.setInitialSelectCalendars(listCal, curUser),
-      });
-    } catch (err) {
-      console.log('err at componentWillReceiveProps CalendarIntegrationSettings', err);
-    }
+    const listCal = await CalendarIntegrationSettings.calendarsLoad();
+    const selectedCalendarsIds = await CalendarIntegrationSettings.checkPrimaryCalendar(nextProps);
+    this.setState({
+      openModalCalSet,
+      listCal,
+      selectedCal: selectedCalendarsIds,
+    });
   }
+
 
   @autobind
   handleDialogClose() {

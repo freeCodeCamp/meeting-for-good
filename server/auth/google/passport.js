@@ -35,6 +35,6 @@ const strategy = (User, config) => new GoogleStrategy({
     manipulateUser(User, profile, done, token, refreshToken));
 
 export const setup = (User, config) => {
-  passport.use(strategy(User, config));
-  refresh.use(strategy(User, config));
+  passport.use('google', strategy(User, config));
+  refresh.use('google', strategy(User, config));
 };
