@@ -26,12 +26,15 @@
 
 .rightToolbarGroup {
   margin: 0 !important;
+  height: 40px !important;
 }
 
   .rightToolbarGroup .donateButton {
-    font-size: 21px !important;
+    font-size: 20px !important;
     color: #ffffff !important;
+    margin: 0 0 0 0 !important;
     font-weight: 400;
+    height: 40px !important;
   }
   .rightToolbarGroup .DashButton {
     font-size: 16px !important;

@@ -105,7 +105,7 @@ class NotificationBar extends Component {
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const inLineStyles = {
       badge: { right: 3, top: 2, visibility: visible, fontSize: '12px', width: 16, height: 16 },
-      iconButton: { height: '40px', icon: { color: 'white', width: '19px', paddingBotton: 2 } },
+      iconButton: { height: '40px', icon: { color: 'white', width: '19px' } },
     };
     return (
       <IconMenu
