@@ -56,7 +56,7 @@ const computeAvgEventsForWeek = (stats) => {
       writeStatsIntoDatabase(stats);
       return null;
     })
-    .catch(err => console.log(err));
+    .catch(showError('computeAvgEventsForWeek'));
 };
 
 const countTodaysEvents = (stats) => {
