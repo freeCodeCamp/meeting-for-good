@@ -71,7 +71,8 @@ class Home extends React.Component {
         activeEvents: 0,
         avgParticipants: 0,
         maxParticipants: 0,
-        eventsToday: 0 },
+        eventsToday: 0,
+        weekAvg: 0 },
       openLoginModal: false,
       loginFail: false,
     };
@@ -120,6 +121,7 @@ class Home extends React.Component {
         <h6>Events occurring today: <strong>{stats.eventsToday}</strong></h6>
         <h6>Avg. guests for all events: <strong>{stats.avgParticipants}</strong></h6>
         <h6>Max. guests for any event: <strong>{stats.maxParticipants}</strong></h6>
+        <h6>Avg. events created this week: <strong>{stats.weekAvg}</strong></h6>
       </div>
     );
   }

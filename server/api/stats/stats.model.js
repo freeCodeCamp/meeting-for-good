@@ -8,6 +8,7 @@ const StatsSchema = new Schema({
   maxParticipants: { type: Number, required: true },
   avgParticipants: { type: Number, required: true },
   eventsToday: { type: Number, required: true },
+  weekAvg: { type: Number, require: true },
 });
 
 export default mongoose.model('Stats', StatsSchema);
