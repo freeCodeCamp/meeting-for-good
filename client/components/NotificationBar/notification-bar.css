@@ -7,6 +7,11 @@
   border-bottom: 0.5px solid rgb(224, 224, 224) !important;
 }
 
+.badge {
+  width: 20px !important;
+  height: 40px !important;
+  padding: 0 25px 0px 0 !important;
+}
 @media (max-width:550px) {
   .menuItem {
     font-size: 14px !important;
