@@ -16,6 +16,7 @@ const getCalList = (res, curUser) =>
     if (err && err.code === 401) {
       refresh.requestNewAccessToken('google', curUser.accessToken,
         (err, accessToken) => {
+          console.log('getCalList, requestNewAccessToken', curUser.accessToken, accessToken);
           curUser.save({ accessToken }, () => {
             gcal(accessToken).calendarList.list((err, calendarList) => {
               if (err) {
@@ -62,6 +63,7 @@ const getCalEventsList = (req, res, curUser) => {
       if (err && err.code === 401) {
         refresh.requestNewAccessToken('google', curUser.accessToken,
           (err, accessToken) => {
+            console.error('GetCalEventsListrequestNewAccessToken', curUser.accessToken, accessToken);
             if (err) {
               console.error('ERROR GetCalEventsList at gg-calendar.controler after 401 requestNewAccess', err);
               return res.status(500).send(err);

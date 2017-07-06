@@ -7,11 +7,6 @@
   border-bottom: 0.5px solid rgb(224, 224, 224) !important;
 }
 
-.iconButtonWrapper {
-  display: flex !important;
-  flex-direction: row !important;
-}
-
 @media (max-width:550px) {
   .menuItem {
     font-size: 14px !important;

@@ -101,7 +101,7 @@ class NavBar extends Component {
             cbHandleDismissGuest={this.HandleDismissGuest}
           />
           {!toggleVisible ?
-            <FlatButton styleName="DashButton" onTouchTap={this.constructor.handleDashboardClick} aria-label="Dashboard" >
+            <FlatButton styleName="DashButton" onTouchTap={NavBar.handleDashboardClick} aria-label="Dashboard" >
               Dashboard
             </FlatButton>
             : null

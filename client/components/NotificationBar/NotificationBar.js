@@ -104,7 +104,7 @@ class NotificationBar extends Component {
     const { quantOwnerNotNotified, openMenu } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const inLineStyles = {
-      badge: { top: 3, visibility: visible, fontSize: '12px', width: 16, height: 16 },
+      badge: { top: 5, right: -40, visibility: visible, fontSize: '12px', width: 16, height: 16 },
       iconButton: { icon: { color: 'white', width: '19px' } },
     };
     return (
@@ -115,7 +115,7 @@ class NotificationBar extends Component {
         open={openMenu}
         useLayerForClickAway
         iconButtonElement={
-          <div styleName="iconButtonWrapper">
+          <div>
             <Badge badgeContent={quantOwnerNotNotified} secondary badgeStyle={inLineStyles.badge} />
             <IconButton tooltip="Notifications" style={inLineStyles.iconButton} iconStyle={inLineStyles.iconButton.icon}>
               <NotificationsIcon />
