@@ -30,6 +30,9 @@ const writeStatsIntoDatabase = (stats) => {
 
 const computeAvgEventsForWeek = (stats) => {
   const obj = {};
+  // Disable eslint here because we must use non-ES6 functions in Mongo's mapReduce.
+  // Also, variables provided by the "scope" setting will appear to lint to be
+  // undefined.  Furthermore, the "emit" function will appear to be undefined.
   /* eslint-disable */
   obj.map = function (foo) {
     if (this._id.getTimestamp() >= sevenDaysAgo) {
