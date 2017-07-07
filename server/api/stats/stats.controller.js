@@ -37,16 +37,10 @@ const computeAvgEventsForWeek = (stats) => {
   obj.map = function (foo) {
     if (this._id.getTimestamp() >= sevenDaysAgo) {
       emit(0, 1);
-    } else {
-      emit(0, 0);
     }
   };
   obj.reduce = function (id, values) {
-    let count = 0;
-    for (let i = 0; i < values.length; i += 1) {
-      count += values[i];
-    }
-    return count;
+    return values.length;
   };
 /* eslint-enable */
   obj.scope = {
