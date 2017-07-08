@@ -6,11 +6,13 @@ import ReactTooltip from 'react-tooltip';
 import { styleNameCompose, formatCellBackgroundColor } from './cellGridUtils';
 import styles from './cell-grid.css';
 
-const toolTipRows = (eventsCalendar) => {
+const toolTipRows = (quarter) => {
+  const eventsCalendar = quarter.eventCalendar;
+  console.log(quarter);
   const rows = [];
   eventsCalendar.forEach((event) => {
     rows.push(
-      <div key={event.id} styleName="toolTipHeaderWrapper">
+      <div key={`toolTipRow ${quarter.time.toString()} ${event.id}`} styleName="toolTipHeaderWrapper">
         <p> {(event.name) ? event.name : 'No Name'} </p>
         <p styleName="toolTipSubHeader"> organized by : <strong>{event.organizer} </strong></p>
       </div>,
@@ -22,9 +24,9 @@ const toolTipRows = (eventsCalendar) => {
 const ToolTip = (quarter, heatMapMode) => {
   if (quarter.eventCalendar.length > 0 && heatMapMode) {
     return (
-      <ReactTooltip id={quarter.time.toString()} place="top" effect="float">
+      <ReactTooltip key={`toolTip ${quarter.time.toString()}`} id={quarter.time.toString()} place="top" effect="float">
         <h4 styleName="toolTipHeader"> You have conflicts <br /> with your Google Calendar: </h4>
-        {toolTipRows(quarter.eventCalendar)}
+        {toolTipRows(quarter)}
       </ReactTooltip>);
   }
   return null;
