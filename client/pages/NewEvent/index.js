@@ -14,6 +14,7 @@ import InputRange from 'react-input-range';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import EventDelete from 'material-ui/svg-icons/action/delete';
 import PropTypes from 'prop-types';
+import ReactGA from 'react-ga';
 
 import '../../styles/no-css-modules/react-input-range.css';
 import { formatTime, getHours, getMinutes } from '../../util/time-format';
@@ -118,8 +119,13 @@ class NewEvent extends React.Component {
     dates = dateRangeReducer(dates);
     // the field active now has a default of true.
     const sentData = JSON.stringify({ name, dates });
-    const newEvent = await this.props.cbNewEvent(sentData);
-    browserHistory.push(`/event/${newEvent._id}`);
+    try {
+      const newEvent = await this.props.cbNewEvent(sentData);
+      browserHistory.push(`/event/${newEvent._id}`);
+      ReactGA.event({ category: 'Event', action: 'New Event Created' });
+    } catch (err) {
+      console.log('createEvent, NewEvent', err);
+    }
   }
 
   @autobind
