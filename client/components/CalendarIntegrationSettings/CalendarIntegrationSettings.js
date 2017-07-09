@@ -76,11 +76,7 @@ class CalendarIntegrationSettings extends Component {
       const googleCalendarList = await CalendarIntegrationSettings.calendarsLoad();
       const selectedCalendarList =
         await CalendarIntegrationSettings.checkPrimaryCalendar(this.props, googleCalendarList);
-      this.setState({
-        openModalCalSet,
-        googleCalendarList,
-        selectedCalendarList,
-      });
+      this.setState({ openModalCalSet, googleCalendarList, selectedCalendarList });
     } catch (err) {
       console.error('componentWillMount CalendarIntegrtionSetings', err);
     }
@@ -92,16 +88,11 @@ class CalendarIntegrationSettings extends Component {
       const googleCalendarList = await CalendarIntegrationSettings.calendarsLoad();
       const selectedCalendarList =
         await CalendarIntegrationSettings.checkPrimaryCalendar(nextProps, googleCalendarList);
-      this.setState({
-        openModalCalSet,
-        googleCalendarList,
-        selectedCalendarList,
-      });
+      this.setState({ openModalCalSet, googleCalendarList, selectedCalendarList });
     } catch (err) {
       console.error('componentWillReceiveProps CalendarIntegrtionSetings', err);
     }
   }
-
 
   @autobind
   handleDialogClose() {
@@ -131,10 +122,8 @@ class CalendarIntegrationSettings extends Component {
     const patchForDelete = jsonpatch.generate(observeCurUser);
     nCurUser.GoogleSelectedCalendars = selectedCalendarList;
     const patchesForAdd = jsonpatch.generate(observeCurUser);
-    const patches =
-      _.concat(patchForDelete, patchesForAdd);
     try {
-      await cbEditCurUser(patches);
+      await cbEditCurUser(_.concat(patchForDelete, patchesForAdd));
       cbToggleCalSetDialog();
     } catch (err) {
       console.error('handleSaveSetings CalendarIntegration', err);
@@ -146,11 +135,9 @@ class CalendarIntegrationSettings extends Component {
     if (googleCalendarList.length === 0) return null;
     const rows = [];
     googleCalendarList.forEach((calendar) => {
-      const calTitle = (calendar.primary) ? 'Primary' : calendar.summary;
-      const hasSelectedCalendar = _.findIndex(selectedCalendarList, ['calendarId', calendar.id]) > -1;
       rows.push(
-        <TableRow key={calendar.id} selected={hasSelectedCalendar}>
-          <TableRowColumn>{calTitle}</TableRowColumn>
+        <TableRow key={calendar.id} selected={_.findIndex(selectedCalendarList, ['calendarId', calendar.id]) > -1}>
+          <TableRowColumn>{(calendar.primary) ? 'Primary' : calendar.summary}</TableRowColumn>
         </TableRow>,
       );
     });
