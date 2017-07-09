@@ -8,7 +8,6 @@ import styles from './cell-grid.css';
 
 const toolTipRows = (quarter) => {
   const eventsCalendar = quarter.eventCalendar;
-  console.log(quarter);
   const rows = [];
   eventsCalendar.forEach((event) => {
     rows.push(

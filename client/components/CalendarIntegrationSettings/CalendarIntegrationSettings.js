@@ -38,25 +38,26 @@ class CalendarIntegrationSettings extends Component {
     }
   }
 
-  static checkPrimaryCalendar = async (props, listCal) => {
+  static checkPrimaryCalendar = async (props, selectedCalendarList) => {
     const { curUser, cbEditCurUser } = props;
     try {
-      const selectedCalendarsIds = _.cloneDeep(curUser.selectedCalendarsIds);
-      const primaryCal = listCal.filter(cal => cal.primary === true)[0].summary;
-      if (!selectedCalendarsIds.includes(primaryCal)
+      const selectedCalendars = _.cloneDeep(curUser.GoogleSelectedCalendars) || [];
+      const primaryCal = selectedCalendarList.filter(cal => cal.primary === true)[0].summary;
+      const hasPrimaryCal = _.find(selectedCalendars, { calendarId: primaryCal });
+      if (!hasPrimaryCal
         && curUser.enablePrimaryCalendar) {
-        selectedCalendarsIds.push(primaryCal);
+        selectedCalendars.push({ calendarId: primaryCal });
         const nCurUser = _.cloneDeep(curUser);
         const observeCurUser = jsonpatch.observe(nCurUser);
-        nCurUser.selectedCalendarsIds = selectedCalendarsIds;
+        nCurUser.GoogleSelectedCalendars = selectedCalendars;
         nCurUser.enablePrimaryCalendar = false;
         const patchesForAdd = jsonpatch.generate(observeCurUser);
         await cbEditCurUser(patchesForAdd);
       }
-      return selectedCalendarsIds;
+      return selectedCalendars;
     } catch (err) {
       console.error('err at componentWillReceiveProps CalendarIntegrationSettings', err);
-      return [];
+      return err;
     }
   };
 
@@ -64,21 +65,21 @@ class CalendarIntegrationSettings extends Component {
     super(props);
     this.state = {
       openModalCalSet: false,
-      listCal: [],
-      selectedCal: [],
+      googleCalendarList: [],
+      selectedCalendarList: [],
     };
   }
 
   async componentWillMount() {
     const { openModalCalSet } = this.props;
     try {
-      const listCal = await CalendarIntegrationSettings.calendarsLoad();
-      const selectedCalendarsIds =
-        await CalendarIntegrationSettings.checkPrimaryCalendar(this.props, listCal);
+      const googleCalendarList = await CalendarIntegrationSettings.calendarsLoad();
+      const selectedCalendarList =
+        await CalendarIntegrationSettings.checkPrimaryCalendar(this.props, googleCalendarList);
       this.setState({
         openModalCalSet,
-        listCal,
-        selectedCal: selectedCalendarsIds,
+        googleCalendarList,
+        selectedCalendarList,
       });
     } catch (err) {
       console.error('componentWillMount CalendarIntegrtionSetings', err);
@@ -88,13 +89,13 @@ class CalendarIntegrationSettings extends Component {
   async componentWillReceiveProps(nextProps) {
     const { openModalCalSet } = nextProps;
     try {
-      const listCal = await CalendarIntegrationSettings.calendarsLoad();
-      const selectedCalendarsIds =
-        await CalendarIntegrationSettings.checkPrimaryCalendar(nextProps, listCal);
+      const googleCalendarList = await CalendarIntegrationSettings.calendarsLoad();
+      const selectedCalendarList =
+        await CalendarIntegrationSettings.checkPrimaryCalendar(nextProps, googleCalendarList);
       this.setState({
         openModalCalSet,
-        listCal,
-        selectedCal: selectedCalendarsIds,
+        googleCalendarList,
+        selectedCalendarList,
       });
     } catch (err) {
       console.error('componentWillReceiveProps CalendarIntegrtionSetings', err);
@@ -109,26 +110,29 @@ class CalendarIntegrationSettings extends Component {
 
   @autobind
   handleCellClick(rowIndex) {
-    const { selectedCal, listCal } = this.state;
-    const nSelectedCal = _.cloneDeep(selectedCal);
-    if (!selectedCal.includes(listCal[rowIndex].id)) {
-      nSelectedCal.push(listCal[rowIndex].id);
+    const { selectedCalendarList, googleCalendarList } = this.state;
+    const nSelectedCal = _.cloneDeep(selectedCalendarList);
+    const selectedCalendarItem = { calendarId: googleCalendarList[rowIndex].id };
+    console.log('selectedCalendarItem', selectedCalendarItem, 'selectedCalendarList', selectedCalendarList);
+    // ARRUMAR
+    if (_.findIndex(selectedCalendarList, ['calendarId', selectedCalendarItem.calendarId]) === -1) {
+      nSelectedCal.push(selectedCalendarItem);
     } else {
-      _.pull(nSelectedCal, listCal[rowIndex].id);
+      nSelectedCal.splice(_.findIndex(selectedCalendarList, ['calendarId', selectedCalendarItem.calendarId]), 1);
     }
-    this.setState({ selectedCal: nSelectedCal });
+    this.setState({ selectedCalendarList: nSelectedCal });
   }
 
   @autobind
   async handleSaveSetings() {
-    const { selectedCal } = this.state;
-    console.log(selectedCal);
+    const { selectedCalendarList } = this.state;
+    console.log('handleSaveSetings, selectedCalendarList', selectedCalendarList);
     const { curUser, cbEditCurUser, cbToggleCalSetDialog } = this.props;
     const nCurUser = _.cloneDeep(curUser);
     const observeCurUser = jsonpatch.observe(nCurUser);
-    nCurUser.selectedCalendarsIds = [];
+    nCurUser.GoogleSelectedCalendars = [];
     const patchForDelete = jsonpatch.generate(observeCurUser);
-    nCurUser.selectedCalendarsIds = selectedCal;
+    nCurUser.GoogleSelectedCalendars = selectedCalendarList;
     const patchesForAdd = jsonpatch.generate(observeCurUser);
     const patches =
       _.concat(patchForDelete, patchesForAdd);
@@ -141,13 +145,14 @@ class CalendarIntegrationSettings extends Component {
   }
 
   renderTableRows() {
-    const { listCal, selectedCal } = this.state;
-    if (listCal.length === 0) return null;
+    const { googleCalendarList, selectedCalendarList } = this.state;
+    if (googleCalendarList.length === 0) return null;
     const rows = [];
-    listCal.forEach((calendar) => {
+    googleCalendarList.forEach((calendar) => {
       const calTitle = (calendar.primary) ? 'Primary' : calendar.summary;
+      const hasSelectedCalendar = _.findIndex(selectedCalendarList, ['calendarId', calendar.id]) > -1;
       rows.push(
-        <TableRow key={calendar.id} selected={selectedCal.includes(calendar.id)}>
+        <TableRow key={calendar.id} selected={hasSelectedCalendar}>
           <TableRowColumn>{calTitle}</TableRowColumn>
         </TableRow>,
       );
