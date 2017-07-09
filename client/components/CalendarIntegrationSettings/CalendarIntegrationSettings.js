@@ -113,8 +113,6 @@ class CalendarIntegrationSettings extends Component {
     const { selectedCalendarList, googleCalendarList } = this.state;
     const nSelectedCal = _.cloneDeep(selectedCalendarList);
     const selectedCalendarItem = { calendarId: googleCalendarList[rowIndex].id };
-    console.log('selectedCalendarItem', selectedCalendarItem, 'selectedCalendarList', selectedCalendarList);
-    // ARRUMAR
     if (_.findIndex(selectedCalendarList, ['calendarId', selectedCalendarItem.calendarId]) === -1) {
       nSelectedCal.push(selectedCalendarItem);
     } else {
@@ -126,7 +124,6 @@ class CalendarIntegrationSettings extends Component {
   @autobind
   async handleSaveSetings() {
     const { selectedCalendarList } = this.state;
-    console.log('handleSaveSetings, selectedCalendarList', selectedCalendarList);
     const { curUser, cbEditCurUser, cbToggleCalSetDialog } = this.props;
     const nCurUser = _.cloneDeep(curUser);
     const observeCurUser = jsonpatch.observe(nCurUser);
