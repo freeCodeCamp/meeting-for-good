@@ -11,33 +11,43 @@ import User from '../user/user.model';
 // Get the user's credentials.
 const getCredencials = async req => User.findById(req.user);
 
-const getCalList = (res, curUser) =>
-  gcal(curUser.accessToken).calendarList.list((err, calendarList) => {
-    if (err && err.code === 401) {
-      refresh.requestNewAccessToken('google', curUser.accessToken,
-        (err, accessToken) => {
-          console.log('getCalList, requestNewAccessToken', curUser.accessToken, accessToken);
-          curUser.save({ accessToken }, () => {
-            gcal(accessToken).calendarList.list((err, calendarList) => {
-              if (err) {
-                console.error('ERROR at requestNewAccessToken getCalList gg-calendar getCal after newRequest', err);
-                return res.status(500).send(err);
-              }
-              return res.status(200).send(calendarList);
-            });
-          });
-          if (err) {
-            console.error('ERROR at requestNewAccessToken getCalList gg-calendar fist error 401', err);
-            return res.status(500).send(err);
-          }
-        });
-    }
-    if (err && err.code !== 401) {
-      console.error('ERROR at requestNewAccessToken getCalList gg-calendar.control', err);
-      return res.status(500).send(err);
-    }
-    return res.status(200).send(calendarList);
-  });
+const refreshToken = (curUser, req, res, origin) => {
+  refresh.requestNewAccessToken('google', curUser.accessToken,
+    (err, newAccessToken) => {
+      if (err) {
+        console.error('ERROR at refreshToken requestNewAccessToken', err);
+        return res.status(500).send(err);
+      }
+      console.log('requestNewAccessToken', newAccessToken, origin);
+      curUser.save({ accessToken: newAccessToken }, () => {
+        switch (origin) {
+          case 'getCalList':
+            return getCalList(res, curUser, true);
+          case 'getCalEventsList':
+            return getCalEventsList(req, res, curUser, true);
+          default:
+            return res.status(500).send('No callback defined at refresh token');
+        }
+      });
+    });
+};
+
+const processCalendarList = (err, calendarList, res, curUser, withNewToken) => {
+  if (err && err.code === 401 && !withNewToken) { // if the token is outdated refresh the auth
+    return refreshToken(curUser, res, 'getCalList');
+  }
+  if (err) {
+    console.error('ERROR at processCalendarList', err);
+    return res.status(500).send(err);
+  }
+  return res.status(200).send(calendarList);
+};
+
+const getCalList = (res, curUser, withNewToken = false) => {
+  const googleCalendar = new gcal.GoogleCalendar(curUser.accessToken);
+  return googleCalendar.calendarList.list(
+    (err, calendarList) => processCalendarList(err, calendarList, res, curUser, withNewToken));
+};
 
 const listCalendars = async (req, res) => {
   let curUser;
@@ -54,39 +64,27 @@ const listCalendars = async (req, res) => {
   return getCalList(res, curUser);
 };
 
-const getCalEventsList = (req, res, curUser) => {
+const processCalendarEvents = (err, req, res, calendarEvents, withNewToken, curUser) => {
+  if (err && err.code === 401 && !withNewToken) { // if the token is outdated refresh the auth
+    return refreshToken(curUser, req, res, 'processCalendarEvents');
+  }
+  if (err) {
+    console.error('ERROR at processCalendarEvents', err);
+    return res.status(500).send(err);
+  }
+  return res.status(200).json(calendarEvents);
+};
+
+const getCalEventsList = (req, res, curUser, withNewToken = false) => {
   const calendarId = req.params.calendarId;
   const minDate = decodeURI(req.params.minDate);
   const maxDate = decodeURI(req.params.maxDate);
-  gcal(curUser.accessToken)
-    .events.list(calendarId, { timeMax: maxDate, timeMin: minDate }, (err, data) => {
-      if (err && err.code === 401) {
-        refresh.requestNewAccessToken('google', curUser.accessToken,
-          (err, accessToken) => {
-            console.error('GetCalEventsListrequestNewAccessToken', curUser.accessToken, accessToken);
-            if (err) {
-              console.error('ERROR GetCalEventsList at gg-calendar.controler after 401 requestNewAccess', err);
-              return res.status(500).send(err);
-            }
-            curUser.save({ accessToken }, () => {
-              gcal(accessToken)
-                .events.list(calendarId, { timeMax: maxDate, timeMin: minDate }, (err, data) => {
-                  if (err) {
-                    console.error('ERROR GetCalEventsList at gg-calendar.controler after requestNewAccess', err);
-                    return res.status(500).send(err);
-                  }
-                  return res.status(200).send(data);
-                });
-            });
-          });
-      }
-      if (err && err.code !== 401) {
-        console.error('ERROR GetCalEventsList at gg-calendar.controler gCal', err);
-        return res.status(500).send(err);
-      }
-      return res.status(200).json(data);
-    });
+  const googleCalendar = new gcal.GoogleCalendar(curUser.accessToken);
+  return googleCalendar
+    .events.list(calendarId, { timeMax: maxDate, timeMin: minDate }, (err, calendarEvents) =>
+      processCalendarEvents(err, req, res, calendarEvents, withNewToken, curUser));
 };
+
 
 const listEvents = async (req, res) => {
   let curUser;
