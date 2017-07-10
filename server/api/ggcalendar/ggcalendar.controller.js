@@ -12,29 +12,39 @@ import User from '../user/user.model';
 const getCredencials = async req => User.findById(req.user);
 
 const refreshToken = (curUser, req, res, origin) => {
-  refresh.requestNewAccessToken('google', curUser.accessToken,
+  refresh.requestNewAccessToken('google', curUser.refreshToken,
     (err, newAccessToken) => {
+      console.log('requestNewAccessToken', newAccessToken, origin);
+
       if (err) {
         console.error('ERROR at refreshToken requestNewAccessToken', err);
-        return res.status(500).send(err);
+        return res.status(500).send('ERROR at refreshToken requestNewAccessToken');
       }
-      console.log('requestNewAccessToken', newAccessToken, origin);
-      curUser.save({ accessToken: newAccessToken }, () => {
+      curUser.accessToken = newAccessToken;
+      curUser.save((err) => {
+        if (err) {
+          console.error('ERROR at save curUserrequestNewAccessToken', err);
+          return res.status(500).send('ERROR at save curUserrequestNewAccessToken');
+        }
+          /* eslint-disable */
         switch (origin) {
           case 'getCalList':
             return getCalList(res, curUser, true);
           case 'getCalEventsList':
             return getCalEventsList(req, res, curUser, true);
           default:
+            // return res.sendFile(`${path}/build/index.html`);  
+            console.error('No callback defined at refresh token');
             return res.status(500).send('No callback defined at refresh token');
         }
+          /* eslint-enable */
       });
     });
 };
 
-const processCalendarList = (err, calendarList, res, curUser, withNewToken) => {
+const processCalendarList = (err, calendarList, req, res, curUser, withNewToken) => {
   if (err && err.code === 401 && !withNewToken) { // if the token is outdated refresh the auth
-    return refreshToken(curUser, res, 'getCalList');
+    return refreshToken(curUser, req, res, 'getCalList');
   }
   if (err) {
     console.error('ERROR at processCalendarList', err);
@@ -43,26 +53,12 @@ const processCalendarList = (err, calendarList, res, curUser, withNewToken) => {
   return res.status(200).send(calendarList);
 };
 
-const getCalList = (res, curUser, withNewToken = false) => {
+const getCalList = (req, res, curUser, withNewToken = false) => {
   const googleCalendar = new gcal.GoogleCalendar(curUser.accessToken);
   return googleCalendar.calendarList.list(
-    (err, calendarList) => processCalendarList(err, calendarList, res, curUser, withNewToken));
+    (err, calendarList) => processCalendarList(err, calendarList, req, res, curUser, withNewToken));
 };
 
-const listCalendars = async (req, res) => {
-  let curUser;
-  try {
-    curUser = await getCredencials(req);
-    if (!curUser.accessToken) {
-      console.error('no accessToken, listCalendars');
-      return res.redirect('/auth');
-    }
-  } catch (err) {
-    console.error('ERROR at listCalendars get curUser', err);
-    return res.status(500).send(err);
-  }
-  return getCalList(res, curUser);
-};
 
 const processCalendarEvents = (err, req, res, calendarEvents, withNewToken, curUser) => {
   if (err && err.code === 401 && !withNewToken) { // if the token is outdated refresh the auth
@@ -95,6 +91,21 @@ const listEvents = async (req, res) => {
     return res.status(500).send(err);
   }
   return getCalEventsList(req, res, curUser);
+};
+
+const listCalendars = async (req, res) => {
+  let curUser;
+  try {
+    curUser = await getCredencials(req);
+    if (!curUser.accessToken) {
+      console.error('no accessToken, listCalendars');
+      return res.redirect('/auth');
+    }
+  } catch (err) {
+    console.error('ERROR at listCalendars get curUser', err);
+    return res.status(500).send(err);
+  }
+  return getCalList(req, res, curUser);
 };
 
 export { listCalendars, listEvents };

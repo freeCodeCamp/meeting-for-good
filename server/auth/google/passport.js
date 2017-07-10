@@ -4,6 +4,7 @@ import refresh from 'passport-oauth2-refresh';
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 const manipulateUser = async (User, profile, done, token, refreshToken) => {
+  console.log('token', token, 'refresh', refreshToken);
   try {
     const user = await User.findOne({ googleId: profile.id });
     if (user) {
@@ -22,7 +23,7 @@ const manipulateUser = async (User, profile, done, token, refreshToken) => {
     await newUser.save();
     return done(null, newUser);
   } catch (err) {
-    console.log('err at manipulateUser passport', err);
+    console.error('err at manipulateUser passport', err);
     return done(err);
   }
 };
