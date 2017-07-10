@@ -118,12 +118,10 @@ class CalendarIntegrationSettings extends Component {
     const { curUser, cbEditCurUser, cbToggleCalSetDialog } = this.props;
     const nCurUser = _.cloneDeep(curUser);
     const observeCurUser = jsonpatch.observe(nCurUser);
-    nCurUser.GoogleSelectedCalendars = [];
-    const patchForDelete = jsonpatch.generate(observeCurUser);
     nCurUser.GoogleSelectedCalendars = selectedCalendarList;
     const patchesForAdd = jsonpatch.generate(observeCurUser);
     try {
-      await cbEditCurUser(_.concat(patchForDelete, patchesForAdd));
+      await cbEditCurUser(patchesForAdd);
       cbToggleCalSetDialog();
     } catch (err) {
       console.error('handleSaveSetings CalendarIntegration', err);
