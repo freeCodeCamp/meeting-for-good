@@ -29,7 +29,7 @@ const refreshToken = (curUser, req, res, origin) => {
           /* eslint-disable */
         switch (origin) {
           case 'getCalList':
-            return getCalList(res, curUser, true);
+            return getCalList(req, res, curUser, true);
           case 'getCalEventsList':
             return getCalEventsList(req, res, curUser, true);
           default:
