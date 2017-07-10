@@ -14,8 +14,6 @@ const getCredencials = async req => User.findById(req.user);
 const refreshToken = (curUser, req, res, origin) => {
   refresh.requestNewAccessToken('google', curUser.refreshToken,
     (err, newAccessToken) => {
-      console.log('requestNewAccessToken', newAccessToken, origin);
-
       if (err) {
         console.error('ERROR at refreshToken requestNewAccessToken', err);
         return res.status(500).send('ERROR at refreshToken requestNewAccessToken');
@@ -33,7 +31,6 @@ const refreshToken = (curUser, req, res, origin) => {
           case 'getCalEventsList':
             return getCalEventsList(req, res, curUser, true);
           default:
-            // return res.sendFile(`${path}/build/index.html`);  
             console.error('No callback defined at refresh token');
             return res.status(500).send('No callback defined at refresh token');
         }
@@ -62,7 +59,7 @@ const getCalList = (req, res, curUser, withNewToken = false) => {
 
 const processCalendarEvents = (err, req, res, calendarEvents, withNewToken, curUser) => {
   if (err && err.code === 401 && !withNewToken) { // if the token is outdated refresh the auth
-    return refreshToken(curUser, req, res, 'processCalendarEvents');
+    return refreshToken(curUser, req, res, 'getCalEventsList');
   }
   if (err) {
     console.error('ERROR at processCalendarEvents', err);
