@@ -13,7 +13,7 @@
     "copy": "node tools/copy.js",
     "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
     "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",
-    "test": "mocha --compilers js:babel-core/register",
+    "test": "cross-env NODE_ENV=test mocha --compilers js:babel-core/register",
     "heroku-postbuild": "npm run build",
     "postinstall": "node tools/postInstall.js"
   },
@@ -56,6 +56,7 @@
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "chai": "^4.0.2",
+    "chai-http": "^3.0.0",
     "chalk": "^1.1.3",
     "chroma-js": "^1.3.3",
     "chunk-manifest-webpack2-plugin": "^1.0.1",
