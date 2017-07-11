@@ -1,7 +1,6 @@
 'use strict';
 
 import moment from 'moment';
-import mongoose from 'mongoose';
 
 import Events from '../events/events.model';
 import Stats from './stats.model';
@@ -140,7 +139,10 @@ export const computeStats = () => {
         stats.weekAvg = 0;
         writeStatsIntoDatabase(stats);
       }
-    });
+      return null;
+    })
+    .catch(showError('computeStats'));
+    }
 };
 
 // Calculate application statistics
