@@ -1,6 +1,7 @@
 'use strict';
 
 import moment from 'moment';
+import mongoose from 'mongoose';
 
 import Events from '../events/events.model';
 import Stats from './stats.model';
@@ -123,7 +124,23 @@ const countAll = (stats) => {
 
 export const computeStats = () => {
   const stats = {};
-  countAll(stats);
+  Events.count()
+    .exec()
+    .then((count) => {
+      if (count > 0) {
+        countAll(stats);
+      } else {
+        // No events in the collection, write zeros to stats collection
+        stats.events = 0;
+        stats.users = 0;
+        stats.participants = 0;
+        stats.maxParticipants = 0;
+        stats.avgParticipants = 0;
+        stats.eventsToday = 0;
+        stats.weekAvg = 0;
+        writeStatsIntoDatabase(stats);
+      }
+    });
 };
 
 // Calculate application statistics
