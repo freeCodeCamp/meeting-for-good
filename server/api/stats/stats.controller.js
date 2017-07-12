@@ -49,7 +49,11 @@ const computeAvgEventsForWeek = (stats) => {
   obj.out = { inline: 1 };
   Events.mapReduce(obj)
     .then((results) => {
-      stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
+      if (results.length > 0) {
+        stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
+      } else {
+        stats.weekAvg = 0;
+      }
 
       writeStatsIntoDatabase(stats);
       return null;
