@@ -142,7 +142,6 @@ export const computeStats = () => {
       return null;
     })
     .catch(showError('computeStats'));
-    }
 };
 
 // Calculate application statistics
