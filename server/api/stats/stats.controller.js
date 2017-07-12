@@ -1,12 +1,11 @@
 'use strict';
 
 import moment from 'moment';
-import mongoose from 'mongoose';
 
 import Events from '../events/events.model';
 import Stats from './stats.model';
 
-import { handleError } from '../utils/api.utils';
+import { handleError, respondWithResult } from '../utils/api.utils';
 
 const showError = msg => err => console.log(msg, ': ', err);
 
@@ -50,7 +49,11 @@ const computeAvgEventsForWeek = (stats) => {
   obj.out = { inline: 1 };
   Events.mapReduce(obj)
     .then((results) => {
-      stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
+      if (results.length > 0) {
+        stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
+      } else {
+        stats.weekAvg = 0;
+      }
 
       writeStatsIntoDatabase(stats);
       return null;
@@ -140,12 +143,14 @@ export const computeStats = () => {
         stats.weekAvg = 0;
         writeStatsIntoDatabase(stats);
       }
-    });
+      return null;
+    })
+    .catch(showError('computeStats'));
 };
 
 // Calculate application statistics
 export const getStats = (req, res) => {
   Stats.findOne()
-    .then(stats => res.status(200).json(stats))
+    .then(respondWithResult(res, 200))
     .catch(handleError(res));
 };
