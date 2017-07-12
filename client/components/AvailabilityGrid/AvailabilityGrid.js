@@ -43,10 +43,10 @@ class AvailabilityGrid extends Component {
   }
 
   componentWillMount() {
-    const { event, dates, showHeatmap } = this.props;
+    const { event, dates, showHeatmap, calendarEvents } = this.props;
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
-    const grid = createGridComplete(allDates, allTimes, event);
+    const grid = createGridComplete(allDates, allTimes, event, calendarEvents);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
     const jumpTimeIdx = jumpTimeIndex(allTimes);
 
@@ -54,10 +54,10 @@ class AvailabilityGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { event, dates, showHeatmap } = nextProps;
+    const { event, dates, showHeatmap, calendarEvents } = nextProps;
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
-    const grid = createGridComplete(allDates, allTimes, event);
+    const grid = createGridComplete(allDates, allTimes, event, calendarEvents);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
     const jumpTimeIdx = jumpTimeIndex(allTimes);
     this.setState({ grid, backgroundColors, showHeatmap, allDates, event, allTimes, jumpTimeIdx });
@@ -149,7 +149,8 @@ class AvailabilityGrid extends Component {
   @autobind
   handleCancelBtnClick() {
     const { allDates, allTimes, event } = this.state;
-    const grid = createGridComplete(allDates, allTimes, event);
+    const { calendarEvents } = this.props;
+    const grid = createGridComplete(allDates, allTimes, event, calendarEvents);
     this.setState({ grid });
     this.props.closeEditorGrid();
   }
@@ -240,6 +241,7 @@ AvailabilityGrid.defaultProps = {
   event: () => { console.log('event prop validation not set!'); },
   curUser: () => { console.log('curUser prop validation not set!'); },
   heightlightedUser: '',
+  calendarEvents: [],
 };
 
 AvailabilityGrid.propTypes = {
@@ -263,6 +265,7 @@ AvailabilityGrid.propTypes = {
   // Current user
   curUser: isCurUser,
   heightlightedUser: PropTypes.string,
+  calendarEvents: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default cssModules(AvailabilityGrid, styles);

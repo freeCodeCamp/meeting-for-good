@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const participantsSchema = new Schema({
   availability: [[{ type: Date, required: true }]],
-  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   ownerNotified: { type: Boolean, required: true, default: false },
   emailUpdate: { type: Boolean, required: true, default: false },
   /**

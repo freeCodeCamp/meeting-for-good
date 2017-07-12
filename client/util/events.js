@@ -48,8 +48,8 @@ export const loadEvent = async (id, full = false) => {
   const urlToFecth = (full) ? `/api/events/getFull/${id}` : `/api/events/${id}`;
   nprogress.start();
   try {
-    const response = await fetch(urlToFecth, { credentials: 'same-origin' });
-    checkStatus(response);
+    let response = await fetch(urlToFecth, { credentials: 'same-origin' });
+    response = checkStatus(response);
     const event = await parseJSON(response);
     return event;
   } catch (err) {

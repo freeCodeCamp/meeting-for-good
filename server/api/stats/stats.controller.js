@@ -5,7 +5,7 @@ import moment from 'moment';
 import Events from '../events/events.model';
 import Stats from './stats.model';
 
-import { handleError } from '../utils/api.utils';
+import { handleError, respondWithResult } from '../utils/api.utils';
 
 const showError = msg => err => console.log(msg, ': ', err);
 
@@ -37,16 +37,10 @@ const computeAvgEventsForWeek = (stats) => {
   obj.map = function (foo) {
     if (this._id.getTimestamp() >= sevenDaysAgo) {
       emit(0, 1);
-    } else {
-      emit(0, 0);
     }
   };
   obj.reduce = function (id, values) {
-    let count = 0;
-    for (let i = 0; i < values.length; i += 1) {
-      count += values[i];
-    }
-    return count;
+    return values.length;
   };
 /* eslint-enable */
   obj.scope = {
@@ -55,7 +49,11 @@ const computeAvgEventsForWeek = (stats) => {
   obj.out = { inline: 1 };
   Events.mapReduce(obj)
     .then((results) => {
-      stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
+      if (results.length > 0) {
+        stats.weekAvg = Math.floor(((results[0].value / 7) * 10) + 0.5) / 10;
+      } else {
+        stats.weekAvg = 0;
+      }
 
       writeStatsIntoDatabase(stats);
       return null;
@@ -129,12 +127,30 @@ const countAll = (stats) => {
 
 export const computeStats = () => {
   const stats = {};
-  countAll(stats);
+  Events.count()
+    .exec()
+    .then((count) => {
+      if (count > 0) {
+        countAll(stats);
+      } else {
+        // No events in the collection, write zeros to stats collection
+        stats.events = 0;
+        stats.users = 0;
+        stats.participants = 0;
+        stats.maxParticipants = 0;
+        stats.avgParticipants = 0;
+        stats.eventsToday = 0;
+        stats.weekAvg = 0;
+        writeStatsIntoDatabase(stats);
+      }
+      return null;
+    })
+    .catch(showError('computeStats'));
 };
 
 // Calculate application statistics
 export const getStats = (req, res) => {
   Stats.findOne()
-    .then(stats => res.status(200).json(stats))
+    .then(respondWithResult(res, 200))
     .catch(handleError(res));
 };

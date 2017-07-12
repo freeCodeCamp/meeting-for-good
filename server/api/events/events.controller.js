@@ -81,14 +81,30 @@ const indexByUser = (req, res) => {
 };
 
 // Gets a single Event from the DB
-const show = (req, res) =>
-  Events.findById(req.params.id)
+const show = async (req, res) => {
+  try {
+    const event = await Events.findById({ _id: req.params.id })
+      .populate('participants.userId', 'avatar emails name')
+      .exec();
+    if (!event) {
+      res.status(404).end();
+      return null;
+    }
+    event.participants = event.participants.filter(participant => participant.status !== 0);
+    return res.status(200).json(event);
+  } catch (err) {
+    console.log('ERROR at show Events', err);
+    res.status(500).send(err);
+  }
+};
+
+const showFull = (req, res) =>
+  Events.findById({ _id: req.params.id })
     .populate('participants.userId', 'avatar emails name')
     .exec()
-    .then(filterOutStatusZeroParticipants())
-    .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
+
 
 // Updates an existing Event in the DB
 const patch = (req, res) => {
@@ -168,14 +184,6 @@ const setGuestInactive = (req, res) =>
     .then(filterOutStatusZeroParticipants())
     .then(respondWithResult(res))
     .catch(handleError(res));
-
-const showFull = (req, res) =>
-  Events.findById({ _id: req.params.id })
-    .populate('participants.userId', 'avatar emails name')
-    .exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-
 
 export {
   index, indexById, indexByUser, show, create, upsert, patch, setFalse,

@@ -122,7 +122,13 @@ const createGuestNotGuestList = (participants, flattenedAvailability, dateHourFo
   return { guests, notGuests };
 };
 
-const createQuartersForGrid = (allTimes, date, flattenedAvailability, dtsMinMax, participants) =>
+const haveACalendarEvent = (time, CalendarEventsReduced) => {
+  const result = CalendarEventsReduced.filter(item => item.range.contains(time));
+  return result;
+};
+
+const createQuartersForGrid = (
+  allTimes, date, flattenedAvailability, dtsMinMax, participants, CalendarEventsReduced) =>
   allTimes.map((quarter) => {
     const quarterM = moment(quarter);
     const dateHourForCell = moment(date).hour(quarterM.hour()).minute(quarterM.minute()).startOf('minute');
@@ -132,16 +138,32 @@ const createQuartersForGrid = (allTimes, date, flattenedAvailability, dtsMinMax,
         participants: [],
         notParticipants: [],
         disable: true,
+        eventCalendar: [],
       };
     }
+    const eventCalendar = haveACalendarEvent(dateHourForCell, CalendarEventsReduced);
     const listGuests =
       createGuestNotGuestList(participants, flattenedAvailability, dateHourForCell);
     return {
       time: dateHourForCell.toDate(),
       participants: listGuests.guests,
       notParticipants: listGuests.notGuests,
+      eventCalendar,
     };
   });
+
+const CalendarEventsReductor = (calendarEvents) => {
+  const result = calendarEvents.map((event) => {
+    const nEvent = {};
+    nEvent.range = moment.range(moment(event.start.dateTime), moment(event.end.dateTime));
+    nEvent.name = event.summary;
+    nEvent.organizer = event.organizer.displayName;
+    nEvent.isOrganizer = event.organizer.self;
+    nEvent.id = event.id;
+    return nEvent;
+  });
+  return result;
+};
 
 /**
  *
@@ -149,15 +171,16 @@ const createQuartersForGrid = (allTimes, date, flattenedAvailability, dtsMinMax,
  * @param {array} allTimes
  * @param {Object} event
  */
-export const createGridComplete = (allDates, allTimes, event) => {
+export const createGridComplete = (allDates, allTimes, event, calendarEvents) => {
   const grid = [];
   const dtsMinMax = datesMinMax(event);
   const flattenedAvailability = flattenedAvailabilitys(event);
+  const CalendarEventsReduced = CalendarEventsReductor(calendarEvents);
   allDates.forEach((date) => {
     grid.push({
       date,
       quarters: createQuartersForGrid(allTimes,
-        date, flattenedAvailability, dtsMinMax, event.participants),
+        date, flattenedAvailability, dtsMinMax, event.participants, CalendarEventsReduced),
     });
   });
   return grid;
