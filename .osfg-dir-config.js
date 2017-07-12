@@ -17,7 +17,7 @@ module.exports = {
   title: 'Meeting for Good',
   demoVideo: 'https://www.youtube.com/watch?v=LVZbUDzx1a0&',
   liveDemo: 'https://meeting.freecodecamp.com/',
-  description: `A tool to effortlessly schedule calls and meetings across multiple timezones.',
+  description: `A tool to effortlessly schedule calls and meetings across multiple timezones.`,
   body: `#### License
 
 This computer software is licensed under the Open Source [BSD-3-Clause](https://github.com/freeCodeCamp/Mail-for-Good/blob/master/LICENSE.md).
