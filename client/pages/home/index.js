@@ -24,10 +24,6 @@ class Home extends React.Component {
         </div>
         <img src={dashboardBanner} alt="dashboard" />
         <img src={dashboardBanner2} alt="dashboard2" />
-        <hr />
-        <h3>The best meeting coordination app</h3>
-        <img src={dashboardBanner} alt="dashboard" />
-        <img src={dashboardBanner2} alt="dashboard2" />
         <h3>Easy event creation</h3>
         <h6>Creating an event is easy as saying 1, 2, 3.</h6>
         <img src={mainBannerImage} alt="new event" />
@@ -117,7 +113,7 @@ class Home extends React.Component {
     return (
       <div styleName="statistics">
         <h6>Event creators: <strong>{stats.users}</strong></h6>
-        <h6>Total events created until today: <strong>{stats.events}</strong></h6>
+        <h6>Total events created: <strong>{stats.events}</strong></h6>
         <h6>Events occurring today: <strong>{stats.eventsToday}</strong></h6>
         <h6>Avg. guests for all events: <strong>{stats.avgParticipants}</strong></h6>
         <h6>Max. guests for any event: <strong>{stats.maxParticipants}</strong></h6>
@@ -139,6 +135,8 @@ class Home extends React.Component {
             labelStyle={inlineStyle.loginButton}
             onTouchTap={this.handleOpenLoginModal}
           />
+          <h3>Now with Google Calendar Integration</h3>
+          <h4> Select your calendars at Calendar Integration</h4>
         </div>
         <div styleName="dummy-element" />
       </header>

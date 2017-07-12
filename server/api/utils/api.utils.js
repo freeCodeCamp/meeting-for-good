@@ -14,14 +14,16 @@ const removeEntity = res => (entity) => {
   if (entity) entity.remove().then(() => res.status(204).end());
 };
 
-const patchUpdates = patches => (entity) => {
+const patchUpdates = patches => async (entity) => {
+  let result;
   try {
     jsonpatch.applyPatch(entity, patches, /* validate */ true);
+    result = await entity.save();
   } catch (err) {
     console.log('err at patches', err);
     return Promise.reject(err);
   }
-  return entity.save();
+  return result;
 };
 
 const handleError = (res, statusCode = 500) => err => res.status(statusCode).send(err);

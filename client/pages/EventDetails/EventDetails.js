@@ -7,12 +7,13 @@ import PropTypes from 'prop-types';
 import EventDetailsComponent from '../../components/EventDetailsComponent/EventDetailsComponent';
 import styles from './event-details.css';
 import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDrawer';
+import { listCalendarEvents } from '../../util/calendar';
+import { eventsMaxMinDatesForEvent } from '../../util/dates.utils';
 
 class EventDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      event: null,
+    this.state = { event: null,
       showLoginModal: false,
       openDrawer: false,
       curUser: {},
@@ -21,23 +22,35 @@ class EventDetails extends Component {
   }
 
   async componentWillMount() {
-    const { isAuthenticated, curUser } = this.props;
-    if (isAuthenticated === true) {
-      const event = await this.props.cbLoadEvent(this.props.params.uid);
-      this.setState({ event, curUser });
-    } else {
+    const { isAuthenticated, curUser, cbLoadEvent } = this.props;
+    if (isAuthenticated === false) {
       this.props.cbOpenLoginModal(`/event/${this.props.params.uid}`);
+    } else {
+      try {
+        await this.loadEventsAndCalendar(isAuthenticated, curUser, cbLoadEvent);
+      } catch (err) {
+        console.error('eventDetails componentWillMount', err);
+      }
     }
   }
 
   async componentWillReceiveProps(nextProps) {
-    const { isAuthenticated, curUser } = nextProps;
+    const { isAuthenticated, curUser, cbLoadEvent } = nextProps;
+    try {
+      await this.loadEventsAndCalendar(isAuthenticated, curUser, cbLoadEvent);
+    } catch (err) {
+      console.error('eventDetails componentWillReceiveProps', err);
+    }
+  }
+
+  async loadEventsAndCalendar(isAuthenticated, curUser, cbLoadEvent) {
     if (isAuthenticated === true) {
       try {
-        const event = await this.props.cbLoadEvent(this.props.params.uid);
-        this.setState({ event, curUser });
+        const event = await cbLoadEvent(this.props.params.uid);
+        const calendarEvents = await listCalendarEvents(eventsMaxMinDatesForEvent(event), curUser);
+        this.setState({ event, curUser, calendarEvents });
       } catch (err) {
-        console.log('eventDetails componentWillReceiveProps', err);
+        console.error('eventDetails loadEventsAndCalendar', err);
       }
     }
   }
@@ -85,14 +98,12 @@ class EventDetails extends Component {
   @autobind
   async HandleInviteEmail(guestId, event) {
     const nEvent = await this.props.cbInviteEmail(guestId, event);
-    if (nEvent) {
-      this.setState({ event: nEvent });
-    }
+    if (nEvent) this.setState({ event: nEvent });
     return nEvent;
   }
 
   render() {
-    const { event, openDrawer, curUser } = this.state;
+    const { event, openDrawer, curUser, calendarEvents } = this.state;
     if (event) {
       return (
         <div styleName="event">
@@ -105,6 +116,7 @@ class EventDetails extends Component {
             cbHandleEmailOwner={this.HandleEmailOwner}
             cbHandleEmailOwnerEdit={this.HandleEmailOwnerEdit}
             cbDeleteGuest={this.handleDeleteGuest}
+            calendarEvents={calendarEvents}
           />
           <GuestInviteDrawer
             open={openDrawer}
