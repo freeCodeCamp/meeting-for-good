@@ -5,7 +5,7 @@ import moment from 'moment';
 import Events from '../events/events.model';
 import Stats from './stats.model';
 
-import { handleError } from '../utils/api.utils';
+import { handleError, respondWithResult } from '../utils/api.utils';
 
 const showError = msg => err => console.log(msg, ': ', err);
 
@@ -147,6 +147,6 @@ export const computeStats = () => {
 // Calculate application statistics
 export const getStats = (req, res) => {
   Stats.findOne()
-    .then(stats => res.status(200).json(stats))
+    .then(respondWithResult(res, 200))
     .catch(handleError(res));
 };
