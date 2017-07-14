@@ -19,6 +19,7 @@ A meeting coordination app for your team.
 - Create a `.env` file in the root directory of the app with the following contents:
 ```
 MONGO_URI=mongodb://localhost:27017/meeting-for-good
+MONGO_URI_TEST=mongodb://localhost:27017/test
 GOOGLE_KEY=[YOUR_GOOGLE_KEY]
 GOOGLE_SECRET=[YOUR_GOOGLE_SECRET]
 FACEBOOK_KEY=[YOUR_FACEBOOK_KEY]
