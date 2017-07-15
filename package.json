@@ -13,7 +13,7 @@
     "copy": "node tools/copy.js",
     "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
     "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",
-    "test": "mocha --compilers js:babel-core/register",
+    "test": "cross-env NODE_ENV=testing mocha --compilers js:babel-core/register",
     "heroku-postbuild": "npm run build",
     "postinstall": "node tools/postInstall.js"
   },
