@@ -74,7 +74,7 @@ class NotificationBar extends Component {
     if (!events) {
       return noNotificationsRow;
     }
-    let rows = [];
+    const rows = [];
     const filtEvent = events.filter(event => event.owner.toString() === curUser._id);
     filtEvent.forEach((event) => {
       event.participants.forEach((participant) => {
