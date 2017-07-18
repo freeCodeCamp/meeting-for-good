@@ -5,6 +5,10 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import Event from 'material-ui/svg-icons/action/event';
+import DateRange from 'material-ui/svg-icons/action/date-range';
+import InfoOutline from 'material-ui/svg-icons/action/info-outline';
+import ExitToApp from 'material-ui/svg-icons/action/exit-to-app';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import PropTypes from 'prop-types';
@@ -16,8 +20,7 @@ import styles from './nav-bar.css';
 const inLineStyles = {
   iconMenu: {
     iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
-    toggle: { label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } },
-    menuItem: { maxHeight: '30px', minHeight: '30px', lineHeight: '30px', width: '168px' },
+    toggle: { style: { top: '10px'}, label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } }
   },
 };
 
@@ -40,7 +43,7 @@ const CalSetMenuItem = (props) => {
       onTouchTap={cbToggleCalSetDialog}
       styleName="AboutButton"
       primaryText="Calendar Integration"
-      style={inLineStyles.iconMenu.menuItem}
+      leftIcon={<DateRange />}
     />
   );
 };
@@ -48,11 +51,13 @@ const CalSetMenuItem = (props) => {
 const PastEventsMenuItem = (props) => {
   const { showPastEvents, handleFilterToggle } = props;
   return (
-    <MenuItem style={{ maxHeight: '30px', minHeight: '30px', width: '168px' }} >
+    <MenuItem leftIcon={<Event />}
+    >
       <Toggle
         label={'Past Events'}
         toggled={showPastEvents}
         styleName="Toggle"
+        style={inLineStyles.iconMenu.toggle.style}
         labelStyle={inLineStyles.iconMenu.toggle.label}
         thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
         onToggle={handleFilterToggle}
@@ -68,7 +73,7 @@ const AboutMenuItem = (props) => {
       onTouchTap={toggleAboutDialog}
       styleName="AboutButton"
       primaryText="About"
-      style={inLineStyles.iconMenu.menuItem}
+      leftIcon={<InfoOutline />}
     />
   );
 };
@@ -78,7 +83,7 @@ const LogoutMenuItem = () => (
     href={'/api/auth/logout'}
     styleName="LogoutButton"
     primaryText="Logout"
-    style={{ maxHeight: '30px', minHeight: '30px', lineHeight: '30px', width: '168px' }}
+    leftIcon={<ExitToApp />}
   />
 );
 
