@@ -51,8 +51,7 @@ const CalSetMenuItem = (props) => {
 const PastEventsMenuItem = (props) => {
   const { showPastEvents, handleFilterToggle } = props;
   return (
-    <MenuItem leftIcon={<Event />}
-    >
+    <MenuItem leftIcon={<Event />} >
       <Toggle
         label={'Past Events'}
         toggled={showPastEvents}
@@ -62,7 +61,7 @@ const PastEventsMenuItem = (props) => {
         thumbSwitchedStyle={inLineStyles.iconMenu.toggle.thumbSwitched}
         onToggle={handleFilterToggle}
       />
-    </MenuItem >
+    </MenuItem>
   );
 };
 
