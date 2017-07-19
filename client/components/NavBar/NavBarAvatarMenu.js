@@ -20,7 +20,7 @@ import styles from './nav-bar.css';
 const inLineStyles = {
   iconMenu: {
     iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
-    toggle: { style: { top: '10px'}, label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } }
+    toggle: { style: { top: '10px' }, label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } },
   },
 };
 
