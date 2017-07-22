@@ -69,9 +69,10 @@ class NotificationBar extends Component {
   }
 
   renderMenuRows() {
+    const noNotificationsRow = <MenuItem disabled>No new notifications</MenuItem>;
     const { events, curUser } = this.state;
     if (!events) {
-      return;
+      return noNotificationsRow;
     }
     const rows = [];
     const filtEvent = events.filter(event => event.owner.toString() === curUser._id);
@@ -97,6 +98,9 @@ class NotificationBar extends Component {
         }
       });
     });
+    if (!rows.length) {
+      return noNotificationsRow;
+    }
     return rows;
   }
 
