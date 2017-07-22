@@ -73,7 +73,7 @@ This will create a directory `meeting-for-good` and download the entire meeting-
 git remote add upstream https://github.com/freeCodeCamp/meeting-for-good.git
 ```
 
-Congratulations, you now have a local copy of the Food for Good repo!
+Congratulations, you now have a local copy of the Meeting for Good repo!
 
 #### Maintaining Your Fork
 
