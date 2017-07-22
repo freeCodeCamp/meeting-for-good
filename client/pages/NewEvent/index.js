@@ -58,7 +58,8 @@ class NewEvent extends React.Component {
 
     const { ranges, eventName, selectedTimeRange } = this.state;
 
-    if (ranges.length > 0 && ranges[0].from && eventName.length > 0 && selectedTimeRange[1] - selectedTimeRange[0] >= 1 ) {
+    if (ranges.length > 0 && ranges[0].from
+      && eventName.length > 0 && selectedTimeRange[1] - selectedTimeRange[0] >= 1) {
       this.setState({ disableSubmit: false });
     } else {
       this.setState({ disableSubmit: true });
@@ -217,7 +218,9 @@ class NewEvent extends React.Component {
             formatLabel={value => formatTime(value)}
             step={0.25}
             value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
-            onChange={value => this.setState({ selectedTimeRange: [value.min, value.max] }, () => this.toggleSubmitDisabled())}
+            onChange={value =>
+              this.setState({ selectedTimeRange: [value.min, value.max] },
+                () => this.toggleSubmitDisabled())}
           />
         </div>
         <br />
