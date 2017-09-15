@@ -35,7 +35,7 @@ export const createDatesRange = (dates) => {
 };
 
 export const dateRangeReducer = (selectedDates, event) => {
-  // first save the inicial and  final original times
+  // first save the initial and  final original times
   const initialHour = moment(event.dates[0].fromDate).hour();
   const initialMinutes = moment(event.dates[0].fromDate).minutes();
   const finalHour = moment(event.dates[0].toDate).hour();

@@ -12,7 +12,7 @@ const moment = extendMoment(Moment);
 
 // calculate the numbers of cells to offset the hours grid
 // since we only want display the full hours
-const inicialOffSet = (allTimes) => {
+const initialOffSet = (allTimes) => {
   if (allTimes[0].minutes() !== 0) {
     return 4 - (allTimes[0].minutes() / 15);
   }
@@ -69,7 +69,7 @@ const calcHourTime = (allTimes) => {
 
 const GridHours = (props) => {
   const { allTimes, jumpIndexAllTimes } = props;
-  const style = { margin: `0 0 0 ${75 + (inicialOffSet(allTimes) * 13)}px` };
+  const style = { margin: `0 0 0 ${75 + (initialOffSet(allTimes) * 13)}px` };
   // array only with full hours thats will be used to display at grid
   const hourTime = calcHourTime(allTimes);
   let gridJump = false;
