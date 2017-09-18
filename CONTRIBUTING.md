@@ -87,14 +87,14 @@ Do this prior to every time you create a branch for a pull request:
 
   > ```shell
   > $ git status
-  > On branch staging
+  > On branch development
   > Your branch is up-to-date with 'origin/development'.
   > ```
 
   > If your aren't on `development`, resolve outstanding files / commits and checkout the `development` branch
 
   > ```shell
-  > $ git checkout staging
+  > $ git checkout development
   > ```
 
 2. Do a pull with rebase against `upstream`
@@ -103,15 +103,15 @@ Do this prior to every time you create a branch for a pull request:
   > $ git pull --rebase upstream development
   > ```
 
-  > This will pull down all of the changes to the official staging branch, without making an additional commit in your local repo.
+  > This will pull down all of the changes to the official development branch, without making an additional commit in your local repo.
 
-3. (_Optional_) Force push your updated staging branch to your GitHub fork
+3. (_Optional_) Force push your updated development branch to your GitHub fork
 
   > ```shell
-  > $ git push origin staging --force
+  > $ git push origin development --force
   > ```
 
-  > This will overwrite the staging branch of your fork.
+  > This will overwrite the development branch of your fork.
 
 ### Setup meeting-for-good
 
@@ -120,7 +120,7 @@ Please follow the steps in the [README.md](README.md) document.
 
 ### Create a Branch
 
-Before you start working, you will need to create a separate git branch specific to the issue / feature you're working on. You will push your work to this branch. Do not work off the staging branch.
+Before you start working, you will need to create a separate git branch specific to the issue / feature you're working on. You will push your work to this branch. Do not work off the development branch.
 
 #### Naming Your Branch
 
@@ -145,7 +145,7 @@ $ git push origin [name_of_your_new_branch]
 
 ### Setup Linting
 
-We reccomend you have [ESLint running in your editor](http://eslint.org/docs/user-guide/integrations.html). It will highlight anything that doesn't conform to our meeting-for-good's coding style conventions. (you can find a summary of those rules [here](https://github.com/freeCodeCamp/meeting-for-good/blob/staging/.eslintrc)).
+We reccomend you have [ESLint running in your editor](http://eslint.org/docs/user-guide/integrations.html). It will highlight anything that doesn't conform to our meeting-for-good's coding style conventions. (you can find a summary of those rules [here](https://github.com/freeCodeCamp/meeting-for-good/blob/development/.eslintrc)).
 
 You can also check for linting errors by running the command
 ```shell
@@ -169,7 +169,7 @@ A pull request (PR) is a method of submitting proposed changes to a GitHub repos
 Take away only one thing from this document, it should be this: Never, **EVER**
 make edits to the `development` branch. ALWAYS make a new branch BEFORE you edit
 files. This is critical, because if your PR is not accepted, your copy of
-staging will be forever sullied and the only way to fix it is to delete your
+development will be forever sullied and the only way to fix it is to delete your
 fork and re-fork.
 
 1.  Perform the maintenance step of rebasing `development`.
@@ -177,14 +177,14 @@ fork and re-fork.
 
 ```bash
 $ git status
-On branch staging
+On branch development
 Your branch is up-to-date with 'origin/development'.
 
 nothing to commit, working directory clean
 ```
 
-1.  If you are not on staging or your working directory is not clean, resolve
-    any outstanding files/commits and checkout staging `git checkout development`
+1.  If you are not on development or your working directory is not clean, resolve
+    any outstanding files/commits and checkout development `git checkout development`
 
 2.  Create a branch off of `development` with git: `git checkout -B
     branch/name-here` **Note:** Branch naming is important. Use a name like
