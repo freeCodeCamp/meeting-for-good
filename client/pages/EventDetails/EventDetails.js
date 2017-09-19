@@ -131,6 +131,7 @@ class EventDetails extends Component {
 }
 
 EventDetails.defaultProps = {
+  cbOpenLoginModal: () => { console.log('cbDeleteEvent func not passed in!'); },
   cbDeleteEvent: () => { console.log('cbDeleteEvent func not passed in!'); },
   cbEditEvent: () => { console.log('cbEditEvent func not passed in!'); },
   cbEmailOwner: () => { console.log('cbEmailOwner func not passed in!'); },
@@ -142,6 +143,7 @@ EventDetails.defaultProps = {
 
 EventDetails.propTypes = {
   params: PropTypes.objectOf(PropTypes.string),
+  cbOpenLoginModal: PropTypes.func,
   cbDeleteEvent: PropTypes.func,
   cbEditEvent: PropTypes.func,
   cbEmailOwner: PropTypes.func,

@@ -1,8 +1,8 @@
 import moment from 'moment';
 
- /* input - date as dateRanges object
+/* input - date as dateRanges object
   {from: date, to: date }
-ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25)*/
+ensure that all adjacent date ranges are merged into one. (eg. 17-21 and 22-25 => 17-25) */
 const dateRangeReducer = (dates) => {
   for (let i = 0; i < dates.length; i += 1) {
     for (let x = i + 1; x < dates.length; x += 1) {
