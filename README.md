@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/freeCodeCamp/meeting-for-good.svg?branch=master)](https://travis-ci.org/freeCodeCamp/meeting-for-good)
 [![codebeat badge](https://codebeat.co/assets/svg/badges/A-398b39-669406e9e1b136187b91af587d4092b0160370f271f66a651f444b990c2730e9.svg)](https://codebeat.co/projects/github-com-jrogatis-meeting-for-good-development-70f431f9-1e70-4bab-8318-0d348bab0998)
 # Meeting for Good
+
+[![Join the chat at https://gitter.im/FreeCodeCamp/meeting-for-good](https://badges.gitter.im/FreeCodeCamp/meeting-for-good.svg)](https://gitter.im/FreeCodeCamp/meeting-for-good?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A meeting coordination app for your team.
 
 ## Get Meeting for Good running locally

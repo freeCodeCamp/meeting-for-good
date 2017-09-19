@@ -1,6 +1,6 @@
 {
   "name": "meeting-for-good",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Schedule events with ease!",
   "homepage": "https://github.com/FreeCodeCamp/meeting-for-good/#readme",
   "main": "index.js",

@@ -18,7 +18,7 @@ const datesMinMax = (event) => {
 
 /**
  * creaates slots of 15 minutes for a range of availability
- * @param {*} from inicial time for that range
+ * @param {*} from initial time for that range
  * @param {*} to end time for that range
  */
 const rangeForAvailability = (from, to) => {
