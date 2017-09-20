@@ -103,7 +103,7 @@ module.exports = {
         include: [/node_modules/, /no-css-modules/],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          loader: 'css-loader',
+          use: ['css-loader'],
         }),
       },
     ],
@@ -115,7 +115,10 @@ module.exports = {
       'process.env.GOOGLE_ANALYTICS_DEBUG': JSON.stringify(process.env.GOOGLE_ANALYTICS_DEBUG),
       'process.env.versionNumber': JSON.stringify(packageJSON.version),
     }),
-    new ExtractTextPlugin('vendor.css'),
+    new ExtractTextPlugin({
+      filename: 'vendor.css',
+      allChunks: true,
+    }),
     new OptimizeCSS({
       assetNameRegExp: /\.optimize\.css$/g,
       cssProcessor: cssNano,
