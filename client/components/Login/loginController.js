@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { isAuthenticated } from '../../util/auth';
 
 class LoginController extends Component {
-
   async componentWillMount() {
     if (await isAuthenticated()) {
       this.props.handleAuthentication(true);

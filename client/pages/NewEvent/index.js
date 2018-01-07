@@ -219,8 +219,10 @@ class NewEvent extends React.Component {
             step={0.25}
             value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
             onChange={value =>
-              this.setState({ selectedTimeRange: [value.min, value.max] },
-                () => this.toggleSubmitDisabled())}
+              this.setState(
+{ selectedTimeRange: [value.min, value.max] },
+                () => this.toggleSubmitDisabled(),
+)}
           />
         </div>
         <br />
@@ -242,7 +244,8 @@ class NewEvent extends React.Component {
             onTouchTap={() => browserHistory.push('/dashboard')}
             styleName="delete-buttom"
             aria-label="delete-event-buttom"
-          > <EventDelete /> </FloatingActionButton>
+          > <EventDelete />
+          </FloatingActionButton>
           <CardTitle styleName="cardTitle">Create a New Event</CardTitle>
           <CardText styleName="cardText">
             {this.renderForm()}
@@ -266,9 +269,9 @@ NewEvent.propTypes = {
 
   // Current user
   curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
+    _id: PropTypes.string, // Unique user id
+    name: PropTypes.string, // User name
+    avatar: PropTypes.string, // URL to image representing user(?)
   }).isRequired,
 
 };

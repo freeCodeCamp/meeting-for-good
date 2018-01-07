@@ -6,9 +6,11 @@ import styles from './availability-grid.css';
 import CellGrid from '../CellGrid/CellGrid';
 
 const Cell = (quarter, columnIndex, props) => {
-  const { backgroundColors, showHeatmap, curUser, rowIndex,
+  const {
+    backgroundColors, showHeatmap, curUser, rowIndex,
     handleCellMouseOver, handleCellMouseLeave, handleCellMouseDown,
-    handleCellMouseUp, heightlightedUser } = props;
+    handleCellMouseUp, heightlightedUser,
+  } = props;
   return (
     <CellGrid
       quarter={quarter}
@@ -59,9 +61,9 @@ Cell.propTypes = {
   showHeatmap: PropTypes.bool.isRequired,
   rowIndex: PropTypes.number.isRequired,
   curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
+    _id: PropTypes.string, // Unique user id
+    name: PropTypes.string, // User name
+    avatar: PropTypes.string, // URL to image representing user(?)
   }).isRequired,
   heightlightedUser: PropTypes.string,
   handleCellMouseOver: PropTypes.func,

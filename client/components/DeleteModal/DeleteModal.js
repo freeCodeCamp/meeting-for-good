@@ -44,7 +44,9 @@ class DeleteModal extends Component {
     const { DialogOpen } = this.state;
     const styles = {
       modal: {
-        title: { backgroundColor: '#FF4025', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6 },
+        title: {
+          backgroundColor: '#FF4025', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6,
+        },
         content: { width: '22%', maxWidth: '22%', minWidth: '300px' },
         bodyStyle: { paddingTop: 10, fontSize: '25px' },
       },

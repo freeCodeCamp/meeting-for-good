@@ -118,7 +118,9 @@ class ParticipantsList extends Component {
   renderDeleteModal() {
     const { openDeleteModal } = this.state;
     const inLineStyles = {
-      title: { backgroundColor: '#FF4025', color: '#ffffff', fontSize: '25px', height: '30px', paddingTop: 6 },
+      title: {
+        backgroundColor: '#FF4025', color: '#ffffff', fontSize: '25px', height: '30px', paddingTop: 6,
+      },
       content: { width: '22%', maxWidth: '22%', minWidth: '300px' },
       bodyStyle: { paddingTop: 10, fontSize: '25px' },
     };
@@ -131,18 +133,22 @@ class ParticipantsList extends Component {
         actions={this.renderDeleteModalActions()}
         modal
         open={openDeleteModal}
-      > Are you sure you want to delete this guest? </Dialog>
+      > Are you sure you want to delete this guest?
+      </Dialog>
     );
   }
 
   render() {
     const inLineStyles = {
-      buttonAddGuest: { backgroundColor: '#e0e0e0',
+      buttonAddGuest: {
+        backgroundColor: '#e0e0e0',
         borderRadius: '50%',
         width: 40,
         height: 40,
         padding: 0,
-        iconStyle: { borderRadius: '50%', width: 24, height: 24, color: '#FFF' },
+        iconStyle: {
+          borderRadius: '50%', width: 24, height: 24, color: '#FFF',
+        },
         hoveredStyle: { backgroundColor: '#006400' },
       },
     };

@@ -88,7 +88,7 @@ const GridHours = (props) => {
   if (jumpCellHourIndex) {
     colTitles = colTitlesAjust(jumpCellHourIndex, colTitles, props);
   }
-  return (<div key={'GridHours'} id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
+  return (<div key="GridHours" id="timesTitle" styleName="timesTitle" style={style}> {colTitles} </div>);
 };
 
 GridHours.propTypes = {

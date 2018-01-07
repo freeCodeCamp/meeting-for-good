@@ -10,12 +10,10 @@ const toolTipRows = (quarter) => {
   const eventsCalendar = quarter.eventCalendar;
   const rows = [];
   eventsCalendar.forEach((event) => {
-    rows.push(
-      <div key={`toolTipRow ${quarter.time.toString()} ${event.id}`} styleName="toolTipHeaderWrapper">
-        <p> {(event.name) ? event.name : 'No Name'} </p>
-        <p styleName="toolTipSubHeader"> organized by : <strong>{event.organizer} </strong></p>
-      </div>,
-    );
+    rows.push(<div key={`toolTipRow ${quarter.time.toString()} ${event.id}`} styleName="toolTipHeaderWrapper">
+      <p> {(event.name) ? event.name : 'No Name'} </p>
+      <p styleName="toolTipSubHeader"> organized by : <strong>{event.organizer} </strong></p>
+    </div>);
   });
   return rows;
 };
@@ -32,7 +30,9 @@ const ToolTip = (quarter, heatMapMode) => {
 };
 
 const CellGrid = (props) => {
-  const { quarter, onMouseOver, onMouseLeave, onMouseDown, onMouseUp, heatMapMode } = props;
+  const {
+    quarter, onMouseOver, onMouseLeave, onMouseDown, onMouseUp, heatMapMode,
+  } = props;
   const styleNames = styleNameCompose(props);
   const inlineStyle = {
     background: formatCellBackgroundColor(props),

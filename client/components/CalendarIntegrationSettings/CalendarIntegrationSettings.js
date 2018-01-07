@@ -13,7 +13,9 @@ import { isCurUser } from '../../util/commonPropTypes';
 
 const inlineStyles = {
   modal: {
-    title: { backgroundColor: '#006400', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6 },
+    title: {
+      backgroundColor: '#006400', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6,
+    },
     content: { width: '310px', maxWidth: '310px', minWidth: '310px' },
     bodyStyle: { minHeight: '260px', paddingTop: 10 },
   },
@@ -133,11 +135,9 @@ class CalendarIntegrationSettings extends Component {
     if (googleCalendarList.length === 0) return null;
     const rows = [];
     googleCalendarList.forEach((calendar) => {
-      rows.push(
-        <TableRow key={calendar.id} selected={_.findIndex(selectedCalendarList, ['calendarId', calendar.id]) > -1}>
-          <TableRowColumn>{(calendar.primary) ? 'Primary' : calendar.summary}</TableRowColumn>
-        </TableRow>,
-      );
+      rows.push(<TableRow key={calendar.id} selected={_.findIndex(selectedCalendarList, ['calendarId', calendar.id]) > -1}>
+        <TableRowColumn>{(calendar.primary) ? 'Primary' : calendar.summary}</TableRowColumn>
+                </TableRow>);
     });
     const result = (<TableBody deselectOnClickaway={false}> {rows} </TableBody>);
     return result;

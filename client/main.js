@@ -23,7 +23,9 @@ const mountApp = document.getElementById('app');
 const muiTheme = getMuiTheme({
   fontFamily: 'Lato, Roboto, sans-serif',
   fontWeight: 300,
-  palette: { textColor: darkBlack, disabledColor: '#A7A7A7', primary1Color: '#006400', accent1Color: '#FF4025' },
+  palette: {
+    textColor: darkBlack, disabledColor: '#A7A7A7', primary1Color: '#006400', accent1Color: '#FF4025',
+  },
   snackbar: { textColor: 'black', backgroundColor: 'white' },
   raisedButton: { fontWeight: 'regular' },
   flatButton: { fontWeight: 'bold' },

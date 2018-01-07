@@ -18,7 +18,6 @@ import GuestInviteDrawer from '../../components/GuestInviteDrawer/GuestInviteDra
 import styles from './dashboard.css';
 
 class Dashboard extends Component {
-
   @autobind
   static handleNewEvent() {
     browserHistory.push('/event/new');
@@ -46,7 +45,9 @@ class Dashboard extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    const { showPastEvents, isAuthenticated, curUser, events } = nextProps;
+    const {
+      showPastEvents, isAuthenticated, curUser, events,
+    } = nextProps;
     if (isAuthenticated) {
       this.setState({ showPastEvents, events, curUser });
     }
@@ -84,7 +85,9 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { events, curUser, openDrawer, eventToInvite } = this.state;
+    const {
+      events, curUser, openDrawer, eventToInvite,
+    } = this.state;
     return (
       <Paper zDepth={0} styleName="wrapper">
         {/* New Event Icon */}

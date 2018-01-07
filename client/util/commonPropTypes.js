@@ -33,9 +33,9 @@ function isEvent(props, propName, componentName) {
 function isCurUser(props, propName, componentName) {
   const propVal = props[propName];
   const validator = {
-    _id: PropTypes.string.isRequired,      // Unique user id
-    name: PropTypes.string.isRequired,     // User name
-    avatar: PropTypes.string.isRequired,   // URL to image representing user(?)
+    _id: PropTypes.string.isRequired, // Unique user id
+    name: PropTypes.string.isRequired, // User name
+    avatar: PropTypes.string.isRequired, // URL to image representing user(?)
   };
   return (PropTypes.checkPropTypes(validator, propVal, 'props', componentName));
 }

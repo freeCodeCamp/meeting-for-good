@@ -15,7 +15,6 @@ import CalendarIntegrationSettings from '../CalendarIntegrationSettings/Calendar
 import styles from './nav-bar.css';
 
 class NavBar extends Component {
-
   @autobind
   static handleDashboardClick() {
     browserHistory.push('/dashboard');
@@ -23,7 +22,9 @@ class NavBar extends Component {
 
   constructor(props) {
     super(props);
-    const { isAuthenticated, curUser, showPastEvents, events } = this.props;
+    const {
+      isAuthenticated, curUser, showPastEvents, events,
+    } = this.props;
     this.state = {
       userAvatar: avatarPlaceHolder,
       isAuthenticated,
@@ -38,15 +39,23 @@ class NavBar extends Component {
   }
 
   componentWillMount() {
-    const { location, curUser, isAuthenticated, showPastEvents, events } = this.props;
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents, events });
+    const {
+      location, curUser, isAuthenticated, showPastEvents, events,
+    } = this.props;
+    this.setState({
+      curUser, isAuthenticated, userAvatar: curUser.Avatar, showPastEvents, events,
+    });
     this.MenuVisibility(location);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location, curUser, isAuthenticated, showPastEvents, events } = nextProps;
+    const {
+      location, curUser, isAuthenticated, showPastEvents, events,
+    } = nextProps;
     this.MenuVisibility(location);
-    this.setState({ curUser, isAuthenticated, userAvatar: curUser.avatar, showPastEvents, events });
+    this.setState({
+      curUser, isAuthenticated, userAvatar: curUser.avatar, showPastEvents, events,
+    });
   }
 
   MenuVisibility(location) {
@@ -79,15 +88,16 @@ class NavBar extends Component {
   }
 
   @autobind
-  toggleCalSetDialog() {
-    this.setState({ openModalCalSet: !this.state.openModalCalSet });
-  }
+ toggleCalSetDialog() {
+   this.setState({ openModalCalSet: !this.state.openModalCalSet });
+ }
 
   renderRightGroup() {
     const {
       toggleVisible,
       isAuthenticated,
-      events, openModal, userAvatar, curUser, showPastEvents, openModalCalSet } = this.state;
+      events, openModal, userAvatar, curUser, showPastEvents, openModalCalSet,
+    } = this.state;
 
     if (isAuthenticated) {
       return (
@@ -141,7 +151,7 @@ class NavBar extends Component {
       <ToolbarGroup firstChild styleName="leftToolbarGroup">
         <FlatButton href={this.state.conditionalHomeLink} styleName="logoButton" aria-label="reload app">
           Meeting for Good
-          </FlatButton>
+        </FlatButton>
       </ToolbarGroup >
     );
   }
@@ -170,9 +180,9 @@ NavBar.propTypes = {
 
   // Current user
   curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
+    _id: PropTypes.string, // Unique user id
+    name: PropTypes.string, // User name
+    avatar: PropTypes.string, // URL to image representing user(?)
   }).isRequired,
 
   cbOpenLoginModal: PropTypes.func.isRequired,
@@ -181,33 +191,31 @@ NavBar.propTypes = {
   cbEditCurUser: PropTypes.func.isRequired,
 
   // List of events containing list of event participants
-  events: PropTypes.arrayOf(
-    PropTypes.shape({
+  events: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
       _id: PropTypes.string,
-      name: PropTypes.string,
-      owner: PropTypes.string,
-      active: PropTypes.bool,
-      selectedTimeRange: PropTypes.array,
-      dates: PropTypes.arrayOf(PropTypes.shape({
-        fromDate: PropTypes.string,
-        toDate: PropTypes.string,
-        _id: PropTypes.string,
-      })),
-      participants: PropTypes.arrayOf(PropTypes.shape({
-        userId: PropTypes.shape({
-          id: PropTypes.string,
-          avatar: PropTypes.string,
-          name: PropTypes.string,
-          emails: PropTypes.arrayOf(PropTypes.string),
-        }),
-        _id: PropTypes.string,
-        status: PropTypes.oneOf([0, 1, 2, 3]),
-        emailUpdate: PropTypes.bool,
-        ownerNotified: PropTypes.bool,
-        availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-      })),
-    }),
-  ).isRequired,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.oneOf([0, 1, 2, 3]),
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+  })).isRequired,
 
 };
 
