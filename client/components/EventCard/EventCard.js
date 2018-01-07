@@ -19,7 +19,6 @@ class EventCard extends Component {
 
     const { event, curUser } = props;
     this.state = {
-      participants: props.event.participants,
       event,
       curUser,
     };

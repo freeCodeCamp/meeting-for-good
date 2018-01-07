@@ -46,10 +46,10 @@ class Dashboard extends Component {
 
   async componentWillReceiveProps(nextProps) {
     const {
-      showPastEvents, isAuthenticated, curUser, events,
+      isAuthenticated, curUser, events,
     } = nextProps;
     if (isAuthenticated) {
-      this.setState({ showPastEvents, events, curUser });
+      this.setState({ events, curUser });
     }
 
     if (isAuthenticated && events.length > 0) {

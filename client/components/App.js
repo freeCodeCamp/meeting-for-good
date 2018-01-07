@@ -45,8 +45,6 @@ class App extends Component {
       openLoginModal: false,
       isAuthenticated: false,
       loginFail: false,
-      pathToGo: '/',
-      loginModalDisable: false,
       events: [],
     };
     this._notificationSystem = null;
@@ -156,7 +154,7 @@ class App extends Component {
   async handleOpenLoginModal(pathToGo) {
     if (await isAuthenticated() === false) {
       sessionStorage.setItem('redirectTo', pathToGo);
-      this.setState({ openLoginModal: true, pathToGo });
+      this.setState({ openLoginModal: true });
     }
   }
 
@@ -188,7 +186,7 @@ class App extends Component {
 
   async handleInviteExistingGuest(guestId, event, participants, indexOfGuest) {
     const { events, curUser } = this.state;
-    const status = participants[indexOfGuest].status;
+    const { status } = participants[indexOfGuest];
     let statusResult = null;
     switch (status) {
       case 0: // guest "deleted"

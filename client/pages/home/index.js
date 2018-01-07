@@ -109,7 +109,7 @@ class Home extends React.Component {
   async handleOpenLoginModal() {
     if (await isAuthenticated() === false) {
       sessionStorage.setItem('redirectTo', '/dashboard');
-      this.setState({ openLoginModal: true, pathToGo: '/dashboard' });
+      this.setState({ openLoginModal: true });
     }
   }
 

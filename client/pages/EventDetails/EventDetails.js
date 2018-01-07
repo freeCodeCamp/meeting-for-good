@@ -15,10 +15,8 @@ class EventDetails extends Component {
     super(props);
     this.state = {
       event: null,
-      showLoginModal: false,
       openDrawer: false,
       curUser: {},
-      isAuthenticated: false,
     };
   }
 
@@ -57,8 +55,8 @@ class EventDetails extends Component {
   }
 
   @autobind
-  handleInviteGuests(event) {
-    this.setState({ openDrawer: true, eventToInvite: event });
+  handleInviteGuests() {
+    this.setState({ openDrawer: true });
   }
 
   @autobind
