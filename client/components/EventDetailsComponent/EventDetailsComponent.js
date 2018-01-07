@@ -75,11 +75,6 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
-  showAvailability() {
-    this.setState({ showButtonAviability: 'hidden', showAvailabilityGrid: 'block' });
-  }
-
-  @autobind
   closeGrid() {
     this.setState({ showHeatmap: true });
   }
