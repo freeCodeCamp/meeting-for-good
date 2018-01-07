@@ -41,7 +41,7 @@ OPBEAT_SECRET_TOKEN=[YOUR_OPBEAT_SECRET_TOKEN]
 STATS_UPDATE_INTERVAL=[STATS_REFRESH_INTERVAL_IN_SECONDS (defaults to one hour if omitted)]
 
 ```
-NOTE: The Google Calendar API must be enabled when Google key and secret keys are created.
+NOTE: The Google+ API and the Google Calendar API must be enabled when Google key and secret keys are created.
 
 - Open a new terminal session and run `mongod`
 - Run `npm run serve` from the app's root directory. This will start the app at port 8080 (unless overridden)
