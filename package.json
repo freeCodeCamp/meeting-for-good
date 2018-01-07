@@ -11,8 +11,8 @@
     "build": "npm run clean && npm run copy && npm run build:server && npm run build:client",
     "start": " node ./build/app.js",
     "copy": "node tools/copy.js",
-    "serve": "npm run clean && npm run copy && npm run build:server && npm run dev",
-    "dev": "cross-env NODE_ENV=development node -r dotenv/config ./build/app.js",
+    "serve": "npm run clean && npm run copy && npm run dev",
+    "dev": "cross-env NODE_ENV=development npx nodemon --watch 'server/**/*.js' -r dotenv/config --exec 'babel-node server/app.js'",
     "test": "cross-env NODE_ENV=testing mocha --compilers js:babel-core/register",
     "heroku-postbuild": "npm run build",
     "postinstall": "node tools/postInstall.js"
