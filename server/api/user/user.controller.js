@@ -65,9 +65,7 @@ const me = (req, res, next) => {
   const userId = req.user._id;
   return Users.findOne({ _id: userId }).exec()
     .then((user) => {
-      if (!user) {
-        return res.status(401).end();
-      }
+      if (!user) res.status(401).end();
       res.json(user);
     })
     .catch(err => next(err));
@@ -110,7 +108,6 @@ const isUserAuthenticated = (req, res) => {
   if (req.user) return res.status(200).json({ isAuthenticated: true });
   return res.status(200).json({ isAuthenticated: false });
 };
-
 
 export {
   isUserAuthenticated, relatedUsers, me, create, patch, destroy, upsert, show, indexByName, index,
