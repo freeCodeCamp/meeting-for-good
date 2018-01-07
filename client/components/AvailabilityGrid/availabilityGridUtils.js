@@ -60,7 +60,8 @@ const flattenedAvailabilitys = (event) => {
 };
 
 export const genHeatMapBackgroundColors = (participants) => {
-  let quantOfParticipants = participants.filter(participant => participant.availability.length > 0).length;
+  let quantOfParticipants = participants
+    .filter(participant => participant.availability.length > 0).length;
   quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
   if (quantOfParticipants < 3) {
     return chroma.scale(['#AECDE0', '#8191CD']).colors(quantOfParticipants);

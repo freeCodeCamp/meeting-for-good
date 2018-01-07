@@ -38,9 +38,10 @@ class Home extends React.Component {
           Let us take care of it!
         </h6>
         <img src={timeZonesImage} styleName="timezones" alt="timezone" />
-        <p> <small> Same event. Image on the left: UTC+11.
-          Image on the right UTC-5 (Daylight saving included)
-        </small>
+        <p>
+          <small> Same event. Image on the left: UTC+11.
+            Image on the right UTC-5 (Daylight saving included)
+          </small>
         </p>
       </div>
     );

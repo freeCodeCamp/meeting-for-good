@@ -220,9 +220,9 @@ class NewEvent extends React.Component {
             value={{ min: selectedTimeRange[0], max: selectedTimeRange[1] }}
             onChange={value =>
               this.setState(
-{ selectedTimeRange: [value.min, value.max] },
+                  { selectedTimeRange: [value.min, value.max] },
                 () => this.toggleSubmitDisabled(),
-)}
+              )}
           />
         </div>
         <br />
