@@ -19,7 +19,9 @@ import styles from './nav-bar.css';
 
 const inLineStyles = {
   iconMenu: {
-    iconStyle: { minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center' },
+    iconStyle: {
+      minWidth: 70, display: 'flex', flexDirection: 'row', alignItems: 'center',
+    },
     toggle: { style: { top: '10px' }, label: { fontSize: '18px' }, thumbSwitched: { backgroundColor: 'red' } },
   },
 };
@@ -53,7 +55,7 @@ const PastEventsMenuItem = (props) => {
   return (
     <MenuItem leftIcon={<Event />} >
       <Toggle
-        label={'Past Events'}
+        label="Past Events"
         toggled={showPastEvents}
         styleName="Toggle"
         style={inLineStyles.iconMenu.toggle.style}
@@ -79,7 +81,7 @@ const AboutMenuItem = (props) => {
 
 const LogoutMenuItem = () => (
   <MenuItem
-    href={'/api/auth/logout'}
+    href="/api/auth/logout"
     styleName="LogoutButton"
     primaryText="Logout"
     leftIcon={<ExitToApp />}

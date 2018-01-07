@@ -47,7 +47,9 @@ class GuestInviteDrawer extends Component {
     try {
       const guests = await this.loadPastGuests();
       const { open } = this.props;
-      this.setState({ open, activeCheckBoxes: [], guests, guestsToDisplay: guests });
+      this.setState({
+        open, activeCheckBoxes: [], guests, guestsToDisplay: guests,
+      });
     } catch (err) {
       console.log('loadPastGuests GuestInviteDrawer', err);
     }
@@ -90,19 +92,17 @@ class GuestInviteDrawer extends Component {
     const { event, cbInviteEmail } = this.props;
     let nActiveCheckBoxes = _.cloneDeep(activeCheckBoxes);
     if (activeCheckBoxes.length > 0) {
-      await Promise.all(
-        activeCheckBoxes.map(async (guest) => {
-          try {
-            await cbInviteEmail(guest, event);
-            nActiveCheckBoxes = nActiveCheckBoxes.filter(x => x !== guest);
-          } catch (err) {
-            console.log('err at handleInvitem GuestInviteDrawer', err);
-            this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, sending invite for guest' });
-          } finally {
-            this.setState({ activeCheckBoxes: nActiveCheckBoxes });
-          }
-        }),
-      );
+      await Promise.all(activeCheckBoxes.map(async (guest) => {
+        try {
+          await cbInviteEmail(guest, event);
+          nActiveCheckBoxes = nActiveCheckBoxes.filter(x => x !== guest);
+        } catch (err) {
+          console.log('err at handleInvitem GuestInviteDrawer', err);
+          this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, sending invite for guest' });
+        } finally {
+          this.setState({ activeCheckBoxes: nActiveCheckBoxes });
+        }
+      }));
     } else {
       this.setState({ snackbarOpen: true, snackbarMsg: 'Error!!, Please select guests to invite.' });
     }
@@ -194,7 +194,8 @@ class GuestInviteDrawer extends Component {
 
   render() {
     const {
-      open, searchText, linearProgressVisible, guestsToDisplay, activeCheckBoxes } = this.state;
+      open, searchText, linearProgressVisible, guestsToDisplay, activeCheckBoxes,
+    } = this.state;
     const { event } = this.props;
     const inLineStyles = {
       container: { paddingLeft: '9px', paddingRight: '10px' },

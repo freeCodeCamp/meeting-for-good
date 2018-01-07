@@ -15,7 +15,6 @@ import { renderTzInfo, renderRows, buildBestTimes } from './besttimesDisplayUtil
 import { isEvent } from '../../util/commonPropTypes';
 
 class BestTimeDisplay extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -66,24 +65,21 @@ class BestTimeDisplay extends Component {
     const rows = [];
     while (index < quantToShow && index < Object.keys(displayTimes).length) {
       const date = Object.keys(displayTimes)[index];
-      rows.push(
-        <ListItem
-          key={date}
-          style={{ height: '20px', fontSize: '18px' }}
-          primaryTogglesNestedList
-          leftIcon={<DateRangeIcon style={{ paddingBottom: '0px', marginBottom: '0x' }} />}
-          initiallyOpen
-          disabled
-          primaryText={date}
-          autoGenerateNestedIndicator={false}
-          nestedListStyle={{ padding: '0px' }}
-          innerDivStyle={{ padding: '16px 0px 0px 50px' }}
-          nestedItems={renderRows(displayTimes[date].hours)}
-        />);
+      rows.push(<ListItem
+        key={date}
+        style={{ height: '20px', fontSize: '18px' }}
+        primaryTogglesNestedList
+        leftIcon={<DateRangeIcon style={{ paddingBottom: '0px', marginBottom: '0x' }} />}
+        initiallyOpen
+        disabled
+        primaryText={date}
+        autoGenerateNestedIndicator={false}
+        nestedListStyle={{ padding: '0px' }}
+        innerDivStyle={{ padding: '16px 0px 0px 50px' }}
+        nestedItems={renderRows(displayTimes[date].hours)}
+      />);
       if (index !== Object.keys(displayTimes).length - 1 && index !== quantToShow - 1) {
-        rows.push(
-          <Divider key={`Divider ${date}`} styleName="Divider" />,
-        );
+        rows.push(<Divider key={`Divider ${date}`} styleName="Divider" />);
       }
       index += 1;
     }

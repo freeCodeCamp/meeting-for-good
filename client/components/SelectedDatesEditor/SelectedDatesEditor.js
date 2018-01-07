@@ -17,7 +17,6 @@ import styles from './selected-dates-editor.css';
 const moment = extendMoment(Moment);
 
 class SelectedDatesEditor extends Component {
-
   constructor(props) {
     super(props);
     const { event } = props;
@@ -141,7 +140,9 @@ class SelectedDatesEditor extends Component {
 
   render() {
     const inlineStyles = {
-      title: { backgroundColor: '#006400', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6 },
+      title: {
+        backgroundColor: '#006400', color: '#ffffff', fontSize: '25px', height: '25px', paddingTop: 6,
+      },
       content: { width: '290px', maxWidth: '290px', minWidth: '290px' },
       bodyStyle: { minHeight: '260px', paddingTop: 10 },
     };

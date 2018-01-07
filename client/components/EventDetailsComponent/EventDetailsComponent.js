@@ -61,7 +61,9 @@ class EventDetailsComponent extends React.Component {
           snackBarMsg: 'Please add your availability to join the event.',
         });
       }
-      this.setState({ showHeatmap, showAvailabilityGrid, myAvailability, isOwner });
+      this.setState({
+        showHeatmap, showAvailabilityGrid, myAvailability, isOwner,
+      });
     }
   }
 
@@ -111,8 +113,7 @@ class EventDetailsComponent extends React.Component {
   async submitAvailability(patches) {
     const { event, curUser } = this.props;
     const oldMe = event.participants.find(participant =>
-      participant.userId._id === curUser._id,
-    );
+      participant.userId._id === curUser._id);
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
     if (responseEvent) {
       const me = isCurParticip(curUser, responseEvent);
@@ -179,7 +180,9 @@ class EventDetailsComponent extends React.Component {
   }
 
   render() {
-    const { event, showHeatmap, dates, heightlightedUser } = this.state;
+    const {
+      event, showHeatmap, dates, heightlightedUser,
+    } = this.state;
     const { curUser, calendarEvents } = this.props;
     return (
       <div styleName="wrapper">

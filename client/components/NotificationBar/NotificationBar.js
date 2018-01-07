@@ -11,7 +11,6 @@ import { quantOwnerNotNotified, handleEventLinkClick } from './NotificationBarUt
 import styles from './notification-bar.css';
 
 class NotificationBar extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -91,7 +90,8 @@ class NotificationBar extends Component {
               <a
                 onTouchTap={() => handleEventLinkClick(event._id)}
                 styleName="eventLink"
-              >{event.name}</a>.
+              >{event.name}
+              </a>.
             </MenuItem>
           );
           rows.push(row);
@@ -108,7 +108,9 @@ class NotificationBar extends Component {
     const { quantOwnerNotNotified, openMenu } = this.state;
     const visible = (quantOwnerNotNotified === 0) ? 'hidden' : 'visible';
     const inLineStyles = {
-      badge: { right: 3, top: 2, visibility: visible, fontSize: '12px', width: 16, height: 16 },
+      badge: {
+        right: 3, top: 2, visibility: visible, fontSize: '12px', width: 16, height: 16,
+      },
       iconButton: { height: '40px', icon: { color: 'white', width: '19px' } },
     };
     return (
@@ -137,41 +139,39 @@ class NotificationBar extends Component {
 NotificationBar.propTypes = {
   // Currrent user
   curUser: PropTypes.shape({
-    _id: PropTypes.string,      // Unique user id
-    name: PropTypes.string,     // User name
-    avatar: PropTypes.string,   // URL to image representing user(?)
+    _id: PropTypes.string, // Unique user id
+    name: PropTypes.string, // User name
+    avatar: PropTypes.string, // URL to image representing user(?)
   }).isRequired,
 
   cbHandleDismissGuest: PropTypes.func.isRequired,
 
   // List of events containing list of event participants
-  events: PropTypes.arrayOf(
-    PropTypes.shape({
+  events: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    owner: PropTypes.string,
+    active: PropTypes.bool,
+    selectedTimeRange: PropTypes.array,
+    dates: PropTypes.arrayOf(PropTypes.shape({
+      fromDate: PropTypes.string,
+      toDate: PropTypes.string,
       _id: PropTypes.string,
-      name: PropTypes.string,
-      owner: PropTypes.string,
-      active: PropTypes.bool,
-      selectedTimeRange: PropTypes.array,
-      dates: PropTypes.arrayOf(PropTypes.shape({
-        fromDate: PropTypes.string,
-        toDate: PropTypes.string,
-        _id: PropTypes.string,
-      })),
-      participants: PropTypes.arrayOf(PropTypes.shape({
-        userId: PropTypes.shape({
-          id: PropTypes.string,
-          avatar: PropTypes.string,
-          name: PropTypes.string,
-          emails: PropTypes.arrayOf(PropTypes.string),
-        }),
-        _id: PropTypes.string,
-        status: PropTypes.oneOf([0, 1, 2, 3]),
-        emailUpdate: PropTypes.bool,
-        ownerNotified: PropTypes.bool,
-        availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-      })),
-    }),
-  ).isRequired,
+    })),
+    participants: PropTypes.arrayOf(PropTypes.shape({
+      userId: PropTypes.shape({
+        id: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
+        emails: PropTypes.arrayOf(PropTypes.string),
+      }),
+      _id: PropTypes.string,
+      status: PropTypes.oneOf([0, 1, 2, 3]),
+      emailUpdate: PropTypes.bool,
+      ownerNotified: PropTypes.bool,
+      availability: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    })),
+  })).isRequired,
 };
 
 export default cssModules(NotificationBar, styles);

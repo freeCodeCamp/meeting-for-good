@@ -53,11 +53,10 @@ const listEventsForCalendar = async (maxMinDates, calendar) => {
 const flatCalendarEvents = async (googleCalendars, maxMinDates) => {
   const events = [];
   try {
-    await Promise.all(googleCalendars.map(
-      async (calendar) => {
-        const calendarEvents = await listEventsForCalendar(maxMinDates, calendar);
-        calendarEvents.items.forEach(event => events.push(event));
-      }));
+    await Promise.all(googleCalendars.map(async (calendar) => {
+      const calendarEvents = await listEventsForCalendar(maxMinDates, calendar);
+      calendarEvents.items.forEach(event => events.push(event));
+    }));
     return events;
   } catch (err) {
     console.error('ERROR flatCalendarEvents calendar.js', err);

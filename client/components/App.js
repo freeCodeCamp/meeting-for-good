@@ -25,7 +25,11 @@ const styleNotif = {
     success: { backgroundColor: 'white', color: '#006400', borderTop: '4px solid #006400' },
     error: { backgroundColor: 'white', color: 'red', borderTop: '2px solid red' },
     info: { backgroundColor: 'white', color: 'blue', borderTop: '2px solid blue' },
-    Containers: { tr: { top: '40px', bottom: 'auto', left: 'auto', right: '0px' } },
+    Containers: {
+      tr: {
+        top: '40px', bottom: 'auto', left: 'auto', right: '0px',
+      },
+    },
     Title: {
       DefaultStyle: { fontSize: '18px', fontWeight: 'bold' },
     },
@@ -56,7 +60,8 @@ class App extends Component {
         const curUser = await getCurrentUser();
         const events = await loadEvents(showPastEvents);
         this.setState({
-          isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents });
+          isAuthenticated: true, openLoginModal: false, curUser, events, showPastEvents,
+        });
       }
     } catch (err) {
       console.error('App.js componentWillMount err', err);
@@ -240,8 +245,7 @@ class App extends Component {
     // ask at DB because guests sets as 0 its not load as default
     const eventFull = await loadEvent(eventEdited._id, true);
     const participants = eventFull.participants;
-    const indexOfGuest = _.findIndex(
-      participants, participant => participant.userId._id === guestId.toString());
+    const indexOfGuest = _.findIndex(participants, participant => participant.userId._id === guestId.toString());
     if (indexOfGuest > -1) {
       return this.handleInviteExistingGuest(guestId, eventFull, participants, indexOfGuest);
     }
@@ -267,12 +271,10 @@ class App extends Component {
     const { events } = this.state;
     const nEvents = _.cloneDeep(events);
     try {
-      await Promise.all(participantsIds.map(
-        async (participantId) => {
-          const nEvent = await handleDismiss(participantId.toString());
-          nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
-        },
-      ));
+      await Promise.all(participantsIds.map(async (participantId) => {
+        const nEvent = await handleDismiss(participantId.toString());
+        nEvents.splice(_.findIndex(nEvents, ['_id', nEvent._id.toString()]), 1, nEvent);
+      }));
     } catch (err) {
       this._addNotification('Error!', 'Failed to dismiss guest. Please try again later.', 'error');
       return err;
@@ -296,9 +298,12 @@ class App extends Component {
   }
 
   injectPropsChildren(child) {
-    const { showPastEvents, curUser, isAuthenticated, events } = this.state;
+    const {
+      showPastEvents, curUser, isAuthenticated, events,
+    } = this.state;
     if (child.type.displayName === 'Dashboard') {
-      return cloneElement(child, { showPastEvents,
+      return cloneElement(child, {
+        showPastEvents,
         curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
@@ -312,7 +317,8 @@ class App extends Component {
       return cloneElement(child, { handleAuthentication: this.handleAuthentication });
     }
     if (child.type.displayName === 'EventDetails') {
-      return cloneElement(child, { curUser,
+      return cloneElement(child, {
+        curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
         cbLoadEvent: id => handleLoadEvent(id),
@@ -326,14 +332,17 @@ class App extends Component {
       });
     }
     if (child.type.displayName === 'NewEvent') {
-      return cloneElement(child, { curUser,
+      return cloneElement(child, {
+        curUser,
         isAuthenticated,
         cbOpenLoginModal: this.handleOpenLoginModal,
         cbNewEvent: this.handleNewEvent,
       });
     }
-    return cloneElement(child,
-      { curUser, isAuthenticated, cbOpenLoginModal: this.handleOpenLoginModal });
+    return cloneElement(
+      child,
+      { curUser, isAuthenticated, cbOpenLoginModal: this.handleOpenLoginModal },
+    );
   }
 
   renderNotifications() {
@@ -344,7 +353,8 @@ class App extends Component {
 
   render() {
     const { location, children } = this.props;
-    const { showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail, events,
+    const {
+      showPastEvents, curUser, openLoginModal, isAuthenticated, loginFail, events,
     } = this.state;
     const childrenWithProps = React.Children
       .map(children, child => this.injectPropsChildren(child));

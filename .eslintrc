@@ -24,15 +24,15 @@
     "allowForLoopAfterthoughts": 0,
     "react/jsx-filename-extension": [1, {
       "extensions": [".js", ".jsx"]
-    }],
+    }]
   },
   "plugins": [
-    "react",
+    "react"
   ],
   "globals": {
     "$": true,
     "Materialize": true,
-    "wNumb": true,
+    "wNumb": true
   },
-  "parser": "babel-eslint",
+  "parser": "babel-eslint"
 }

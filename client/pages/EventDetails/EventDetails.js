@@ -13,7 +13,8 @@ import { eventsMaxMinDatesForEvent } from '../../util/dates.utils';
 class EventDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = { event: null,
+    this.state = {
+      event: null,
       showLoginModal: false,
       openDrawer: false,
       curUser: {},
@@ -103,7 +104,9 @@ class EventDetails extends Component {
   }
 
   render() {
-    const { event, openDrawer, curUser, calendarEvents } = this.state;
+    const {
+      event, openDrawer, curUser, calendarEvents,
+    } = this.state;
     if (event) {
       return (
         <div styleName="event">

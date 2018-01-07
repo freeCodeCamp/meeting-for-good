@@ -35,10 +35,13 @@ class Home extends React.Component {
         <hr styleName="hr" />
         <h3>Timezones supported</h3>
         <h6>Don&#39;t worry about having to get everyone to convert to your timezone.
-          Let us take care of it!</h6>
+          Let us take care of it!
+        </h6>
         <img src={timeZonesImage} styleName="timezones" alt="timezone" />
         <p> <small> Same event. Image on the left: UTC+11.
-          Image on the right UTC-5 (Daylight saving included) </small> </p>
+          Image on the right UTC-5 (Daylight saving included)
+        </small>
+        </p>
       </div>
     );
   }
@@ -47,7 +50,7 @@ class Home extends React.Component {
     return (
       <footer>
         <div>
-          <div styleName={'divider'} />
+          <div styleName="divider" />
           <p> An Open Source for Good initiative. </p>
           <p>
             Check out the repo on <a href="https://github.com/freeCodeCamp/meeting-for-good/" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -68,7 +71,8 @@ class Home extends React.Component {
         avgParticipants: 0,
         maxParticipants: 0,
         eventsToday: 0,
-        weekAvg: 0 },
+        weekAvg: 0,
+      },
       openLoginModal: false,
       loginFail: false,
     };

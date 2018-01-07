@@ -53,15 +53,14 @@ const flattenedAvailabilitys = (event) => {
   const flattenedAvailability = {};
   event.participants.forEach((participant) => {
     const avail = participant.availability.map(avail =>
- _.flatten(rangeForAvailability(avail[0], avail[1])));
+      _.flatten(rangeForAvailability(avail[0], avail[1])));
     flattenedAvailability[participant.userId._id] = _.flatten(avail);
   });
   return flattenedAvailability;
 };
 
 export const genHeatMapBackgroundColors = (participants) => {
-  let quantOfParticipants = participants.filter(
-    participant => participant.availability.length > 0).length;
+  let quantOfParticipants = participants.filter(participant => participant.availability.length > 0).length;
   quantOfParticipants = (quantOfParticipants > 2) ? quantOfParticipants : 2;
   if (quantOfParticipants < 3) {
     return chroma.scale(['#AECDE0', '#8191CD']).colors(quantOfParticipants);
@@ -127,8 +126,7 @@ const haveACalendarEvent = (time, CalendarEventsReduced) => {
   return result;
 };
 
-const createQuartersForGrid = (
-  allTimes, date, flattenedAvailability, dtsMinMax, participants, CalendarEventsReduced) =>
+const createQuartersForGrid = (allTimes, date, flattenedAvailability, dtsMinMax, participants, CalendarEventsReduced) =>
   allTimes.map((quarter) => {
     const quarterM = moment(quarter);
     const dateHourForCell = moment(date).hour(quarterM.hour()).minute(quarterM.minute()).startOf('minute');
@@ -179,8 +177,10 @@ export const createGridComplete = (allDates, allTimes, event, calendarEvents) =>
   allDates.forEach((date) => {
     grid.push({
       date,
-      quarters: createQuartersForGrid(allTimes,
-        date, flattenedAvailability, dtsMinMax, event.participants, CalendarEventsReduced),
+      quarters: createQuartersForGrid(
+        allTimes,
+        date, flattenedAvailability, dtsMinMax, event.participants, CalendarEventsReduced,
+      ),
     });
   });
   return grid;
@@ -203,7 +203,8 @@ export const editParticipantToCellGrid = (
   cellColumnIndex,
   cellInitialRow,
   cellInitialColumn,
-  curUser, grid) => {
+  curUser, grid,
+) => {
   const nGrid = _.cloneDeep(grid);
   const rows = generateRange(cellInitialRow, cellRowIndex);
   const columns = generateRange(cellInitialColumn, cellColumnIndex);

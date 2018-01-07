@@ -31,7 +31,9 @@ class LoginModal extends Component {
     const inLineStyles = {
       modal: {
         contentStyle: { maxWidth: '250px' },
-        title: { backgroundColor: '#006400', marginBottom: '10px', fontSize: '25px', paddingTop: '7px', paddingBottom: '10px', color: '#ffffff' },
+        title: {
+          backgroundColor: '#006400', marginBottom: '10px', fontSize: '25px', paddingTop: '7px', paddingBottom: '10px', color: '#ffffff',
+        },
         bodyStyle: { width: '250px', paddingBottom: 10, paddingTop: 12 },
         actions: { paddingTop: 0 },
       },

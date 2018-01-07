@@ -22,10 +22,10 @@ import { isEvent, isCurUser } from '../../util/commonPropTypes';
 import styles from './availability-grid.css';
 
 class AvailabilityGrid extends Component {
-
   constructor(props) {
     super(props);
-    this.state = { openModal: false,
+    this.state = {
+      openModal: false,
       grid: {},
       backgroundColors: [],
       openSnackBar: false,
@@ -43,24 +43,32 @@ class AvailabilityGrid extends Component {
   }
 
   componentWillMount() {
-    const { event, dates, showHeatmap, calendarEvents } = this.props;
+    const {
+      event, dates, showHeatmap, calendarEvents,
+    } = this.props;
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event, calendarEvents);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
     const jumpTimeIdx = jumpTimeIndex(allTimes);
 
-    this.setState({ grid, backgroundColors, allTimes, showHeatmap, allDates, event, jumpTimeIdx });
+    this.setState({
+      grid, backgroundColors, allTimes, showHeatmap, allDates, event, jumpTimeIdx,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { event, dates, showHeatmap, calendarEvents } = nextProps;
+    const {
+      event, dates, showHeatmap, calendarEvents,
+    } = nextProps;
     const allDates = createDatesRange(dates);
     const allTimes = createTimesRange(dates);
     const grid = createGridComplete(allDates, allTimes, event, calendarEvents);
     const backgroundColors = genHeatMapBackgroundColors(event.participants);
     const jumpTimeIdx = jumpTimeIndex(allTimes);
-    this.setState({ grid, backgroundColors, showHeatmap, allDates, event, allTimes, jumpTimeIdx });
+    this.setState({
+      grid, backgroundColors, showHeatmap, allDates, event, allTimes, jumpTimeIdx,
+    });
   }
 
   @autobind
@@ -105,8 +113,7 @@ class AvailabilityGrid extends Component {
       editOperation,
       cellInitialColumn: columnIndex,
       cellInitialRow: rowIndex,
-      grid: editParticipantToCellGrid(
-        quarter, editOperation, rowIndex, columnIndex, rowIndex, columnIndex, curUser, grid),
+      grid: editParticipantToCellGrid(quarter, editOperation, rowIndex, columnIndex, rowIndex, columnIndex, curUser, grid),
     });
   }
 
@@ -114,14 +121,18 @@ class AvailabilityGrid extends Component {
   handleCellMouseOver(ev, quarter, rowIndex, columnIndex) {
     ev.preventDefault();
     if (quarter.disable) return;
-    const { showHeatmap, mouseDown, editOperation, cellInitialRow, cellInitialColumn } = this.state;
+    const {
+      showHeatmap, mouseDown, editOperation, cellInitialRow, cellInitialColumn,
+    } = this.state;
     const { curUser } = this.props;
     if (!showHeatmap) {
       if (mouseDown) {
         this.setState(oldState => ({
           grid: editParticipantToCellGrid(
             quarter, editOperation, rowIndex, columnIndex, cellInitialRow,
-            cellInitialColumn, curUser, oldState.grid) }));
+            cellInitialColumn, curUser, oldState.grid,
+          ),
+        }));
       }
     } else {
       const snackBarGuests = quarter.participants.map(participant => Object.values(participant));
@@ -135,7 +146,8 @@ class AvailabilityGrid extends Component {
   handleCellMouseUp(ev) {
     ev.preventDefault();
     this.setState({
-      mouseDown: false, cellInitialColumn: null, cellInitialRow: null, editOperation: null });
+      mouseDown: false, cellInitialColumn: null, cellInitialRow: null, editOperation: null,
+    });
   }
 
   @autobind
@@ -161,7 +173,9 @@ class AvailabilityGrid extends Component {
   }
 
   renderGrid() {
-    const { grid, allTimes, backgroundColors, showHeatmap, jumpTimeIdx } = this.state;
+    const {
+      grid, allTimes, backgroundColors, showHeatmap, jumpTimeIdx,
+    } = this.state;
     const { curUser, heightlightedUser } = this.props;
     return (
       <div onMouseLeave={this.handleCellMouseUp}>
@@ -204,7 +218,9 @@ class AvailabilityGrid extends Component {
   }
 
   render() {
-    const { snackBarGuests, snackBarNoGuests, openSnackBar, openModal } = this.state;
+    const {
+      snackBarGuests, snackBarNoGuests, openSnackBar, openModal,
+    } = this.state;
     return (
       <div styleName="column">
         <div styleName="row">
