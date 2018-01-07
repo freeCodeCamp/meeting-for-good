@@ -110,7 +110,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify('production'),
       'process.env.GOOGLE_ANALYTICS_ID': JSON.stringify(process.env.GOOGLE_ANALYTICS_ID),
       'process.env.GOOGLE_ANALYTICS_DEBUG': JSON.stringify(process.env.GOOGLE_ANALYTICS_DEBUG),
       'process.env.versionNumber': JSON.stringify(packageJSON.version),
