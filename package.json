@@ -129,7 +129,7 @@
     "shelljs": "^0.7.7",
     "style-loader": "^0.19.1",
     "url-loader": "^0.6.2",
-    "webpack": "^3.6.0",
+    "webpack": "^3.10.0",
     "webpack-assets-manifest": "^1.0.0",
     "webpack-bundle-analyzer": "^2.8.3",
     "webpack-config": "^7.0.0",
