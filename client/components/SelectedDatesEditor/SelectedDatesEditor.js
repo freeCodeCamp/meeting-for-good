@@ -19,10 +19,12 @@ const moment = extendMoment(Moment);
 class SelectedDatesEditor extends Component {
   constructor(props) {
     super(props);
+    const { event } = props;
     this.state = {
       dialogOpen: false,
       dialogWarningOpen: false,
       dialogMinimumDateOpen: false,
+      event,
       selectedDates: [],
     };
   }

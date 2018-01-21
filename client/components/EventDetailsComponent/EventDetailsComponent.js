@@ -11,7 +11,7 @@ import styles from './event-details-component.css';
 import ParticipantsList from '../../components/ParticipantsList/ParticipantsList';
 import BestTimesDisplay from '../../components/BestTimeDisplay/BestTimeDisplay';
 import SelectedDatesEditor from '../../components/SelectedDatesEditor/SelectedDatesEditor';
-import { datesToDatesObject, isCurParticip } from './EventDetailsComponentUtil';
+import { datesToDatesObject, isCurParticip, eventAllParticipIds } from './EventDetailsComponentUtil';
 import { isEvent, isCurUser } from '../../util/commonPropTypes';
 
 class EventDetailsComponent extends React.Component {
@@ -21,7 +21,12 @@ class EventDetailsComponent extends React.Component {
     this.state = {
       event,
       dates: datesToDatesObject(event),
+      eventParticipantsIds: eventAllParticipIds(event),
       showHeatmap: false,
+      myAvailability: [],
+      showButtonAviability: 'none',
+      showAvailabilityGrid: 'block',
+      isParticipant: true,
       snackBarOpen: false,
       snackBarMsg: '',
       heightlightedUser: '',
@@ -33,6 +38,7 @@ class EventDetailsComponent extends React.Component {
     const { curUser, event } = this.props;
     if (curUser) {
       let showHeatmap = false;
+      let showAvailabilityGrid = 'block';
       let myAvailability = [];
       const isOwner = event.owner === curUser._id;
       // find actual user participant record
@@ -43,17 +49,20 @@ class EventDetailsComponent extends React.Component {
           myAvailability = isCurParticipant.availability;
           if (myAvailability.length > 0) {
             showHeatmap = true;
+            showAvailabilityGrid = 'none';
           }
         }
       } else {
         showHeatmap = false;
+        showAvailabilityGrid = 'block';
         this.setState({
+          isParticipant: false,
           snackBarOpen: true,
           snackBarMsg: 'Please add your availability to join the event.',
         });
       }
       this.setState({
-        showHeatmap, isOwner,
+        showHeatmap, showAvailabilityGrid, myAvailability, isOwner,
       });
     }
   }
@@ -75,13 +84,18 @@ class EventDetailsComponent extends React.Component {
   }
 
   @autobind
+  showAvailability() {
+    this.setState({ showButtonAviability: 'hidden', showAvailabilityGrid: 'block' });
+  }
+
+  @autobind
   closeGrid() {
-    this.setState({ showHeatmap: true });
+    this.setState({ showHeatmap: true, showAvailabilityGrid: 'none' });
   }
 
   @autobind
   editAvail() {
-    this.setState({ showHeatmap: false });
+    this.setState({ showHeatmap: false, showButtonAviability: 'none', showAvailabilityGrid: 'block' });
   }
 
   @autobind
@@ -102,9 +116,12 @@ class EventDetailsComponent extends React.Component {
       participant.userId._id === curUser._id);
     const responseEvent = await this.props.cbEditEvent(patches, event._id);
     if (responseEvent) {
+      const me = isCurParticip(curUser, responseEvent);
       this.setState({
         showHeatmap: true,
         event: responseEvent,
+        participants: responseEvent.participants,
+        myAvailability: me.availability,
       });
       if (curUser._id !== event.owner) {
         if (oldMe.status === 3) {

@@ -37,12 +37,16 @@ class NewEvent extends React.Component {
       eventName: '',
       selectedTimeRange: [9, 17],
       disableSubmit: true,
+      curUser: {},
+      value4: { min: 5, max: 10 },
     };
   }
 
   componentWillMount() {
-    const { isAuthenticated } = this.props;
-    if (isAuthenticated === false) {
+    const { isAuthenticated, curUser } = this.props;
+    if (isAuthenticated === true) {
+      this.setState({ curUser });
+    } else {
       this.props.cbOpenLoginModal('/event/new');
     }
   }
@@ -128,6 +132,11 @@ class NewEvent extends React.Component {
   @autobind
   handleEventNameChange(ev) {
     this.setState({ eventName: ev.target.value }, () => this.toggleSubmitDisabled());
+  }
+
+  @autobind
+  handleSnackBarRequestClose() {
+    this.setState({ snackBarOpen: false });
   }
 
   renderDayPicker() {
@@ -257,6 +266,14 @@ NewEvent.propTypes = {
   isAuthenticated: PropTypes.bool,
   cbOpenLoginModal: PropTypes.func,
   cbNewEvent: PropTypes.func,
+
+  // Current user
+  curUser: PropTypes.shape({
+    _id: PropTypes.string, // Unique user id
+    name: PropTypes.string, // User name
+    avatar: PropTypes.string, // URL to image representing user(?)
+  }).isRequired,
+
 };
 
 export default cssModules(NewEvent, styles);
