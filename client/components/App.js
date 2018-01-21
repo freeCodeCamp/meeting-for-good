@@ -45,6 +45,8 @@ class App extends Component {
       openLoginModal: false,
       isAuthenticated: false,
       loginFail: false,
+      pathToGo: '/',
+      loginModalDisable: false,
       events: [],
     };
     this._notificationSystem = null;
@@ -154,7 +156,7 @@ class App extends Component {
   async handleOpenLoginModal(pathToGo) {
     if (await isAuthenticated() === false) {
       sessionStorage.setItem('redirectTo', pathToGo);
-      this.setState({ openLoginModal: true });
+      this.setState({ openLoginModal: true, pathToGo });
     }
   }
 
@@ -186,7 +188,7 @@ class App extends Component {
 
   async handleInviteExistingGuest(guestId, event, participants, indexOfGuest) {
     const { events, curUser } = this.state;
-    const { status } = participants[indexOfGuest];
+    const status = participants[indexOfGuest].status;
     let statusResult = null;
     switch (status) {
       case 0: // guest "deleted"
@@ -242,7 +244,7 @@ class App extends Component {
     // find if the guest alredy exists as participant
     // ask at DB because guests sets as 0 its not load as default
     const eventFull = await loadEvent(eventEdited._id, true);
-    const { participants } = eventFull;
+    const participants = eventFull.participants;
     const indexOfGuest = _.findIndex(participants, participant => participant.userId._id === guestId.toString());
     if (indexOfGuest > -1) {
       return this.handleInviteExistingGuest(guestId, eventFull, participants, indexOfGuest);

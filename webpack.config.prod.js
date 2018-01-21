@@ -177,7 +177,6 @@ module.exports = {
         navigateFallbackURL: '/',
       },
     }),
-    new webpack.optimize.UglifyJsPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.css'],

@@ -21,7 +21,9 @@ class ParticipantsList extends Component {
     this.state = {
       event: (event !== undefined) ? event : null,
       openDeleteModal: false,
+      openDrawer: false,
       guestToDelete: '',
+      chipHoverEnable: '',
     };
   }
 

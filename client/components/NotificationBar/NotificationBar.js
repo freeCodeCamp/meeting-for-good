@@ -16,6 +16,7 @@ class NotificationBar extends Component {
     this.state = {
       events: this.props.events,
       curUser: this.props.curUser,
+      notificationColor: '#ff0000',
       quantOwnerNotNotified: 0,
       openMenu: false,
     };
