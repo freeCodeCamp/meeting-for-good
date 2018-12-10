@@ -51,7 +51,7 @@ To build the app instead, run `npm run build`
 ------------
 ### Detailed local development installation steps
 
-You'll need to have the latest verison of **Node.js** installed. Either use your OS's package manager or follow the installation instructions on the [official website](http://nodejs.org).
+You'll need to have the latest version of **Node.js** installed. Either use your OS's package manager or follow the installation instructions on the [official website](http://nodejs.org).
 
 This app uses **MongoDB** as its database engine. Follow [these instructions](https://docs.mongodb.com/manual/installation/#mongodb-community-edition) to install it locally and start the MongoDB server on your machine.
 
